@@ -116,7 +116,8 @@ jobs:
       # (Settings > Trust credentials > OpenID Connect): the action trades this
       # job's GitHub OIDC token for an auth key, so no Tailscale secret is
       # stored anywhere. The identity accepts only subjects matching
-      # repo:vertical-cloud-lab/robot-arms:* and may mint only tag:rpi-5-eufi.
+      # repo:vertical-cloud-lab@228975003/robot-arms@1412458486:* (GitHub's immutable
+      # subject format, which carries org and repo IDs) and may mint only tag:rpi-5-eufi.
       # Access to the arm Pi is still bounded by the tailnet policy in
       # vertical-cloud-lab/tailscale-policy (SSH within the tag, tcp:22 only).
       - name: Connect to Tailscale

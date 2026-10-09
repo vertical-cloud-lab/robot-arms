@@ -87,12 +87,24 @@ as an ephemeral node carrying `tag:rpi-5-eufi`, so you are already on the tailne
 `tailscale status` to confirm, and do not run `tailscale up` or mint keys yourself. The step
 authenticates with a Tailscale **federated identity** (admin console → Settings → Trust
 credentials → OpenID Connect), not an OAuth client secret. The action presents this job's
-GitHub OIDC token, Tailscale checks its subject against `repo:vertical-cloud-lab/robot-arms:*`,
-and only then issues an auth key, which can only carry `tag:rpi-5-eufi`. There is no long-lived
-Tailscale secret to leak or rotate. `TS_OAUTH_CLIENT_ID` and `TS_AUDIENCE` are stored as
-secrets but Tailscale itself says neither value is secret. This needs `id-token: write` on the
-job and `tailscale/github-action@v4`. Unlike byu-vcl's OAuth client, there is no "request every
-tag the client owns" trap here: one identity, one tag.
+GitHub OIDC token, Tailscale checks its subject against
+`repo:vertical-cloud-lab@228975003/robot-arms@1412458486:*`, and only then issues an auth key,
+which can only carry `tag:rpi-5-eufi`. There is no long-lived Tailscale secret to leak or
+rotate. `TS_OAUTH_CLIENT_ID` and `TS_AUDIENCE` are stored as secrets but Tailscale itself says
+neither value is secret. This needs `id-token: write` on the job and
+`tailscale/github-action@v4`. Unlike byu-vcl's OAuth client, there is no "request every tag the
+client owns" trap here: one identity, one tag.
+
+**The subject carries numeric IDs, not just names.** This repo issues GitHub's *immutable*
+subject format, `repo:<org>@<org id>/<repo>@<repo id>:ref:refs/heads/main`, so a pattern
+written as `repo:vertical-cloud-lab/robot-arms:*` never matches and the join fails with
+`token exchange failed with status 403: Unauthorized`. That cost the first check run. The
+IDs survive renames, so a deleted-and-recreated repo of the same name cannot borrow the
+identity. `gh api repos/vertical-cloud-lab/robot-arms/actions/oidc/customization/sub` shows
+the prefix, and the credential's edit page shows the last subject Tailscale received. The
+manual **Tailscale check** workflow (`tailscale-check.yml`) is the read-only way to prove the
+whole path: it joins, prints the runner's tags, checks the Pi's `tcp:22`, and logs in over SSH
+once `ARM_PI_USERNAME` is set.
 
 **What the policy allows.** The policy lives in
 [`vertical-cloud-lab/tailscale-policy`](https://github.com/vertical-cloud-lab/tailscale-policy)
@@ -153,6 +165,6 @@ sessions.
 sets it both as a repo secret and in `.claude/settings.local.json` (add `--gh-only` for
 `CLAUDE_CODE_OAUTH_TOKEN`, which would otherwise override the local Claude Code login). The
 Tailscale identity: Settings → Trust credentials, delete and recreate with issuer GitHub,
-subject `repo:vertical-cloud-lab/robot-arms:*`, scope auth keys (write) with tag
+subject `repo:vertical-cloud-lab@228975003/robot-arms@1412458486:*`, scope auth keys (write) with tag
 `tag:rpi-5-eufi`, then update the two secrets. Everything else is shared with byu-vcl, so rotate
 it in both repos.
