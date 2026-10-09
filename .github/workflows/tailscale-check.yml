@@ -1,0 +1,42 @@
+name: Tailscale check
+
+# Manual, read-only proof that CI can reach the arm Pi: joins the tailnet the same
+# way claude.yml does (federated identity, no stored secret), shows the tags the
+# runner was given, and checks that the Pi answers on tcp:22. With ARM_PI_USERNAME
+# set it also logs in over Tailscale SSH and runs hostname/uptime/id, nothing else.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      ARM_PI_USERNAME: ${{ vars.ARM_PI_USERNAME }}
+      ARM_PI_HOSTNAME: ${{ vars.ARM_PI_HOSTNAME }}
+    steps:
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          audience: ${{ secrets.TS_AUDIENCE }}
+          tags: tag:rpi-5-eufi
+
+      - name: Runner tags and peer status
+        run: |
+          tailscale status --json | jq '{self_tags: .Self.Tags, peers: [.Peer[] | {online: .Online, tags: .Tags}]}'
+
+      - name: Arm Pi answers on tcp:22
+        run: |
+          timeout 20 bash -c "until nc -z -w 3 \"$ARM_PI_HOSTNAME\" 22; do sleep 2; done"
+          echo "tcp:22 reachable"
+
+      - name: Read-only SSH login
+        if: env.ARM_PI_USERNAME != ''
+        run: |
+          ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o ConnectTimeout=15 \
+            "$ARM_PI_USERNAME@$ARM_PI_HOSTNAME" 'hostname >/dev/null && uptime -p && id -un && uname -m'
