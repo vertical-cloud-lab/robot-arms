@@ -1,0 +1,144 @@
+#!/usr/bin/env python3
+"""Raise and lower the AgileX PiPER a few times, starting and ending at zero.
+
+Runs on the arm Pi, in the venv that has piper_sdk (~/piper-venv):
+
+    ~/piper-venv/bin/python piper_up_down.py           # read-only: print state, move nothing
+    ~/piper-venv/bin/python piper_up_down.py --go      # enable motors and move
+
+"Up" is the shoulder (J2) lifting by --lift-deg while the elbow (J3) opens by the same
+amount, so the forearm keeps roughly its angle and the whole arm rises. Every other joint
+holds zero. can0 must already be up at 1 Mbit/s; this script never touches the interface.
+
+Safety:
+- Without --go nothing is sent to the arm.
+- Refuses to start unless joint feedback is live and every joint is within --zero-tol-deg
+  of zero.
+- Waits for each pose to be reached before the next; a pose that is not reached in
+  --timeout-s aborts the cycle.
+- Always commands zero before exiting, and disables the motors only once the arm is back
+  at zero. Disabling elsewhere would drop the arm, so then it is left enabled and holding.
+"""
+import argparse
+import os
+import sys
+import time
+
+MDEG = 1000  # piper_sdk joint units are 0.001 degree
+
+
+def joints_deg(piper):
+    js = piper.GetArmJointMsgs().joint_state
+    return [js.joint_1 / MDEG, js.joint_2 / MDEG, js.joint_3 / MDEG,
+            js.joint_4 / MDEG, js.joint_5 / MDEG, js.joint_6 / MDEG]
+
+
+def fmt(q):
+    return "[" + ", ".join(f"{v:7.2f}" for v in q) + "]"
+
+
+def wait_for_feedback(piper, timeout_s=3.0):
+    t0 = time.time()
+    while time.time() - t0 < timeout_s:
+        if piper.GetArmJointMsgs().Hz > 0:
+            return True
+        time.sleep(0.1)
+    return False
+
+
+def move_to(piper, target_deg, speed, tol_deg, timeout_s):
+    """Stream a MOVE J target until every joint is within tol_deg. Returns True if reached."""
+    t0 = time.time()
+    while time.time() - t0 < timeout_s:
+        piper.MotionCtrl_2(0x01, 0x01, speed, 0x00)
+        piper.JointCtrl(*[round(v * MDEG) for v in target_deg])
+        q = joints_deg(piper)
+        if all(abs(a - b) <= tol_deg for a, b in zip(q, target_deg)):
+            print(f"  reached {fmt(target_deg)} in {time.time() - t0:.1f} s", flush=True)
+            return True
+        time.sleep(0.02)
+    print(f"  NOT reached {fmt(target_deg)} after {timeout_s} s, at {fmt(joints_deg(piper))}",
+          flush=True)
+    return False
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--can", default="can0")
+    ap.add_argument("--go", action="store_true", help="enable the motors and move")
+    ap.add_argument("--cycles", type=int, default=3)
+    ap.add_argument("--lift-deg", type=float, default=25.0, help="J2 lift (and J3 opening)")
+    ap.add_argument("--speed", type=int, default=20, help="MOVE J speed percent (1-100)")
+    ap.add_argument("--pause-s", type=float, default=0.5, help="dwell at each pose")
+    ap.add_argument("--tol-deg", type=float, default=1.5, help="pose reached tolerance")
+    ap.add_argument("--zero-tol-deg", type=float, default=5.0, help="start/end zero tolerance")
+    ap.add_argument("--timeout-s", type=float, default=15.0, help="per-pose timeout")
+    args = ap.parse_args()
+
+    if not 0 < args.lift_deg <= 45:
+        sys.exit("--lift-deg must be in (0, 45]")
+    if not 1 <= args.speed <= 50:
+        sys.exit("--speed must be in [1, 50]")
+
+    state = open(f"/sys/class/net/{args.can}/operstate").read().strip() \
+        if os.path.exists(f"/sys/class/net/{args.can}") else "missing"
+    if state not in ("up", "unknown"):
+        sys.exit(f"{args.can} is {state}; bring it up at 1 Mbit/s first")
+
+    from piper_sdk import C_PiperInterface_V2
+
+    piper = C_PiperInterface_V2(args.can)
+    piper.ConnectPort()
+    if not wait_for_feedback(piper):
+        sys.exit("no joint feedback on the bus: is the arm powered and wired to the adapter?")
+
+    q0 = joints_deg(piper)
+    print("joints (deg):", fmt(q0))
+    print("enabled:", piper.GetArmEnableStatus())
+    print(piper.GetArmStatus())
+    if any(abs(v) > args.zero_tol_deg for v in q0):
+        sys.exit(f"arm is not within {args.zero_tol_deg} deg of zero; not moving")
+    if not args.go:
+        print("read-only run (no --go): nothing sent to the arm")
+        return
+
+    zero = [0.0] * 6
+    up = [0.0, args.lift_deg, -args.lift_deg, 0.0, 0.0, 0.0]
+
+    t0 = time.time()
+    while not piper.EnablePiper():
+        if time.time() - t0 > 5:
+            sys.exit("motors did not enable within 5 s")
+        time.sleep(0.01)
+    print(f"enabled in {time.time() - t0:.2f} s", flush=True)
+
+    completed = 0
+    try:
+        for i in range(1, args.cycles + 1):
+            print(f"cycle {i}/{args.cycles}: up", flush=True)
+            if not move_to(piper, up, args.speed, args.tol_deg, args.timeout_s):
+                break
+            time.sleep(args.pause_s)
+            print(f"cycle {i}/{args.cycles}: down", flush=True)
+            if not move_to(piper, zero, args.speed, args.tol_deg, args.timeout_s):
+                break
+            time.sleep(args.pause_s)
+            completed += 1
+    finally:
+        print("returning to zero", flush=True)
+        move_to(piper, zero, args.speed, args.tol_deg, args.timeout_s)
+        q = joints_deg(piper)
+        if all(abs(v) <= args.zero_tol_deg for v in q):
+            t0 = time.time()
+            while piper.DisablePiper() and time.time() - t0 < 5:
+                time.sleep(0.01)
+            print("disabled at zero:", fmt(q), flush=True)
+        else:
+            print("WARNING: not back at zero, leaving motors enabled so the arm does not drop:",
+                  fmt(q), flush=True)
+        print(f"completed {completed}/{args.cycles} cycles", flush=True)
+
+
+if __name__ == "__main__":
+    main()

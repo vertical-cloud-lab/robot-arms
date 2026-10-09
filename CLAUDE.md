@@ -135,6 +135,16 @@ around it. sudo is password-gated, so feed the password over stdin so it never a
 process list or shell history: `ssh … "sudo -S -p '' <cmd>" <<< "$ARM_PI_PASSWORD"`. Never
 print the hostname or any credential in comments, commits, or logs.
 
+**What is on the Pi (as of 2026-10-09, issue #15).** Debian 13 (trixie), Python 3.13, an
+IMX708 wide camera (`rpicam-still`/`rpicam-vid`), and a gs_usb USB-CAN adapter that appears
+as `can0`. Nothing brings `can0` up at boot: it stays down until someone runs
+`sudo ip link set can0 type can bitrate 1000000 && sudo ip link set can0 up`. That command
+enables the CAN bus, so the motion rule above applies to it too. `piper_sdk` and `python-can`
+are installed in a user venv at `~/piper-venv` (Debian's system Python has no pip, so this
+is the only place they live). [`scripts/piper_up_down.py`](scripts/piper_up_down.py) is the
+first motion script. Copy it to the Pi and run it with `~/piper-venv/bin/python`. Without
+`--go` it only reads joint state.
+
 **Using the Pi as a proxy.** Some vendor sites (and YouTube's player) block GitHub Actions IP
 ranges; the Pi's residential IP is not blocked. The Pi is on constrained Wi-Fi and may be
 running the arm, so rate-cap transfers (`curl --limit-rate`) and never run speed tests.
