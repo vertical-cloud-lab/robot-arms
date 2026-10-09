@@ -155,6 +155,15 @@ team heard the first but saw little: 3 cycles with `--pause-s 1.5 --trace`, film
 and trace in `docs/issue-15/` show J2/J3 really reaching ±25°, with the elbow visibly rising.
 `--trace CSV` logs joint angles and J2/J3 motor speed and current at 100 Hz.
 
+**The arm's own protections (read 2026-10-09, PR #16).** [`scripts/piper_status.py`](scripts/piper_status.py)
+prints them and sends only queries. Firmware S-V1.8-1, collision protection at level 1 on all
+six joints (AgileX's default; 0 is off, 8 is the most sensitive). Changing the level with
+`CrashProtectionConfig` writes a setting, so ask first. Never run the SDK demo
+`piper_read_crash_protectation.py` to read it: despite the name it first sets every joint to 0.
+Per AgileX, an overloaded joint has its current cut so the motor does not burn out, and a
+tripped, disabled or reset joint goes limp. There are no brakes, so a raised arm drops.
+`piper_up_down.py` reads no fault flags during a move.
+
 **Using the Pi as a proxy.** Some vendor sites (and YouTube's player) block GitHub Actions IP
 ranges; the Pi's residential IP is not blocked. The Pi is on constrained Wi-Fi and may be
 running the arm, so rate-cap transfers (`curl --limit-rate`) and never run speed tests.
