@@ -143,7 +143,12 @@ enables the CAN bus, so the motion rule above applies to it too. `piper_sdk` and
 are installed in a user venv at `~/piper-venv` (Debian's system Python has no pip, so this
 is the only place they live). [`scripts/piper_up_down.py`](scripts/piper_up_down.py) is the
 first motion script. Copy it to the Pi and run it with `~/piper-venv/bin/python`. Without
-`--go` it only reads joint state.
+`--go` it only reads joint state. The arm's rest pose has the wrist off zero (about J5 22°,
+J6 61°), so the all-joint zero check refuses to start from rest. Use `--hold-wrist` there,
+which moves only J2/J3 and holds the other joints where they are. First motion: 2026-10-09,
+PR #16, `--go --hold-wrist`, 3 cycles of ±25° at 20% speed, each pose reached in 0.8 s.
+To record a run, use `rpicam-vid --codec mjpeg`. The Pi 5 has no H.264 encoder, this build
+has no libav, and the Pi has no ffmpeg, so the default and `--codec libav` both write nothing.
 
 **Using the Pi as a proxy.** Some vendor sites (and YouTube's player) block GitHub Actions IP
 ranges; the Pi's residential IP is not blocked. The Pi is on constrained Wi-Fi and may be

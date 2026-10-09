@@ -8,16 +8,19 @@ Runs on the arm Pi, in the venv that has piper_sdk (~/piper-venv):
 
 "Up" is the shoulder (J2) lifting by --lift-deg while the elbow (J3) opens by the same
 amount, so the forearm keeps roughly its angle and the whole arm rises. Every other joint
-holds zero. can0 must already be up at 1 Mbit/s; this script never touches the interface.
+holds zero, or with --hold-wrist holds the angle it started at (the PiPER rests with its
+wrist off zero, so this raises the arm without swinging the wrist). can0 must already be up
+at 1 Mbit/s; this script never touches the interface.
 
 Safety:
 - Without --go nothing is sent to the arm.
 - Refuses to start unless joint feedback is live and every joint is within --zero-tol-deg
-  of zero.
+  of zero (only J2 and J3 with --hold-wrist).
 - Waits for each pose to be reached before the next; a pose that is not reached in
   --timeout-s aborts the cycle.
-- Always commands zero before exiting, and disables the motors only once the arm is back
-  at zero. Disabling elsewhere would drop the arm, so then it is left enabled and holding.
+- Always commands the start pose before exiting, and disables the motors only once the arm
+  is back there. Disabling elsewhere would drop the arm, so then it is left enabled and
+  holding.
 """
 import argparse
 import os
@@ -74,6 +77,8 @@ def main():
     ap.add_argument("--tol-deg", type=float, default=1.5, help="pose reached tolerance")
     ap.add_argument("--zero-tol-deg", type=float, default=5.0, help="start/end zero tolerance")
     ap.add_argument("--timeout-s", type=float, default=15.0, help="per-pose timeout")
+    ap.add_argument("--hold-wrist", action="store_true",
+                    help="hold J1 and J4-J6 at their starting angles instead of zero")
     args = ap.parse_args()
 
     if not 0 < args.lift_deg <= 45:
@@ -97,14 +102,17 @@ def main():
     print("joints (deg):", fmt(q0))
     print("enabled:", piper.GetArmEnableStatus())
     print(piper.GetArmStatus())
-    if any(abs(v) > args.zero_tol_deg for v in q0):
+    checked = q0[1:3] if args.hold_wrist else q0
+    if any(abs(v) > args.zero_tol_deg for v in checked):
         sys.exit(f"arm is not within {args.zero_tol_deg} deg of zero; not moving")
+
+    home = [q0[0], 0.0, 0.0, *q0[3:]] if args.hold_wrist else [0.0] * 6
+    up = [home[0], args.lift_deg, -args.lift_deg, *home[3:]]
+    print("home (deg):", fmt(home))
+    print("up   (deg):", fmt(up))
     if not args.go:
         print("read-only run (no --go): nothing sent to the arm")
         return
-
-    zero = [0.0] * 6
-    up = [0.0, args.lift_deg, -args.lift_deg, 0.0, 0.0, 0.0]
 
     t0 = time.time()
     while not piper.EnablePiper():
@@ -121,21 +129,21 @@ def main():
                 break
             time.sleep(args.pause_s)
             print(f"cycle {i}/{args.cycles}: down", flush=True)
-            if not move_to(piper, zero, args.speed, args.tol_deg, args.timeout_s):
+            if not move_to(piper, home, args.speed, args.tol_deg, args.timeout_s):
                 break
             time.sleep(args.pause_s)
             completed += 1
     finally:
-        print("returning to zero", flush=True)
-        move_to(piper, zero, args.speed, args.tol_deg, args.timeout_s)
+        print("returning home", flush=True)
+        move_to(piper, home, args.speed, args.tol_deg, args.timeout_s)
         q = joints_deg(piper)
-        if all(abs(v) <= args.zero_tol_deg for v in q):
+        if all(abs(a - b) <= args.zero_tol_deg for a, b in zip(q, home)):
             t0 = time.time()
             while piper.DisablePiper() and time.time() - t0 < 5:
                 time.sleep(0.01)
-            print("disabled at zero:", fmt(q), flush=True)
+            print("disabled at home:", fmt(q), flush=True)
         else:
-            print("WARNING: not back at zero, leaving motors enabled so the arm does not drop:",
+            print("WARNING: not back home, leaving motors enabled so the arm does not drop:",
                   fmt(q), flush=True)
         print(f"completed {completed}/{args.cycles} cycles", flush=True)
 
