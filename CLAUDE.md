@@ -149,6 +149,11 @@ which moves only J2/J3 and holds the other joints where they are. First motion: 
 PR #16, `--go --hold-wrist`, 3 cycles of ±25° at 20% speed, each pose reached in 0.8 s.
 To record a run, use `rpicam-vid --codec mjpeg`. The Pi 5 has no H.264 encoder, this build
 has no libav, and the Pi has no ffmpeg, so the default and `--codec libav` both write nothing.
+MJPEG at 1280x720 is about 1.5 MB/s, so copy it off with `scp -l` and convert it on the
+runner (`pip install imageio-ffmpeg` gives a static ffmpeg). Second run, same PR, after the
+team heard the first but saw little: 3 cycles with `--pause-s 1.5 --trace`, filmed. The video
+and trace in `docs/issue-15/` show J2/J3 really reaching ±25°, with the elbow visibly rising.
+`--trace CSV` logs joint angles and J2/J3 motor speed and current at 100 Hz.
 
 **Using the Pi as a proxy.** Some vendor sites (and YouTube's player) block GitHub Actions IP
 ranges; the Pi's residential IP is not blocked. The Pi is on constrained Wi-Fi and may be

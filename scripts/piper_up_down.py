@@ -25,6 +25,7 @@ Safety:
 import argparse
 import os
 import sys
+import threading
 import time
 
 MDEG = 1000  # piper_sdk joint units are 0.001 degree
@@ -47,6 +48,19 @@ def wait_for_feedback(piper, timeout_s=3.0):
             return True
         time.sleep(0.1)
     return False
+
+
+def trace_loop(piper, path, stop, period_s=0.01):
+    """Log feedback joint angles and J2/J3 motor speed and current to CSV until stop is set."""
+    with open(path, "w") as f:
+        f.write("t_unix,j1,j2,j3,j4,j5,j6,j2_speed_rad_s,j3_speed_rad_s,j2_current_a,j3_current_a\n")
+        while not stop.is_set():
+            hs = piper.GetArmHighSpdInfoMsgs()
+            m2, m3 = hs.motor_2, hs.motor_3
+            f.write(f"{time.time():.3f}," + ",".join(f"{v:.3f}" for v in joints_deg(piper))
+                    + f",{m2.motor_speed / 1000:.3f},{m3.motor_speed / 1000:.3f}"
+                    + f",{m2.current / 1000:.3f},{m3.current / 1000:.3f}\n")
+            time.sleep(period_s)
 
 
 def move_to(piper, target_deg, speed, tol_deg, timeout_s):
@@ -79,6 +93,8 @@ def main():
     ap.add_argument("--timeout-s", type=float, default=15.0, help="per-pose timeout")
     ap.add_argument("--hold-wrist", action="store_true",
                     help="hold J1 and J4-J6 at their starting angles instead of zero")
+    ap.add_argument("--trace", metavar="CSV",
+                    help="log joint angles and J2/J3 motor speed and current at 100 Hz to CSV")
     args = ap.parse_args()
 
     if not 0 < args.lift_deg <= 45:
@@ -114,6 +130,12 @@ def main():
         print("read-only run (no --go): nothing sent to the arm")
         return
 
+    stop = threading.Event()
+    if args.trace:
+        tracer = threading.Thread(target=trace_loop, args=(piper, args.trace, stop), daemon=True)
+        tracer.start()
+        time.sleep(0.5)  # a little baseline before the motors enable
+
     t0 = time.time()
     while not piper.EnablePiper():
         if time.time() - t0 > 5:
@@ -146,6 +168,11 @@ def main():
             print("WARNING: not back home, leaving motors enabled so the arm does not drop:",
                   fmt(q), flush=True)
         print(f"completed {completed}/{args.cycles} cycles", flush=True)
+        if args.trace:
+            time.sleep(0.5)
+            stop.set()
+            tracer.join()
+            print("trace written to", args.trace, flush=True)
 
 
 if __name__ == "__main__":
