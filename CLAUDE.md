@@ -135,6 +135,15 @@ around it. sudo is password-gated, so feed the password over stdin so it never a
 process list or shell history: `ssh … "sudo -S -p '' <cmd>" <<< "$ARM_PI_PASSWORD"`. Never
 print the hostname or any credential in comments, commits, or logs.
 
+**What is on the Pi.** `piper_sdk` 0.6.2 lives in `~/piper-venv`. The arm scripts in the home
+directory (`piper_status.py`, `piper_up_down.py`, `piper_pick_tape.py`) are copies, and
+`piper_pick_tape.py` is versioned in `scripts/`. The only camera is a Pi Camera Module 3 Wide
+(imx708_wide) on CSI. It is fixed on the table and looks at the arm side-on, so it shows reach
+and height but not depth across the arm plane. Grab a frame with
+`rpicam-still -n -t 1500 -o /tmp/f.jpg`. At rest the arm reads about
+`[4, -2, 2, 1, 23, 64]` deg, not zero: the wrist (J5, J6) sits off zero when the motors are
+disabled.
+
 **Using the Pi as a proxy.** Some vendor sites (and YouTube's player) block GitHub Actions IP
 ranges; the Pi's residential IP is not blocked. The Pi is on constrained Wi-Fi and may be
 running the arm, so rate-cap transfers (`curl --limit-rate`) and never run speed tests.
