@@ -3,12 +3,13 @@
 Print this one page and post it by the E-stop. The details are in the [SOP](sop.md).
 **The arm can move at any time. Remote users and AI agents can start it.**
 **Until the E-stop is installed, "press the E-stop" means unplug the arm's cord.**
+`[unverified]` numbers are still to be confirmed (see the [README](README.md#how-numbers-are-marked)).
 
 **Start of session**
 - [ ] E-stop within reach and unobstructed. Its location is marked on the layout
 - [ ] Arm folded at rest. Wrist LED off. Teach-button cover on
 - [ ] Cords undamaged and off the floor. Brick outside the dome and uncovered
-- [ ] Transformer zone empty: nothing within 190 mm (7.5 in) and nothing on top
+- [ ] Transformer zone empty: nothing within 190 mm (7.5 in) `[unverified]` and nothing on top
 - [ ] Nobody in the reach or under the dome. Lab channel told you're at the arm, and who the remote operator is
 
 **Before your hand goes in (every reset)**
@@ -23,7 +24,7 @@ Print this one page and post it by the E-stop. The details are in the [SOP](sop.
 - [ ] You're at the E-stop, outside the reach, and you'll stay there for the whole run
 - [ ] Twist the E-stop out, say "arm power on", and press START. Wrist LED off (flashing = press the E-stop)
 - [ ] Give "workspace clear" for **this run only**, with your name. A late start or re-run needs a new one
-- [ ] Safety glasses on if you're within about 1 m
+- [ ] Safety glasses on if you're within about 1 m (proposed)
 
 **During the run**
 - [ ] Watch the arm. Press the E-stop if anyone enters the reach, or if the arm heads somewhere unplanned (out of the dome, toward the shelf edge or the transformer)

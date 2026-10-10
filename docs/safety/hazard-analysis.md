@@ -68,7 +68,7 @@ is written around that pattern.
 | Script guards | `piper_up_down.py` (PR #16) and `piper_pick_tape.py` (PR #20) send nothing without `--go`, and refuse to start without live joint feedback or away from the rest pose. They cap speed (50% and 30%) and only turn the motors off at rest. Neither is merged yet |
 | Collision detection level on the joint drivers | Not read. Another user's PiPER reported level 0 (no protection) ([piper_sdk#20](https://github.com/agilexrobotics/piper_sdk/issues/20)) |
 | Sign at the cell | Posted, according to the request for this draft. Its text isn't in either repo, so attach a photo. [`sop.md`](sop.md#sign-text-proposed) proposes wording |
-| Transformer clearance (190 mm) | **Not measured** `[to measure]` |
+| Transformer clearance (190 mm `[unverified]`) | **Not measured** `[to measure]` |
 
 **Out of scope:** the atomizer itself and its powder handling (byu-vcl #126), the CubXL's own
 motion, whatever the vials hold (if they hold chemicals, those need an SDS and their own SOP),
@@ -101,7 +101,7 @@ Appendix A categories are in brackets. "Abnormal" means the hazard needs somethi
 | H7 | T1, T5 | **The arm re-energizes after an outage** [crushing]. It comes back stiff in Stand By and holds its pose. It doesn't move, but it's live without anyone having turned it on | Abnormal |
 | H8 | T2–T5 | **No E-stop, so stopping is slow** [makes H1–H5 worse]. Pulling the plug may mean reaching behind the table or past the arm | Normal, today |
 | H9 | T2, T3 | **The canvas dome has no interlock** [impact, crushing, fire]. Anyone can lift the flap and reach in during a run, and nothing stops the arm. The canvas hides a moving arm from people outside. The arm can also reach past the walls: about 7% of its reach on the table layout and 14% on the raised deck, where the fingertip can drop 0.26 m below the deck edge. Both are model figures `[unverified]` ([#2](https://github.com/vertical-cloud-lab/robot-arms/issues/2#issuecomment-6089393090)). The arm can snag the canvas. The canvas is a cotton drop cloth with no stated flame rating `[unverified]` and may sit near the 24 V brick | Normal |
-| H10 | T6 | **Atomizer transformer clearance** [shock, electrocution, arc blast, fire]. Per @gage-erickson, "nothing can be within 7.5 in of the transformer or above it", which is 190 mm ([#2](https://github.com/vertical-cloud-lab/robot-arms/issues/2#issuecomment-6089392188)). That rule is secondhand, and its written source and the transformer's rating are unknown `[unverified]`. No distances to the shelf, table, dome, cords or arm reach have been measured `[to measure]`. Ways in: loading the shelf by reaching past the transformer, fetching a dropped vial, routing cords along the wall, the dome's canvas hanging over it, the arm's reach | Abnormal |
+| H10 | T6 | **Atomizer transformer clearance** [shock, electrocution, arc blast, fire]. @jss265 relayed in #2 that, according to @gage-erickson, "nothing can be within 7.5″ of the transformer or above it". That is 190 mm ([#2](https://github.com/vertical-cloud-lab/robot-arms/issues/2#issuecomment-6089392188)). That rule is secondhand, and its written source and the transformer's rating are unknown `[unverified]`. No distances to the shelf, table, dome, cords or arm reach have been measured `[to measure]`. Ways in: loading the shelf by reaching past the transformer, fetching a dropped vial, routing cords along the wall, the dome's canvas hanging over it, the arm's reach | Abnormal |
 | H11 | T1, T7 | **Arm power supply** [shock, fire]. 120 V AC on the cord and the brick's input side. Mains input is "100-240V" per #7 `[unverified]`, and the arm is rated 120 W max (AgileX, quoted in #18) `[unverified]`. The brick could overheat if covered by canvas, a damaged cord could shock, and cords on the floor are a trip hazard. The arm's 24 V side is below the plan's 50 V threshold (§10) | Abnormal |
 | H12 | T2, T3 | **Dropped or crushed vials** [laceration]. A vial slips from the gripper or is crushed in a pocket or the dock. Whether the campaign's vials are glass isn't recorded `[unverified]` | Abnormal |
 | H13 | T3, T7 | **The arm tips or the base shifts** [impact, crushing]. Fast moves or full reach with payload on an unbolted base (see Mounting above) | Abnormal |
@@ -151,7 +151,7 @@ Two hazards stay at II after controls:
 | Someone double-presses the wrist button while wiping the gripper? | Playback of an unknown path that ignores people (H5) | Nothing physical | Proposed: a cover and label on the button. Work at the wrist only with power cut |
 | The E-stop is pressed with the arm raised over the dock? | The arm drops onto the dock or CubXL and glass can break (H6, H12) | Stop only at rest unless it's an emergency. The SDK's damped stop is used by `piper_pick_tape.py` for parking, untested on this arm | The scripts have no damped stop for mid-run aborts |
 | Someone lifts the flap to watch a run? | Their hand or head is inside the reach of a moving arm (H9) | The sign | No interlock. Proposed: a "flap down = may move" label, plus a flap interlock later |
-| A vial rolls off the shelf toward the transformer? | Someone reaches into the 190 mm zone to fetch it (H10) | None yet | Proposed: never reach into the zone; mark it on the floor and wall; a lip on the shelf |
+| A vial rolls off the shelf toward the transformer? | Someone reaches into the 190 mm `[unverified]` zone to fetch it (H10) | None yet | Proposed: never reach into the zone; mark it on the floor and wall; a lip on the shelf |
 | A run crashes with the arm raised and everyone leaves? | It holds, then drops at the next outage (H15) | Script logs | Proposed: an end-of-session status check by the run's operator |
 
 ### 2 Guide Word check of the restart procedure (SOP §G)
@@ -219,7 +219,7 @@ then PPE. Status is **Have**, **Need** (before the block) or **Later**.
   and off the floor, never under canvas.
 
 **H10 (transformer)**
-- Eliminate, **Need:** keep everything at least 190 mm from the transformer and nothing above it
+- Eliminate, **Need:** keep everything at least 190 mm `[unverified]` from the transformer and nothing above it
   `[to measure]`. That covers the shelf, table, dome and canvas, cords, the E-stop box, and the
   arm's reach plus its fingertips. Measurement M1 in [`sop.md` §A](sop.md#a-before-the-next-campaign-block-one-time)
   is the check. If anything falls inside the zone, move it before the block.

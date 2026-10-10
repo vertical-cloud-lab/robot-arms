@@ -122,7 +122,7 @@ All of these are rated in the [hazard analysis](hazard-analysis.md).
   outage, and a failed run can leave it raised.
 - **Canvas dome** (H9). It has no interlock, it hides the arm, and part of the arm's reach is
   outside it.
-- **Atomizer high-voltage transformer** (H10). The 190 mm clearance hasn't been measured.
+- **Atomizer high-voltage transformer** (H10). The 190 mm clearance is a secondhand rule `[unverified]`, and nothing has been measured against it.
 - **Power supply** (H11). 120 V AC on the cord and brick.
 - **Vials, tipping and reaching** (H12–H14).
 
@@ -180,7 +180,7 @@ These are prerequisites. Record each one in [`README.md`](README.md#open-before-
 with a name and date.
 
 1. **Measurement M1: transformer clearance** `[to measure]`.
-   - **The rule.** Per @gage-erickson in [#2](https://github.com/vertical-cloud-lab/robot-arms/issues/2#issuecomment-6089392188),
+   - **The rule.** As @jss265 relayed from @gage-erickson in [#2](https://github.com/vertical-cloud-lab/robot-arms/issues/2#issuecomment-6089392188),
      nothing may be within 7.5 in (190 mm) of the atomizer's transformer or above it. Its written
      source is unknown `[unverified]`.
    - **Safety while measuring:**
@@ -193,7 +193,7 @@ with a name and date.
      1. The shortest horizontal distance from each face of the transformer's enclosure to each
         item in the table below.
      2. Whether anything is above it.
-     3. The distance from the arm's J1 axis (the base centre) to the nearest face. Subtract 626 mm
+     3. The distance from the arm's J1 axis (the base centre) to the nearest face. Subtract the 626 mm reach ([OpenELAB listing](https://openelab.io/products/agilex-piper-ros-ai-arm))
         plus the fingertip length beyond the flange (about 150 mm `[unverified]`) to get the
         reach margin.
    - **Record:** photos with the tape in frame, committed to this repo next to this file.
@@ -210,7 +210,7 @@ with a name and date.
    | Anything else nearby | | | | | |
 
    - **Pass:**
-     - every row is 190 mm or more, and nothing is above the transformer;
+     - every row is 190 mm `[unverified]` or more, and nothing is above the transformer;
      - the reach margin is 190 mm or more, or the review team accepts a software keep-out instead;
      - someone has asked the transformer's owner for the rule's source and its rating (read the
        nameplate, don't open anything).
@@ -441,7 +441,7 @@ To attach before review: a plan of spot D, marked with:
 - the shelf, as built;
 - the CubXL, if it's in the cell;
 - the E-stop location;
-- the transformer and its 190 mm zone;
+- the transformer and its 190 mm `[unverified]` zone;
 - the door, the fire extinguisher and the nearest phone.
 
 The floor plan used in [#2](https://github.com/vertical-cloud-lab/robot-arms/issues/2) is a
@@ -463,6 +463,7 @@ and update CLAUDE.md to match.
 >    for people.
 > 4. **Leave the arm limp only when it's folded at rest.** It drops when power is cut.
 > 5. **Keep everything 190 mm (7.5 in) from the transformer, and nothing on top of it.**
+>    `[unverified]`: confirm the rule's source (SOP §A.1) before posting.
 >
 > Emergency: 911 · University Police 801-422-2222 · College Health & Safety 801-422-6589 ·
 > PI ________
