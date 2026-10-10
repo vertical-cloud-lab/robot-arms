@@ -145,6 +145,18 @@ and height but not depth across the arm plane. Grab a frame with
 disabled. J2 = -2 and J3 = +2 are just outside the joint limits, so a move "back to the start
 joints" never completes; aim for the clamped pose (J2 = J3 = 0) and disable there.
 
+**How the arm moves (firmware S-V1.8-1).** The joint limits live in the joint drivers (read them
+with `SearchMotorMaxAngleSpdAccLimit(m, 0x01)`, a query): J2 is [0, 180] and J3 is [-170, 0],
+so nothing in position mode gets the folded arm closer to its rest. Writing new limits
+(`MotorAngleLimitMaxSpdSet`) goes to driver flash; don't do it without the lab's say-so. One
+MOVE J target runs every joint at about 1.67 deg/s per speed percent, and each joint stops on its
+own when it arrives; the joints are not synchronized. So a MOVE J path is not the joint-space
+line, and a chain of short MOVE J steps stops and restarts each joint at every step (the jerky
+stage-2 descent). For smooth, predictable paths, stream `JointCtrl` targets at 100 Hz along the
+path with the speed cap above the fastest joint's need, as `piper_pick_tape.py` does. The
+gripper reports its opening and motor effort (0.001 N*m) at 200 Hz. `*.log` is gitignored, so
+`git add -f` run logs. Notes on the arm's motion live in issue #19.
+
 **Recording motion.** The Pi 5 has no H.264 encoder and its `rpicam-vid` has no libav, so
 record MJPEG: `rpicam-vid -n -t 0 --width 1536 --height 864 --framerate 20 --codec mjpeg
 --quality 70 --save-pts f.pts -o f.mjpeg` (about 1.2 MB/s; that mode is a centre crop of the

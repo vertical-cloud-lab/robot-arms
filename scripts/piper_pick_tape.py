@@ -17,26 +17,50 @@ up, about 48 mm across. The camera cannot see depth, so the roll is assumed to s
 arm's vertical plane at the starting J1 angle, as stated in the issue.
 
 Which way the fingers open. In the rest pose the camera sees the broad face of a finger, so
-the fingers open across the arm plane. That direction is recorded in the link-6 frame
-(FINGER_AXIS_6) from the rest joints, and every grasp pose keeps it across the plane, with
-the tool axis pointing down (tipped --tilt-deg outward within the plane, since straight down
-needs J5 = 72 deg, past its 70 deg limit). The fingers then close on the roll's flat faces.
+the fingers open across the arm plane (confirmed on the arm). That direction is recorded in
+the link-6 frame (FINGER_AXIS_6) from the rest joints, and every grasp pose keeps it across
+the plane, with the tool axis pointing down (tipped --tilt-deg outward within the plane, since
+straight down needs J5 = 72 deg, past its 70 deg limit). The fingers close on the flat faces.
+
+How the PiPER moves. One MOVE J target runs every joint at the same speed (about 1.67 deg/s
+per speed percent) and stops each joint when it arrives; the joints are not interpolated
+together (in the stage-2 video the forearm keeps its angle until J3 arrives, then J2 carries
+on alone). So a MOVE J path is not the straight joint-space line, and a chain of short MOVE J
+steps stops and restarts every joint at every step, which is what made the stage-2 descent
+jerky. Here only the move out to the pregrasp hover is a single MOVE J (checked as the arm
+really runs it). Everything else is streamed: joint targets at STREAM_HZ along a precomputed
+path with a minimum-jerk time profile, with the speed cap set 1.5x above the fastest joint so
+no joint falls behind. The descent, lift and put-back follow a straight vertical fingertip
+line (one IK solution per --res-mm); the return home follows the straight joint-space line.
+
+Gripping. The gripper reports its opening and its motor effort (N*m, the SDK's unit; the
+spec sheet rates the gripper at 40 N clamping, 50 N max, for efforts up to 5 N*m). It closes
+with --grip-nm and lifts only if the fingers stop on the roll (wider than 3 mm) and the effort
+they hold reaches --min-grip-nm. While lifting and holding, a change in opening of more than
+--slip-mm or a drop in effort puts the roll back down.
+
+Parking. J2 = 0 and J3 = 0 are firmware limits (min and max), but the arm rests at about
+J2 = -2, J3 = +2 with the motors off, so disabling at home drops it about 10 mm in 50 ms.
+--park estop (default) instead sends the SDK's quick stop, which it documents as letting the
+arm descend slowly, waits for the arm to settle, then resets (power off, flags cleared).
+If the quick stop holds the arm instead, the reset drops it as before. --park drop disables.
 
 Stages, each starting and ending at the start pose (the arm is never left away from it):
     pregrasp  open the gripper, go to fingertips --clear-mm above the roll, photo, go home
     descend   ... then lower straight down until the fingertips overlap the roll by
               --overlap-mm, photo, rise back to pregrasp, go home (no closing)
-    grasp     ... then close with --effort-n, photo, lift back to the pregrasp height, photo,
-              lower, open (the tape goes back where it was), rise, go home
+    grasp     ... then close and check the grip, photo, lift to the pregrasp height, hold,
+              photo, lower, open (the tape goes back where it was), rise, go home
 
 Safety:
 - Without --go nothing is sent to the arm; only ConnectPort's queries and feedback reads.
 - Refuses to start unless joint feedback is live and J2 and J3 are within --zero-tol-deg of
   zero (the arm is folded at rest).
-- Every waypoint is checked against the joint limits, and every joint-space segment is sampled
-  so the fingertips, flange and elbow stay --table-margin-mm above the table.
-- Below the pregrasp height the arm only moves in short straight-line vertical steps.
-- On any failure it rises to the pregrasp height before going home, and disables the motors
+- Every waypoint is checked against the joint limits, and every path is sampled (the MOVE J
+  as the arm runs it, the streams as streamed) so the fingertips, flange and elbow stay
+  --table-margin-mm above the table and out of the space just above the roll.
+- Streams start from where the arm is, so no target is ever more than one tick ahead.
+- On any failure it rises to the pregrasp height before going home, and turns the motors off
   only at home (disabling elsewhere drops the arm).
 """
 import argparse
@@ -44,10 +68,13 @@ import math
 import os
 import subprocess
 import sys
+import threading
 import time
 
-MDEG = 1000  # piper_sdk joint units are 0.001 degree; gripper units are 0.001 mm
+MDEG = 1000  # piper_sdk joint units are 0.001 degree; gripper units are 0.001 mm, 0.001 N*m
 LIMITS_DEG = [(-150, 150), (0, 180), (-170, 0), (-100, 100), (-70, 70), (-120, 120)]
+DEG_S_PER_PCT = 1.67  # MOVE J joint speed per speed percent (J2/J3 ran 33.4 deg/s at 20 %)
+STREAM_HZ = 100
 
 # Modified DH table from piper_sdk.kinematics.C_PiperForwardKinematics (dh_is_offset=1)
 DH_A = [0, 0, 285.03, -21.98, 0, 0]
@@ -217,16 +244,56 @@ def in_limits(q):
     return all(lo - 1e-6 <= v <= hi + 1e-6 for v, (lo, hi) in zip(q, LIMITS_DEG))
 
 
-def lowest_point(qa, qb, tcp_mm, n=60):
-    """Lowest z (mm) of elbow, wrist, flange and fingertip along a joint-space segment."""
-    low = (math.inf, "")
-    for k in range(n + 1):
-        q = [a + (b - a) * k / n for a, b in zip(qa, qb)]
+def clamp_limits(q):
+    return [min(max(v, lo), hi) for v, (lo, hi) in zip(q, LIMITS_DEG)]
+
+
+def movej_path(qa, qb, n=200):
+    """Joints along one MOVE J as the PiPER runs it: every joint at the same speed, each
+    stopping when it gets there (they are not interpolated together)."""
+    d = [b - a for a, b in zip(qa, qb)]
+    dm = max(abs(x) for x in d) or 1.0
+    return [[a + math.copysign(min(abs(x), dm * k / n), x) for a, x in zip(qa, d)]
+            for k in range(n + 1)]
+
+
+def line_path(qa, qb, n=200):
+    """Joints along a streamed move between two poses: all joints interpolated together."""
+    return [[a + (b - a) * k / n for a, b in zip(qa, qb)] for k in range(n + 1)]
+
+
+def path_at(path, x):
+    """Joints at fractional index x of a list of joint vectors, linearly interpolated."""
+    k = min(max(int(math.floor(x)), 0), len(path) - 2)
+    f = x - k
+    return [a + (b - a) * f for a, b in zip(path[k], path[k + 1])]
+
+
+def min_jerk(s):
+    return s * s * s * (10 - 15 * s + 6 * s * s)
+
+
+def stream_timing(path, pct, t_min):
+    """Duration (s, at least t_min) of a min-jerk stream along path whose fastest joint stays
+    under 2/3 of the speed cap of pct percent; also that joint's peak speed (deg/s)."""
+    rate = max(abs(b - a) for qa, qb in zip(path, path[1:]) for a, b in zip(qa, qb)) \
+        * (len(path) - 1)  # deg per unit of path parameter
+    t = max(t_min, 1.875 * rate * 1.5 / (pct * DEG_S_PER_PCT))
+    return t, 1.875 * rate / t
+
+
+def lowest_and_keep_out(path, tcp_mm, r, top, j1):
+    """Lowest z (mm) of elbow, wrist, flange and fingertip along a joint path, and how far
+    above the top of the roll any of them comes while within 45 mm of it."""
+    low, keep_out = (math.inf, ""), math.inf
+    for q in path:
         Ts = fk_all(q)
-        for name, z in (("elbow", Ts[2][2][3]), ("wrist", Ts[4][2][3]),
-                        ("flange", Ts[5][2][3]), ("fingertip", tip(Ts[5], tcp_mm)[2])):
-            low = min(low, (z, name))
-    return low
+        for name, P in (("elbow", pos(Ts[2])), ("wrist", pos(Ts[4])), ("flange", pos(Ts[5])),
+                        ("fingertip", tip(Ts[5], tcp_mm))):
+            low = min(low, (P[2], name))
+            if abs(math.hypot(P[0], P[1]) - r) < 45 and abs(dot(P[:2], plane_normal(j1)[:2])) < 45:
+                keep_out = min(keep_out, P[2] - top)
+    return low, keep_out
 
 
 def fmt(q):
@@ -259,41 +326,52 @@ def plan(args, q_home):
         sys.exit("no IK solution for the pregrasp pose inside the joint limits")
     _, R_t, q_pre = best
 
-    # straight vertical fingertip path from pregrasp down to grasp, steps of at most --step-mm
-    n = max(1, math.ceil((z_pre - z_grasp) / args.step_mm))
-    down, q = [], q_pre
+    # straight vertical fingertip line from pregrasp down to grasp, one IK solution per --res-mm
+    n = max(1, math.ceil((z_pre - z_grasp) / args.res_mm))
+    line, q = [q_pre], q_pre
     for k in range(1, n + 1):
         z = z_pre - (z_pre - z_grasp) * k / n
         q, pe, re = ik(over(z), R_t, q, args.tcp_mm)
         if pe > 0.5 or re > 0.5 or not in_limits(q):
             sys.exit(f"IK failed at fingertip z = {z:.0f} mm")
-        down.append(q)
+        line.append(q)
+    q_park = clamp_limits(q_home)  # the folded rest sags past the J2/J3 limits; see park()
+
+    line_s, line_peak = stream_timing(line, args.speed, (z_pre - z_grasp) / args.line_mm_s)
+    home_path = line_path(q_pre, q_park)
+    home_pct = min(30, max(args.speed, math.ceil(
+        1.5 * 1.875 * max(abs(a - b) for a, b in zip(q_pre, q_park)) / args.home_s / DEG_S_PER_PCT)))
+    home_s, home_peak = stream_timing(home_path, home_pct, args.home_s)
 
     print(f"arm plane J1 = {j1:.2f} deg; tape centre at r = {r:.0f} mm, top at z = {top:.0f} mm")
     print(f"fingertip = flange + {args.tcp_mm:.0f} mm along the tool axis")
-    print(f"home       {fmt(q_home)}")
+    print(f"home       {fmt(q_home)}   (parks at {fmt(q_park)})")
     print(f"pregrasp   {fmt(q_pre)}   fingertips at z = {z_pre:.0f} mm")
-    print(f"grasp      {fmt(down[-1])}   fingertips at z = {z_grasp:.0f} mm "
-          f"({len(down)} steps of {(z_pre - z_grasp) / n:.1f} mm)")
+    print(f"grasp      {fmt(line[-1])}   fingertips at z = {z_grasp:.0f} mm")
+    print(f"vertical line: {n} IK points; streamed over {line_s:.1f} s at {args.speed} %, "
+          f"fastest joint peaks at {line_peak:.1f} deg/s "
+          f"(cap {args.speed * DEG_S_PER_PCT:.1f})")
+    print(f"return home: streamed over {home_s:.1f} s at {home_pct} %, fastest joint peaks at "
+          f"{home_peak:.1f} deg/s (cap {home_pct * DEG_S_PER_PCT:.1f})")
 
-    # home -> pregrasp is one joint-space move: keep it off the table and out of the space
-    # above the roll, then check the descent really is a straight vertical line
-    low, keep_out = math.inf, math.inf
-    for k in range(101):
-        qk = [a + (b - a) * k / 100 for a, b in zip(q_home, q_pre)]
-        Ts = fk_all(qk)
-        for P in (pos(Ts[2]), pos(Ts[4]), pos(Ts[5]), tip(Ts[5], args.tcp_mm)):
-            low = min(low, P[2])
-            if abs(math.hypot(P[0], P[1]) - r) < 45 and abs(dot(P[:2], plane_normal(j1)[:2])) < 45:
-                keep_out = min(keep_out, P[2] - top)
-    drift = max(math.dist(tip(fk_all([a + (b - a) * k / 10 for a, b in zip(qa, qb)])[5],
-                              args.tcp_mm)[:2], over(0)[:2])
-                for qa, qb in zip([q_pre] + down[:-1], down) for k in range(11))
-    print(f"home -> pregrasp: lowest point z = {low:.0f} mm, "
-          f"closest above the roll {keep_out:.0f} mm; descent drifts {drift:.1f} mm sideways")
-    if low < args.table_margin_mm or keep_out < args.clear_mm - 10 or drift > 2.0:
+    # home -> pregrasp is one MOVE J, checked as the arm runs it; the return is streamed along
+    # the joint-space line. Both stay off the table and out of the space above the roll, and
+    # the descent really is a straight vertical line.
+    worst = []
+    for name, path in (("home -> pregrasp (MOVE J)", movej_path(q_home, q_pre)),
+                       ("pregrasp -> home (streamed)", home_path)):
+        (low, what), keep_out = lowest_and_keep_out(path, args.tcp_mm, r, top, j1)
+        print(f"{name}: lowest point z = {low:.0f} mm ({what}), "
+              f"closest above the roll {keep_out:.0f} mm")
+        worst.append((low, keep_out))
+    drift = max(math.dist(tip(fk_all(path_at(line, k / 10))[5], args.tcp_mm)[:2], over(0)[:2])
+                for k in range(10 * n + 1))
+    print(f"descent drifts {drift:.2f} mm sideways from the vertical")
+    if any(low < args.table_margin_mm or keep_out < args.clear_mm - 10 for low, keep_out in worst) \
+            or drift > 1.0:
         sys.exit("planned path comes too close to the table or the roll; not moving")
-    return {"q_pre": q_pre, "down": down}
+    return {"q_pre": q_pre, "line": line, "q_park": q_park, "line_s": line_s,
+            "home_s": home_s, "home_pct": home_pct}
 
 
 # ---------------------------------------------------------------- hardware
@@ -306,7 +384,32 @@ def gripper_mm(piper):
     return piper.GetArmGripperMsgs().gripper_state.grippers_angle / MDEG
 
 
+def gripper_nm(piper):
+    """Effort the gripper motor reports, N*m (sign dropped)."""
+    return abs(piper.GetArmGripperMsgs().gripper_state.grippers_effort) / MDEG
+
+
+TRACE = {"target": None, "phase": "start"}  # what the trace thread writes next to the feedback
+
+
+def trace_loop(piper, path, stop):
+    """Log joints, gripper opening and effort, and the commanded target at 100 Hz to CSV."""
+    with open(path, "w") as f:
+        f.write("t,phase," + ",".join(f"j{i}" for i in range(1, 7)) + ",grip_mm,grip_nm,"
+                + ",".join(f"cmd{i}" for i in range(1, 7)) + "\n")
+        t0 = time.time()
+        while not stop.is_set():
+            g = piper.GetArmGripperMsgs().gripper_state
+            cmd = TRACE["target"]
+            f.write(f"{time.time() - t0:.3f},{TRACE['phase']},"
+                    + ",".join(f"{v:.3f}" for v in joints_deg(piper))
+                    + f",{g.grippers_angle / MDEG:.2f},{g.grippers_effort / MDEG:.3f},"
+                    + (",".join(f"{v:.3f}" for v in cmd) if cmd else ",,,,,") + "\n")
+            time.sleep(0.01)
+
+
 def move_to(piper, target_deg, speed, tol_deg, timeout_s):
+    TRACE["target"] = target_deg
     t0 = time.time()
     while time.time() - t0 < timeout_s:
         piper.MotionCtrl_2(0x01, 0x01, speed, 0x00)
@@ -319,12 +422,8 @@ def move_to(piper, target_deg, speed, tol_deg, timeout_s):
     return False
 
 
-def settle(piper, target_deg, speed, tcp_mm, tol_deg=0.2, timeout_s=3.0):
-    """Hold the target until the joints are within tol_deg, then log where the fingertips are.
-
-    The descent steps are each smaller than --tol-deg, so stepping along the column does not
-    wait for the arm; without this the bottom is only passed through, not reached.
-    """
+def settle(piper, target_deg, speed, tol_deg=0.2, timeout_s=3.0):
+    """Hold the target until the joints are within tol_deg; return the largest joint error."""
     t0 = time.time()
     while time.time() - t0 < timeout_s:
         piper.MotionCtrl_2(0x01, 0x01, speed, 0x00)
@@ -332,19 +431,91 @@ def settle(piper, target_deg, speed, tcp_mm, tol_deg=0.2, timeout_s=3.0):
         if all(abs(a - b) <= tol_deg for a, b in zip(joints_deg(piper), target_deg)):
             break
         time.sleep(0.02)
+    return max(abs(a - b) for a, b in zip(joints_deg(piper), target_deg))
+
+
+def stream(piper, where, duration_s, speed, check=None):
+    """Send MOVE J targets at STREAM_HZ along where(s), s from 0 to 1 on a minimum-jerk time
+    profile, then hold the end. Each target is a fraction of a degree past the last, so the
+    joints track the path together instead of each running to a far target on its own.
+    check() runs every tick; if it returns False the arm stops where it is and this returns
+    False. Otherwise returns the largest joint error once settled at the end."""
+    steps = max(1, round(duration_s * STREAM_HZ))
+    t0 = time.time()
+    for k in range(1, steps + 1):
+        q = where(min_jerk(k / steps))
+        TRACE["target"] = q
+        piper.MotionCtrl_2(0x01, 0x01, speed, 0x00)
+        piper.JointCtrl(*[round(v * MDEG) for v in q])
+        if check is not None and not check():
+            return False
+        time.sleep(max(0.0, t0 + k / STREAM_HZ - time.time()))
+    return settle(piper, q, speed)
+
+
+def log_tip(piper, tcp_mm, label):
     q = joints_deg(piper)
     P = tip(fk_all(q)[5], tcp_mm)
-    print(f"  settled at {fmt(q)} after {time.time() - t0:.1f} s: fingertips at "
-          f"r = {math.hypot(P[0], P[1]):.0f} mm, z = {P[2]:.0f} mm", flush=True)
+    print(f"  {label} {fmt(q)}: fingertips at r = {math.hypot(P[0], P[1]):.0f} mm, "
+          f"z = {P[2]:.0f} mm", flush=True)
 
 
-def set_gripper(piper, width_mm, effort_n, wait_s=2.0):
+def set_gripper(piper, width_mm, effort_nm, wait_s=2.0):
     width_mm = max(0.0, min(70.0, width_mm))
     t0 = time.time()
     while time.time() - t0 < wait_s:
-        piper.GripperCtrl(round(width_mm * MDEG), round(effort_n * 1000), 0x01, 0)
+        piper.GripperCtrl(round(width_mm * MDEG), round(effort_nm * MDEG), 0x01, 0)
         time.sleep(0.02)
     return gripper_mm(piper)
+
+
+def close_on(piper, effort_nm, timeout_s=4.0, still_s=0.3):
+    """Close with effort_nm until the fingers stop (opening steady to 0.2 mm for still_s);
+    return the opening and the median effort over that last still_s."""
+    w_start, t0, hist = gripper_mm(piper), time.time(), []
+    while time.time() - t0 < timeout_s:
+        piper.GripperCtrl(0, round(effort_nm * MDEG), 0x01, 0)
+        hist.append((time.time(), gripper_mm(piper), gripper_nm(piper)))
+        recent = [h for h in hist if h[0] >= hist[-1][0] - still_s]
+        ws = [h[1] for h in recent]
+        if hist[-1][0] - t0 > 0.5 and ws[-1] < w_start - 1.0 and max(ws) - min(ws) < 0.2:
+            break
+        time.sleep(0.02)
+    recent = sorted(h[2] for h in hist if h[0] >= hist[-1][0] - still_s)
+    return hist[-1][1], recent[len(recent) // 2]
+
+
+def park(piper, how, settle_s=6.0):
+    """Turn the motors off at home. The firmware will not hold J2 below 0 or J3 above 0, but
+    the arm rests about 2 deg past both, so a plain disable drops it there in ~50 ms.
+    'estop' sends the quick stop first (the SDK: "stop the robotic arm and allow it to descend
+    slowly"), waits until J2 and J3 stop moving, then resets (power off, flags cleared)."""
+    if how == "estop":
+        q0, t0 = joints_deg(piper), time.time()
+        TRACE["phase"] = "estop"
+        piper.EmergencyStop(0x01)
+        hist = [(t0, q0)]
+        while time.time() - t0 < settle_s:
+            time.sleep(0.05)
+            hist.append((time.time(), joints_deg(piper)))
+            old = [q for t, q in hist if t <= hist[-1][0] - 0.5]
+            if time.time() - t0 > 1.5 and old and \
+                    max(abs(a - b) for a, b in zip(old[-1][1:3], hist[-1][1][1:3])) < 0.05:
+                break
+        q = joints_deg(piper)
+        print(f"  quick stop: J2 {q0[1]:.2f} -> {q[1]:.2f}, J3 {q0[2]:.2f} -> {q[2]:.2f} deg "
+              f"in {time.time() - t0:.1f} s; resetting", flush=True)
+        TRACE["phase"] = "reset"
+        piper.ResetPiper()
+        time.sleep(0.5)
+    TRACE["phase"] = "disable"
+    t0 = time.time()
+    while piper.DisablePiper() and time.time() - t0 < 5:
+        time.sleep(0.01)
+    time.sleep(0.3)
+    st = piper.GetArmStatus().arm_status
+    print(f"disabled at home: {fmt(joints_deg(piper))}; arm status {st.arm_status}, "
+          f"motors enabled {piper.GetArmEnableStatus()}", flush=True)
 
 
 VIDEO = {"proc": None, "t0": None}  # set by start_video; stills are skipped while it holds the camera
@@ -400,18 +571,32 @@ def main():
     ap.add_argument("--overlap-mm", type=float, default=15.0,
                     help="how far the fingertips go below the top of the roll")
     ap.add_argument("--open-mm", type=float, default=65.0, help="gripper opening (max 70)")
-    ap.add_argument("--effort-n", type=float, default=1.0, help="gripper effort (0-5)")
-    ap.add_argument("--step-mm", type=float, default=5.0, help="vertical step below pregrasp")
+    ap.add_argument("--grip-nm", type=float, default=1.0,
+                    help="gripper effort when closing on the roll, N*m (0-5)")
+    ap.add_argument("--min-grip-nm", type=float, default=0.5,
+                    help="lift only if the fingers hold at least this effort on the roll")
+    ap.add_argument("--slip-mm", type=float, default=2.0,
+                    help="put the roll back if the opening changes this much while held")
+    ap.add_argument("--res-mm", type=float, default=1.0, help="IK spacing along the vertical")
+    ap.add_argument("--line-mm-s", type=float, default=20.0,
+                    help="average fingertip speed along the vertical (slower if a joint needs)")
+    ap.add_argument("--home-s", type=float, default=6.0, help="duration of the return home")
+    ap.add_argument("--park", choices=["estop", "drop"], default="estop",
+                    help="how to turn the motors off at home (see the docstring)")
     ap.add_argument("--table-margin-mm", type=float, default=20.0)
-    ap.add_argument("--speed", type=int, default=10, help="MOVE J speed percent (1-30)")
+    ap.add_argument("--speed", type=int, default=10,
+                    help="MOVE J speed percent (1-30) out to pregrasp and along the vertical")
     ap.add_argument("--tol-deg", type=float, default=1.0)
     ap.add_argument("--zero-tol-deg", type=float, default=5.0)
     ap.add_argument("--timeout-s", type=float, default=20.0)
     ap.add_argument("--photos", default=os.path.expanduser("~/pick_tape_photos"))
     ap.add_argument("--video", help="record the run to this .mjpeg file (marks replace stills)")
+    ap.add_argument("--trace", help="log joints, gripper and targets at 100 Hz to this CSV")
     args = ap.parse_args()
     if not 1 <= args.speed <= 30:
         sys.exit("--speed must be in [1, 30]")
+    if not 0 < args.min_grip_nm <= args.grip_nm <= 3.0:
+        sys.exit("need 0 < --min-grip-nm <= --grip-nm <= 3")
 
     if args.plan_only:
         plan(args, REST_JOINTS_DEG)
@@ -433,7 +618,8 @@ def main():
         time.sleep(0.1)
     time.sleep(0.3)
     q_home = joints_deg(piper)
-    print(f"start joints {fmt(q_home)}  gripper {gripper_mm(piper):.1f} mm")
+    print(f"start joints {fmt(q_home)}  gripper {gripper_mm(piper):.1f} mm, "
+          f"{gripper_nm(piper):.2f} N*m; arm status {piper.GetArmStatus().arm_status.arm_status}")
     if any(abs(v) > args.zero_tol_deg for v in q_home[1:3]):
         sys.exit(f"J2/J3 not within {args.zero_tol_deg} deg of zero; not moving")
     p = plan(args, q_home)
@@ -442,16 +628,27 @@ def main():
         return
 
     os.makedirs(args.photos, exist_ok=True)
+    stop = threading.Event()
+    tracer = threading.Thread(target=trace_loop, args=(piper, args.trace, stop), daemon=True)
+    if args.trace:
+        tracer.start()
     if args.video:
         start_video(args.video)
     try:
         run(args, piper, p, q_home)
     finally:
-        stop_video()
+        stop_video()  # also gives the trace a second of the arm at rest after parking
+        stop.set()
+        if args.trace:
+            tracer.join(timeout=2)
 
 
 def run(args, piper, p, q_home):
     g0 = gripper_mm(piper)
+    if int(piper.GetArmStatus().arm_status.arm_status) == 0x01:
+        print("arm is still in the quick-stop state: resetting before enabling", flush=True)
+        piper.ResetPiper()
+        time.sleep(0.5)
     t0 = time.time()
     while not piper.EnablePiper():
         if time.time() - t0 > 5:
@@ -459,73 +656,100 @@ def run(args, piper, p, q_home):
         time.sleep(0.01)
     print("enabled", flush=True)
 
-    reached = lambda q: move_to(piper, q, args.speed, args.tol_deg, args.timeout_s)  # noqa: E731
-    column = [p["q_pre"]] + p["down"]  # vertical line of waypoints, pregrasp first
-    at = None  # index in column, once the arm is on it
+    line = p["line"]
+    n = len(line) - 1
+    at = None  # position on the line (0 = pregrasp, n = grasp; fractional mid-stream)
 
-    def along_column(to):
-        """Step along the vertical column one waypoint at a time."""
-        nonlocal at
-        while at != to:
-            nxt = at + (1 if to > at else -1)
-            if not reached(column[nxt]):
+    def along_line(to, check=None):
+        """Stream along the vertical line from where the arm is on it to index to."""
+        a = at
+
+        def where(s):
+            nonlocal at
+            at = a + (to - a) * s
+            return path_at(line, at)
+
+        TRACE["phase"] = "down" if to > a else "up"
+        return stream(piper, where, p["line_s"] * abs(to - a) / n, args.speed, check)
+
+    def holding(w0):
+        """Per-tick grip check: the opening stays within --slip-mm of w0 and the effort stays
+        above half of --min-grip-nm (5 bad ticks in a row, 50 ms, count as a slip)."""
+        bad = [0]
+
+        def check():
+            w, e = gripper_mm(piper), gripper_nm(piper)
+            bad[0] = bad[0] + 1 if abs(w - w0) > args.slip_mm or e < 0.5 * args.min_grip_nm else 0
+            if bad[0] >= 5:
+                print(f"  grip lost: opening {w:.1f} mm (was {w0:.1f}), effort {e:.2f} N*m",
+                      flush=True)
                 return False
-            at = nxt
-        return True
+            return True
+        return check
 
     try:
         print(f"opening gripper to {args.open_mm:.0f} mm", flush=True)
-        print(f"  gripper at {set_gripper(piper, args.open_mm, args.effort_n):.1f} mm", flush=True)
+        TRACE["phase"] = "open"
+        print(f"  gripper at {set_gripper(piper, args.open_mm, args.grip_nm):.1f} mm", flush=True)
         print("to pregrasp", flush=True)
-        if not reached(p["q_pre"]):
+        TRACE["phase"] = "to_pregrasp"
+        if not move_to(piper, p["q_pre"], args.speed, args.tol_deg, args.timeout_s):
             return
+        settle(piper, p["q_pre"], args.speed)
         at = 0
         photo(args.photos, "pregrasp")
         if args.until == "pregrasp":
             return
-        print("descending", flush=True)
-        if not along_column(len(column) - 1):
-            return
-        settle(piper, column[-1], args.speed, args.tcp_mm)
+        print(f"descending over {p['line_s']:.1f} s", flush=True)
+        along_line(n)
+        log_tip(piper, args.tcp_mm, "settled at")
         photo(args.photos, "descended")
         if args.until == "descend":
             return
-        print("closing", flush=True)
-        w = set_gripper(piper, 0.0, args.effort_n, wait_s=2.5)
-        print(f"  gripper stopped at {w:.1f} mm", flush=True)
+        print(f"closing with {args.grip_nm:.2f} N*m", flush=True)
+        TRACE["phase"] = "close"
+        w, e = close_on(piper, args.grip_nm)
+        print(f"  fingers stopped at {w:.1f} mm, holding {e:.2f} N*m", flush=True)
         photo(args.photos, "closed")
-        if w < 3.0:
-            print("  gripper closed on nothing: not lifting", flush=True)
+        if w < 3.0 or e < args.min_grip_nm:
+            print("  closed on nothing: not lifting" if w < 3.0 else
+                  f"  grip under {args.min_grip_nm:.2f} N*m: not lifting", flush=True)
+            set_gripper(piper, args.open_mm, args.grip_nm)
             return
         print("lifting to pregrasp height", flush=True)
-        if not along_column(0):
+        check = holding(w)
+        if along_line(0, check) is False:
+            print("  putting it back", flush=True)
+            along_line(n)
+            set_gripper(piper, args.open_mm, args.grip_nm)
             return
-        print(f"  holding, gripper at {gripper_mm(piper):.1f} mm", flush=True)
+        print(f"  holding at {gripper_mm(piper):.1f} mm, {gripper_nm(piper):.2f} N*m", flush=True)
         photo(args.photos, "lifted")
-        time.sleep(1.0)
+        TRACE["phase"] = "hold"
+        t0 = time.time()
+        while time.time() - t0 < 1.0 and check():
+            time.sleep(0.01)
         print("putting it back", flush=True)
-        if not along_column(len(column) - 1):
-            return
-        settle(piper, column[-1], args.speed, args.tcp_mm)
-        print(f"  gripper at {set_gripper(piper, args.open_mm, args.effort_n):.1f} mm", flush=True)
+        along_line(n)
+        log_tip(piper, args.tcp_mm, "settled at")
+        TRACE["phase"] = "release"
+        print(f"  gripper at {set_gripper(piper, args.open_mm, args.grip_nm):.1f} mm", flush=True)
         photo(args.photos, "released")
     finally:
-        ok = True
-        if at is not None:
+        if at is not None and at > 0:
             print("rising to pregrasp", flush=True)
-            ok = along_column(0)
-        print("returning home", flush=True)
-        # the folded rest sags a degree or two past the J2/J3 limits (e.g. J2 = -1.96), which
-        # the controller never reaches; aim for the nearest in-limit pose instead
-        ok = ok and reached([min(max(v, lo), hi) for v, (lo, hi) in zip(q_home, LIMITS_DEG)])
-        set_gripper(piper, g0, args.effort_n, wait_s=1.5)
+            along_line(0)
+        print(f"returning home over {p['home_s']:.1f} s", flush=True)
+        TRACE["phase"] = "home"
+        q0 = joints_deg(piper)
+        err = stream(piper, lambda s: [a + (b - a) * s for a, b in zip(q0, p["q_park"])],
+                     p["home_s"], p["home_pct"])
+        TRACE["phase"] = "gripper"
+        set_gripper(piper, g0, args.grip_nm, wait_s=1.5)
         q = joints_deg(piper)
-        if ok and all(abs(a - b) <= args.zero_tol_deg for a, b in zip(q, q_home)):
+        if err <= args.tol_deg and all(abs(a - b) <= args.zero_tol_deg for a, b in zip(q, q_home)):
             piper.GripperCtrl(round(g0 * MDEG), 0, 0x00, 0)
-            t0 = time.time()
-            while piper.DisablePiper() and time.time() - t0 < 5:
-                time.sleep(0.01)
-            print("disabled at home:", fmt(q), flush=True)
+            park(piper, args.park)
         else:
             print("WARNING: not back home, leaving motors enabled so the arm does not drop:",
                   fmt(q), flush=True)
