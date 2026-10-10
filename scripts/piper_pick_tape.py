@@ -328,7 +328,33 @@ def set_gripper(piper, width_mm, effort_n, wait_s=2.0):
     return gripper_mm(piper)
 
 
+VIDEO = {"proc": None, "t0": None}  # set by start_video; stills are skipped while it holds the camera
+
+
+def start_video(path):
+    """Record MJPEG (no H.264 encoder on the Pi 5) with frame timestamps alongside, from now on."""
+    VIDEO["proc"] = subprocess.Popen(
+        ["rpicam-vid", "-n", "-t", "0", "--width", "1536", "--height", "864", "--framerate", "20",
+         "--codec", "mjpeg", "--quality", "70", "--save-pts", path + ".pts", "-o", path],
+        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    time.sleep(2.0)  # let the camera start and settle exposure before anything moves
+    VIDEO["t0"] = time.time()
+    print(f"recording {path}", flush=True)
+
+
+def stop_video():
+    if VIDEO["proc"] is not None:
+        time.sleep(1.0)
+        VIDEO["proc"].send_signal(2)  # SIGINT: rpicam-vid closes the file cleanly
+        VIDEO["proc"].wait(timeout=10)
+        VIDEO["proc"] = None
+
+
 def photo(outdir, name):
+    if VIDEO["proc"] is not None:
+        print(f"  mark {name} at t = {time.time() - VIDEO['t0']:.1f} s of the video", flush=True)
+        time.sleep(1.0)  # hold still for a clean frame
+        return
     path = os.path.join(outdir, f"{time.strftime('%H%M%S')}_{name}.jpg")
     r = subprocess.run(["rpicam-still", "-n", "-t", "800", "--width", "2304", "--height", "1296",
                         "-o", path], capture_output=True)
@@ -363,6 +389,7 @@ def main():
     ap.add_argument("--zero-tol-deg", type=float, default=5.0)
     ap.add_argument("--timeout-s", type=float, default=20.0)
     ap.add_argument("--photos", default=os.path.expanduser("~/pick_tape_photos"))
+    ap.add_argument("--video", help="record the run to this .mjpeg file (marks replace stills)")
     args = ap.parse_args()
     if not 1 <= args.speed <= 30:
         sys.exit("--speed must be in [1, 30]")
@@ -396,6 +423,15 @@ def main():
         return
 
     os.makedirs(args.photos, exist_ok=True)
+    if args.video:
+        start_video(args.video)
+    try:
+        run(args, piper, p, q_home)
+    finally:
+        stop_video()
+
+
+def run(args, piper, p, q_home):
     g0 = gripper_mm(piper)
     t0 = time.time()
     while not piper.EnablePiper():
@@ -458,7 +494,9 @@ def main():
             print("rising to pregrasp", flush=True)
             ok = along_column(0)
         print("returning home", flush=True)
-        ok = ok and reached(q_home)
+        # the folded rest sags a degree or two past the J2/J3 limits (e.g. J2 = -1.96), which
+        # the controller never reaches; aim for the nearest in-limit pose instead
+        ok = ok and reached([min(max(v, lo), hi) for v, (lo, hi) in zip(q_home, LIMITS_DEG)])
         set_gripper(piper, g0, args.effort_n, wait_s=1.5)
         q = joints_deg(piper)
         if ok and all(abs(a - b) <= args.zero_tol_deg for a, b in zip(q, q_home)):

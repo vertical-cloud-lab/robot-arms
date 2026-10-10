@@ -142,7 +142,15 @@ directory (`piper_status.py`, `piper_up_down.py`, `piper_pick_tape.py`) are copi
 and height but not depth across the arm plane. Grab a frame with
 `rpicam-still -n -t 1500 -o /tmp/f.jpg`. At rest the arm reads about
 `[4, -2, 2, 1, 23, 64]` deg, not zero: the wrist (J5, J6) sits off zero when the motors are
-disabled.
+disabled. J2 = -2 and J3 = +2 are just outside the joint limits, so a move "back to the start
+joints" never completes; aim for the clamped pose (J2 = J3 = 0) and disable there.
+
+**Recording motion.** The Pi 5 has no H.264 encoder and its `rpicam-vid` has no libav, so
+record MJPEG: `rpicam-vid -n -t 0 --width 1536 --height 864 --framerate 20 --codec mjpeg
+--quality 70 --save-pts f.pts -o f.mjpeg` (about 1.2 MB/s; that mode is a centre crop of the
+sensor). The Pi has no ffmpeg; copy the file off with `scp -l 16000` and convert on the
+runner. `piper_pick_tape.py --video PATH` does this for a run, and logs marks in place of
+stills while the camera is busy. Only one process can hold the camera at a time.
 
 **Using the Pi as a proxy.** Some vendor sites (and YouTube's player) block GitHub Actions IP
 ranges; the Pi's residential IP is not blocked. The Pi is on constrained Wi-Fi and may be
