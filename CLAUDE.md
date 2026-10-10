@@ -139,6 +139,36 @@ print the hostname or any credential in comments, commits, or logs.
 ranges; the Pi's residential IP is not blocked. The Pi is on constrained Wi-Fi and may be
 running the arm, so rate-cap transfers (`curl --limit-rate`) and never run speed tests.
 
+**What is on it (read-only inventory, 2026-10-09, [#13](https://github.com/vertical-cloud-lab/robot-arms/issues/13)).**
+A stock Raspberry Pi OS image with Tailscale added. None of the arm stack is installed yet.
+
+- **Hardware/OS:** Raspberry Pi 5 Model B Rev 1.1, 1 GB RAM, 32 GB SD card (about 11% used).
+  Debian 13 (trixie), kernel `6.18.50+rpt-rpi-2712` (aarch64), Python 3.13.5.
+  The hostname is the same as `ARM_PI_HOSTNAME`.
+- **Login:** `ARM_PI_USERNAME` (uid 1000) is in `sudo`, `dialout`, `video`, `gpio`, `i2c`,
+  `spi`, `plugdev`. `sudo -S` with `ARM_PI_PASSWORD` works. Linger is on for this user.
+- **Tailscale:** 1.86.2, tagged `tag:rpi-5-eufi` (applied from the admin console, not via
+  `--advertise-tags`), Tailscale SSH on (`RunSSH`), shields down.
+- **Network:** `wlan0` is up on the lab Wi-Fi; `eth0` has no carrier. **No CAN interface:**
+  nothing `can*` in `ip -br link`, `can-utils` is not installed, and no USB device is attached
+  (`lsusb` shows only the root hubs), so the PiPER's USB-CAN adapter is not plugged in. The
+  `gs_usb` kernel module (which that adapter uses) ships with the kernel. There are no
+  `modules-load.d` entries, no custom udev rules (only the stock `99-rpi-keyboard.rules`) and no
+  `systemd-networkd` CAN config, so bringing up `can0` will need setting up from scratch.
+- **Camera:** one CSI camera, `imx708_wide` (Camera Module 3 Wide, 4608x2592), seen by
+  `rpicam-hello --list-cameras`. No USB cameras. `/boot/firmware/config.txt` is stock
+  (`camera_auto_detect=1`).
+- **Software:** no ROS 2 (`/opt/ros` absent, no `ros-*` packages), no `piper_sdk`, no LeRobot,
+  no virtualenvs or conda, nothing in the home directory.
+- **Services:** only stock Raspberry Pi OS services are enabled, plus `tailscaled`. Nothing has
+  failed. The user unit `rpi-connect.service` (Raspberry Pi Connect) runs but reports that
+  Connect is off (`rpi-connect status`), so it is not a remote-access path. No custom units in
+  `/etc/systemd/system`; the timers are the stock apt/logrotate/fstrim/zram ones.
+- **Cron:** no crontab for root or the login user; `/etc/cron.d` holds only the stock `e2scrub_all`.
+- **Listening (`ss -tulnH`):** `sshd` on `:22` (all interfaces), `tailscaled` on its tailnet
+  addresses and UDP `41641`, mDNS (`avahi-daemon` and `rpi-connectd`) on UDP `5353`, and
+  ephemeral UDP ports from `rpi-connectd`. Nothing else.
+
 ## Secret inventory
 
 Names and purposes only — **never** echo, grep, or print the values. Every secret below is
