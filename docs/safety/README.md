@@ -35,7 +35,7 @@ Pi, it says so and leaves it to the operator who owns the run.
 | The transformer's voltage and rating | H10 | Not recorded | Nameplate |
 | Whether the 626 mm reach includes the gripper | M1, reach marking | The listing doesn't say | AgileX datasheet, or measure with the power off |
 | About 150 mm from flange to fingertips | M1 | Photo estimate in #19 (the tape script's `--tcp-mm` default) | Calipers, power off |
-| Fingertip force at the gripper's 0–5 N·m effort range | H1 | Not found | AgileX gripper spec |
+| Gripper force: 40 N clamping, 50 N max, over a 0–5 N·m effort range. How effort maps to fingertip force | H1 | The spec sheet as quoted in #19 and the tape script; I didn't see the sheet. The mapping isn't known | AgileX gripper spec |
 | About 167°/s at 100% speed | H3 | Extrapolated from 1.67°/s per percent, measured only at 10–20% | AgileX joint-speed spec |
 | Speed of teach playback | H5 | Unknown | AgileX, or a supervised test at rest |
 | 7% / 14% of the reach outside the dome, and a 0.26 m drop below the deck | H9 | Design models in #2, not the built cell | Measure as built |
@@ -43,7 +43,7 @@ Pi, it says so and leaves it to the operator who owns the run.
 | Shelf top 1.35 m up and 0.96 m in | H14 | Raised-deck model. The deck may not be built | Measure as built |
 | Brick input "100-240V" | H11 | #7 statement; label not checked | Read the brick's label |
 | 120 W max and a 1–2 A draw | H11 | AgileX, quoted in #18. I couldn't open the manual | Label or manual |
-| POWERTEC 71970: anti-restart, "approved according to UL508, UL61058-1", no interlock input | H6, H9, H11 | Product listing via #18 | Check the unit when it arrives |
+| POWERTEC 71970: anti-restart, "approved according to UL508, UL61058-1" | H6, H11 | Product listing via #18. Nothing I read mentions an interlock input either way (H9) | Check the unit when it arrives |
 | Up to about 40 s of moves after power drops | H15, SOP §G | Estimate in #18 | The operator checks the scripts' timeouts |
 | AgileX manual §6.1 (power off after use) and §8 (arm drops on power-off; unplugging isn't a safety mechanism) | H6, SOP §F | Quoted in #18. The device.report copy returned 403 and the Scribd copy is paywalled | Read the manual |
 | Firmware S-V1.8-5 as the fix for the drop on exiting teach mode | H6 | From #5's summary of the ROS driver docs | `agx_arm_ros` release notes |
@@ -54,16 +54,19 @@ Pi, it says so and leaves it to the operator who owns the run.
 | Number | Source |
 |---|---|
 | 626 mm reach, 1.5 kg rated payload, 4.2 kg arm | [OpenELAB listing](https://openelab.io/products/agilex-piper-ros-ai-arm), a reseller, not AgileX |
-| Joint drivers at 23–24 V. Motors enable in about 0.1 s | CAN log in [#18](https://github.com/vertical-cloud-lab/robot-arms/issues/18#issuecomment-6091246658) |
-| Wrist drops about 10 mm in about 50 ms when the motors switch off at rest | Video analysis in [#19](https://github.com/vertical-cloud-lab/robot-arms/issues/19#issuecomment-6092030025) |
+| Joint drivers at 23–24 V | CAN log in [#18](https://github.com/vertical-cloud-lab/robot-arms/issues/18#issuecomment-6091246658) |
+| Motors enable in about 0.1 s | The PR #16 runs (0.11 s), reported in [#18](https://github.com/vertical-cloud-lab/robot-arms/issues/18#issuecomment-6091246658) |
+| J2 and J3 fall about 2° in about 50 ms when a script switches the motors off at its home pose, dropping the wrist about 10 mm (8–11 mm in the video) | 100 Hz trace and video in [#19](https://github.com/vertical-cloud-lab/robot-arms/issues/19#issuecomment-6092030025). The drop after an E-stop from Stand By hasn't been measured |
 | About 1.67°/s per MOVE J speed percent. Firmware S-V1.8-1 | Arm notes in `CLAUDE.md` on the PR #20 branch |
 | Script caps: 45° lift and 50% speed (`piper_up_down.py`), 30% (`piper_pick_tape.py`). Both refuse to run without joint feedback | The scripts on the PR #16 and PR #20 branches |
-| `MotionCtrl_1(0x01, 0, 0)` lowers the arm with damping. `MotionCtrl_1(0x02, 0, 0)` resets it and it drops | AgileX's answer in [piper_sdk#20](https://github.com/agilexrobotics/piper_sdk/issues/20) |
+| `MotionCtrl_1(0x01, 0, 0)` lowers the arm with damping, and `MotionCtrl_1(0x02, 0, 0)` is the reset needed afterwards (AgileX's answer). The reset made the arm "drop immediately" (the reporter) | [piper_sdk#20](https://github.com/agilexrobotics/piper_sdk/issues/20) |
 | Review every other year. The 50 V electrical threshold | College plan §6, §7 and §10 |
 
 ## Open before the next campaign block
 
-These are the **Need** items from the hazard analysis. Each one needs an owner and a date.
+These are the one-time **Need** items from the hazard analysis. The standing rules it also marks
+**Need** (lockout, "workspace clear", no teach mode during a block) are written into the SOP.
+Each item needs an owner and a date.
 
 | # | Item | Owner | Done (date) |
 |---|---|---|---|
@@ -79,7 +82,9 @@ These are the **Need** items from the hazard analysis. Each one needs an owner a
 | 10 | Lab layout attached (SOP Attachment) | | |
 | 11 | SOP blanks filled: PI, contacts, lab #, building, Physical Facilities number, extinguisher location, College course names | | |
 | 12 | **Decide** on the dome (H9 stays at II): a flap interlock or a rigid latched front, or accept the risk with a reason | | |
-| 13 | Review team meets, sets the ratings, and signs the JHA. The College Health & Safety Officer reviews the SOP | | |
+| 13 | A lip on the shelf's transformer side, so items can't roll toward it | | |
+| 14 | Safety glasses at the cell. A brush and pan and a glass-disposal box | | |
+| 15 | Review team meets, sets the ratings, and signs the JHA. The College Health & Safety Officer reviews the SOP | | |
 
 **Later:**
 - A software keep-in box at the dome walls and the shelf.

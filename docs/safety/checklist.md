@@ -14,7 +14,7 @@ Print this one page and post it by the E-stop. The details are in the [SOP](sop.
 
 **Before your hand goes in (every reset)**
 - [ ] Arm at rest and still. If it's raised, wait for it to park. Don't cut power unless it's an emergency
-- [ ] **Press the E-stop.** Keep fingers off the wrist and J2 motor, since the wrist settles about 10 mm
+- [ ] **Press the E-stop.** Keep fingers off the wrist and J2 motor: the wrist can settle onto it
 - [ ] Fingers out of the gripper and the elbow fold. Don't touch the wrist button
 - [ ] Never reach into the transformer zone, even for a dropped vial. Tell the PI instead
 - [ ] Hands, tools and loose items out. Flap down

@@ -45,7 +45,7 @@ the hazards there. `[unverified]` and `[to measure]` mark numbers nobody has che
 
 ## Important phone numbers
 
-These are from the College plan (March 2024). Confirm they're current before posting.
+Except for 911, these are from the College plan (March 2024). Confirm they're current before posting.
 
 | | |
 |---|---|
@@ -132,7 +132,7 @@ None in scope. The atomizer's metal powders belong to its own procedures.
 
 ## Equipment Required to Perform Work
 
-- The arm, gripper, wrist camera, power brick and US cord. The USB-CAN adapter, the arm Pi, and
+- The arm, gripper, power brick and US cord. The USB-CAN adapter, the arm Pi, and
   the side camera.
 - **The E-stop:** a latching plug-in switch with anti-restart. #18 recommends the POWERTEC 71970.
   **It isn't installed yet.**
@@ -186,7 +186,7 @@ with a name and date.
    - **Safety while measuring:**
      1. Power the arm down at rest first.
      2. Don't touch the transformer, open any cover, or put the tape measure on it. Measure from
-        about 10 mm off its surface and add 10 mm, or use a laser distance meter.
+        about 10 mm off its surface and add 10 mm (proposed method), or use a laser distance meter.
      3. If anything touches or overhangs the transformer, stop and tell the PI. Don't move it
         yourself if that means reaching into the zone.
    - **Measure:**
@@ -198,7 +198,7 @@ with a name and date.
         reach margin.
    - **Record:** photos with the tape in frame, committed to this repo next to this file.
 
-   | Item | Nearest transformer face | Distance (mm) | Anything above it? | ≥ 190 mm and nothing above? | Photo |
+   | Item | Nearest transformer face | Distance (mm) | Anything above it? | ≥ 190 mm `[unverified]` and nothing above? | Photo |
    |---|---|---|---|---|---|
    | Pick-up shelf (as built, after any cut) | | | | | |
    | Table / deck edge | | | | | |
@@ -211,7 +211,7 @@ with a name and date.
 
    - **Pass:**
      - every row is 190 mm `[unverified]` or more, and nothing is above the transformer;
-     - the reach margin is 190 mm or more, or the review team accepts a software keep-out instead;
+     - the reach margin is 190 mm `[unverified]` or more, or the review team accepts a software keep-out instead;
      - someone has asked the transformer's owner for the rule's source and its rating (read the
        nameplate, don't open anything).
    - Then tape the zone on the floor and wall.
@@ -262,9 +262,11 @@ Do this every time a hand goes into the reach, including each scene reset.
    emergency (H6).
 2. **Press the E-stop.** The arm goes limp at rest, and any script that tries to start exits
    with no joint feedback.
-   - If the motors were stiff (Stand By after a START), the wrist settles about 10 mm onto the
-     J2 motor as power goes ([#19](https://github.com/vertical-cloud-lab/robot-arms/issues/19#issuecomment-6092030025)).
-     Keep fingers away from there.
+   - If the motors were stiff (Stand By after a START), the wrist may settle onto the J2 motor as
+     power goes. #19 measured about 10 mm when a script switched the motors off at its home pose
+     ([#19](https://github.com/vertical-cloud-lab/robot-arms/issues/19#issuecomment-6092030025)).
+     The drop after an E-stop from Stand By hasn't been measured `[unverified]`. Keep fingers away
+     from there.
 3. Lift the flap and do the work. Keep fingers out of the gripper and the elbow fold. Don't
    press the wrist button.
 4. Hands, tools and loose items out. Flap down.
@@ -365,8 +367,10 @@ Use all of it after an unplanned stop. After a planned lockout (§C), do steps 5
 1. Until the anti-restart E-stop is installed, the arm comes back on by itself in Stand By (H7).
    Treat it as live.
 2. With the E-stop installed, it stays off until START.
-3. Before START, ask the operator to confirm no job is waiting to resume, then do §G steps 3–9.
-4. After a Pi reboot, CAN may need bringing up by an authorized operator before remote runs work
+3. Press the E-stop, or unplug until it's installed, so the arm is off whether or not it came
+   back on by itself. If it fell during the outage, it's already as low as it'll go.
+4. Do §G steps 2–9. In step 2, the operator also confirms no job is waiting to resume.
+5. After a Pi reboot, CAN may need bringing up by an authorized operator before remote runs work
    (#18). That fails safe, and this SOP doesn't do it.
 
 ### I. After a failed or frozen run
@@ -376,12 +380,12 @@ Use all of it after an unplanned stop. After a planned lockout (§C), do steps 5
 2. Keep out of the reach. The operator decides with the PI how to bring it back to rest. A
    supported damped stop is one option, an authorized move home is another. Neither is written
    here, because this SOP doesn't move the arm.
-3. Once it's at rest, run §G steps 3–9 and log it.
+3. Once it's at rest, press the E-stop, then do §G steps 2–9 and log it.
 
 ## Emergency procedures
 
-§7 of the College plan asks every SOP for an emergency section. This one takes the place of the
-template's chemical spill section, which doesn't apply here.
+§7 of the College plan asks every SOP for an emergency section. The template's chemical spill
+section is kept further down, but it doesn't apply here.
 
 **Serious injury, fire, or electrical shock: call 911, then University Police 801-422-2222.**
 
@@ -414,7 +418,7 @@ go to the PI. Anything from the atomizer follows its own procedures.
 | Everyone in the spot-D area | Read the sign. Know where the E-stop is, the reach marking, and the transformer zone |
 | Person at the arm | 1. Read this SOP, the [hazard analysis](hazard-analysis.md) and the [checklist](checklist.md). 2. The College online safety course(s) the PI names: ________. 3. The safety sections of the AgileX manual. 4. Hands-on with a signed-off member: press and restart the E-stop with the arm at rest, the wrist LED states, the "workspace clear" handshake, the §C lockout, and the emergency steps |
 | Remote operator | Everything above, plus the "arm Pi" section of [`CLAUDE.md`](../../CLAUDE.md), stopping a job, cancelling an Actions run, and the read-only status check |
-| Refresher | Whenever this SOP changes, and at least every other year (§7, §8 of the plan) |
+| Refresher | Whenever this SOP changes, and at each review of it, at least every other year (§7 of the plan sets that interval for the SOP; the refresher interval is proposed) |
 
 **Sign-off.** I have read this SOP and the hazard analysis, had the hands-on training, and agree
 to follow them.

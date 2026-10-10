@@ -27,7 +27,7 @@ The plan asks for at least these four roles. One person can fill more than one.
 **Job:** running the AgileX PiPER cell at spot D, in person and remotely.
 
 **The cell:**
-- **Arm.** An AgileX PiPER 6-axis arm with its parallel gripper and a wrist camera. The reseller
+- **Arm.** An AgileX PiPER 6-axis arm with its parallel gripper (a wrist camera is planned, PR #10). The reseller
   listing gives a 626 mm reach, a 1.5 kg rated payload and a 4.2 kg arm weight
   ([OpenELAB](https://openelab.io/products/agilex-piper-ros-ai-arm)). The listing doesn't say
   whether the 626 mm includes the gripper `[unverified]`, and the fingertips sit about 150 mm
@@ -46,15 +46,17 @@ The plan asks for at least these four roles. One person can fill more than one.
 - **Enclosure and fixtures.** A canvas quarter dome on a PVC frame, with a front flap that rolls
   up and no interlock. There is also a pick-up shelf behind or beside the arm, and a side camera
   fixed on the table.
-- **Neighbors.** The rePowder atomizer's high-voltage transformer stands near the pick-up shelf
+- **Neighbors.** The rePowder atomizer's high-voltage transformer stands near the pick-up shelf,
+  according to #22. #2 places it "in between the wall, pillar, atomizer clean room, and the path
+  of the swinging door"
   ([#2](https://github.com/vertical-cloud-lab/robot-arms/issues/2#issuecomment-6089392188)).
 
 **The next block.** The reliability campaign in
 [#21](https://github.com/vertical-cloud-lab/robot-arms/issues/21) loads a CubXL with vial
-carriers and single vials. It runs at least 300 trials per task and condition, scripted or
-agent-driven, and a person at the arm resets the scene between trials. That means people will
-reach into the cell hundreds of times while the arm is powered and remotely startable. This JHA
-is written around that pattern.
+carriers and single vials. It runs at least 300 trials per task and condition, and its protocol
+includes a checklist for the person at the arm. #21 doesn't settle whether trials run from
+scripts or an agent, or how the scene is reset. This JHA assumes the worst case: a person reaches
+in to reset the scene hundreds of times while the arm is powered and can be started remotely.
 
 **What's in place today, and what isn't:**
 
@@ -92,17 +94,17 @@ Appendix A categories are in brackets. "Abnormal" means the hazard needs somethi
 
 | ID | Tasks | Hazard and how it happens | Normal / abnormal |
 |---|---|---|---|
-| H1 | T2, T3, T4 | **Gripper pinch** [crushing, laceration]. A hand at the fingers while they close, during a run, a test or a reset. The tape script sets effort up to 5 N·m, but I don't know what fingertip force that gives `[unverified]` | Normal |
-| H2 | T2, T3, T4, T5 | **Elbow and link pinch** [crushing, amputation of a fingertip]. The forearm folds onto the upper arm at rest. The wrist settles onto the J2 motor when the motors switch off, dropping about 10 mm in about 50 ms ([#19](https://github.com/vertical-cloud-lab/robot-arms/issues/19#issuecomment-6092030025)). Links can also close against the table, the shelf, the dome frame or the CubXL. The parked elbow sweeps about 317 mm behind the base, which leaves about 33 mm to the shelf in the design model `[unverified]`. The shelf was then to be cut down, and the as-built gap isn't recorded ([#2](https://github.com/vertical-cloud-lab/robot-arms/issues/2#issuecomment-6089393358)) | Normal |
+| H1 | T2, T3, T4 | **Gripper pinch** [crushing, laceration]. A hand at the fingers while they close, during a run, a test or a reset. The gripper's effort range is 0–5 N·m, and the tape script caps it at 3. #19 quotes the spec sheet at 40 N clamping and 50 N max `[unverified]`, and how effort maps to fingertip force isn't known `[unverified]` | Normal |
+| H2 | T2, T3, T4, T5 | **Elbow and link pinch** [crushing, amputation of a fingertip]. The forearm folds onto the upper arm at rest. The wrist settles onto the J2 motor when the motors switch off, dropping about 10 mm in about 50 ms ([#19](https://github.com/vertical-cloud-lab/robot-arms/issues/19#issuecomment-6092030025)). Links can also close against the table, the shelf, the dome frame or the CubXL. The parked elbow sits about 282 mm behind the base. If J1 turns while the arm is folded, it sweeps about 317 mm, which leaves about 33 mm to the shelf in the design model `[unverified]` ([#2](https://github.com/vertical-cloud-lab/robot-arms/issues/2#issuecomment-6089393358)). The shelf was then to be cut shorter, and the as-built gap isn't recorded ([#2](https://github.com/vertical-cloud-lab/robot-arms/issues/2#issuecomment-6089393590)) | Normal |
 | H3 | T2, T3, T4 | **Strike by the moving arm** [impact injury]. The J1 swing, the elbow rising up and back, or a fingertip at face height. Eyes are the worst case. One MOVE J speed percent is about 1.67°/s, so the scripts' 10–20% is about 17–33°/s (arm notes on the PR #20 branch). Full speed would be about 167°/s, an extrapolation `[unverified]`. Playback speed isn't known `[unverified]` | Normal |
 | H4 | T2, T3 | **Remote or agent motion while someone is in the reach** [impact, crushing]. Anything on the Pi can enable the motors in about 0.1 s ([#18](https://github.com/vertical-cloud-lab/robot-arms/issues/18#issuecomment-6091246658)). The "workspace clear" rule is a statement, not a lock. The side camera can't see depth, and one frame in #15 showed a person beside the table when a run had been requested | Abnormal |
 | H5 | T4, and any time the arm is powered | **The teach button replays a stored path** [impact, crushing]. Two presses on the wrist button start playback whenever the arm has power, with or without the Pi. Playback "will not stop for obstacle including people" and has dented plywood ([#7](https://github.com/vertical-cloud-lab/robot-arms/issues/7#issuecomment-6089393334)). Nobody knows whether a recording survives a power cycle, so assume it does ([#18](https://github.com/vertical-cloud-lab/robot-arms/issues/18#issuecomment-6091777194)) | Abnormal |
-| H6 | T1, T5 | **Power loss drops a raised arm** [crushing, impact]. With power cut by the E-stop, an outage, a pulled plug or a tripped breaker, the motors go limp and the arm falls onto whatever is under it. Software can do the same: a disable, or the SDK reset `MotionCtrl_1(0x02, 0, 0)` ([piper_sdk#20](https://github.com/agilexrobotics/piper_sdk/issues/20)). On firmware older than S-V1.8-5, the ROS driver's exit from teach mode restarts the arm and it can fall ([#5](https://github.com/vertical-cloud-lab/robot-arms/issues/5#issuecomment-6089392622)). This arm runs S-V1.8-1 (arm notes on the PR #20 branch) | Abnormal |
+| H6 | T1, T5 | **Power loss drops a raised arm** [crushing, impact]. With power cut by the E-stop, an outage, a pulled plug or a tripped breaker, the motors go limp and the arm falls onto whatever is under it. AgileX's manual §8 warns it "may drop abruptly" (quoted in #18) `[unverified]`. Software can do the same: a disable, or the SDK reset `MotionCtrl_1(0x02, 0, 0)`, which made the arm "drop immediately" for the user who reported it in [piper_sdk#20](https://github.com/agilexrobotics/piper_sdk/issues/20). On firmware older than S-V1.8-5, the ROS driver's exit from teach mode restarts the arm and it can fall ([#5](https://github.com/vertical-cloud-lab/robot-arms/issues/5#issuecomment-6089392622)). This arm runs S-V1.8-1 (arm notes on the PR #20 branch) | Abnormal |
 | H7 | T1, T5 | **The arm re-energizes after an outage** [crushing]. It comes back stiff in Stand By and holds its pose. It doesn't move, but it's live without anyone having turned it on | Abnormal |
 | H8 | T2–T5 | **No E-stop, so stopping is slow** [makes H1–H5 worse]. Pulling the plug may mean reaching behind the table or past the arm | Normal, today |
-| H9 | T2, T3 | **The canvas dome has no interlock** [impact, crushing, fire]. Anyone can lift the flap and reach in during a run, and nothing stops the arm. The canvas hides a moving arm from people outside. The arm can also reach past the walls: about 7% of its reach on the table layout and 14% on the raised deck, where the fingertip can drop 0.26 m below the deck edge. Both are model figures `[unverified]` ([#2](https://github.com/vertical-cloud-lab/robot-arms/issues/2#issuecomment-6089393090)). The arm can snag the canvas. The canvas is a cotton drop cloth with no stated flame rating `[unverified]` and may sit near the 24 V brick | Normal |
-| H10 | T6 | **Atomizer transformer clearance** [shock, electrocution, arc blast, fire]. @jss265 relayed in #2 that, according to @gage-erickson, "nothing can be within 7.5″ of the transformer or above it". That is 190 mm ([#2](https://github.com/vertical-cloud-lab/robot-arms/issues/2#issuecomment-6089392188)). That rule is secondhand, and its written source and the transformer's rating are unknown `[unverified]`. No distances to the shelf, table, dome, cords or arm reach have been measured `[to measure]`. Ways in: loading the shelf by reaching past the transformer, fetching a dropped vial, routing cords along the wall, the dome's canvas hanging over it, the arm's reach | Abnormal |
-| H11 | T1, T7 | **Arm power supply** [shock, fire]. 120 V AC on the cord and the brick's input side. Mains input is "100-240V" per #7 `[unverified]`, and the arm is rated 120 W max (AgileX, quoted in #18) `[unverified]`. The brick could overheat if covered by canvas, a damaged cord could shock, and cords on the floor are a trip hazard. The arm's 24 V side is below the plan's 50 V threshold (§10) | Abnormal |
+| H9 | T2, T3 | **The canvas dome has no interlock** [impact, crushing, burn]. Anyone can lift the flap and reach in during a run, and nothing stops the arm. The canvas hides a moving arm from people outside. The arm can also reach past the walls: about 7% of its reach on the table layout and 14% on the raised deck, where the fingertip can drop 0.26 m below the deck edge. Both are model figures `[unverified]` ([#2](https://github.com/vertical-cloud-lab/robot-arms/issues/2#issuecomment-6089393090)). The arm can snag the canvas. The canvas is a cotton drop cloth with no stated flame rating `[unverified]` and may sit near the 24 V brick | Normal |
+| H10 | T6 | **Atomizer transformer clearance** [shock, electrocution, arc blast, burn]. @jss265 relayed in #2 that, according to @gage-erickson, "nothing can be within 7.5″ of the transformer or above it". That is 190 mm ([#2](https://github.com/vertical-cloud-lab/robot-arms/issues/2#issuecomment-6089392188)). That rule is secondhand, and its written source and the transformer's rating are unknown `[unverified]`. No distances to the shelf, table, dome, cords or arm reach have been measured `[to measure]`. Ways in: loading the shelf by reaching past the transformer, fetching a dropped vial, routing cords along the wall, the dome's canvas hanging over it, the arm's reach | Abnormal |
+| H11 | T1, T7 | **Arm power supply** [shock, burn]. 120 V AC on the cord and the brick's input side. Mains input is "100-240V" per #7 `[unverified]`, and the arm is rated 120 W max (AgileX, quoted in #18) `[unverified]`. The brick could overheat if covered by canvas, a damaged cord could shock, and cords on the floor are a trip hazard. The arm's 24 V side is below the plan's 50 V threshold (§10) | Abnormal |
 | H12 | T2, T3 | **Dropped or crushed vials** [laceration]. A vial slips from the gripper or is crushed in a pocket or the dock. Whether the campaign's vials are glass isn't recorded `[unverified]` | Abnormal |
 | H13 | T3, T7 | **The arm tips or the base shifts** [impact, crushing]. Fast moves or full reach with payload on an unbolted base (see Mounting above) | Abnormal |
 | H14 | T2 | **Excessive reaching** [excessive reaching, repetitive motion]. Loading the shelf over or around the arm, hundreds of times per block. On the raised-deck design the shelf top is about 1.35 m up and 0.96 m in from the front edge (model, [#2](https://github.com/vertical-cloud-lab/robot-arms/issues/2#issuecomment-6089393358)) `[unverified]` | Normal |
@@ -212,8 +214,8 @@ then PPE. Status is **Have**, **Need** (before the block) or **Later**.
 
 **H9 (dome)**
 - Engineering, **Later, recommended:** an interlock on the flap that cuts arm power through the
-  E-stop's circuit, or a rigid, latched front panel. The POWERTEC has no interlock input
-  `[unverified]`, so this may need a different switch.
+  E-stop's circuit, or a rigid, latched front panel. I found no mention of an
+  interlock input on the POWERTEC, so this may need a different switch.
 - Administrative, **Need:** a label on the flap: "Flap down = arm may move. Press the E-stop
   before lifting." Mark the reach that pokes outside the dome. Keep the brick outside the dome
   and off the floor, never under canvas.
@@ -232,8 +234,9 @@ then PPE. Status is **Have**, **Need** (before the block) or **Later**.
 - Engineering, **Need:** a lip on the shelf's transformer side, so items can't roll off toward it.
 
 **H11 (power supply)**
-- Engineering, **Need:** check the brick and cord for an NRTL mark (UL, CSA, ETL), as §10 of the
-  plan expects. The POWERTEC's "approved according to UL508, UL61058-1" isn't a Listed mark
+- Engineering, **Need:** check the brick and cord for an NRTL mark (UL, CSA, ETL). §10 of the plan
+  expects electrical equipment to be "Approved" and "Accepted" per OSHA 1910.399, and a listing
+  mark is the usual way to show that. The POWERTEC's "approved according to UL508, UL61058-1" isn't a Listed mark
   `[unverified]`, so check the label when it arrives. If the College requires a listed device, #18
   names the MAKESafe PTC-V120-P1 instead.
 - Administrative, **Need:** plug only the arm's brick into the E-stop, not the Pi. Inspect the cord
