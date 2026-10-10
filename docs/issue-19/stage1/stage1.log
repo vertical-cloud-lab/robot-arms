@@ -1,0 +1,17 @@
+start joints [   3.99,   -1.96,    2.36,    2.46,   23.43,   53.80]  gripper 3.1 mm
+arm plane J1 = 3.99 deg; tape centre at r = 247 mm, top at z = 49 mm
+fingertip = flange + 150 mm along the tool axis
+home       [   3.99,   -1.96,    2.36,    2.46,   23.43,   53.80]
+pregrasp   [   3.98,   74.24,  -50.69,    0.02,   61.45,   65.53]   fingertips at z = 109 mm
+grasp      [   3.99,   80.97,  -38.09,   -0.00,   42.13,   65.56]   fingertips at z = 34 mm (15 steps of 5.0 mm)
+home -> pregrasp: lowest point z = 109 mm, closest above the roll 60 mm; descent drifts 0.0 mm sideways
+recording /home/vcl/pick_tape_photos/stage1_pregrasp.mjpeg
+enabled
+opening gripper to 65 mm
+  gripper at 64.3 mm
+to pregrasp
+  mark pregrasp at t = 6.6 s of the video
+rising to pregrasp
+returning home
+  NOT reached [   3.99,   -1.96,    2.36,    2.46,   23.43,   53.80] after 20.0 s, at [   3.99,    0.00,    0.00,    2.53,   23.43,   53.77]
+WARNING: not back home, leaving motors enabled so the arm does not drop: [   3.99,    0.00,    0.00,    2.51,   23.43,   53.81]

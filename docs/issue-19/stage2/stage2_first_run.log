@@ -1,0 +1,18 @@
+start joints [   4.05,   -2.04,    2.19,    0.00,   24.28,   63.25]  gripper 3.1 mm
+arm plane J1 = 4.05 deg; tape centre at r = 247 mm, top at z = 49 mm
+fingertip = flange + 150 mm along the tool axis
+home       [   4.05,   -2.04,    2.19,    0.00,   24.28,   63.25]
+pregrasp   [   4.03,   74.23,  -50.68,    0.02,   61.44,   65.53]   fingertips at z = 109 mm
+grasp      [   4.05,   80.97,  -38.09,   -0.00,   42.13,   65.56]   fingertips at z = 34 mm (15 steps of 5.0 mm)
+home -> pregrasp: lowest point z = 109 mm, closest above the roll 60 mm; descent drifts 0.0 mm sideways
+recording /tmp/stage2.mjpeg
+enabled
+opening gripper to 65 mm
+  gripper at 64.3 mm
+to pregrasp
+  mark pregrasp at t = 6.6 s of the video
+descending
+  mark descended at t = 8.7 s of the video
+rising to pregrasp
+returning home
+disabled at home: [   4.05,    0.00,    0.00,    0.00,   24.25,   63.28]

@@ -135,6 +135,35 @@ around it. sudo is password-gated, so feed the password over stdin so it never a
 process list or shell history: `ssh … "sudo -S -p '' <cmd>" <<< "$ARM_PI_PASSWORD"`. Never
 print the hostname or any credential in comments, commits, or logs.
 
+**What is on the Pi.** `piper_sdk` 0.6.2 lives in `~/piper-venv`. The arm scripts in the home
+directory (`piper_status.py`, `piper_up_down.py`, `piper_pick_tape.py`) are copies, and
+`piper_pick_tape.py` is versioned in `scripts/`. The only camera is a Pi Camera Module 3 Wide
+(imx708_wide) on CSI. It is fixed on the table and looks at the arm side-on, so it shows reach
+and height but not depth across the arm plane. Grab a frame with
+`rpicam-still -n -t 1500 -o /tmp/f.jpg`. At rest the arm reads about
+`[4, -2, 2, 1, 23, 64]` deg, not zero: the wrist (J5, J6) sits off zero when the motors are
+disabled. J2 = -2 and J3 = +2 are just outside the joint limits, so a move "back to the start
+joints" never completes; aim for the clamped pose (J2 = J3 = 0) and disable there.
+
+**How the arm moves (firmware S-V1.8-1).** The joint limits live in the joint drivers (read them
+with `SearchMotorMaxAngleSpdAccLimit(m, 0x01)`, a query): J2 is [0, 180] and J3 is [-170, 0],
+so nothing in position mode gets the folded arm closer to its rest. Writing new limits
+(`MotorAngleLimitMaxSpdSet`) goes to driver flash; don't do it without the lab's say-so. One
+MOVE J target runs every joint at about 1.67 deg/s per speed percent, and each joint stops on its
+own when it arrives; the joints are not synchronized. So a MOVE J path is not the joint-space
+line, and a chain of short MOVE J steps stops and restarts each joint at every step (the jerky
+stage-2 descent). For smooth, predictable paths, stream `JointCtrl` targets at 100 Hz along the
+path with the speed cap above the fastest joint's need, as `piper_pick_tape.py` does. The
+gripper reports its opening and motor effort (0.001 N*m) at 200 Hz. `*.log` is gitignored, so
+`git add -f` run logs. Notes on the arm's motion live in issue #19.
+
+**Recording motion.** The Pi 5 has no H.264 encoder and its `rpicam-vid` has no libav, so
+record MJPEG: `rpicam-vid -n -t 0 --width 1536 --height 864 --framerate 20 --codec mjpeg
+--quality 70 --save-pts f.pts -o f.mjpeg` (about 1.2 MB/s; that mode is a centre crop of the
+sensor). The Pi has no ffmpeg; copy the file off with `scp -l 16000` and convert on the
+runner. `piper_pick_tape.py --video PATH` does this for a run, and logs marks in place of
+stills while the camera is busy. Only one process can hold the camera at a time.
+
 **Using the Pi as a proxy.** Some vendor sites (and YouTube's player) block GitHub Actions IP
 ranges; the Pi's residential IP is not blocked. The Pi is on constrained Wi-Fi and may be
 running the arm, so rate-cap transfers (`curl --limit-rate`) and never run speed tests.
