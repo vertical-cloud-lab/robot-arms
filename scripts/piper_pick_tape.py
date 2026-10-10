@@ -319,6 +319,25 @@ def move_to(piper, target_deg, speed, tol_deg, timeout_s):
     return False
 
 
+def settle(piper, target_deg, speed, tcp_mm, tol_deg=0.2, timeout_s=3.0):
+    """Hold the target until the joints are within tol_deg, then log where the fingertips are.
+
+    The descent steps are each smaller than --tol-deg, so stepping along the column does not
+    wait for the arm; without this the bottom is only passed through, not reached.
+    """
+    t0 = time.time()
+    while time.time() - t0 < timeout_s:
+        piper.MotionCtrl_2(0x01, 0x01, speed, 0x00)
+        piper.JointCtrl(*[round(v * MDEG) for v in target_deg])
+        if all(abs(a - b) <= tol_deg for a, b in zip(joints_deg(piper), target_deg)):
+            break
+        time.sleep(0.02)
+    q = joints_deg(piper)
+    P = tip(fk_all(q)[5], tcp_mm)
+    print(f"  settled at {fmt(q)} after {time.time() - t0:.1f} s: fingertips at "
+          f"r = {math.hypot(P[0], P[1]):.0f} mm, z = {P[2]:.0f} mm", flush=True)
+
+
 def set_gripper(piper, width_mm, effort_n, wait_s=2.0):
     width_mm = max(0.0, min(70.0, width_mm))
     t0 = time.time()
@@ -467,6 +486,7 @@ def run(args, piper, p, q_home):
         print("descending", flush=True)
         if not along_column(len(column) - 1):
             return
+        settle(piper, column[-1], args.speed, args.tcp_mm)
         photo(args.photos, "descended")
         if args.until == "descend":
             return
@@ -486,6 +506,7 @@ def run(args, piper, p, q_home):
         print("putting it back", flush=True)
         if not along_column(len(column) - 1):
             return
+        settle(piper, column[-1], args.speed, args.tcp_mm)
         print(f"  gripper at {set_gripper(piper, args.open_mm, args.effort_n):.1f} mm", flush=True)
         photo(args.photos, "released")
     finally:
