@@ -31,14 +31,14 @@ come from #266 and the arithmetic in this file. They are not decisions.
 | F1 | Setting: mock-up v2 or the real CubXL | §3 | Mock-up v2 for E1 and E2, with a short confirmation block on the real CubXL (§13) |
 | F2 | Vials: printed dummies or glass; body OD; mass | §3 | Printed at 100 % infill (≈ 47 g, close to a full vial) |
 | F3 | Carriers A and B: vial load and mass | §3 | Both full of dummies (≈ 0.50–0.63 kg for 8 + 1) |
-| F4 | Dock pocket used by T2; diametral clearance *c* (≤ 1.0 mm); entry chamfer (0 = none) | §3, H1b | Choose *c* and chamfer as built and measure them. Don't design them to the result |
+| F4 | Dock pocket used by T2; diametral clearance *c* (≤ 1.0 mm); entry chamfer (0 = none) | §3, H1b | Fix both before the lock, and record the measured values, not the CAD ones |
 | F5 | Dock datum, cone-pin spacing, pocket distance *r* from the datum | §7 | Datum at the cone pins' midpoint |
 | F6 | Wrist camera and lens; tag family, size, placement; frames per look; reprojection limit; look attempts; correction cap | §5 | `tag36h11`, 20 mm, non-coplanar bundle on the dock sidewalls; cap larger than the biggest injected offset |
 | F7 | How seating is checked; witness camera | §6 | A seat switch or a 0.2 mm feeler at the corners, plus a fixed witness still after every transfer |
 | F8 | Operating speed and velocity profile | §3 | The same in every condition and experiment |
 | F9 | Check delay after release; per-transfer timeout; cap-height tolerance (T2) | §6 | 2 s; 3× the median transfer time; ±0.5 mm |
 | F10–F17 | Predicted values for H1–H4 | §2 | Yours |
-| F18 | *n* loading transfers per task × condition | §7 | 300. Zero failures in 299 is the fewest that certifies 99 % (§12.1) |
+| F18 | *n* loading transfers per task × condition | §7 | 300. 299 transfers with no failures is the fewest that certifies 99 % (§12.1) |
 | F19 | Units per block | §8 | A whole number of permuted sub-blocks |
 | F20 | Second metrology payload | §7 | A dummy mass equal to a full carrier at the carrier's CG |
 | F21 | Metrology warm-up | §7 | 15 min of cycling over P1–P5 |
@@ -131,8 +131,8 @@ recorded for calibration only. They do not enter any decision rule.
   but not tested.
 - **Model-free check.** Supported only if the four ±2 mm translation levels together (80
   trials) also have an exact one-sided 95 % lower bound of at least 0.90, which allows 3
-  failures at most. If success falls monotonically with offset, that alone puts ED90 above
-  2 mm.
+  failures at most. That shows directly that at least 90 % of carriers are still caught
+  2 mm off, averaged over the four directions.
 - **What the offset means.** It is injected on top of the arm's own error. "ED90 > 1.15 mm"
   therefore means the dock still catches 90 % of carriers after the arm has been pushed a
   further 1.15 mm off.
@@ -414,9 +414,9 @@ At 30 s per transfer that is about 48 h of arm time. At 45 s it is about 72 h.
      - cleaning or refocusing the camera.
 
      Swapping in a declared spare ends the block but keeps the configuration.
-   - **These are not changes:** the scripted reset, and restoring the scene after a failure
-     without adjusting anything (re-seating an object, re-homing, a power cycle). These are
-     interventions (§12.4). They are logged, and the block continues.
+   - **These are not changes:** restoring the scene after a failure without adjusting
+     anything (re-seating an object, re-homing, a power cycle). These are interventions
+     (§12.4). They are logged, and the block continues.
 2. **Safety.** A **Critical** or **Catastrophic** event (§10.4) stops the block at once. Make
    the cell safe per the SOP (#22) and record what happened. Resuming always starts a new
    block.
@@ -434,7 +434,8 @@ At 30 s per transfer that is about 48 h of arm time. At 45 s it is about 72 h.
 - (a) An external interruption, such as a person entering the workspace, an alarm or a
   building power cut. The unit is marked *interrupted* and re-queued at the end of the
   schedule.
-- (b) An operator error in the scripted reset. It is marked *operator error*.
+- (b) An operator error while restoring the scene, such as the wrong object or the wrong
+  place. It is marked *operator error*.
 
 Both are logged and counted. If they exceed 5 % of any cell, the report says so up front.
 
@@ -684,7 +685,7 @@ trial.
 | Threat | Effect | Optional extension |
 |---|---|---|
 | **The object confounds the dock contrast.** A carrier vs a vial differs in mass, grasp and fixture at once | Estimand (i) in §1 overstates or understates what the lead-in itself buys | T2 into a chamfered pocket vs the tight one: same vial, OL, *n* = 300. This isolates the lead-in |
-| **The yaw levels saturate for the OL carrier** (§7) | The yaw ED90 is censored below 2° | Add ±0.5° and ±1°, 20 trials each |
+| **The yaw levels saturate for the OL carrier** (§7) | The yaw ED90 is only known to be below 2° | Add ±0.5° and ±1°, 20 trials each |
 | **AT may never fail within ±4 mm** | ED90_AT is censored at > 4 mm | If AT has no failures at ±4 mm on an axis, run ±6 and ±8 mm, 20 trials each, AT only |
 | **A software offset may not equal a physical one** | E2 may misstate real capture | 20 OL carrier trials with the dock shifted +2 mm on a shim, vs the software offset |
 | **Dummies are not glass** | Slip and breakage are not represented | A confirmation block with glass vials on the real CubXL (`F1`), reported separately |
@@ -738,7 +739,7 @@ trial.
 
 ## Appendix A. Checklist for the person at the arm
 
-*Print this page. One per session.* Block ID `______` · cfg `______` · Operator `______` ·
+*Print this page. One sheet per block.* Block ID `______` · cfg `______` · Operator `______` ·
 Date `______`
 
 **Before the first unit**
@@ -758,7 +759,7 @@ Date `______`
 - [ ] Hands out of the workspace before you press go.
 - [ ] Don't touch anything during a transfer unless you're stopping it for safety. A stop is
       an intervention and a failure.
-- [ ] At each check, score the leg against the success card (§6). On a failure, record the
+- [ ] At each check, score the leg against the success criteria (§6). On a failure, record the
       category, subtype, severity and one line on what you saw.
 
 **After a failure**
@@ -766,7 +767,7 @@ Date `______`
 | Severity | What to do |
 |---|---|
 | Minor | Log it and continue |
-| Recoverable | Log the intervention. Restore the scene exactly as the reset card says, adjust nothing, and continue |
+| Recoverable | Log the intervention. Put the objects back where the schedule expects them, adjust nothing, and continue |
 | Critical | **Stop the block.** Make it safe and log it. Anything you fix makes a new configuration |
 | Catastrophic | **E-stop.** Make safe per the SOP, stop the campaign, and call `F27` before doing anything else |
 
@@ -777,7 +778,7 @@ Date `______`
   block. End the block first.
 - Skip, reorder or rerun a unit. The one exception is an *interrupted* unit, which goes to the
   end of the schedule.
-- Stop or carry on because of how the numbers look.
+- Stop early, or add units, because of how the numbers look.
 
 **End of session**
 - [ ] Stop between units. Park the arm, using the softer park from #20.
