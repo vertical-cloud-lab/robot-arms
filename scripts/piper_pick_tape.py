@@ -659,6 +659,7 @@ def run(args, piper, p, q_home):
     line = p["line"]
     n = len(line) - 1
     at = None  # position on the line (0 = pregrasp, n = grasp; fractional mid-stream)
+    gripping = False  # the fingers have closed on the roll and not opened since
 
     def along_line(to, check=None):
         """Stream along the vertical line from where the arm is on it to index to."""
@@ -708,20 +709,17 @@ def run(args, piper, p, q_home):
             return
         print(f"closing with {args.grip_nm:.2f} N*m", flush=True)
         TRACE["phase"] = "close"
+        gripping = True
         w, e = close_on(piper, args.grip_nm)
         print(f"  fingers stopped at {w:.1f} mm, holding {e:.2f} N*m", flush=True)
         photo(args.photos, "closed")
         if w < 3.0 or e < args.min_grip_nm:
             print("  closed on nothing: not lifting" if w < 3.0 else
                   f"  grip under {args.min_grip_nm:.2f} N*m: not lifting", flush=True)
-            set_gripper(piper, args.open_mm, args.grip_nm)
             return
         print("lifting to pregrasp height", flush=True)
         check = holding(w)
         if along_line(0, check) is False:
-            print("  putting it back", flush=True)
-            along_line(n)
-            set_gripper(piper, args.open_mm, args.grip_nm)
             return
         print(f"  holding at {gripper_mm(piper):.1f} mm, {gripper_nm(piper):.2f} N*m", flush=True)
         photo(args.photos, "lifted")
@@ -734,8 +732,15 @@ def run(args, piper, p, q_home):
         log_tip(piper, args.tcp_mm, "settled at")
         TRACE["phase"] = "release"
         print(f"  gripper at {set_gripper(piper, args.open_mm, args.grip_nm):.1f} mm", flush=True)
+        gripping = False
         photo(args.photos, "released")
     finally:
+        if gripping:  # a failed grip, a slip or an interruption: set the roll down and let go
+            if at < n:
+                print("putting the roll back down", flush=True)
+                along_line(n)
+            print(f"  gripper at {set_gripper(piper, args.open_mm, args.grip_nm):.1f} mm",
+                  flush=True)
         if at is not None and at > 0:
             print("rising to pregrasp", flush=True)
             along_line(0)
