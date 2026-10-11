@@ -135,6 +135,35 @@ around it. sudo is password-gated, so feed the password over stdin so it never a
 process list or shell history: `ssh … "sudo -S -p '' <cmd>" <<< "$ARM_PI_PASSWORD"`. Never
 print the hostname or any credential in comments, commits, or logs.
 
+**What is on the Pi (as of 2026-10-09, issue #15).** Debian 13 (trixie), Python 3.13, an
+IMX708 wide camera (`rpicam-still`/`rpicam-vid`), and a gs_usb USB-CAN adapter that appears
+as `can0`. Nothing brings `can0` up at boot: it stays down until someone runs
+`sudo ip link set can0 type can bitrate 1000000 && sudo ip link set can0 up`. That command
+enables the CAN bus, so the motion rule above applies to it too. `piper_sdk` and `python-can`
+are installed in a user venv at `~/piper-venv` (Debian's system Python has no pip, so this
+is the only place they live). [`scripts/piper_up_down.py`](scripts/piper_up_down.py) is the
+first motion script. Copy it to the Pi and run it with `~/piper-venv/bin/python`. Without
+`--go` it only reads joint state. The arm's rest pose has the wrist off zero (about J5 22°,
+J6 61°), so the all-joint zero check refuses to start from rest. Use `--hold-wrist` there,
+which moves only J2/J3 and holds the other joints where they are. First motion: 2026-10-09,
+PR #16, `--go --hold-wrist`, 3 cycles of ±25° at 20% speed, each pose reached in 0.8 s.
+To record a run, use `rpicam-vid --codec mjpeg`. The Pi 5 has no H.264 encoder, this build
+has no libav, and the Pi has no ffmpeg, so the default and `--codec libav` both write nothing.
+MJPEG at 1280x720 is about 1.5 MB/s, so copy it off with `scp -l` and convert it on the
+runner (`pip install imageio-ffmpeg` gives a static ffmpeg). Second run, same PR, after the
+team heard the first but saw little: 3 cycles with `--pause-s 1.5 --trace`, filmed. The video
+and trace in `docs/issue-15/` show J2/J3 really reaching ±25°, with the elbow visibly rising.
+`--trace CSV` logs joint angles and J2/J3 motor speed and current at 100 Hz.
+
+**The arm's own protections (read 2026-10-09, PR #16).** [`scripts/piper_status.py`](scripts/piper_status.py)
+prints them and sends only queries. Firmware S-V1.8-1, collision protection at level 1 on all
+six joints (AgileX's default; 0 is off, 8 is the most sensitive). Changing the level with
+`CrashProtectionConfig` writes a setting, so ask first. Never run the SDK demo
+`piper_read_crash_protectation.py` to read it: despite the name it first sets every joint to 0.
+Per AgileX, an overloaded joint has its current cut so the motor does not burn out, and a
+tripped, disabled or reset joint goes limp. There are no brakes, so a raised arm drops.
+`piper_up_down.py` reads no fault flags during a move.
+
 **Using the Pi as a proxy.** Some vendor sites (and YouTube's player) block GitHub Actions IP
 ranges; the Pi's residential IP is not blocked. The Pi is on constrained Wi-Fi and may be
 running the arm, so rate-cap transfers (`curl --limit-rate`) and never run speed tests.
