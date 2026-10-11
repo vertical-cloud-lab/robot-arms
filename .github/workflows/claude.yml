@@ -74,6 +74,9 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       EDISON_PLATFORM_API_KEY: ${{ secrets.EDISON_PLATFORM_API_KEY }}
+      # Read-only access to the sgbaird/agent-staging drop box, for files staged
+      # from other repos (see CLAUDE.md, "Receiving files from other repos").
+      GH_READ_PAT_STAGING: ${{ secrets.GH_READ_PAT_STAGING }}
       # The Pi that drives the AgileX PiPER arm. Password is its sudo password.
       # Username and hostname are repo *variables*, not secrets: a 3-character
       # secret is masked everywhere it appears as a substring (byu-vcl's logs
