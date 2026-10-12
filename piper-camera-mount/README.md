@@ -172,6 +172,18 @@ The pictures use the thin-lens blur and f/8 of the 6 mm vs 16 mm comparison on
 `claude/issue-239-20261007-2023`. The zoom gets its best case: focused on the target whenever it
 can reach.
 
+**Where the zoom does pay off: a fixed camera.** [`cad/detail_compare.py`](cad/detail_compare.py)
+takes bars 0.2 to 0.0125 mm wide as each camera would at its best (diffraction and pixels only):
+
+![Fine detail: the wrist HQ against a fixed HQ with the zoom](renders/detail_compare.png)
+
+- **The wrist HQ resolves the 0.1 mm bars and nothing finer, in either mode.** At f/8 diffraction
+  limits it to 0.097 mm, so the 4056 x 3040 mode's smaller pixels don't add detail.
+- **The zoom at 50 mm, 250 mm away at f/4, resolves the 0.025 mm bars, and the 0.0125 mm ones
+  only just.** A pixel there covers 0.012 mm.
+- **Its depth of field is only about 1 mm**, which suits a camera that stays put while the arm
+  brings each object to the same spot, as on the OT-2.
+
 ### Tight spaces
 
 ![Tight spaces](renders/tight_spaces.png)
@@ -791,6 +803,7 @@ python piper_mount.py                                                # checks + 
 xvfb-run -a -s "-screen 0 1920x1080x24" python render.py            # renders/*.png
 xvfb-run -a -s "-screen 0 1920x1080x24" python fiducials.py         # renders/view_*.png, exports/fiducials/
 xvfb-run -a -s "-screen 0 1920x1080x24" python wrist_zoom.py        # renders/wrist_zoom.gif: the OT-2's zoom on the wrist (~2 min)
+python detail_compare.py                                             # renders/detail_compare.png: fine detail, wrist vs a fixed zoom
 python envelope.py                                                   # renders/tight_spaces.png
 python fastener_fit.py                                               # exports/fastener_fit.json: screw lengths, heads, tool room (about 15 min)
 xvfb-run -a -s "-screen 0 1920x1080x24" python animate.py           # renders/assembly_steps.gif (gifsicle shrinks it)
