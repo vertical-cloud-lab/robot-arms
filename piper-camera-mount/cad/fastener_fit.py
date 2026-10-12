@@ -129,7 +129,7 @@ def views(p: Params) -> dict[str, cq.Shape]:
 
 def obstacles(p: Params, parts: dict[str, cq.Workplane]) -> dict[str, cq.Shape]:
     names = ("bracket", "pod", "carrier", "pi_spacers", "pi5", "hq_pcb", "hq_mount", "hq_lens",
-             "cm_pcb", "cm_module")
+             "hq_lens_screws", "cm_pcb", "cm_module")
     obs = {n: parts[n].val() for n in names}
     obs["gripper body"] = reference.gripper()["body"].val()
     for opening, tag in ((0.0, "closed"), (100.0, "fully open")):

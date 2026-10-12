@@ -11,8 +11,8 @@ a GIF in three parts:
   3. the 6 mm back on, and the gripper moved toward a label instead of zooming in on it.
 
 The pictures are fiducials.py's (pinhole at the lens front, 2028 x 1520, OpenCV's AprilTag
-detector), blurred for depth of field and diffraction the way lens_compare.py on
-claude/issue-239-20261007-2023 does (thin lens, f/8). The 6 mm is focused 108 mm out, as the
+detector), blurred for depth of field and diffraction the way lens_compare.py does (thin lens,
+f/8). The 6 mm is focused 108 mm out, as the
 README says to set it. The zoom is treated as a thin lens of whatever focal length it is set to,
 focused on the target if it can get that close: its own focus stops at 0.2 m (Waveshare's minimum
 object distance), and the HQ's back-focus ring can add about 4.9 mm more (its range is 12.5 to
@@ -39,7 +39,8 @@ from PIL import Image, ImageDraw, ImageFont
 
 import reference
 from fiducials import FINGER_IDS, SIZE, TARGET_ID, TARGET_SIZE, detect, detector, scene_tags, tag_image, tag_quad, vec
-from piper_mount import (COLORS, FINGERTIP_Y, IMX477, Params, build, cyl_z, gap, hq_fov, hq_place, optical_axes,
+from lenses import Lens, lens_body_local
+from piper_mount import (COLORS, FINGERTIP_Y, IMX477, Params, build, gap, hq_fov, hq_place, optical_axes,
                          overlap, place_tag_wedges, station_vec)
 from render import ALU, DARK, PAD, mesh
 
@@ -115,22 +116,28 @@ def defocus(img: np.ndarray, z: np.ndarray, f: float, n: float, focus_mm: float)
 
 # --- the two lenses on the same camera -----------------------------------------------------------
 
+def zoom_lens(f: float) -> Lens:
+    """The zoom set to f, in lenses.py's terms: the C-CS adapter, the iris ring, then the zoom and
+    focus barrel. Only what the camera's placement, view and solid need is filled in; its
+    thumbscrews aren't modelled."""
+    front = ADAPTER + ZOOM_LEN - ZOOM_THREAD
+    return Lens(key="zoom", name="Waveshare 8-50 mm zoom (C mount)", f=f, mount="C", od=ZOOM_OD,
+                length=ZOOM_LEN, thread=ZOOM_THREAD, mass_g=ZOOM_MASS, fov_hq_deg=None, f_numbers=(1.4, None),
+                mod_m=ZOOM_MOD / 1000, rated_mp=None, image_format=None, price_usd=None,
+                profile=((0.0, ADAPTER, 31.0), (ADAPTER, 16.0, 34.0), (16.0, front, ZOOM_OD)),
+                screws=(), screw_tip_r=0.0, glass_d=30.0, adapter=ADAPTER)
+
+
 def zoom_params(p6: Params, f: float) -> Params:
     """The zoom on the 6 mm's camera: the camera stays put, the lens front moves out."""
-    length = ADAPTER + ZOOM_LEN
-    front = station_vec(p6, 0, -(p6.hq_cs_seat + length - ZOOM_THREAD), 0)
-    return dataclasses.replace(p6, lens_od=ZOOM_OD, lens_len=length, lens_thread=ZOOM_THREAD, lens_f=f,
-                               hq_front_x=front.x, hq_front_y=front.y)
+    zoom = zoom_lens(f)
+    front = station_vec(p6, 0, -(p6.hq_cs_seat + zoom.front_s), 0)
+    return dataclasses.replace(p6, lens=zoom, hq_front_x=front.x, hq_front_y=front.y)
 
 
 def zoom_body(p: Params) -> cq.Workplane:
     """Adapter, iris ring, then the zoom and focus barrel, in the HQ's frame, placed."""
-    seat, front = -p.hq_cs_seat, -p.hq_cs_seat - (ADAPTER + ZOOM_LEN - ZOOM_THREAD)
-    body = cyl_z(31.0, seat - ADAPTER, seat)
-    body = body.union(cyl_z(34.0, seat - 16.0, seat - ADAPTER))
-    body = body.union(cyl_z(ZOOM_OD, front, seat - 16.0))
-    body = body.cut(cyl_z(30.0, front - 1.0, front + 2.5))
-    return hq_place(p)(body)
+    return hq_place(p)(lens_body_local(p.lens_spec, -p.hq_cs_seat))
 
 
 def depth(p: Params, pt) -> float:
@@ -177,6 +184,7 @@ class World:
         self.mount = [(mesh(self.parts[n]), COLORS[n]) for n in names]
         self.mount.append((mesh(place_tag_wedges(p6, OPENING)), COLORS["tag_wedge"]))
         self.six = mesh(self.parts["hq_lens"])
+        self.six_screws = mesh(self.parts["hq_lens_screws"])
         pz = zoom_params(p6, 8.0)
         self.zoom_solid = zoom_body(pz)
         self.zoom = mesh(self.zoom_solid)
@@ -186,6 +194,8 @@ class World:
             "zoom vs pod (mm3)": round(overlap(self.zoom_solid, self.parts["pod"]), 1),
             "zoom vs gripper body (mm3)": round(overlap(self.zoom_solid, g["body"]), 1),
             "6 mm lens vs bracket (mm3)": round(overlap(self.parts["hq_lens"], self.parts["bracket"]), 1),
+            "6 mm lens thumbscrews vs bracket (mm3)": round(overlap(self.parts["hq_lens_screws"],
+                                                                    self.parts["bracket"]), 1),
             "zoom to the fingers, fully open (mm)": round(gap(self.zoom_solid, reference.gripper(100.0)["fingers"]), 2),
         }
         clash = []
@@ -285,6 +295,7 @@ def cad_view(p: Params, w: World, lens: str, scene: str, dist: float, size=(1000
             pl.add_mesh(c, color=(0.92, 0.06, 0.06))
     else:
         pl.add_mesh(w.six.translate(mv, inplace=False), color=(0.10, 0.10, 0.11), smooth_shading=False)
+        pl.add_mesh(w.six_screws.translate(mv, inplace=False), color=COLORS["hq_lens_screws"], smooth_shading=False)
     if scene == "target":
         card_y = FINGERTIP_Y - dist
         pl.add_mesh(pv.Plane(center=(p.ax_x, card_y - 0.3, p.ax_z), direction=(0, 1, 0), i_size=60, j_size=60),
