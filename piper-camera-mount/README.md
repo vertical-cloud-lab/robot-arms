@@ -413,8 +413,8 @@ CLI, the same way as #234 and #238, and writes
   1.6 g of PLA off the bracket.
 - **The bracket alone,** to fix the PLA set printed on 2026-10-08 (its bracket has the old O33
   cradle): **1 h 19 min and 36.2 g** on the A1 mini, with the same settings
-  ([`slice/slice_configs.json`](slice/slice_configs.json), `a1m_pla_04`, plate 2). Nothing else
-  needs reprinting.
+  ([`slice/slice_configs.json`](slice/slice_configs.json), `a1m_pla_04`, plate 2). Open the plate in
+  Bambu Studio and delete everything but the bracket. Nothing else needs reprinting.
 - **No supports.** Supports are off, and Bambu's own support check flags none of the six objects.
   There are no slicer warnings and no toolpaths off the bed.
 - **Overhangs** (`slice/overhangs.json`): the only faces steeper than 45 degrees are the roofs of

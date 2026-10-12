@@ -653,7 +653,7 @@
         "socket (ISO 4762)": {
           "min_gap_mm": 0.0,
           "runs_into": {
-            "bracket": 7.59
+            "bracket": 3.488
           },
           "radial_room_in_counterbore_mm": 0.25,
           "may_not_drop_in_as_printed": false
@@ -667,7 +667,7 @@
         "Phillips pan (DIN 7985)": {
           "min_gap_mm": 0.0,
           "runs_into": {
-            "bracket": 0.178
+            "bracket": 0.086
           },
           "radial_room_in_counterbore_mm": 0.0,
           "may_not_drop_in_as_printed": true
@@ -675,7 +675,7 @@
         "Phillips pan (McMaster 92000A)": {
           "min_gap_mm": 0.0,
           "runs_into": {
-            "bracket": 0.178
+            "bracket": 0.086
           },
           "radial_room_in_counterbore_mm": 0.0,
           "may_not_drop_in_as_printed": true
@@ -814,7 +814,7 @@
         "socket (ISO 4762)": {
           "min_gap_mm": 0.0,
           "runs_into": {
-            "bracket": 0.111
+            "bracket": 0.047
           },
           "radial_room_in_counterbore_mm": 0.6,
           "may_not_drop_in_as_printed": false
