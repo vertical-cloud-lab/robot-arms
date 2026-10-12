@@ -147,6 +147,31 @@ The pictures are ideal (no blur, noise or distortion), so these show geometry, n
 accuracy. [`exports/fiducials/tags.pdf`](exports/fiducials/tags.pdf) is the tags at exact size;
 print it at 100 %.
 
+### Why not the OT-2's 8-50 mm zoom?
+
+![The OT-2's zoom on the wrist, against the 6 mm](renders/wrist_zoom.gif)
+
+The OT-2's HQ has a Waveshare 8-50 mm C-mount zoom (O40 x 68.3 mm, 148 g, 0.2 m minimum object
+distance). [`cad/wrist_zoom.py`](cad/wrist_zoom.py) screws it into the same camera on the pod and
+turns it from 8 to 50 mm ([`exports/wrist_zoom.json`](exports/wrist_zoom.json)):
+
+- **The finger tags are never in its picture**, at any opening. With its adapter the lens front
+  sits 39 mm further forward, 52 mm behind the fingertips instead of 90, and at 8 mm it sees 43
+  degrees across, not 55.
+- **The target no longer fits past 12 mm.** From 32 mm the zoom can't focus on it at all: its own
+  focus stops at 0.2 m, and the HQ's back-focus ring only brings that in to about 126 mm at 32 mm
+  and 166 mm at 50 mm (thin lens). The target is 121 mm away.
+- **It doesn't fit.** It cuts 1910 mm³ into the bracket and 257 mm³ into the finger plate, and it is
+  2.8 times the 6 mm's mass.
+- **Moving the arm gets the pixels instead.** Bringing the 6 mm from 400 to 108 mm from a label, its
+  sharpest distance, takes it from 5 to 18 px/mm. The 1 mm text becomes readable, and the finger
+  tags stay in view. Finer detail than the 6 mm's 0.1 mm at f/8 is a job for a fixed camera like
+  the OT-2's, with the arm bringing the object to it.
+
+The pictures use the thin-lens blur and f/8 of the 6 mm vs 16 mm comparison on
+`claude/issue-239-20261007-2023`. The zoom gets its best case: focused on the target whenever it
+can reach.
+
 ### Tight spaces
 
 ![Tight spaces](renders/tight_spaces.png)
@@ -765,6 +790,7 @@ cd cad
 python piper_mount.py                                                # checks + exports/*.step, *.stl
 xvfb-run -a -s "-screen 0 1920x1080x24" python render.py            # renders/*.png
 xvfb-run -a -s "-screen 0 1920x1080x24" python fiducials.py         # renders/view_*.png, exports/fiducials/
+xvfb-run -a -s "-screen 0 1920x1080x24" python wrist_zoom.py        # renders/wrist_zoom.gif: the OT-2's zoom on the wrist (~2 min)
 python envelope.py                                                   # renders/tight_spaces.png
 python fastener_fit.py                                               # exports/fastener_fit.json: screw lengths, heads, tool room (about 15 min)
 xvfb-run -a -s "-screen 0 1920x1080x24" python animate.py           # renders/assembly_steps.gif (gifsicle shrinks it)

@@ -1,0 +1,1395 @@
+{
+ "lenses": {
+  "6 mm": {
+   "od x length (mm)": [
+    30.0,
+    34.0
+   ],
+   "mass (g)": 53.0,
+   "f-number": 8.0,
+   "focused at (mm)": 108.0
+  },
+  "Waveshare 8-50 mm zoom": {
+   "od x length (mm)": [
+    40.0,
+    68.3
+   ],
+   "C-CS adapter (mm)": 5.0,
+   "mass (g)": 148.0,
+   "minimum object distance (mm)": 200.0,
+   "f-number": 8.0
+  }
+ },
+ "fit": {
+  "zoom vs bracket (mm3)": 1909.5,
+  "zoom vs pod (mm3)": 0.0,
+  "zoom vs gripper body (mm3)": 256.7,
+  "6 mm lens vs bracket (mm3)": 0.0,
+  "zoom to the fingers, fully open (mm)": 37.31
+ },
+ "captions": {
+  "1": [
+   "Both finger tags and a 20 mm target 60 mm past the tips in one picture, all found by the AprilTag detector.",
+   "Simulated from the CAD: fingers 40 mm apart, f/8, focused 108 mm out. The target is 225 px across."
+  ],
+  "2": [
+   "Even at 8 mm the fingers are out of the picture: the zoom's front is 39 mm further forward, and it sees 43 degrees across, not 55.",
+   "The target no longer fits past 12 mm, and from 32 mm the zoom can't focus that close. It's also 2.8 times heavier, and cuts into the bracket."
+  ],
+  "3": [
+   "Moving the lens from 400 to 108 mm does what zooming would: 5 to 18 px/mm, and into the 6 mm's sharpest distance.",
+   "Nothing on the camera changes, so its one calibration still holds, and the fingers stay in view."
+  ]
+ },
+ "frames": [
+  {
+   "lens": "6 mm",
+   "focal length (mm)": 6.0,
+   "field of view (deg, across x up)": [
+    55.3,
+    42.9
+   ],
+   "lens front behind the fingertips (mm)": 89.5,
+   "scene": "target",
+   "target past the fingertips (mm)": 60.0,
+   "card distance along the axis (mm)": 160.6,
+   "focused at (mm)": 108.0,
+   "closest focus (mm)": null,
+   "blur on the card, defocus only (px)": 4.7,
+   "blur on the card, defocus and diffraction (px)": 5.9,
+   "px per mm on the card": 12.1,
+   "wholly in the picture": {
+    "upper finger": true,
+    "lower finger": true,
+    "target": true
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 106.5,
+    "lower finger": 105.2,
+    "target": 224.6
+   },
+   "finger tags detected": [
+    "upper",
+    "lower"
+   ],
+   "finger tag edge (px)": [
+    105.4,
+    104.3
+   ],
+   "target detected": true,
+   "target edge (px)": 224.7
+  },
+  {
+   "lens": "Waveshare 8-50 mm zoom",
+   "focal length (mm)": 8.0,
+   "field of view (deg, across x up)": [
+    42.9,
+    32.8
+   ],
+   "lens front behind the fingertips (mm)": 51.9,
+   "scene": "target",
+   "target past the fingertips (mm)": 60.0,
+   "card distance along the axis (mm)": 121.3,
+   "focused at (mm)": 121.3,
+   "closest focus (mm)": 20.3,
+   "blur on the card, defocus only (px)": 0.0,
+   "blur on the card, defocus and diffraction (px)": 3.7,
+   "px per mm on the card": 21.3,
+   "wholly in the picture": {
+    "upper finger": false,
+    "lower finger": false,
+    "target": true
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 344.6,
+    "lower finger": 334.7,
+    "target": 393.3
+   },
+   "finger tags detected": [],
+   "finger tag edge (px)": [],
+   "target detected": true,
+   "target edge (px)": 392.9
+  },
+  {
+   "lens": "Waveshare 8-50 mm zoom",
+   "focal length (mm)": 8.73,
+   "field of view (deg, across x up)": [
+    39.6,
+    30.2
+   ],
+   "lens front behind the fingertips (mm)": 51.9,
+   "scene": "target",
+   "target past the fingertips (mm)": 60.0,
+   "card distance along the axis (mm)": 121.3,
+   "focused at (mm)": 121.3,
+   "closest focus (mm)": 23.2,
+   "blur on the card, defocus only (px)": 0.0,
+   "blur on the card, defocus and diffraction (px)": 3.7,
+   "px per mm on the card": 23.2,
+   "wholly in the picture": {
+    "upper finger": false,
+    "lower finger": false,
+    "target": true
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 376.1,
+    "lower finger": 365.2,
+    "target": 429.2
+   },
+   "finger tags detected": [],
+   "finger tag edge (px)": [],
+   "target detected": true,
+   "target edge (px)": 428.9
+  },
+  {
+   "lens": "Waveshare 8-50 mm zoom",
+   "focal length (mm)": 9.53,
+   "field of view (deg, across x up)": [
+    36.5,
+    27.8
+   ],
+   "lens front behind the fingertips (mm)": 51.9,
+   "scene": "target",
+   "target past the fingertips (mm)": 60.0,
+   "card distance along the axis (mm)": 121.3,
+   "focused at (mm)": 121.3,
+   "closest focus (mm)": 26.5,
+   "blur on the card, defocus only (px)": 0.0,
+   "blur on the card, defocus and diffraction (px)": 3.8,
+   "px per mm on the card": 25.4,
+   "wholly in the picture": {
+    "upper finger": false,
+    "lower finger": false,
+    "target": true
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 410.5,
+    "lower finger": 398.7,
+    "target": 468.5
+   },
+   "finger tags detected": [],
+   "finger tag edge (px)": [],
+   "target detected": true,
+   "target edge (px)": 468.0
+  },
+  {
+   "lens": "Waveshare 8-50 mm zoom",
+   "focal length (mm)": 10.39,
+   "field of view (deg, across x up)": [
+    33.7,
+    25.6
+   ],
+   "lens front behind the fingertips (mm)": 51.9,
+   "scene": "target",
+   "target past the fingertips (mm)": 60.0,
+   "card distance along the axis (mm)": 121.3,
+   "focused at (mm)": 121.3,
+   "closest focus (mm)": 30.2,
+   "blur on the card, defocus only (px)": 0.0,
+   "blur on the card, defocus and diffraction (px)": 3.8,
+   "px per mm on the card": 27.6,
+   "wholly in the picture": {
+    "upper finger": false,
+    "lower finger": false,
+    "target": true
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 447.6,
+    "lower finger": 434.7,
+    "target": 510.8
+   },
+   "finger tags detected": [],
+   "finger tag edge (px)": [],
+   "target detected": true,
+   "target edge (px)": 510.0
+  },
+  {
+   "lens": "Waveshare 8-50 mm zoom",
+   "focal length (mm)": 11.34,
+   "field of view (deg, across x up)": [
+    31.0,
+    23.5
+   ],
+   "lens front behind the fingertips (mm)": 51.9,
+   "scene": "target",
+   "target past the fingertips (mm)": 60.0,
+   "card distance along the axis (mm)": 121.3,
+   "focused at (mm)": 121.3,
+   "closest focus (mm)": 34.5,
+   "blur on the card, defocus only (px)": 0.0,
+   "blur on the card, defocus and diffraction (px)": 3.8,
+   "px per mm on the card": 30.2,
+   "wholly in the picture": {
+    "upper finger": false,
+    "lower finger": false,
+    "target": true
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 488.5,
+    "lower finger": 474.4,
+    "target": 557.5
+   },
+   "finger tags detected": [],
+   "finger tag edge (px)": [],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "Waveshare 8-50 mm zoom",
+   "focal length (mm)": 12.38,
+   "field of view (deg, across x up)": [
+    28.5,
+    21.5
+   ],
+   "lens front behind the fingertips (mm)": 51.9,
+   "scene": "target",
+   "target past the fingertips (mm)": 60.0,
+   "card distance along the axis (mm)": 121.3,
+   "focused at (mm)": 121.3,
+   "closest focus (mm)": 39.3,
+   "blur on the card, defocus only (px)": 0.0,
+   "blur on the card, defocus and diffraction (px)": 3.9,
+   "px per mm on the card": 32.9,
+   "wholly in the picture": {
+    "upper finger": false,
+    "lower finger": false,
+    "target": false
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 533.3,
+    "lower finger": 517.9,
+    "target": 608.6
+   },
+   "finger tags detected": [],
+   "finger tag edge (px)": [],
+   "target detected": true,
+   "target edge (px)": 609.0
+  },
+  {
+   "lens": "Waveshare 8-50 mm zoom",
+   "focal length (mm)": 13.5,
+   "field of view (deg, across x up)": [
+    26.2,
+    19.8
+   ],
+   "lens front behind the fingertips (mm)": 51.9,
+   "scene": "target",
+   "target past the fingertips (mm)": 60.0,
+   "card distance along the axis (mm)": 121.3,
+   "focused at (mm)": 121.3,
+   "closest focus (mm)": 44.6,
+   "blur on the card, defocus only (px)": 0.0,
+   "blur on the card, defocus and diffraction (px)": 3.9,
+   "px per mm on the card": 35.9,
+   "wholly in the picture": {
+    "upper finger": false,
+    "lower finger": false,
+    "target": false
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 581.6,
+    "lower finger": 564.8,
+    "target": 663.7
+   },
+   "finger tags detected": [],
+   "finger tag edge (px)": [],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "Waveshare 8-50 mm zoom",
+   "focal length (mm)": 14.74,
+   "field of view (deg, across x up)": [
+    24.1,
+    18.2
+   ],
+   "lens front behind the fingertips (mm)": 51.9,
+   "scene": "target",
+   "target past the fingertips (mm)": 60.0,
+   "card distance along the axis (mm)": 121.3,
+   "focused at (mm)": 121.3,
+   "closest focus (mm)": 50.7,
+   "blur on the card, defocus only (px)": 0.0,
+   "blur on the card, defocus and diffraction (px)": 3.9,
+   "px per mm on the card": 39.2,
+   "wholly in the picture": {
+    "upper finger": false,
+    "lower finger": false,
+    "target": false
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 635.0,
+    "lower finger": 616.7,
+    "target": 724.7
+   },
+   "finger tags detected": [],
+   "finger tag edge (px)": [],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "Waveshare 8-50 mm zoom",
+   "focal length (mm)": 16.08,
+   "field of view (deg, across x up)": [
+    22.1,
+    16.7
+   ],
+   "lens front behind the fingertips (mm)": 51.9,
+   "scene": "target",
+   "target past the fingertips (mm)": 60.0,
+   "card distance along the axis (mm)": 121.3,
+   "focused at (mm)": 121.3,
+   "closest focus (mm)": 57.3,
+   "blur on the card, defocus only (px)": 0.0,
+   "blur on the card, defocus and diffraction (px)": 4.0,
+   "px per mm on the card": 42.8,
+   "wholly in the picture": {
+    "upper finger": false,
+    "lower finger": false,
+    "target": false
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 692.7,
+    "lower finger": 672.7,
+    "target": 790.5
+   },
+   "finger tags detected": [],
+   "finger tag edge (px)": [],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "Waveshare 8-50 mm zoom",
+   "focal length (mm)": 17.55,
+   "field of view (deg, across x up)": [
+    20.3,
+    15.3
+   ],
+   "lens front behind the fingertips (mm)": 51.9,
+   "scene": "target",
+   "target past the fingertips (mm)": 60.0,
+   "card distance along the axis (mm)": 121.3,
+   "focused at (mm)": 121.3,
+   "closest focus (mm)": 64.5,
+   "blur on the card, defocus only (px)": 0.0,
+   "blur on the card, defocus and diffraction (px)": 4.0,
+   "px per mm on the card": 46.7,
+   "wholly in the picture": {
+    "upper finger": false,
+    "lower finger": false,
+    "target": false
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 756.0,
+    "lower finger": 734.2,
+    "target": 862.8
+   },
+   "finger tags detected": [],
+   "finger tag edge (px)": [],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "Waveshare 8-50 mm zoom",
+   "focal length (mm)": 19.15,
+   "field of view (deg, across x up)": [
+    18.6,
+    14.0
+   ],
+   "lens front behind the fingertips (mm)": 51.9,
+   "scene": "target",
+   "target past the fingertips (mm)": 60.0,
+   "card distance along the axis (mm)": 121.3,
+   "focused at (mm)": 121.3,
+   "closest focus (mm)": 72.3,
+   "blur on the card, defocus only (px)": 0.0,
+   "blur on the card, defocus and diffraction (px)": 4.1,
+   "px per mm on the card": 50.9,
+   "wholly in the picture": {
+    "upper finger": false,
+    "lower finger": false,
+    "target": false
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 825.0,
+    "lower finger": 801.2,
+    "target": 941.5
+   },
+   "finger tags detected": [],
+   "finger tag edge (px)": [],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "Waveshare 8-50 mm zoom",
+   "focal length (mm)": 20.89,
+   "field of view (deg, across x up)": [
+    17.1,
+    12.9
+   ],
+   "lens front behind the fingertips (mm)": 51.9,
+   "scene": "target",
+   "target past the fingertips (mm)": 60.0,
+   "card distance along the axis (mm)": 121.3,
+   "focused at (mm)": 121.3,
+   "closest focus (mm)": 80.6,
+   "blur on the card, defocus only (px)": 0.0,
+   "blur on the card, defocus and diffraction (px)": 4.2,
+   "px per mm on the card": 55.6,
+   "wholly in the picture": {
+    "upper finger": false,
+    "lower finger": false,
+    "target": false
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 899.9,
+    "lower finger": 874.0,
+    "target": 1027.0
+   },
+   "finger tags detected": [],
+   "finger tag edge (px)": [],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "Waveshare 8-50 mm zoom",
+   "focal length (mm)": 22.8,
+   "field of view (deg, across x up)": [
+    15.7,
+    11.8
+   ],
+   "lens front behind the fingertips (mm)": 51.9,
+   "scene": "target",
+   "target past the fingertips (mm)": 60.0,
+   "card distance along the axis (mm)": 121.3,
+   "focused at (mm)": 121.3,
+   "closest focus (mm)": 89.4,
+   "blur on the card, defocus only (px)": 0.0,
+   "blur on the card, defocus and diffraction (px)": 4.3,
+   "px per mm on the card": 60.7,
+   "wholly in the picture": {
+    "upper finger": false,
+    "lower finger": false,
+    "target": false
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 982.2,
+    "lower finger": 953.9,
+    "target": 1120.9
+   },
+   "finger tags detected": [],
+   "finger tag edge (px)": [],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "Waveshare 8-50 mm zoom",
+   "focal length (mm)": 24.88,
+   "field of view (deg, across x up)": [
+    14.4,
+    10.8
+   ],
+   "lens front behind the fingertips (mm)": 51.9,
+   "scene": "target",
+   "target past the fingertips (mm)": 60.0,
+   "card distance along the axis (mm)": 121.3,
+   "focused at (mm)": 121.3,
+   "closest focus (mm)": 98.5,
+   "blur on the card, defocus only (px)": 0.0,
+   "blur on the card, defocus and diffraction (px)": 4.4,
+   "px per mm on the card": 66.2,
+   "wholly in the picture": {
+    "upper finger": false,
+    "lower finger": false,
+    "target": false
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 1071.8,
+    "lower finger": 1040.9,
+    "target": 1223.2
+   },
+   "finger tags detected": [],
+   "finger tag edge (px)": [],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "Waveshare 8-50 mm zoom",
+   "focal length (mm)": 27.14,
+   "field of view (deg, across x up)": [
+    13.2,
+    9.9
+   ],
+   "lens front behind the fingertips (mm)": 51.9,
+   "scene": "target",
+   "target past the fingertips (mm)": 60.0,
+   "card distance along the axis (mm)": 121.3,
+   "focused at (mm)": 121.3,
+   "closest focus (mm)": 107.8,
+   "blur on the card, defocus only (px)": 0.0,
+   "blur on the card, defocus and diffraction (px)": 4.5,
+   "px per mm on the card": 72.2,
+   "wholly in the picture": {
+    "upper finger": false,
+    "lower finger": false,
+    "target": false
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 1169.2,
+    "lower finger": 1135.5,
+    "target": 1334.3
+   },
+   "finger tags detected": [],
+   "finger tag edge (px)": [],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "Waveshare 8-50 mm zoom",
+   "focal length (mm)": 29.62,
+   "field of view (deg, across x up)": [
+    12.1,
+    9.1
+   ],
+   "lens front behind the fingertips (mm)": 51.9,
+   "scene": "target",
+   "target past the fingertips (mm)": 60.0,
+   "card distance along the axis (mm)": 121.3,
+   "focused at (mm)": 121.3,
+   "closest focus (mm)": 117.2,
+   "blur on the card, defocus only (px)": 0.0,
+   "blur on the card, defocus and diffraction (px)": 4.6,
+   "px per mm on the card": 78.8,
+   "wholly in the picture": {
+    "upper finger": false,
+    "lower finger": false,
+    "target": false
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 1276.0,
+    "lower finger": 1239.2,
+    "target": 1456.2
+   },
+   "finger tags detected": [],
+   "finger tag edge (px)": [],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "Waveshare 8-50 mm zoom",
+   "focal length (mm)": 32.32,
+   "field of view (deg, across x up)": [
+    11.1,
+    8.3
+   ],
+   "lens front behind the fingertips (mm)": 51.9,
+   "scene": "target",
+   "target past the fingertips (mm)": 60.0,
+   "card distance along the axis (mm)": 121.3,
+   "focused at (mm)": 126.4,
+   "closest focus (mm)": 126.4,
+   "blur on the card, defocus only (px)": 19.0,
+   "blur on the card, defocus and diffraction (px)": 19.5,
+   "px per mm on the card": 86.0,
+   "wholly in the picture": {
+    "upper finger": false,
+    "lower finger": false,
+    "target": false
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 1392.3,
+    "lower finger": 1352.2,
+    "target": 1589.0
+   },
+   "finger tags detected": [],
+   "finger tag edge (px)": [],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "Waveshare 8-50 mm zoom",
+   "focal length (mm)": 35.27,
+   "field of view (deg, across x up)": [
+    10.2,
+    7.6
+   ],
+   "lens front behind the fingertips (mm)": 51.9,
+   "scene": "target",
+   "target past the fingertips (mm)": 60.0,
+   "card distance along the axis (mm)": 121.3,
+   "focused at (mm)": 135.4,
+   "closest focus (mm)": 135.4,
+   "blur on the card, defocus only (px)": 58.4,
+   "blur on the card, defocus and diffraction (px)": 58.6,
+   "px per mm on the card": 93.8,
+   "wholly in the picture": {
+    "upper finger": false,
+    "lower finger": false,
+    "target": false
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 1519.4,
+    "lower finger": 1475.6,
+    "target": 1734.0
+   },
+   "finger tags detected": [],
+   "finger tag edge (px)": [],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "Waveshare 8-50 mm zoom",
+   "focal length (mm)": 38.48,
+   "field of view (deg, across x up)": [
+    9.3,
+    7.0
+   ],
+   "lens front behind the fingertips (mm)": 51.9,
+   "scene": "target",
+   "target past the fingertips (mm)": 60.0,
+   "card distance along the axis (mm)": 121.3,
+   "focused at (mm)": 143.9,
+   "closest focus (mm)": 143.9,
+   "blur on the card, defocus only (px)": 105.9,
+   "blur on the card, defocus and diffraction (px)": 106.0,
+   "px per mm on the card": 102.4,
+   "wholly in the picture": {
+    "upper finger": false,
+    "lower finger": false,
+    "target": false
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 1657.7,
+    "lower finger": 1609.9,
+    "target": 1891.8
+   },
+   "finger tags detected": [],
+   "finger tag edge (px)": [],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "Waveshare 8-50 mm zoom",
+   "focal length (mm)": 41.99,
+   "field of view (deg, across x up)": [
+    8.6,
+    6.4
+   ],
+   "lens front behind the fingertips (mm)": 51.9,
+   "scene": "target",
+   "target past the fingertips (mm)": 60.0,
+   "card distance along the axis (mm)": 121.3,
+   "focused at (mm)": 152.0,
+   "closest focus (mm)": 152.0,
+   "blur on the card, defocus only (px)": 163.7,
+   "blur on the card, defocus and diffraction (px)": 163.8,
+   "px per mm on the card": 111.7,
+   "wholly in the picture": {
+    "upper finger": false,
+    "lower finger": false,
+    "target": false
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 1808.9,
+    "lower finger": 1756.7,
+    "target": 2064.4
+   },
+   "finger tags detected": [],
+   "finger tag edge (px)": [],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "Waveshare 8-50 mm zoom",
+   "focal length (mm)": 45.82,
+   "field of view (deg, across x up)": [
+    7.8,
+    5.9
+   ],
+   "lens front behind the fingertips (mm)": 51.9,
+   "scene": "target",
+   "target past the fingertips (mm)": 60.0,
+   "card distance along the axis (mm)": 121.3,
+   "focused at (mm)": 159.4,
+   "closest focus (mm)": 159.4,
+   "blur on the card, defocus only (px)": 234.3,
+   "blur on the card, defocus and diffraction (px)": 234.4,
+   "px per mm on the card": 121.9,
+   "wholly in the picture": {
+    "upper finger": false,
+    "lower finger": false,
+    "target": false
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 1973.9,
+    "lower finger": 1917.0,
+    "target": 2252.7
+   },
+   "finger tags detected": [],
+   "finger tag edge (px)": [],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "Waveshare 8-50 mm zoom",
+   "focal length (mm)": 50.0,
+   "field of view (deg, across x up)": [
+    7.2,
+    5.4
+   ],
+   "lens front behind the fingertips (mm)": 51.9,
+   "scene": "target",
+   "target past the fingertips (mm)": 60.0,
+   "card distance along the axis (mm)": 121.3,
+   "focused at (mm)": 166.1,
+   "closest focus (mm)": 166.1,
+   "blur on the card, defocus only (px)": 320.9,
+   "blur on the card, defocus and diffraction (px)": 321.0,
+   "px per mm on the card": 133.0,
+   "wholly in the picture": {
+    "upper finger": false,
+    "lower finger": false,
+    "target": false
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 2153.9,
+    "lower finger": 2091.8,
+    "target": 2458.2
+   },
+   "finger tags detected": [],
+   "finger tag edge (px)": [],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "6 mm",
+   "focal length (mm)": 6.0,
+   "field of view (deg, across x up)": [
+    55.3,
+    42.9
+   ],
+   "lens front behind the fingertips (mm)": 89.5,
+   "scene": "label",
+   "label in front of the lens (mm)": 400.0,
+   "card distance along the axis (mm)": 400.0,
+   "focused at (mm)": 108.0,
+   "closest focus (mm)": null,
+   "blur on the card, defocus only (px)": 10.4,
+   "blur on the card, defocus and diffraction (px)": 11.0,
+   "px per mm on the card": 4.8,
+   "wholly in the picture": {
+    "upper finger": true,
+    "lower finger": true
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 106.5,
+    "lower finger": 105.2
+   },
+   "finger tags detected": [
+    "upper",
+    "lower"
+   ],
+   "finger tag edge (px)": [
+    105.4,
+    104.3
+   ],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "6 mm",
+   "focal length (mm)": 6.0,
+   "field of view (deg, across x up)": [
+    55.3,
+    42.9
+   ],
+   "lens front behind the fingertips (mm)": 89.5,
+   "scene": "label",
+   "label in front of the lens (mm)": 397.5,
+   "card distance along the axis (mm)": 397.5,
+   "focused at (mm)": 108.0,
+   "closest focus (mm)": null,
+   "blur on the card, defocus only (px)": 10.4,
+   "blur on the card, defocus and diffraction (px)": 11.0,
+   "px per mm on the card": 4.9,
+   "wholly in the picture": {
+    "upper finger": true,
+    "lower finger": true
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 106.5,
+    "lower finger": 105.2
+   },
+   "finger tags detected": [
+    "upper",
+    "lower"
+   ],
+   "finger tag edge (px)": [
+    105.4,
+    104.3
+   ],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "6 mm",
+   "focal length (mm)": 6.0,
+   "field of view (deg, across x up)": [
+    55.3,
+    42.9
+   ],
+   "lens front behind the fingertips (mm)": 89.5,
+   "scene": "label",
+   "label in front of the lens (mm)": 390.1,
+   "card distance along the axis (mm)": 390.1,
+   "focused at (mm)": 108.0,
+   "closest focus (mm)": null,
+   "blur on the card, defocus only (px)": 10.3,
+   "blur on the card, defocus and diffraction (px)": 10.9,
+   "px per mm on the card": 5.0,
+   "wholly in the picture": {
+    "upper finger": true,
+    "lower finger": true
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 106.5,
+    "lower finger": 105.2
+   },
+   "finger tags detected": [
+    "upper",
+    "lower"
+   ],
+   "finger tag edge (px)": [
+    105.4,
+    104.3
+   ],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "6 mm",
+   "focal length (mm)": 6.0,
+   "field of view (deg, across x up)": [
+    55.3,
+    42.9
+   ],
+   "lens front behind the fingertips (mm)": 89.5,
+   "scene": "label",
+   "label in front of the lens (mm)": 378.1,
+   "card distance along the axis (mm)": 378.1,
+   "focused at (mm)": 108.0,
+   "closest focus (mm)": null,
+   "blur on the card, defocus only (px)": 10.2,
+   "blur on the card, defocus and diffraction (px)": 10.8,
+   "px per mm on the card": 5.1,
+   "wholly in the picture": {
+    "upper finger": true,
+    "lower finger": true
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 106.5,
+    "lower finger": 105.2
+   },
+   "finger tags detected": [
+    "upper",
+    "lower"
+   ],
+   "finger tag edge (px)": [
+    105.4,
+    104.3
+   ],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "6 mm",
+   "focal length (mm)": 6.0,
+   "field of view (deg, across x up)": [
+    55.3,
+    42.9
+   ],
+   "lens front behind the fingertips (mm)": 89.5,
+   "scene": "label",
+   "label in front of the lens (mm)": 361.9,
+   "card distance along the axis (mm)": 361.9,
+   "focused at (mm)": 108.0,
+   "closest focus (mm)": null,
+   "blur on the card, defocus only (px)": 10.0,
+   "blur on the card, defocus and diffraction (px)": 10.6,
+   "px per mm on the card": 5.3,
+   "wholly in the picture": {
+    "upper finger": true,
+    "lower finger": true
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 106.5,
+    "lower finger": 105.2
+   },
+   "finger tags detected": [
+    "upper",
+    "lower"
+   ],
+   "finger tag edge (px)": [
+    105.4,
+    104.3
+   ],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "6 mm",
+   "focal length (mm)": 6.0,
+   "field of view (deg, across x up)": [
+    55.3,
+    42.9
+   ],
+   "lens front behind the fingertips (mm)": 89.5,
+   "scene": "label",
+   "label in front of the lens (mm)": 342.0,
+   "card distance along the axis (mm)": 342.0,
+   "focused at (mm)": 108.0,
+   "closest focus (mm)": null,
+   "blur on the card, defocus only (px)": 9.7,
+   "blur on the card, defocus and diffraction (px)": 10.4,
+   "px per mm on the card": 5.7,
+   "wholly in the picture": {
+    "upper finger": true,
+    "lower finger": true
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 106.5,
+    "lower finger": 105.2
+   },
+   "finger tags detected": [
+    "upper",
+    "lower"
+   ],
+   "finger tag edge (px)": [
+    105.4,
+    104.3
+   ],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "6 mm",
+   "focal length (mm)": 6.0,
+   "field of view (deg, across x up)": [
+    55.3,
+    42.9
+   ],
+   "lens front behind the fingertips (mm)": 89.5,
+   "scene": "label",
+   "label in front of the lens (mm)": 319.1,
+   "card distance along the axis (mm)": 319.1,
+   "focused at (mm)": 108.0,
+   "closest focus (mm)": null,
+   "blur on the card, defocus only (px)": 9.4,
+   "blur on the card, defocus and diffraction (px)": 10.1,
+   "px per mm on the card": 6.1,
+   "wholly in the picture": {
+    "upper finger": true,
+    "lower finger": true
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 106.5,
+    "lower finger": 105.2
+   },
+   "finger tags detected": [
+    "upper",
+    "lower"
+   ],
+   "finger tag edge (px)": [
+    105.4,
+    104.3
+   ],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "6 mm",
+   "focal length (mm)": 6.0,
+   "field of view (deg, across x up)": [
+    55.3,
+    42.9
+   ],
+   "lens front behind the fingertips (mm)": 89.5,
+   "scene": "label",
+   "label in front of the lens (mm)": 294.0,
+   "card distance along the axis (mm)": 294.0,
+   "focused at (mm)": 108.0,
+   "closest focus (mm)": null,
+   "blur on the card, defocus only (px)": 9.0,
+   "blur on the card, defocus and diffraction (px)": 9.7,
+   "px per mm on the card": 6.6,
+   "wholly in the picture": {
+    "upper finger": true,
+    "lower finger": true
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 106.5,
+    "lower finger": 105.2
+   },
+   "finger tags detected": [
+    "upper",
+    "lower"
+   ],
+   "finger tag edge (px)": [
+    105.4,
+    104.3
+   ],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "6 mm",
+   "focal length (mm)": 6.0,
+   "field of view (deg, across x up)": [
+    55.3,
+    42.9
+   ],
+   "lens front behind the fingertips (mm)": 89.5,
+   "scene": "label",
+   "label in front of the lens (mm)": 267.5,
+   "card distance along the axis (mm)": 267.5,
+   "focused at (mm)": 108.0,
+   "closest focus (mm)": null,
+   "blur on the card, defocus only (px)": 8.5,
+   "blur on the card, defocus and diffraction (px)": 9.2,
+   "px per mm on the card": 7.2,
+   "wholly in the picture": {
+    "upper finger": true,
+    "lower finger": true
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 106.5,
+    "lower finger": 105.2
+   },
+   "finger tags detected": [
+    "upper",
+    "lower"
+   ],
+   "finger tag edge (px)": [
+    105.4,
+    104.3
+   ],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "6 mm",
+   "focal length (mm)": 6.0,
+   "field of view (deg, across x up)": [
+    55.3,
+    42.9
+   ],
+   "lens front behind the fingertips (mm)": 89.5,
+   "scene": "label",
+   "label in front of the lens (mm)": 240.5,
+   "card distance along the axis (mm)": 240.5,
+   "focused at (mm)": 108.0,
+   "closest focus (mm)": null,
+   "blur on the card, defocus only (px)": 7.8,
+   "blur on the card, defocus and diffraction (px)": 8.7,
+   "px per mm on the card": 8.0,
+   "wholly in the picture": {
+    "upper finger": true,
+    "lower finger": true
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 106.5,
+    "lower finger": 105.2
+   },
+   "finger tags detected": [
+    "upper",
+    "lower"
+   ],
+   "finger tag edge (px)": [
+    105.4,
+    104.3
+   ],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "6 mm",
+   "focal length (mm)": 6.0,
+   "field of view (deg, across x up)": [
+    55.3,
+    42.9
+   ],
+   "lens front behind the fingertips (mm)": 89.5,
+   "scene": "label",
+   "label in front of the lens (mm)": 214.0,
+   "card distance along the axis (mm)": 214.0,
+   "focused at (mm)": 108.0,
+   "closest focus (mm)": null,
+   "blur on the card, defocus only (px)": 7.0,
+   "blur on the card, defocus and diffraction (px)": 7.9,
+   "px per mm on the card": 9.0,
+   "wholly in the picture": {
+    "upper finger": true,
+    "lower finger": true
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 106.5,
+    "lower finger": 105.2
+   },
+   "finger tags detected": [
+    "upper",
+    "lower"
+   ],
+   "finger tag edge (px)": [
+    105.4,
+    104.3
+   ],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "6 mm",
+   "focal length (mm)": 6.0,
+   "field of view (deg, across x up)": [
+    55.3,
+    42.9
+   ],
+   "lens front behind the fingertips (mm)": 89.5,
+   "scene": "label",
+   "label in front of the lens (mm)": 188.9,
+   "card distance along the axis (mm)": 188.9,
+   "focused at (mm)": 108.0,
+   "closest focus (mm)": null,
+   "blur on the card, defocus only (px)": 6.1,
+   "blur on the card, defocus and diffraction (px)": 7.1,
+   "px per mm on the card": 10.2,
+   "wholly in the picture": {
+    "upper finger": true,
+    "lower finger": true
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 106.5,
+    "lower finger": 105.2
+   },
+   "finger tags detected": [
+    "upper",
+    "lower"
+   ],
+   "finger tag edge (px)": [
+    105.4,
+    104.3
+   ],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "6 mm",
+   "focal length (mm)": 6.0,
+   "field of view (deg, across x up)": [
+    55.3,
+    42.9
+   ],
+   "lens front behind the fingertips (mm)": 89.5,
+   "scene": "label",
+   "label in front of the lens (mm)": 166.0,
+   "card distance along the axis (mm)": 166.0,
+   "focused at (mm)": 108.0,
+   "closest focus (mm)": null,
+   "blur on the card, defocus only (px)": 5.0,
+   "blur on the card, defocus and diffraction (px)": 6.2,
+   "px per mm on the card": 11.7,
+   "wholly in the picture": {
+    "upper finger": true,
+    "lower finger": true
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 106.5,
+    "lower finger": 105.2
+   },
+   "finger tags detected": [
+    "upper",
+    "lower"
+   ],
+   "finger tag edge (px)": [
+    105.4,
+    104.3
+   ],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "6 mm",
+   "focal length (mm)": 6.0,
+   "field of view (deg, across x up)": [
+    55.3,
+    42.9
+   ],
+   "lens front behind the fingertips (mm)": 89.5,
+   "scene": "label",
+   "label in front of the lens (mm)": 146.1,
+   "card distance along the axis (mm)": 146.1,
+   "focused at (mm)": 108.0,
+   "closest focus (mm)": null,
+   "blur on the card, defocus only (px)": 3.7,
+   "blur on the card, defocus and diffraction (px)": 5.2,
+   "px per mm on the card": 13.2,
+   "wholly in the picture": {
+    "upper finger": true,
+    "lower finger": true
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 106.5,
+    "lower finger": 105.2
+   },
+   "finger tags detected": [
+    "upper",
+    "lower"
+   ],
+   "finger tag edge (px)": [
+    105.4,
+    104.3
+   ],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "6 mm",
+   "focal length (mm)": 6.0,
+   "field of view (deg, across x up)": [
+    55.3,
+    42.9
+   ],
+   "lens front behind the fingertips (mm)": 89.5,
+   "scene": "label",
+   "label in front of the lens (mm)": 129.9,
+   "card distance along the axis (mm)": 129.9,
+   "focused at (mm)": 108.0,
+   "closest focus (mm)": null,
+   "blur on the card, defocus only (px)": 2.4,
+   "blur on the card, defocus and diffraction (px)": 4.4,
+   "px per mm on the card": 14.9,
+   "wholly in the picture": {
+    "upper finger": true,
+    "lower finger": true
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 106.5,
+    "lower finger": 105.2
+   },
+   "finger tags detected": [
+    "upper",
+    "lower"
+   ],
+   "finger tag edge (px)": [
+    105.4,
+    104.3
+   ],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "6 mm",
+   "focal length (mm)": 6.0,
+   "field of view (deg, across x up)": [
+    55.3,
+    42.9
+   ],
+   "lens front behind the fingertips (mm)": 89.5,
+   "scene": "label",
+   "label in front of the lens (mm)": 117.9,
+   "card distance along the axis (mm)": 117.9,
+   "focused at (mm)": 108.0,
+   "closest focus (mm)": null,
+   "blur on the card, defocus only (px)": 1.2,
+   "blur on the card, defocus and diffraction (px)": 3.9,
+   "px per mm on the card": 16.4,
+   "wholly in the picture": {
+    "upper finger": true,
+    "lower finger": true
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 106.5,
+    "lower finger": 105.2
+   },
+   "finger tags detected": [
+    "upper",
+    "lower"
+   ],
+   "finger tag edge (px)": [
+    105.4,
+    104.3
+   ],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "6 mm",
+   "focal length (mm)": 6.0,
+   "field of view (deg, across x up)": [
+    55.3,
+    42.9
+   ],
+   "lens front behind the fingertips (mm)": 89.5,
+   "scene": "label",
+   "label in front of the lens (mm)": 110.5,
+   "card distance along the axis (mm)": 110.5,
+   "focused at (mm)": 108.0,
+   "closest focus (mm)": null,
+   "blur on the card, defocus only (px)": 0.3,
+   "blur on the card, defocus and diffraction (px)": 3.7,
+   "px per mm on the card": 17.5,
+   "wholly in the picture": {
+    "upper finger": true,
+    "lower finger": true
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 106.5,
+    "lower finger": 105.2
+   },
+   "finger tags detected": [
+    "upper",
+    "lower"
+   ],
+   "finger tag edge (px)": [
+    105.4,
+    104.3
+   ],
+   "target detected": false,
+   "target edge (px)": null
+  },
+  {
+   "lens": "6 mm",
+   "focal length (mm)": 6.0,
+   "field of view (deg, across x up)": [
+    55.3,
+    42.9
+   ],
+   "lens front behind the fingertips (mm)": 89.5,
+   "scene": "label",
+   "label in front of the lens (mm)": 108.0,
+   "card distance along the axis (mm)": 108.0,
+   "focused at (mm)": 108.0,
+   "closest focus (mm)": null,
+   "blur on the card, defocus only (px)": 0.0,
+   "blur on the card, defocus and diffraction (px)": 3.7,
+   "px per mm on the card": 17.9,
+   "wholly in the picture": {
+    "upper finger": true,
+    "lower finger": true
+   },
+   "tag edge, projected (px)": {
+    "upper finger": 106.5,
+    "lower finger": 105.2
+   },
+   "finger tags detected": [
+    "upper",
+    "lower"
+   ],
+   "finger tag edge (px)": [
+    105.4,
+    104.3
+   ],
+   "target detected": false,
+   "target edge (px)": null
+  }
+ ]
+}
