@@ -16,6 +16,11 @@
     "filament_map_mode": "Manual",
     "filament_maps": "1"
   },
+  "different_settings_to_system": [
+    "enable_circle_compensation",
+    "sparse_infill_density",
+    "wall_loops"
+  ],
   "filament_colour": "#000000",
   "left_nozzle_reach_mm": [
     0.0,
@@ -145,7 +150,7 @@
         "tag_wedge_1",
         "tag_wedge_1"
       ],
-      "print_time_s": 13486,
+      "print_time_s": 13511,
       "filament_g": 70.66,
       "filament_m": 27.72,
       "filament_type": "PA-CF",
@@ -180,17 +185,17 @@
         "Custom": 1038,
         "Flush": 26,
         "Gap infill": 144,
-        "Inner wall": 2966,
-        "Internal solid infill": 1625,
+        "Inner wall": 2971,
+        "Internal solid infill": 1644,
         "Outer wall": 1815,
         "Overhang wall": 62,
         "Sparse infill": 3355,
         "Top surface": 260,
-        "Travel": 1493,
-        "Undefined": 1485
+        "Travel": 1494,
+        "Undefined": 1486
       }
     }
   ],
-  "total_print_time_s": 13486,
+  "total_print_time_s": 13511,
   "total_filament_g": 70.66
 }

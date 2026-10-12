@@ -14,6 +14,8 @@ The filament is mapped by hand to the left nozzle (extruder 1). The H2D's status
 showed a 0.4 mm hardened-steel hotend on the left and a 0.6 mm TPU High-Flow hotend on the right,
 and carbon fibre would wear the right one out. Every footprint is checked against the bed and the
 left nozzle's reach (x 0 to 325 mm, from the machine preset), and against the other parts.
+The settings it changes from Bambu's process preset are then named in the project's
+different_settings_to_system, so that Studio keeps them when it opens the file (mark_overrides).
 Writes piper_camera_mount_H2D_PAHT-CF.3mf and report_h2d.json here. Thumbnails work as in
 slice_a1mini.py: with WAYLAND_DISPLAY set and libOSMesa installed.
 """
@@ -99,19 +101,19 @@ def layout(area: list[float]) -> tuple[list[list[dict]], list[str]]:
     return plates, warnings
 
 
-def write_presets(resources: Path, build: Path) -> tuple[dict[str, Path], dict]:
-    paths, machine = {}, {}
+def write_presets(resources: Path, build: Path) -> tuple[dict[str, Path], dict[str, dict]]:
+    """The flattened presets as the CLI loads them, and Bambu's own (stock) versions of each."""
+    paths, stock = {}, {}
     for kind, name in PRESETS.items():
         cfg = flatten(kind, name, resources / "profiles" / "BBL")
-        if kind == "machine":
-            machine = cfg
+        stock[kind] = dict(cfg)
         if kind == "filament":
             cfg["filament_colour"] = [FILAMENT_COLOUR]
         if kind == "process":
             cfg.update(PROCESS_SETTINGS)
         paths[kind] = build / f"{kind}.json"
         paths[kind].write_text(json.dumps(cfg, indent=2) + "\n")
-    return paths, machine
+    return paths, stock
 
 
 def write_assemble_list(build: Path, placed: list[list[dict]]) -> Path:
@@ -141,12 +143,36 @@ def run_cli(bambu: Path, presets: dict[str, Path], assemble: Path, build: Path, 
     return log
 
 
+def mark_overrides(path: Path, stock_process: dict) -> list[str]:
+    """Name the process settings this job changes in the project's different_settings_to_system.
+
+    The CLI leaves that list empty, because it loads the presets as files rather than by name. On
+    opening a project, Studio selects the system preset of the same name and applies only the keys
+    the list names, which is why it has reset 3 walls, 25 % infill and circle compensation on every
+    CLI-sliced project so far (print_2026-10-08/README.md). Only project_settings.config changes;
+    the plate's G-code and its MD5 stay as the CLI wrote them."""
+    with zipfile.ZipFile(path) as z:
+        entries = [(info, z.read(info.filename)) for info in z.infolist()]
+    name = "Metadata/project_settings.config"
+    project = json.loads(dict((i.filename, d) for i, d in entries)[name])
+    ours = {k.replace("-", "_") for k in OVERRIDES} | set(PROCESS_SETTINGS)
+    changed = sorted(k for k in ours if k in stock_process and project.get(k) != stock_process[k])
+    project["different_settings_to_system"][0] = ";".join(changed)  # [process, filament..., machine]
+    tmp = path.with_suffix(".tmp")
+    with zipfile.ZipFile(tmp, "w") as out:
+        for info, data in entries:
+            out.writestr(info, (json.dumps(project, indent=4) + "\n").encode() if info.filename == name else data)
+    tmp.replace(path)
+    return changed
+
+
 def gcode_setting(gcode: str, key: str) -> str | None:
     m = re.search(rf"^; {key} = (.*)$", gcode, re.M)
     return m.group(1) if m else None
 
 
-def report(build: Path, log: str, placed: list[list[dict]], layout_warnings: list[str], area: list[float]) -> dict:
+def report(build: Path, log: str, placed: list[list[dict]], layout_warnings: list[str], area: list[float],
+           marked: list[str]) -> dict:
     result = json.loads((build / "result.json").read_text())
     with zipfile.ZipFile(build / OUT_3MF.name) as z:
         info = ET.fromstring(z.read("Metadata/slice_info.config"))
@@ -190,6 +216,7 @@ def report(build: Path, log: str, placed: list[list[dict]], layout_warnings: lis
         "presets": PRESETS,
         "overrides": {**{k.replace("-", "_"): v for k, v in OVERRIDES.items()}, **PROCESS_SETTINGS},
         "plate_params": PLATE_PARAMS,
+        "different_settings_to_system": marked,
         "filament_colour": FILAMENT_COLOUR,
         "left_nozzle_reach_mm": area,
         "return_code": result["return_code"], "error_string": result["error_string"],
@@ -212,14 +239,15 @@ def main() -> None:
     args = ap.parse_args()
     shutil.rmtree(args.build, ignore_errors=True)
     args.build.mkdir(parents=True)
-    presets, machine = write_presets(args.bambu / "resources", args.build)
-    area = reach(machine, LEFT)
+    presets, stock = write_presets(args.bambu / "resources", args.build)
+    area = reach(stock["machine"], LEFT)
     placed, layout_warnings = layout(area)
     for w in layout_warnings:
         print(f"LAYOUT WARNING: {w}", file=sys.stderr)
     env = gl_env(args.build)
     log = run_cli(args.bambu, presets, write_assemble_list(args.build, placed), args.build, env)
-    rep = report(args.build, log, placed, layout_warnings, area)
+    marked = mark_overrides(args.build / OUT_3MF.name, stock["process"])
+    rep = report(args.build, log, placed, layout_warnings, area, marked)
     shutil.copy(args.build / OUT_3MF.name, OUT_3MF)
     (HERE / "report_h2d.json").write_text(json.dumps(rep, indent=2) + "\n")
     print(json.dumps(rep, indent=2))

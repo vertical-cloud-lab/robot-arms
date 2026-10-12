@@ -119,11 +119,18 @@ xvfb-run -a python piper-camera-mount/slice/plate_view.py                    # -
 **Before sending it:**
 
 - **Check three settings in Studio.** On every CLI-sliced project so far, Studio has reset wall
-  loops (3 → 2), sparse infill (25 → 15 %) and circle compensation (on → off) on opening it
-  ([2026-10-08](print_2026-10-08/README.md#what-the-gui-changed-and-the-check)). Set them back and
-  re-slice. The plate should come back at 70.66 g and 213 layers.
+  loops (3 → 2), sparse infill (25 → 15 %) and circle compensation (on → off) when opening it
+  ([2026-10-08](print_2026-10-08/README.md#what-the-gui-changed-and-the-check)). The likely cause is
+  that the CLI leaves the project's `different_settings_to_system` list empty. On opening a project,
+  Studio selects the system preset of the same name and applies only the settings that list names. So
+  `slice_h2d.py` now names the three there (`mark_overrides`), and Studio should keep them. That
+  hasn't been tried in the GUI yet. If any of them reads 2, 15 % or off, set it back and re-slice. The
+  plate should come back at 70.66 g and 213 layers.
 - **Check the filament is on the left nozzle** in the plate's filament grouping, and that the left
-  hotend is still the 0.4 mm hardened steel one. Studio reads the nozzles from the printer.
+  hotend is still the 0.4 mm hardened steel one. Studio reads the nozzles from the printer. The 27
+  September reading is still the latest. A read-only status request from CI on 2026-10-12, through
+  the arm Pi, reached the printer but was refused as not authorized (MQTT CONNACK 5), so the stored
+  `H2D_ACCESS_CODE` looks out of date.
 - **Dry the PAHT-CF:** 80 °C for 8 to 12 h in the AMS HT, as the main README says.
 
 ## Three setups, each part alone (`slice_configs.py`)
