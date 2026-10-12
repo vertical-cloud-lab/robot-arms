@@ -159,15 +159,18 @@ McMaster's own heads were checked too. They fit everywhere the drawer's do.
 
 | Qty | Part | PAHT-CF, H2D, 0.6 mm | PAHT-CF, H2D, 0.4 mm | PLA, A1 mini |
 |---|---|---|---|---|
-| 1 | `bracket` | 37.7 g | 31.1 g | 37.8 g |
+| 1 | `bracket` | 36.1 g | 29.8 g | 36.2 g |
 | 1 | `pod` | 13.5 g | 11.9 g | 14.5 g |
 | 1 | `carrier` | 31.7 g | 28.3 g | 34.4 g |
 | 4 + 2 | `spacers`, `tag_wedge` | 0.5 g | 0.5 g | 0.6 g |
-| | One plate (3 walls, 25 % infill) | 83.5 g, 3 h 47 min | 72.0 g, 3 h 48 min | 87.4 g, 2 h 50 min |
+| | One plate (3 walls, 25 % infill) | 82.0 g, 3 h 44 min | 70.6 g, 3 h 45 min | 85.8 g, 2 h 48 min |
 
 The figures are from [`slice/slice_configs.json`](slice/slice_configs.json). PAHT-CF is recommended
 for the parts that stay on the arm (see [Material](README.md#material-paht-cf-on-the-h2d)). The PLA set
-went to the A1 mini on 8 October ([record](slice/print_2026-10-08/README.md)).
+went to the A1 mini on 8 October ([record](slice/print_2026-10-08/README.md)). Its bracket has the old
+O33 lens cradle, which the 6 mm lens's thumbscrews can hit, so **reprint the bracket** (1 h 19 min on
+the A1 mini) before fitting the lens; the other parts are unchanged
+([The pod seat](README.md#the-pod-seat)).
 
 ### Electronics
 

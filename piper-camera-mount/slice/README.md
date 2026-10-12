@@ -98,6 +98,12 @@ CI runner, as one plate, in black PLA Basic on Textured PEI. The record is in
 [`print_2026-10-08/`](print_2026-10-08/README.md): pre-flights, the file Studio sent, `print.json`
 and camera frames.
 
+**That set's bracket is out of date.** On 2026-10-12 the bracket's lens cradle was widened from O33
+to O43, so the 6 mm lens's thumbscrews clear it at any angle ([The pod seat](../README.md#the-pod-seat)).
+The plate and `report.json` here are the new bracket; `print_2026-10-08/sent/` keeps what was printed.
+Only the bracket changed: alone it is 1 h 19 min and 36.2 g on the A1 mini (`slice_configs.py`,
+`a1m_pla_04`, plate 2).
+
 Before that, nothing of the mount had been printed. [`a1mini_history/`](a1mini_history/README.md)
 lists everything the A1 mini printed from July to the morning of 2026-10-08, from Bambu's cloud and
 the printer's own SD card, with the two read-only scripts that fetch it.

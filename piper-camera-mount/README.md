@@ -3,7 +3,8 @@
 Issue [#239](https://github.com/vertical-cloud-lab/byu-vcl/issues/239). A printed mount that puts a
 **Raspberry Pi 5** and up to **two cameras** on the PiPER's two-finger gripper:
 
-- a **Raspberry Pi HQ Camera** with the official 6 mm CS-mount lens, for repeatable positioning, and
+- a **Raspberry Pi HQ Camera** with the official 6 mm CS-mount lens, for repeatable positioning
+  (the lens is bought separately; [why the 6 mm and not the 16 mm](#which-hq-lens-the-6-mm-wide-angle)), and
 - a **Camera Module 3 Wide** (optional) for streaming.
 
 It follows the OT-2 lid mount in [#234](https://github.com/vertical-cloud-lab/byu-vcl/pull/234)
@@ -11,7 +12,9 @@ It follows the OT-2 lid mount in [#234](https://github.com/vertical-cloud-lab/by
 with interference checks, exports and renders from one script. The design notes gathered in
 [borysgroup/aurora-cloud-infra#5](https://github.com/borysgroup/aurora-cloud-infra/issues/5) are
 the starting point for the PiPER side. **The PLA set went to the A1 mini on 2026-10-08**
-([record](slice/print_2026-10-08/README.md)). Nothing has been fitted to the gripper yet.
+([record](slice/print_2026-10-08/README.md)). Nothing has been fitted to the gripper yet. That set's
+bracket has the old O33 lens cradle, which the 6 mm lens's thumbscrews can hit, so **reprint the
+bracket** before fitting the lens ([The pod seat](#the-pod-seat)).
 
 ![Assembly on AgileX's gripper model](renders/assembly.png)
 
@@ -69,18 +72,38 @@ Now the bracket widens outward at 45 degrees from its pad until it meets the pod
 pod sits on it from its inner edge out to the HQ lens axis, and along its top and bottom edges
 either side of the lens:
 
-- **987 mm² of contact** (3 times as much), measured by `piper_mount.py` (`pod_joint` in
-  `checks.json`).
+- **901 mm² of contact** (2.8 times as much), measured by `piper_mount.py` (`pod_joint` in
+  `checks.json`). It was 987 mm² until the cradle was widened for the lens's thumbscrews (below).
 - **4 x M3** (16 to 20 mm long; the drawer's M3 x 18), 38 mm apart vertically and 9 mm across, into
   nuts dropped into slots in the seat's top and bottom faces. The heads are on the pod's back, clear of the HQ ribbon.
 - The lens and its mount sit in a cradle cut through the seat with 1.5 mm to spare, so the pod goes
-  on and off straight down its lens axis with the lens fitted.
+  on and off straight down its lens axis with the lens fitted. The 6 mm lens has two locking
+  thumbscrews about 5 mm proud of its barrel, and focusing turns the aperture ring, so its screw can
+  end up pointing anywhere. The cradle is therefore O43 from the pod to just past that screw
+  (20.4 mm in front of the CS seat), and O33 round the rest of the lens. With the plain O33 cradle
+  the screws would have hit the seat over a third to a half of their circles (their sweep overlaps
+  it by 970 mm³).
 - **Neither camera sees it.** The HQ sees no printed part at all. The seat's top corner is bevelled
   along the bottom of the Wide's view, so the Wide sees no more of the bracket than it did before
   (the collar's top ear and the old web's front edge, at the bottom-left of its picture).
-- The seat adds 20.5 cm³ to the bracket (36.3 to 56.9 cm³ solid).
+- The seat adds 15.5 cm³ to the bracket (36.3 to 51.8 cm³ solid).
 
 ![The pod seat](renders/pod_seat.png)
+
+**The thumbscrews in the old and new cradles.** [`cad/cradle_fit.py`](cad/cradle_fit.py) turns
+each screw once round the lens and cuts both brackets through it
+([`exports/cradle_fit.json`](exports/cradle_fit.json)):
+
+![The 6 mm lens's thumbscrews in the O33 and O43 cradles](renders/cradle_fit.gif)
+
+- **In the O33 cradle** the aperture screw hits the seat at 13 of 36 angles and the focus screw at
+  17, each cutting up to 25 mm³. They hit whenever they point toward the gripper. The PLA set
+  printed on 2026-10-08 has this cradle.
+- **In the O43 cradle** neither screw touches at any angle. The tips clear the bracket by 1.5 mm.
+- **Only the bracket changed.** The pod, carrier, spacers and tag wedges are the same parts as before,
+  so fixing the PLA set means reprinting the bracket alone: 36.2 g and 1 h 19 min on the A1 mini
+  ([Printing](#printing)). Until then, the old bracket only works if both screws end up pointing
+  away from the gripper.
 
 **How much stiffer, simulated.** [`sim/joint_fea.py`](sim/joint_fea.py) meshes bracket and pod
 as one bonded body (quadratic tets, gmsh + scikit-fem), fixes the collar bore and the pad round the
@@ -89,12 +112,15 @@ tab screws, and loads the HQ bosses with the camera and lens (83 g) at 1 g, one 
 
 | 83 g at 1 g along | HQ moves, old → new (µm) | optical axis tilts, old → new (arcmin) | picture shifts, old → new (px) |
 |---|---|---|---|
-| Y (gripper pointing down) | 12.1 → 0.96 | 1.77 → 0.16 | 2.0 → 0.18 |
-| Z (finger travel) | 4.2 → 0.97 | 0.16 → 0.010 | 0.18 → 0.011 |
-| X | 0.64 → 0.48 | 0.018 → 0.029 | 0.02 → 0.03 |
+| Y (gripper pointing down) | 12.1 → 1.22 | 1.77 → 0.20 | 2.0 → 0.23 |
+| Z (finger travel) | 4.2 → 1.21 | 0.16 → 0.003 | 0.18 → 0.003 |
+| X | 0.64 → 0.51 | 0.018 → 0.030 | 0.02 → 0.03 |
 
-- The worst case, along Y, is **about 11 times stiffer in tilt and 13 times in displacement**. The
-  first natural frequency goes from about 110 Hz to 360 Hz (a Rayleigh-Ritz upper bound).
+- The worst case, along Y, is **about 9 times stiffer in tilt and 10 times in displacement**. The
+  first natural frequency goes from about 110 Hz to 320 Hz (a Rayleigh-Ritz upper bound).
+- Widening the lens cradle for the 6 mm lens's thumbscrews (901 mm² of seat instead of 987) cost
+  about a fifth of that. Before it, the worst case was 11 and 13 times stiffer, at 360 Hz. Either way
+  the picture moves less than a quarter of a pixel at 1 g.
 - **These flatter the old joint.** Bonding says the joint never slips or opens, and solid PLA at
   2.4 GPa is stiffer than a 25 % infill print. The old joint's real weakness was the strip itself: a
   pod pivoting on an edge 5 mm from its two screws, where any creep in the plastic lets it rock.
@@ -103,6 +129,104 @@ tab screws, and loads the HQ bosses with the camera and lens (83 g) at 1 g, one 
   the load is applied at the bosses, so tilt under sideways loads is understated for both designs.
 
 ![Old vs new under 1 g along Y](renders/joint_fea.png)
+
+## Which HQ lens: the 6 mm wide-angle
+
+The HQ Camera comes without a lens. Raspberry Pi sells two for it: the **6 mm wide-angle** (CS
+mount) and the **16 mm telephoto** (C mount). **Buy the 6 mm.** The mount is built round it, and
+[`cad/lens_compare.py`](cad/lens_compare.py) puts both on the same camera, in the same place on the
+pod, to show why ([`exports/lens_compare.json`](exports/lens_compare.json)):
+
+![6 mm vs 16 mm on the pod and through the HQ](renders/lens_compare.png)
+
+The specs are Raspberry Pi's, from the
+[camera documentation](https://www.raspberrypi.com/documentation/accessories/camera.html) and its
+[6 mm](https://datasheets.raspberrypi.com/hq-camera/cs-mount-lens-guide.pdf) and
+[16 mm](https://datasheets.raspberrypi.com/hq-camera/c-mount-lens-guide.pdf) lens guides. The
+masses are retailers' figures. Distances are measured along the camera's axis from the lens front;
+pixels are in the 2028 x 1520 mode that `fiducials.py` renders.
+
+| | 6 mm wide-angle | 16 mm telephoto |
+|---|---|---|
+| Mount | CS: screws straight in | C: on the C-CS adapter that comes with the HQ |
+| Size, mass | O30 x 34 mm, 53 g | O39 x 50 mm plus the 5 mm adapter, 134 g |
+| Field of view on the HQ | 55 x 45 degrees (71 diagonal) | 22 x 17 degrees (28 diagonal) |
+| Finger tags | in view from 0 to 60 mm open, 82 mm away, about 105 px across | never in view |
+| Picture size at a target 60 mm past the tips | 168 x 126 mm, 12 px/mm | 55 x 41 mm, 37 px/mm |
+| A 20 mm target tag, 60 / 120 mm past the tips | 241 / 178 px across | 740 / 524 px across |
+| A finger tag and the target detected in one picture, with depth-of-field blur | 11 of 18 poses | 0 of 18 |
+| Sharpest it can get the finger tags and a target 60 mm out at once | f/8, focused 108 mm out: 6 px of blur at each end | f/16: 31 px |
+| Rated resolution | 3 MP | 10 MP |
+| On this mount | fits; the cradle clears its thumbscrews at any angle | doesn't fit (below) |
+| Moment about the pod's face | 1030 g mm | 4000 g mm (3.9 times) |
+| Price at launch (US retail now varies, and runs higher) | $25 | $50 |
+
+**Why the 6 mm:**
+
+- **It sees the gripper and the target together, which the 16 mm can't.** The camera sits 60 mm
+  out from the gripper axis and 89.5 mm behind the fingertips. From there the 16 mm sees a patch 24 x
+  18 mm at the depth of the finger tags, and no finger tag falls in it at any opening. Of the three
+  target distances it gets a whole 20 mm target in the picture only at 120 mm past the tips, and
+  never together with a finger tag.
+- **Depth of field.** The work spans 82 mm (finger tags) to 161 mm (a target 60 mm out) or more.
+  - **6 mm:** focused about 108 mm out at f/8, it blurs each end by about 6 px. That is about half a
+    cell of a finger tag, and the detector still finds them (see below). Stopping down further
+    doesn't help, because past f/8 diffraction blurs more than the extra depth of field saves.
+  - **16 mm:** defocus grows with the square of the focal length, so it has about seven times as
+    much over the same span. At best, at f/16, its smallest aperture, that is 31 px of blur.
+  - **So the 16 mm would need refocusing by hand** between near and far, which a wrist camera can't
+    do.
+- **The 6 mm has enough pixels.** A 20 mm target tag is 178 to 294 px across from 30 to 120 mm past
+  the tips, and AprilTag decodes from about 30 px. The 16 mm's three times the pixels per mm only pay
+  off on targets much further away or on small detail. That is a job for a fixed camera, such as the
+  OT-2's overhead camera, not a wrist camera.
+- **The 16 mm doesn't fit this mount.**
+  - With its adapter it is 21 mm longer and 9 mm wider.
+  - It cuts into the seat (1663 mm³) and the finger plate (176 mm³).
+  - Its front would sit 3.6 mm in front of the finger plate's front face, and it fills the bottom of
+    the Wide's picture (5986 mm³ of the Wide's view, against 0.6 mm³ of a corner for the 6 mm).
+  - It is 81 g heavier, with its centre of mass 10 mm further out, so the moment on the pod joint
+    is 3.9 times larger.
+
+**Using the 6 mm:**
+
+- **Take the C-CS adapter off first.** The HQ ships with it, and the 6 mm won't focus with it on
+  (Raspberry Pi's guide). Screw the HQ's back-focus ring fully in and lock it.
+- **Focus about 108 mm in front of the lens, about 20 mm past the fingertips**, with the camera
+  running. Following the guide, lock the inner NEAR/FAR ring with its thumbscrew, then turn the
+  outer two rings together until the picture is sharp. The guide says that takes four or five whole
+  turns, and it is what leaves the aperture thumbscrew pointing anywhere.
+  - **Close focus:** focusing on the finger tags needs the lens 0.47 mm out from infinity, and its
+    0.2 m minimum object distance only covers 0.19 mm. The guide also says the lens can focus at
+    very short distances, for macro work, so it should reach. If it doesn't, back the HQ's
+    back-focus ring out by about 0.3 mm.
+- **Stop down to about f/8.** The aperture ring is marked only OPEN and CLOSE, so close it until a
+  finger tag and a target 60 mm out are both crisp, then lock its thumbscrew. f/8 lets in an eighth
+  of the light f/2.8 does, so expect longer exposures or add a small light.
+- **Calibrate for distortion.** Raspberry Pi's 71 degree diagonal against 66 for a distortion-free
+  6 mm lens means noticeable barrel distortion toward the corners. Calibrate the intrinsics and
+  distortion once, for example with a ChArUco board and OpenCV, before trusting `solvePnP`. The
+  pictures here have no distortion.
+- **The thumbscrews** stand about 5 mm proud (estimated from product photos; Raspberry Pi publishes
+  no drawing). The cradle clears them wherever they end up, both in place and while the pod slides
+  on (see [The pod seat](#the-pod-seat)).
+
+### Depth of field, simulated
+
+`lens_compare.py` also re-renders each picture as the lens would take it. It blurs every pixel by
+the defocus at its own distance (thin lens), then the whole picture by diffraction. Then it runs
+the same detector on 18 poses: fingers 0 to 100 mm open, with the target 30, 60 or 120 mm past the
+tips.
+
+- **6 mm at f/8, focused 108 mm out:** it detects exactly what it does in the ideal pictures.
+  - Both finger tags from 0 to 60 mm open.
+  - The target in 17 of 18 poses, and with a finger tag in 11.
+  - The worst error in the target's position, measured from a finger tag, goes from 0.61 to 0.71 mm.
+- **16 mm at f/16, focused 85 mm out:** it detects the target in 6 of 18 poses, and never a finger
+  tag.
+
+Apart from the blur these are still ideal pictures, with no noise, distortion or motion blur.
+
 
 ## What the cameras see
 
@@ -161,16 +285,17 @@ turns it from 8 to 50 mm ([`exports/wrist_zoom.json`](exports/wrist_zoom.json)):
 - **The target no longer fits past 12 mm.** From 32 mm the zoom can't focus on it at all: its own
   focus stops at 0.2 m, and the HQ's back-focus ring only brings that in to about 126 mm at 32 mm
   and 166 mm at 50 mm (thin lens). The target is 121 mm away.
-- **It doesn't fit.** It cuts 1910 mm³ into the bracket and 257 mm³ into the finger plate, and it is
-  2.8 times the 6 mm's mass.
+- **It doesn't fit.** It cuts 1099 mm³ into the bracket, even with the cradle widened for the 6 mm's
+  thumbscrews (1910 mm³ before), and 257 mm³ into the finger plate, and it is 2.8 times the 6 mm's
+  mass.
 - **Moving the arm gets the pixels instead.** Bringing the 6 mm from 400 to 108 mm from a label, its
   sharpest distance, takes it from 5 to 18 px/mm. The 1 mm text becomes readable, and the finger
   tags stay in view. Finer detail than the 6 mm's 0.1 mm at f/8 is a job for a fixed camera like
   the OT-2's, with the arm bringing the object to it.
 
-The pictures use the thin-lens blur and f/8 of the 6 mm vs 16 mm comparison on
-`claude/issue-239-20261007-2023`. The zoom gets its best case: focused on the target whenever it
-can reach.
+The pictures use the thin-lens blur and f/8 of the 6 mm vs 16 mm comparison
+([Depth of field, simulated](#depth-of-field-simulated)). The zoom gets its best case: focused on
+the target whenever it can reach.
 
 **Where the zoom does pay off: a fixed camera.** [`cad/detail_compare.py`](cad/detail_compare.py)
 takes bars 0.2 to 0.0125 mm wide as each camera would at its best (diffraction and pixels only):
@@ -270,7 +395,7 @@ The pod comes off without disturbing the collar or the tab screws. To take the g
 flange, take the mount off first: it covers two of the four countersunk M3 screws in the flange
 ring that hold the gripper on.
 
-**Payload:** printed parts 88 g in PLA (Bambu's figure for the whole plate), the Pi 5 with cooler
+**Payload:** printed parts 86 g in PLA (Bambu's figure for the whole plate), the Pi 5 with cooler
 about 66 g, the HQ Camera and 6 mm lens 83 g, the Wide 4 g, and screws and cables about 27 g. That's
 roughly **0.27 kg**. The PiPER carries 1.5 kg and the gripper takes 0.5 kg of that, which leaves
 about 0.7 kg for what it picks up.
@@ -282,9 +407,14 @@ CLI, the same way as #234 and #238, and writes
 [`slice/piper_camera_mount_A1mini_PLA.3mf`](slice/piper_camera_mount_A1mini_PLA.3mf) and
 [`slice/report.json`](slice/report.json):
 
-- **One plate:** all five part types, **2 h 50 min and 87.5 g** with 3 walls and 25 % infill on the
-  Textured PEI plate. The same parts on the H2D in PAHT-CF weigh 72.0 g (0.4 mm nozzle) or 83.5 g
-  (0.6 mm); see [As sliced](#as-sliced-paht-cf-and-pla-simsliced_feapy).
+- **One plate:** all five part types, **2 h 48 min and 85.8 g** with 3 walls and 25 % infill on the
+  Textured PEI plate. The same parts on the H2D in PAHT-CF weigh 70.6 g (0.4 mm nozzle) or 82.0 g
+  (0.6 mm); see [As sliced](#as-sliced-paht-cf-and-pla-simsliced_feapy). The wider lens cradle took
+  1.6 g of PLA off the bracket.
+- **The bracket alone,** to fix the PLA set printed on 2026-10-08 (its bracket has the old O33
+  cradle): **1 h 19 min and 36.2 g** on the A1 mini, with the same settings
+  ([`slice/slice_configs.json`](slice/slice_configs.json), `a1m_pla_04`, plate 2). Nothing else
+  needs reprinting.
 - **No supports.** Supports are off, and Bambu's own support check flags none of the six objects.
   There are no slicer warnings and no toolpaths off the bed.
 - **Overhangs** (`slice/overhangs.json`): the only faces steeper than 45 degrees are the roofs of
@@ -357,6 +487,12 @@ edge midpoint, so the elements are CalculiX's C3D10 quadratic tets: 98,817 nodes
 The results are in [`sim/ccx_stress.json`](sim/ccx_stress.json). The clamp has its own model,
 [`sim/ccx_split.py`](sim/ccx_split.py), with both halves together (see
 [The split as a stop](#the-split-as-a-stop)).
+
+**These, and the sliced FEA below, predate the wider lens cradle** (October 2026, for the 6 mm lens's
+thumbscrews; see [The pod seat](#the-pod-seat)). So does the cross-check against `joint_fea.py`
+below, which used that script's mesh at the time. That change took 5.3 cm³ off the seat next to the
+lens and nothing anywhere else, so the clamp, collar and cable-yank results stand. The pod-bump and
+camera-weight cases load the seat, and they have not been re-run.
 
 **CalculiX gives the same answer as scikit-fem.** Here are `joint_fea.py`'s three cases on the same
 mesh (the same node and tet counts) with the same supports:
@@ -504,17 +640,19 @@ with the Bambu Studio 02.08.02.61 CLI, using Bambu's system presets plus this RE
 
 | | Bracket | Pod | Carrier | Whole job | Job time |
 |---|---|---|---|---|---|
-| H2D, PAHT-CF, 0.6 mm hardened nozzle, 0.30 mm layers | 37.7 g | 13.5 g | 31.7 g | 83.5 g | 3 h 47 min |
-| H2D, PAHT-CF, 0.4 mm hardened nozzle, 0.20 mm layers | 31.1 g | 11.9 g | 28.3 g | 72.0 g | 3 h 48 min |
-| A1 mini, PLA Basic, 0.4 mm nozzle, 0.20 mm layers | 37.8 g | 14.5 g | 34.4 g | 87.4 g | 2 h 50 min |
+| H2D, PAHT-CF, 0.6 mm hardened nozzle, 0.30 mm layers | 36.1 g | 13.5 g | 31.7 g | 82.0 g | 3 h 44 min |
+| H2D, PAHT-CF, 0.4 mm hardened nozzle, 0.20 mm layers | 29.8 g | 11.9 g | 28.3 g | 70.6 g | 3 h 45 min |
+| A1 mini, PLA Basic, 0.4 mm nozzle, 0.20 mm layers | 36.2 g | 14.5 g | 34.4 g | 85.8 g | 2 h 48 min |
 
+- **The models below were built from the slices before the lens cradle was widened,** when the
+  bracket was 1.3 to 1.6 g heavier (37.7, 31.1 and 37.8 g). The other parts haven't changed.
 - **PLA weighs more** mostly because it is denser: 1.26 g/cm³ in Bambu's preset, against 1.06 for
   PAHT-CF.
-- **The 0.6 mm nozzle adds 11.5 g.** Its three walls are 3 × 0.62 mm thick, against 0.42 + 2 × 0.45 mm
+- **The 0.6 mm nozzle adds 11.3 g.** Its three walls are 3 × 0.62 mm thick, against 0.42 + 2 × 0.45 mm
   with the 0.4 mm nozzle, so more of each part is solid.
 - **Bambu recommends the 0.6 mm nozzle for PAHT-CF,** because a wider nozzle clogs less: the
   [H2D 0.6 mm hardened-steel hotend](https://us.store.bambulab.com/products/bambu-hotend-h2-p2s?id=775924445524066388)
-  is $17.99. A 0.5 kg spool ($49.99) is five to six sets at 83.5 g.
+  is $17.99. A 0.5 kg spool ($49.99) is about six sets at 82.0 g.
 
 **From G-code to a model:**
 
@@ -734,8 +872,11 @@ bore and tab pad fixed):
 `piper_mount.py` builds everything, runs the checks and exits non-zero if anything interferes. All
 pass:
 
-- **Overlap:** 0 mm³ for all 49 pairs. Each part is checked against the gripper body, against the
+- **Overlap:** 0 mm³ for all 61 pairs. Each part is checked against the gripper body, against the
   fingers both closed (0 mm) and fully open (100 mm), and against each other.
+- **The lens's thumbscrews at any angle:** each screw's whole circle is checked against the bracket,
+  the pod, the Wide and the gripper, and comes out at 0 mm³. They stay 1.5 mm from the bracket and
+  14.2 mm from the finger plate.
 - **Clearance to the fingers:** the nearest part stays 15.6 mm away with the fingers closed and
   17.8 mm away fully open. The finger tag wedges stay 72 mm from the mount.
 - **Views:** no printed part is inside the HQ's view. The Wide's view takes in 2,890 mm³ of the
@@ -754,8 +895,9 @@ checks stricter.
 
 The design is in Onshape in the lab's **vcl-shared › 6DOF Robot Arm** folder:
 [PiPER wrist camera mount (4be6e17)](https://cad.onshape.com/documents/93ef145982c24192bfd160be/w/e3d08fcb2dcad7c92e183721).
-It's owned by Vertical Cloud Lab and it's private. It still has the 1.0 mm clamp split; the 0.6 mm
-split came later, so re-import `exports/assembly.step` to bring it up to date. Open the **Mount on
+It's owned by Vertical Cloud Lab and it's private. It still has the 1.0 mm clamp split and the O33
+lens cradle; the 0.6 mm split and the O43 cradle came later, so re-import `exports/assembly.step` to
+bring it up to date. Open the **Mount on
 gripper** tab:
 
 | Tab | What's in it |
@@ -802,7 +944,9 @@ cd cad
 python piper_mount.py                                                # checks + exports/*.step, *.stl
 xvfb-run -a -s "-screen 0 1920x1080x24" python render.py            # renders/*.png
 xvfb-run -a -s "-screen 0 1920x1080x24" python fiducials.py         # renders/view_*.png, exports/fiducials/
+xvfb-run -a -s "-screen 0 1920x1080x24" python lens_compare.py      # 6 mm vs 16 mm: renders/lens_compare.png (~5 min)
 xvfb-run -a -s "-screen 0 1920x1080x24" python wrist_zoom.py        # renders/wrist_zoom.gif: the OT-2's zoom on the wrist (~2 min)
+python cradle_fit.py                                                 # renders/cradle_fit.gif: the lens's thumbscrews, old and new cradle
 python detail_compare.py                                             # renders/detail_compare.png: fine detail, wrist vs a fixed zoom
 python envelope.py                                                   # renders/tight_spaces.png
 python fastener_fit.py                                               # exports/fastener_fit.json: screw lengths, heads, tool room (about 15 min)
@@ -835,12 +979,15 @@ python ../onshape/add_gripper.py --doc 93ef145982c24192bfd160be --ws e3d08fcb2dc
   finger plate's width: about 164 mm against 145 mm.
 - **The tab screws go into brass inserts in the gripper's plastic.** Snug them; don't torque them.
 - **Estimated dimensions:**
-  - The 6 mm lens's O30 x 34 mm and 53 g are the maker's figures; its thread length (4 mm) is an
-    estimate.
+  - The 6 mm lens's O30 x 34 mm and 53 g are the maker's figures. Its thread length (4 mm), ring
+    layout and thumbscrews are estimates, measured off product photos
+    ([`cad/lenses.py`](cad/lenses.py)). Most of all, check how far the thumbscrews stand out: the
+    cradle allows for 5 mm plus 1.5 mm of clearance.
   - The Pi 5's connector positions are read off Raspberry Pi's drawing, and its outline is a
     simplified envelope, as in #234.
 - **Nothing has been fitted yet.** The PLA set went to the A1 mini on 2026-10-08
-  ([record](slice/print_2026-10-08/README.md)).
+  ([record](slice/print_2026-10-08/README.md)), with the old O33 lens cradle in its bracket; reprint
+  the bracket before fitting the 6 mm lens (see [The pod seat](#the-pod-seat)).
   - The clearances reuse the numbers from #234's A1 mini fit study (M3 nut slot 5.8 mm across
     flats, 0.15 mm per side on the body).
   - The collar grips by squeezing the body until the split closes. The solid model put that squeeze
