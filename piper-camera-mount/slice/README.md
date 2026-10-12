@@ -19,6 +19,10 @@ dual-camera mount's in [#238](https://github.com/vertical-cloud-lab/byu-vcl/issu
   plate at 65 °C, Auto circle contour-hole compensation **on** and supports **off**. The filament
   colour is black, which only changes the preview.
 
+**For the H2D in PAHT-CF** there is a second one-plate project,
+[`piper_camera_mount_H2D_PAHT-CF.3mf`](piper_camera_mount_H2D_PAHT-CF.3mf); see
+[The H2D in PAHT-CF](#the-h2d-in-paht-cf-one-plate-slice_h2dpy) below.
+
 ## Running it
 
 From the repo root:
@@ -75,6 +79,53 @@ its flattest face (90° is a flat ceiling) and its bounding box in the STL's own
 exactly 45°, like the carrier's gussets, are counted separately as `at_limit_mm2`. Hole tops,
 nut-slot roofs and counterbore roofs all show up: they print as short bridges.
 
+## The H2D in PAHT-CF, one plate (`slice_h2d.py`)
+
+[`piper_camera_mount_H2D_PAHT-CF.3mf`](piper_camera_mount_H2D_PAHT-CF.3mf) is the same job for the
+lab's H2D, in the material the main README picks for the parts that stay on the arm
+([Material](../README.md#material-paht-cf-on-the-h2d)). [`slice_h2d.py`](slice_h2d.py) makes it with
+the same CLI and writes [`report_h2d.json`](report_h2d.json), whose keys are `report.json`'s plus the
+nozzle and temperatures.
+
+![The H2D plate](../renders/h2d_plate.png)
+
+- **One plate, 3 h 45 min and 70.7 g** by Bambu's estimate: 213 layers to 42.6 mm, with no supports,
+  no slicer warnings, nothing flagged by Bambu's support check and no toolpath off the bed.
+- **Settings:** Bambu's system presets `Bambu Lab H2D 0.4 nozzle`, `0.20mm Standard @BBL H2D` and
+  `Bambu PAHT-CF @BBL H2D`, with the A1 mini's overrides on top (3 walls, 25 % infill, circle
+  compensation on, supports off, Textured PEI). From the presets: nozzle 290 °C, plate 100 °C,
+  chamber 60 °C.
+- **The left nozzle.** The H2D's status on 2026-09-27 showed a 0.4 mm hardened-steel hotend on the
+  left and a 0.6 mm TPU High-Flow hotend on the right, which shouldn't run carbon fibre. Left alone,
+  the CLI groups the filament itself ("Auto For Flush") and puts it on the right, Bambu's main
+  extruder. So the plate is set to "Manual" with filament 1 on extruder 1, the left; the G-code
+  reads `filament_map = 1`, and `slice_info.config` has the filament on `extruder_id="1"`. The CLI
+  takes this from the plate's own settings (`plate_params` in the assemble list). Set in the
+  process preset, it reaches the project settings but not the slice.
+- **Positions** are `PRINT_LAYOUT` again, moved by (85, 70) mm so that the A1 mini's 180 × 180 mm
+  square sits in the middle of the 350 × 320 mm bed. Each footprint is also checked against the left
+  nozzle's reach, x 0 to 325 mm (`extruder_printable_area` in the machine preset). The set takes
+  about a quarter of the plate.
+- **Pictures:** [`plate_view.py`](plate_view.py) draws `../renders/h2d_plate.png` and
+  [`../renders/h2d_plate_build.gif`](../renders/h2d_plate_build.gif) from the plate's own G-code,
+  coloured by Bambu's feature labels. The times in the GIF are Bambu's, from its `M73` lines. The 3MF
+  also carries Studio's own plate thumbnails.
+
+```bash
+python piper-camera-mount/slice/slice_h2d.py --bambu ~/bambu/squashfs-root   # -> .3mf, report_h2d.json (~15 s)
+xvfb-run -a python piper-camera-mount/slice/plate_view.py                    # -> renders/h2d_plate.png, .gif (~1 min)
+```
+
+**Before sending it:**
+
+- **Check three settings in Studio.** On every CLI-sliced project so far, Studio has reset wall
+  loops (3 → 2), sparse infill (25 → 15 %) and circle compensation (on → off) on opening it
+  ([2026-10-08](print_2026-10-08/README.md#what-the-gui-changed-and-the-check)). Set them back and
+  re-slice. The plate should come back at 70.66 g and 213 layers.
+- **Check the filament is on the left nozzle** in the plate's filament grouping, and that the left
+  hotend is still the 0.4 mm hardened steel one. Studio reads the nozzles from the printer.
+- **Dry the PAHT-CF:** 80 °C for 8 to 12 h in the AMS HT, as the main README says.
+
 ## Three setups, each part alone (`slice_configs.py`)
 
 [`slice_configs.py`](slice_configs.py) slices the mount for the material question, with the same CLI
@@ -107,3 +158,6 @@ Only the bracket changed: alone it is 1 h 19 min and 36.2 g on the A1 mini (`sli
 Before that, nothing of the mount had been printed. [`a1mini_history/`](a1mini_history/README.md)
 lists everything the A1 mini printed from July to the morning of 2026-10-08, from Bambu's cloud and
 the printer's own SD card, with the two read-only scripts that fetch it.
+
+**Nothing has been printed in PAHT-CF yet.** The H2D plate above was sliced on 2026-10-12, with the
+O43 cradle.

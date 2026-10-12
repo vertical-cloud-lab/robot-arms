@@ -415,6 +415,11 @@ CLI, the same way as #234 and #238, and writes
   cradle): **1 h 19 min and 36.2 g** on the A1 mini, with the same settings
   ([`slice/slice_configs.json`](slice/slice_configs.json), `a1m_pla_04`, plate 2). Open the plate in
   Bambu Studio and delete everything but the bracket. Nothing else needs reprinting.
+- **The whole set on the H2D in PAHT-CF, one plate:**
+  [`slice/piper_camera_mount_H2D_PAHT-CF.3mf`](slice/piper_camera_mount_H2D_PAHT-CF.3mf), **3 h 45 min
+  and 70.7 g**. It prints from the left nozzle, the 0.4 mm hardened-steel one, and is mapped there by
+  hand: left alone the slicer picks the right. [The H2D in PAHT-CF](slice/README.md#the-h2d-in-paht-cf-one-plate-slice_h2dpy)
+  has the details and what to check in Studio before sending it.
 - **No supports.** Supports are off, and Bambu's own support check flags none of the six objects.
   There are no slicer warnings and no toolpaths off the bed.
 - **Overhangs** (`slice/overhangs.json`): the only faces steeper than 45 degrees are the roofs of
@@ -422,6 +427,8 @@ CLI, the same way as #234 and #238, and writes
   The seat's outer face and the carrier's gussets are drawn at exactly 45 degrees.
 
 ![Print layout](renders/print_layout.png)
+
+![The H2D plate, sliced](renders/h2d_plate.png)
 
 ### Material: PAHT-CF on the H2D
 
