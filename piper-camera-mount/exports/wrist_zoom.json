@@ -21,10 +21,11 @@
   }
  },
  "fit": {
-  "zoom vs bracket (mm3)": 1909.5,
+  "zoom vs bracket (mm3)": 1098.8,
   "zoom vs pod (mm3)": 0.0,
   "zoom vs gripper body (mm3)": 256.7,
   "6 mm lens vs bracket (mm3)": 0.0,
+  "6 mm lens thumbscrews vs bracket (mm3)": 0.0,
   "zoom to the fingers, fully open (mm)": 37.31
  },
  "captions": {

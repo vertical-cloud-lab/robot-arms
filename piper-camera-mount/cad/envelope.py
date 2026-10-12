@@ -16,6 +16,7 @@ from __future__ import annotations
 import json
 import subprocess
 import tempfile
+import urllib.request
 from pathlib import Path
 
 import cadquery as cq
@@ -82,8 +83,15 @@ def gripper_shapes() -> list:
 
 
 def first_version_shapes() -> list:
-    step = subprocess.run(["git", "show", f"{FIRST_VERSION}:piper-camera-mount/exports/assembly.step"],
-                          capture_output=True, check=True, cwd=HERE).stdout
+    out = subprocess.run(["git", "show", f"{FIRST_VERSION}:piper-camera-mount/exports/assembly.step"],
+                         capture_output=True, cwd=HERE)
+    if out.returncode == 0:
+        step = out.stdout
+    else:                       # robot-arms was split out of byu-vcl, and that commit stayed there
+        url = (f"https://raw.githubusercontent.com/vertical-cloud-lab/byu-vcl/{FIRST_VERSION}/"
+               "piper-camera-mount/exports/assembly.step")
+        with urllib.request.urlopen(url, timeout=120) as r:
+            step = r.read()
     with tempfile.NamedTemporaryFile(suffix=".step") as fh:
         fh.write(step)
         fh.flush()

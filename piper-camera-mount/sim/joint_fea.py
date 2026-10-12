@@ -2,7 +2,7 @@
 """Pod-to-bracket joint: how far the HQ Camera moves under its own inertia, old joint vs new.
 
 OLD is the pod on an ~11 x 40 mm strip with 2 x M3 (commit 66763fc, its exports read with
-git show); NEW is the 45 deg seat with 4 x M3 (../exports). For each, bracket + pod are
+git show, or fetched from byu-vcl, where that commit lives since the split); NEW is the 45 deg seat with 4 x M3 (../exports). For each, bracket + pod are
 fragmented together in gmsh, so the tet mesh shares nodes across their contact face: a bonded
 joint, i.e. a preloaded bolted joint that neither slips nor opens (the screws themselves are
 not modelled). Linear elastic, quadratic (P2) tets in scikit-fem, PLA taken solid and isotropic
@@ -27,6 +27,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import urllib.request
 from collections import Counter
 from dataclasses import fields
 from pathlib import Path
@@ -47,6 +48,7 @@ sys.path.insert(0, str(MOUNT / "cad"))
 from piper_mount import Params, optical_axes, station_vec  # noqa: E402
 
 OLD_REV = "66763fc"
+OLD_RAW = f"https://raw.githubusercontent.com/vertical-cloud-lab/byu-vcl/{OLD_REV}/piper-camera-mount/exports/"
 E, NU = 2400.0, 0.35            # MPa: PLA, solid
 RHO = 1.24e-9                   # t/mm^3 (1.24 g/cm^3)
 M_CAM = 0.083                   # kg: HQ Camera + 6 mm lens
@@ -66,8 +68,13 @@ def sources(tmp: Path) -> dict:
     """{design: (bracket STEP, pod STEP, Params it was built with)}"""
     for name in ("bracket.step", "pod.step", "params.json"):
         out = subprocess.run(["git", "show", f"{OLD_REV}:piper-camera-mount/exports/{name}"], cwd=MOUNT,
-                             check=True, capture_output=True).stdout
-        (tmp / f"old_{name}").write_bytes(out)
+                             capture_output=True)
+        if out.returncode == 0:
+            data = out.stdout
+        else:                   # robot-arms was split out of byu-vcl, and 66763fc stayed there
+            with urllib.request.urlopen(OLD_RAW + name, timeout=120) as r:
+                data = r.read()
+        (tmp / f"old_{name}").write_bytes(data)
     ex = MOUNT / "exports"
     return {"old": (tmp / "old_bracket.step", tmp / "old_pod.step", load_params((tmp / "old_params.json").read_text())),
             "new": (ex / "bracket.step", ex / "pod.step", load_params((ex / "params.json").read_text()))}
