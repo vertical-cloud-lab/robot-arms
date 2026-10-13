@@ -11,10 +11,11 @@ It follows the OT-2 lid mount in [#234](https://github.com/vertical-cloud-lab/by
 (`ot2-overhead-camera/lid-mount/`): a parametric CadQuery model built around the maker's own CAD,
 with interference checks, exports and renders from one script. The design notes gathered in
 [borysgroup/aurora-cloud-infra#5](https://github.com/borysgroup/aurora-cloud-infra/issues/5) are
-the starting point for the PiPER side. **The PLA set went to the A1 mini on 2026-10-08**
+the starting point for the PiPER side. **The first PLA set went to the A1 mini on 2026-10-08**
 ([record](slice/print_2026-10-08/README.md)). Nothing has been fitted to the gripper yet. That set's
-bracket has the old O33 lens cradle, which the 6 mm lens's thumbscrews can hit, so **reprint the
-bracket** before fitting the lens ([The pod seat](#the-pod-seat)).
+bracket has the old O33 lens cradle, which the 6 mm lens's thumbscrews can hit. **A second PLA set,
+with the O43 cradle, went to the A1 mini on 2026-10-13** ([record](slice/print_2026-10-13/README.md));
+fit the lens with its bracket ([The pod seat](#the-pod-seat)).
 
 ![Assembly on AgileX's gripper model](renders/assembly.png)
 
@@ -992,9 +993,10 @@ python ../onshape/add_gripper.py --doc 93ef145982c24192bfd160be --ws e3d08fcb2dc
     cradle allows for 5 mm plus 1.5 mm of clearance.
   - The Pi 5's connector positions are read off Raspberry Pi's drawing, and its outline is a
     simplified envelope, as in #234.
-- **Nothing has been fitted yet.** The PLA set went to the A1 mini on 2026-10-08
-  ([record](slice/print_2026-10-08/README.md)), with the old O33 lens cradle in its bracket; reprint
-  the bracket before fitting the 6 mm lens (see [The pod seat](#the-pod-seat)).
+- **Nothing has been fitted yet.** The first PLA set went to the A1 mini on 2026-10-08
+  ([record](slice/print_2026-10-08/README.md)), with the old O33 lens cradle in its bracket. A second
+  set with the O43 cradle went to it on 2026-10-13 ([record](slice/print_2026-10-13/README.md)); use
+  that bracket for the 6 mm lens (see [The pod seat](#the-pod-seat)).
   - The clearances reuse the numbers from #234's A1 mini fit study (M3 nut slot 5.8 mm across
     flats, 0.15 mm per side on the body).
   - The collar grips by squeezing the body until the split closes. The solid model put that squeeze

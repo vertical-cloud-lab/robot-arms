@@ -149,14 +149,20 @@ mass comes from its own G-code, split by feature, in
 [`slice_configs.json`](slice_configs.json). Each part's G-code also goes to `build_<setup>/` (ignored
 by git), where [`../sim/sliced_fea.py`](../sim/sliced_fea.py) reads it to model the part as printed.
 
-## Has it been printed? (`print_2026-10-08/`, `a1mini_history/`)
+## Has it been printed? (`print_2026-10-08/`, `print_2026-10-13/`, `a1mini_history/`)
 
-**The PLA set went to the A1 mini on 2026-10-08.** It was sent at 12:39 UTC from Bambu Studio on a
-CI runner, as one plate, in black PLA Basic on Textured PEI. The record is in
+**The first PLA set went to the A1 mini on 2026-10-08.** It was sent at 12:39 UTC from Bambu
+Studio on a CI runner, as one plate, in black PLA Basic on Textured PEI. The record is in
 [`print_2026-10-08/`](print_2026-10-08/README.md): pre-flights, the file Studio sent, `print.json`
 and camera frames.
 
-**That set's bracket is out of date.** On 2026-10-12 the bracket's lens cradle was widened from O33
+**A second PLA set, with the O43 cradle, went to the A1 mini on 2026-10-13.** It is the current
+`piper_camera_mount_A1mini_PLA.3mf`, uploaded unchanged to the printer's SD card over LAN and
+started at the touchscreen by jss265, in black PLA Basic from A3. When the session handed over it was
+at layer 18 of 213, with no error, and due to finish near 22:08 UTC. The record is in
+[`print_2026-10-13/`](print_2026-10-13/README.md).
+
+**The first set's bracket is out of date.** On 2026-10-12 the bracket's lens cradle was widened from O33
 to O43, so the 6 mm lens's thumbscrews clear it at any angle ([The pod seat](../README.md#the-pod-seat)).
 The plate and `report.json` here are the new bracket; `print_2026-10-08/sent/` keeps what was printed.
 Only the bracket changed: alone it is 1 h 19 min and 36.2 g on the A1 mini (`slice_configs.py`,

@@ -1,6 +1,6 @@
 {
  "what": "PiPER wrist camera mount with the O43 cradle, every printed part on one plate: bracket, pod, carrier, 4 Pi 5 spacers, 2 tag wedges",
- "result": "printing when this record was written: layer 2 of 213 at 2026-10-13T19:35:10Z, 153 min left by the printer, no print error, HMS alert or temperature alarm",
+ "result": "still printing when this session handed over: layer 18 of 213, 27 %, 121 min left by the printer at 2026-10-13T20:07:26Z, for a finish near 22:08 UTC; no print error, HMS alert or temperature alarm in 872 status samples",
  "asked_for": "https://github.com/vertical-cloud-lab/robot-arms/pull/10#issuecomment-6152645350 (jss265, 2026-10-13T18:43:04Z: 'make the print on the A1 mini. Use the black filament.')",
  "printer": {
   "model": "Bambu Lab A1 mini",
@@ -55,7 +55,10 @@
   "running_by": "2026-10-13T19:21:29Z (status read: RUNNING, job piper_mount_A1mini_black.gcode.3mf, tray 2)",
   "layer_1": "2026-10-13T19:26:49Z",
   "layer_2": "2026-10-13T19:34:14Z",
-  "last_status_in_this_record": "2026-10-13T19:35:10Z (layer 2, 8 %, 153 min left)"
+  "layer_10": "2026-10-13T19:49:59Z",
+  "layer_18": "2026-10-13T20:05:32Z",
+  "handed_over": "2026-10-13T20:07:26Z (layer 18, 27 %, 121 min left; jss265 holds the stop)"
  },
- "studio_session": "Bambu Studio 02.08.02.61 ran on the runner for route 3 and loaded the project, but nothing was sent from it. It was closed at about 19:21, and its screen recording, which showed the login page, was deleted unpublished."
+ "studio_session": "Bambu Studio 02.08.02.61 ran on the runner for route 3 and loaded the project, but nothing was sent from it. It was closed at about 19:21, and its screen recording, which showed the login page, was deleted unpublished.",
+ "pace_vs_2026_10_08": "layers 2 to 18 took 31.3 min here and 30.9 min for the same plate on 2026-10-08 (12:53:56 to 13:24:50)"
 }

@@ -30,7 +30,7 @@ black Bambu PLA Basic from AMS slot A3, on the Textured PEI plate. It was asked 
   option, and Bambu e-mailed a login code at 19:03:42 UTC. Nobody posted the code, so it expired
   unused. Studio was closed and its screen recording deleted, since it showed the login page.
 
-## Outcome so far
+## Outcome
 
 - Running by 19:21:29 UTC, 11 s after jss265's `Started`. The printer was loading **tray 2
   (0-based), A3, the black PLA Basic** (`ams.tray_now = 2`), with no print error or HMS alert.
@@ -44,11 +44,19 @@ black Bambu PLA Basic from AMS slot A3, on the Textured PEI plate. It was asked 
   Timelapse was off. It took 5.3 min from the first status read to layer 1.
 - Layer 1 ran from 19:26:49 to 19:34:14: 7.4 min, against 7.5 min for the same plate on
   8 October. Nozzle 220 °C and bed 65 °C held on target.
-- The frames below show the first layer flat on the plate, with no strings or lifting.
+- Layers 2 to 18 took 31.3 min (30.9 min on 8 October).
+- **The session watched to layer 18 of 213** (27 %, 121 min left at 20:07:26), then handed
+  over to jss265. In 872 status samples there was no print error, HMS alert or temperature
+  alarm.
+- The finish should be near 22:08 UTC. This record stops before then.
+- The frames show the first layer flat on the plate, then the parts building with no strings or
+  lifting.
 
-| Start (heating) | Layer 1 begins | Layer 1, mid | Layer 1, end | Layer 2 |
-|---|---|---|---|---|
-| ![](frames/20261013T192216Z_L0.jpg) | ![](frames/20261013T192651Z_L1.jpg) | ![](frames/20261013T193001Z_L1.jpg) | ![](frames/20261013T193412Z_L1.jpg) | ![](frames/20261013T193444Z_L2.jpg) |
+| Start (heating) | Layer 1 begins | Layer 1, mid | Layer 1, end |
+|---|---|---|---|
+| ![](frames/20261013T192216Z_L0.jpg) | ![](frames/20261013T192651Z_L1.jpg) | ![](frames/20261013T193001Z_L1.jpg) | ![](frames/20261013T193412Z_L1.jpg) |
+| **Layer 2** | **Layer 7** | **Layer 13** | **Layer 18** |
+| ![](frames/20261013T193444Z_L2.jpg) | ![](frames/20261013T194637Z_L7.jpg) | ![](frames/20261013T195543Z_L13.jpg) | ![](frames/20261013T200618Z_L18.jpg) |
 
 ## Timeline (UTC)
 
@@ -64,6 +72,9 @@ black Bambu PLA Basic from AMS slot A3, on the Textured PEI plate. It was asked 
 | 19:21:29 | Status read: `RUNNING`, this job, tray 2 |
 | 19:26:49 | Layer 1 |
 | 19:34:14 | Layer 2 |
+| 19:49:59 | Layer 10 |
+| 20:05:32 | Layer 18 |
+| 20:07:26 | Handed over: layer 18, 27 %, 121 min to go by the printer |
 
 ## Files
 
