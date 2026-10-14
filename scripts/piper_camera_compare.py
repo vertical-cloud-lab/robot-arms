@@ -302,15 +302,19 @@ def main():
         for r in rows:
             wr.writerow({k: round(v, 3) if isinstance(v, float) else v for k, v in r.items()})
     good = [r for r in rows if r["score"] > args.min_score]
+    moved = [r for r in good if r["pose"] != "READY"]  # READY is the reference, reported apart
     summary = {"frames": len(frames), "holds": len(holds), "sync_corr": round(corr, 3),
-               "tracked": len(good), "of": len(rows),
-               "median_err_px": round(float(np.median([r["err_px"] for r in good])), 2),
-               "p95_err_px": round(float(np.percentile([r["err_px"] for r in good], 95)), 2),
-               "median_err_mm": round(float(np.median([r["err_mm"] for r in good])), 2),
-               "p95_err_mm": round(float(np.percentile([r["err_mm"] for r in good], 95)), 2)}
+               "tracked": len(good), "of": len(rows), "tracked_moves": len(moved)}
+    if moved:
+        e_px, e_mm = [r["err_px"] for r in moved], [r["err_mm"] for r in moved]
+        summary.update({"median_err_px": round(float(np.median(e_px)), 2),
+                        "max_err_px": round(float(np.max(e_px)), 2),
+                        "median_err_mm": round(float(np.median(e_mm)), 2),
+                        "max_err_mm": round(float(np.max(e_mm)), 2)})
     ready_rows = [r for r in good if r["pose"] == "READY"]
-    if ready_rows:
-        summary["ready_repeat_px"] = round(float(np.median([r["moved_px"] for r in ready_rows])), 2)
+    if ready_rows:  # how far each return to READY lands from the first READY
+        summary["ready_repeat_median_px"] = round(float(np.median([r["moved_px"] for r in ready_rows])), 2)
+        summary["ready_repeat_max_px"] = round(float(np.max([r["moved_px"] for r in ready_rows])), 2)
 
     if args.refit and len(obs) >= 8:
         cam_fit, res = refit_camera(cam, obs, local)
