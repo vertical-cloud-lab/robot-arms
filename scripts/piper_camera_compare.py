@@ -105,21 +105,23 @@ def median_frame(paths):
     return np.median(np.stack(imgs), axis=0).astype(np.uint8)
 
 
-def track(ref, img, center, half=28, search=70):
-    """Where the patch of ref around center is in img (pixel centre, NCC score)."""
+def track(ref, img, center, guess, half=32, search=40):
+    """Where the patch of ref centred on the pixel nearest center is in img, searching within
+    search px of guess (the twin's prediction). Returns the patch centre and the NCC score."""
     cx, cy = int(round(center[0])), int(round(center[1]))
+    gx, gy = int(round(guess[0])), int(round(guess[1]))
     g_ref = cv2.cvtColor(ref, cv2.COLOR_BGR2GRAY)
     g_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     tpl = g_ref[cy - half:cy + half + 1, cx - half:cx + half + 1]
-    x0, y0 = max(0, cx - half - search), max(0, cy - half - search)
-    win = g_img[y0:cy + half + search + 1, x0:cx + half + search + 1]
+    x0, y0 = max(0, gx - half - search), max(0, gy - half - search)
+    win = g_img[y0:gy + half + search + 1, x0:gx + half + search + 1]
     if tpl.shape != (2 * half + 1, 2 * half + 1) or win.shape[0] <= tpl.shape[0] \
             or win.shape[1] <= tpl.shape[1]:
         return None, 0.0
     r = cv2.matchTemplate(win, tpl, cv2.TM_CCOEFF_NORMED)
     _, score, _, (mx, my) = cv2.minMaxLoc(r)
-    # sub-pixel peak by fitting a parabola through the neighbours
-    def sub(a, b, c):
+
+    def sub(a, b, c):  # sub-pixel peak: parabola through the neighbours
         d = a - 2 * b + c
         return 0.0 if abs(d) < 1e-9 else 0.5 * (a - c) / d
     dx = sub(r[my, mx - 1], r[my, mx], r[my, mx + 1]) if 0 < mx < r.shape[1] - 1 else 0.0
@@ -152,7 +154,7 @@ def sync_offset(t_frames, energy, t_trace, q_trace, guess, span=3.0):
 
 
 # ---------------------------------------------------------------- camera refit
-def refit_camera(cam, obs, local_pts, fit_focal=True):
+def refit_camera(cam, obs, local_pts, fit_focal=False):
     """Least-squares camera pose (and focal length) from observed anchor pixels.
     obs: list of (q, k, uv) with k the anchor index."""
     from scipy.optimize import least_squares
@@ -179,7 +181,7 @@ def refit_camera(cam, obs, local_pts, fit_focal=True):
 
 # ---------------------------------------------------------------- video
 def side_by_side(frames, t_frames, t_trace, q_trace, cam, meshes, out_mp4, crop, panel, labels,
-                 backdrop_q, fps):
+                 backdrop_q, fps, real_label="REAL camera"):
     import imageio.v2 as imageio
     x0, y0, w, h = crop
     pw, ph = panel
@@ -196,7 +198,8 @@ def side_by_side(frames, t_frames, t_trace, q_trace, cam, meshes, out_mp4, crop,
         tw.draw_skeleton(real, ccam, q, thick=1)
         twin = tw.render(ccam, meshes, q, 0.0, bd.copy(), alpha=0.92)
         tw.draw_skeleton(twin, ccam, q, thick=1)
-        tw.put_text(real, "REAL camera (yellow: joint feedback through the camera model)", (10, 24))
+        tw.put_text(real, f"{real_label} (yellow: joint feedback through the camera model)",
+                    (10, 24))
         tw.put_text(twin, "DIGITAL TWIN driven by the same joint feedback", (10, 24))
         frame = np.hstack([real, twin])
         bar = np.full((48, frame.shape[1], 3), 30, np.uint8)
@@ -220,7 +223,12 @@ def main():
     ap.add_argument("--crop", type=lambda v: [int(x) for x in v.split(",")],
                     default=[700, 1080, 2400, 1350], help="x0,y0,w,h in full-sensor pixels")
     ap.add_argument("--panel", type=lambda v: [int(x) for x in v.split("x")], default=[768, 432])
+    ap.add_argument("--search-px", type=int, default=40,
+                    help="look for each patch this far around the twin's prediction")
+    ap.add_argument("--min-score", type=float, default=0.8,
+                    help="ignore matches with a lower normalised cross-correlation")
     ap.add_argument("--gif-speed", type=float, default=3.0)
+    ap.add_argument("--real-label", default="REAL camera")
     args = ap.parse_args()
     os.makedirs(args.out, exist_ok=True)
 
@@ -263,14 +271,16 @@ def main():
     local = anchor_link_points(ref["q"], cam)
     uv_ref, _ = project_anchors(ref["q"], cam, local)
 
+    uv_cut = np.round(uv_ref)  # patches are cut on whole pixels
     rows, obs = [], []
     for hd in holds:
         uv_pred, P = project_anchors(hd["q"], cam, local)
         for k, (name, link, _) in enumerate(ANCHORS):
-            found, score = track(ref["img"], hd["img"], uv_ref[k])
+            found, score = track(ref["img"], hd["img"], uv_cut[k], uv_pred[k],
+                                 search=args.search_px)
             if found is None:
                 continue
-            obs_d = found - uv_ref[k]
+            obs_d = found - uv_cut[k]
             pred_d = uv_pred[k] - uv_ref[k]
             err = obs_d - pred_d
             mm = cam.mm_per_px(P[k])
@@ -279,14 +289,14 @@ def main():
                          "pred_dy": pred_d[1], "err_px": float(np.hypot(*err)),
                          "err_mm": float(np.hypot(*err) * mm), "moved_px": float(np.hypot(*obs_d)),
                          "mm_per_px": mm})
-            if score > 0.6:
-                obs.append((hd["q"], k, found))
+            if score > args.min_score:
+                obs.append((hd["q"], k, found - uv_cut[k] + uv_ref[k]))
     with open(os.path.join(args.out, "errors.csv"), "w", newline="") as f:
         wr = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
         wr.writeheader()
         for r in rows:
             wr.writerow({k: round(v, 3) if isinstance(v, float) else v for k, v in r.items()})
-    good = [r for r in rows if r["score"] > 0.6]
+    good = [r for r in rows if r["score"] > args.min_score]
     summary = {"frames": len(frames), "holds": len(holds), "sync_corr": round(corr, 3),
                "tracked": len(good), "of": len(rows),
                "median_err_px": round(float(np.median([r["err_px"] for r in good])), 2),
@@ -319,25 +329,25 @@ def main():
             os.path.join(args.out, "camera_refit.json"), note="refit to the run's holds")
     json.dump(summary, open(os.path.join(args.out, "summary.json"), "w"), indent=1)
     print(json.dumps(summary, indent=1))
-    plot_errors(rows, os.path.join(args.out, "errors.png"))
+    plot_errors(rows, os.path.join(args.out, "errors.png"), args.min_score)
 
-    def label_at(t):
-        lab = "start"
+    def label_at(t):  # the pose being moved to or held
         for m in poses:
-            if t >= m["unix_t0"] - 0.0:
-                lab = m["label"]
-        return lab
+            if t <= m["unix_t1"]:
+                return ("-> " if t < m["unix_t0"] else "") + m["label"]
+        return "parked"
 
     side_by_side(frames, t_frames, t_tr, q_tr, cam, meshes,
                  os.path.join(args.out, "side_by_side.mp4"),
-                 [int(v * s) for v in args.crop], args.panel, label_at, ref["q"],
-                 fps=1.0 / np.median(np.diff(t_pts)))
+                 [int(v * s) for v in args.crop], args.panel, label_at,
+                 joints_at(t_tr, q_tr, t_frames[0]),
+                 fps=1.0 / np.median(np.diff(t_pts)), real_label=args.real_label)
     tw.mp4_to_gif(os.path.join(args.out, "side_by_side.mp4"),
                   os.path.join(args.out, f"side_by_side_{args.gif_speed:g}x.gif"),
                   args.gif_speed, 960)
 
 
-def plot_errors(rows, path):
+def plot_errors(rows, path, min_score):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -352,7 +362,7 @@ def plot_errors(rows, path):
     for i, n in enumerate(names):
         vals = []
         for p in poses:
-            v = [r["err_mm"] for r in rows if r["pose"] == p and r["anchor"] == n and r["score"] > 0.6]
+            v = [r["err_mm"] for r in rows if r["pose"] == p and r["anchor"] == n and r["score"] > min_score]
             vals.append(np.median(v) if v else np.nan)
         ax.bar(np.arange(len(poses)) + (i - 1) * width, vals, width, label=n, color=colors[i])
     ax.set_xticks(range(len(poses)))

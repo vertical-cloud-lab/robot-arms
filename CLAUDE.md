@@ -135,6 +135,20 @@ around it. sudo is password-gated, so feed the password over stdin so it never a
 process list or shell history: `ssh … "sudo -S -p '' <cmd>" <<< "$ARM_PI_PASSWORD"`. Never
 print the hostname or any credential in comments, commits, or logs.
 
+**Side camera and digital twin (issue #24).** The Pi Camera Module 3 Wide (imx708_wide, CSI) is
+taped to the table and looks at the arm side-on. It was moved between #19 and 2026-10-13 (now
+lower and closer, with a shelf behind the arm in view), so #19's image calibration no longer
+applies. The current camera model is `docs/issue-24/camera_2026-10-13.json` (OpenCV, full-sensor
+4608x2592 pixels, arm base frame in mm). `scripts/piper_twin.py` draws AgileX's URDF meshes
+(piper_ros, pinned by SHA) through it; the URDF reproduces the SDK's DH forward kinematics to
+0.1 mm, so SDK joint feedback drives it directly. `scripts/piper_camera_check.py` (stdlib only,
+copy at `~/piper_camera_check.py` on the Pi) plans and, with `--go`, runs the small-motion check
+on video; `scripts/piper_camera_compare.py` turns the run into errors and a side-by-side video.
+For video, use `rpicam-vid --mode 2304:1296:10:P`: it covers the full sensor, while the
+1536x864 mode is a centre crop that cuts off the base. When the arm is unpowered, `can0` stays
+up but `ConnectPort()` logs `SearchPiperFirmwareVersion send failed: SEND_MESSAGE_FAILED` (no
+node acknowledges) and no joint feedback arrives.
+
 **Using the Pi as a proxy.** Some vendor sites (and YouTube's player) block GitHub Actions IP
 ranges; the Pi's residential IP is not blocked. The Pi is on constrained Wi-Fi and may be
 running the arm, so rate-cap transfers (`curl --limit-rate`) and never run speed tests.

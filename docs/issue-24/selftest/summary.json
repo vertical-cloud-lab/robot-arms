@@ -1,0 +1,16 @@
+{
+ "frames": 276,
+ "holds": 10,
+ "sync_corr": 0.761,
+ "tracked": 21,
+ "of": 30,
+ "median_err_px": 0.03,
+ "p95_err_px": 4.12,
+ "median_err_mm": 0.04,
+ "p95_err_mm": 4.81,
+ "ready_repeat_px": 0.02,
+ "refit_rms_px": 2.06,
+ "refit_loo_median_px": 0.6,
+ "refit_loo_p95_px": 4.33,
+ "refit_camera_moved_mm": 7.4
+}
