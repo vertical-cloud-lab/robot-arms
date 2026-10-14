@@ -139,6 +139,15 @@ print the hostname or any credential in comments, commits, or logs.
 ranges; the Pi's residential IP is not blocked. The Pi is on constrained Wi-Fi and may be
 running the arm, so rate-cap transfers (`curl --limit-rate`) and never run speed tests.
 
+**Rest seat (#24).** A printed seat behind the base (`docs/issue-24/rest-seat/`) holds the upper
+arm, and with it J1, while the arm is parked. Once someone confirms on an issue that it is
+installed, every script that moves the arm must:
+- lift J2 to at least 8° before moving J1;
+- come home by setting J1 = 0 first and lowering J2 last;
+- keep J1 above −130° while the arm is still folded.
+
+If the arm can't settle into the seat at home, J1's zero is wrong: stop rather than push.
+
 ## Secret inventory
 
 Names and purposes only — **never** echo, grep, or print the values. Every secret below is
