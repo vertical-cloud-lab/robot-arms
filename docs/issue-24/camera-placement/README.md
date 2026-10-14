@@ -19,6 +19,17 @@ from the room), y toward the wall, z up from the arm's plate.
 | From J2 | 1.08 m, outside the fingertips' 0.76 m reach | 0.86 m, outside the reach |
 | Camera files | [`camera_overhead.json`](camera_overhead.json) | [`camera_front-end.json`](camera_front-end.json) |
 
+Fallbacks, if a spot can't be used:
+
+- **No overhead mount:** put A on the wall behind the shelf instead, at (0, 590, 750) looking at
+  (0, -50, 100), i.e. 0.75 m up and 45 deg down into the room. With B it scores the same (88.0 %).
+- **No room past the right-hand end:** put B in that end's wall-side corner, at (720, 595, 450)
+  looking at (0, 50, 150). With A it scores 83.5 %.
+
+What the three cameras would see as the twin moves over the table: [`views.mp4`](views.mp4)
+([`views.gif`](views.gif)); stills at four poses: [`views.jpg`](views.jpg); where they are:
+[`overview.jpg`](overview.jpg).
+
 Both assume a Camera Module 3 Wide (102 x 67 deg). With the dome from #2 in place, A can hang
 from its top rails at 1.1 m and still cover the whole table.
 
@@ -38,7 +49,7 @@ error is the RMS 3D error of the fingertips triangulated from every camera that 
 | **+ A + B (recommended, 2nd of 45 pairs)** | **88.8 %** | **98.5 %** | **1.02 mm** | **88.2 %** |
 | + wall-high + front-end-high (1st) | 89.5 % | 98.0 % | 1.10 mm | 88.5 % |
 | + wall-high + B (3rd) | 88.5 % | 98.2 % | 0.95 mm | 88.0 % |
-| + A + end-back-corner | 89.5 % | 98.8 % | 1.22 mm | 82.2 % |
+| + A + end-back-corner | 89.5 % | 99.0 % | 1.21 mm | 83.5 % |
 | + door-end + the raised taped camera (45th) | 78.5 % | 98.0 % | 1.31 mm | 60.2 % |
 
 The top pairs are within the noise of 400 poses of each other. What they share is a camera at

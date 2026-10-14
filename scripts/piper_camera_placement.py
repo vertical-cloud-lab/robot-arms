@@ -60,7 +60,7 @@ CANDIDATES = {
                       where="on the wall behind the shelf, 0.75 m up, looking at the room"),
     "room-high": dict(eye=(0, -650, 1000), target=(0, 100, 100),
                       where="above the table's front edge, 1 m up, looking down at 45-50 deg"),
-    "end-back-corner": dict(eye=(720, 620, 450), target=(0, 50, 150),
+    "end-back-corner": dict(eye=(720, 595, 450), target=(0, 50, 150),
                             where="right-hand end, wall-side corner, 0.45 m up"),
     "end-front-corner": dict(eye=(720, -700, 450), target=(0, 100, 150),
                              where="right-hand end, room-side corner, 0.45 m up"),
@@ -87,7 +87,7 @@ def taped_camera():
 
 
 def describe(cam):
-    """Position, pointing (azimuth from +x toward +y, elevation) and roll-free summary."""
+    """Position, viewing direction (azimuth from +x toward +y, elevation) and clearance."""
     C, d = cam.center(), cam.R().T @ [0, 0, 1]
     return dict(position_mm=C.round(0).tolist(),
                 look_dir=d.round(3).tolist(),
@@ -110,15 +110,15 @@ def ik(tip, axis, q0=READY):
 
     def res(q):
         p, a = tip_and_axis(q)
-        return np.concatenate([(p - tip) / 1.0, (a - axis) * 200.0])
+        return np.concatenate([p - tip, (a - axis) * 200.0])  # 1 mm ~ 0.3 deg of tool axis
     best = None
-    for j1 in (math.degrees(math.atan2(tip[1], tip[0])),):
-        for q_start in (q0, [j1, 60, -60, 0, 40, 0], [j1, 90, -90, 0, 60, 0]):
-            q_start = np.clip(np.array(q_start, float), lo + 1e-3, hi - 1e-3)
-            q_start[0] = np.clip(j1, lo[0] + 1, hi[0] - 1)
-            r = least_squares(res, q_start, bounds=(lo, hi))
-            if best is None or r.cost < best.cost:
-                best = r
+    j1 = np.clip(math.degrees(math.atan2(tip[1], tip[0])), lo[0] + 1, hi[0] - 1)
+    for q_start in (q0, [j1, 60, -60, 0, 40, 0], [j1, 90, -90, 0, 60, 0]):
+        q_start = np.clip(np.array(q_start, float), lo + 1e-3, hi - 1e-3)
+        q_start[0] = j1
+        r = least_squares(res, q_start, bounds=(lo, hi))
+        if best is None or r.cost < best.cost:
+            best = r
     p, a = tip_and_axis(best.x)
     return best.x.round(2).tolist(), float(np.linalg.norm(p - tip)), \
         float(math.degrees(math.acos(np.clip(a @ axis, -1, 1))))
@@ -250,7 +250,7 @@ def draw_line3d(img, cam, a, b, color, thick=1, n=40):
                      color, thick, cv2.LINE_AA)
 
 
-def scene(cam, w=None, h=None):
+def scene(cam):
     """Table, grid and wall as the camera would see them, before the arm is drawn."""
     img = np.full((cam.height, cam.width, 3), 236, np.uint8)
     x0, x1, y0, y1 = TABLE["x0"], TABLE["x1"], TABLE["y0"], TABLE["y1"]

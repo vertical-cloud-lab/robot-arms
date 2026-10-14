@@ -160,20 +160,20 @@
   "end-back-corner": {
    "position_mm": [
     720.0,
-    620.0,
+    595.0,
     450.0
    ],
    "look_dir": [
-    -0.745,
-    -0.59,
-    -0.311
+    -0.757,
+    -0.573,
+    -0.315
    ],
-   "azimuth_deg": -141.6,
-   "elevation_deg": -18.1,
-   "distance_from_J2_mm": 1005,
+   "azimuth_deg": -142.9,
+   "elevation_deg": -18.4,
+   "distance_from_J2_mm": 990,
    "outside_reach": true,
-   "fingertips_seen_pct": 84.5,
-   "median_mm_per_px": 0.82,
+   "fingertips_seen_pct": 84.8,
+   "median_mm_per_px": 0.8,
    "where": "right-hand end, wall-side corner, 0.45 m up"
   },
   "end-front-corner": {
@@ -295,22 +295,22 @@
   {
    "cameras": [
     "taped",
+    "end-back-corner"
+   ],
+   "seen_by_2plus_pct": 62.2,
+   "seen_by_any_pct": 97.5,
+   "median_err_mm": 1.71,
+   "p90_err_mm": null,
+   "within_2mm_pct": 43.2
+  },
+  {
+   "cameras": [
+    "taped",
     "raised-tape"
    ],
    "seen_by_2plus_pct": 67.2,
    "seen_by_any_pct": 80.8,
    "median_err_mm": 1.71,
-   "p90_err_mm": null,
-   "within_2mm_pct": 41.0
-  },
-  {
-   "cameras": [
-    "taped",
-    "end-back-corner"
-   ],
-   "seen_by_2plus_pct": 62.2,
-   "seen_by_any_pct": 97.2,
-   "median_err_mm": 1.75,
    "p90_err_mm": null,
    "within_2mm_pct": 41.0
   },
@@ -389,6 +389,18 @@
   {
    "cameras": [
     "taped",
+    "room-corner",
+    "end-back-corner"
+   ],
+   "seen_by_2plus_pct": 85.2,
+   "seen_by_any_pct": 100.0,
+   "median_err_mm": 1.16,
+   "p90_err_mm": null,
+   "within_2mm_pct": 84.5
+  },
+  {
+   "cameras": [
+    "taped",
     "door-end",
     "front-end-high"
    ],
@@ -413,14 +425,14 @@
   {
    "cameras": [
     "taped",
-    "room-corner",
-    "end-back-corner"
+    "end-back-corner",
+    "end-front-corner"
    ],
-   "seen_by_2plus_pct": 85.0,
+   "seen_by_2plus_pct": 86.2,
    "seen_by_any_pct": 100.0,
-   "median_err_mm": 1.18,
+   "median_err_mm": 1.13,
    "p90_err_mm": null,
-   "within_2mm_pct": 84.0
+   "within_2mm_pct": 83.8
   },
   {
    "cameras": [
@@ -449,12 +461,12 @@
   {
    "cameras": [
     "taped",
-    "end-back-corner",
-    "end-front-corner"
+    "overhead",
+    "end-back-corner"
    ],
-   "seen_by_2plus_pct": 86.0,
-   "seen_by_any_pct": 100.0,
-   "median_err_mm": 1.15,
+   "seen_by_2plus_pct": 89.5,
+   "seen_by_any_pct": 99.0,
+   "median_err_mm": 1.21,
    "p90_err_mm": null,
    "within_2mm_pct": 83.5
   },
@@ -473,14 +485,14 @@
   {
    "cameras": [
     "taped",
-    "overhead",
+    "room-high",
     "end-back-corner"
    ],
-   "seen_by_2plus_pct": 89.5,
-   "seen_by_any_pct": 98.8,
+   "seen_by_2plus_pct": 85.5,
+   "seen_by_any_pct": 99.0,
    "median_err_mm": 1.22,
    "p90_err_mm": null,
-   "within_2mm_pct": 82.2
+   "within_2mm_pct": 82.5
   },
   {
    "cameras": [
@@ -500,11 +512,11 @@
     "end-back-corner",
     "front-end-high"
    ],
-   "seen_by_2plus_pct": 88.0,
+   "seen_by_2plus_pct": 88.2,
    "seen_by_any_pct": 99.5,
    "median_err_mm": 1.12,
    "p90_err_mm": null,
-   "within_2mm_pct": 82.0
+   "within_2mm_pct": 81.8
   },
   {
    "cameras": [
@@ -517,18 +529,6 @@
    "median_err_mm": 1.16,
    "p90_err_mm": null,
    "within_2mm_pct": 81.5
-  },
-  {
-   "cameras": [
-    "taped",
-    "room-high",
-    "end-back-corner"
-   ],
-   "seen_by_2plus_pct": 85.2,
-   "seen_by_any_pct": 99.0,
-   "median_err_mm": 1.23,
-   "p90_err_mm": null,
-   "within_2mm_pct": 81.2
   },
   {
    "cameras": [
@@ -548,11 +548,11 @@
     "front-end",
     "end-back-corner"
    ],
-   "seen_by_2plus_pct": 88.5,
+   "seen_by_2plus_pct": 88.8,
    "seen_by_any_pct": 98.0,
    "median_err_mm": 1.02,
    "p90_err_mm": null,
-   "within_2mm_pct": 80.2
+   "within_2mm_pct": 79.0
   },
   {
    "cameras": [
@@ -629,6 +629,18 @@
   {
    "cameras": [
     "taped",
+    "wall-high",
+    "end-back-corner"
+   ],
+   "seen_by_2plus_pct": 85.2,
+   "seen_by_any_pct": 98.2,
+   "median_err_mm": 1.2,
+   "p90_err_mm": null,
+   "within_2mm_pct": 76.8
+  },
+  {
+   "cameras": [
+    "taped",
     "room-corner",
     "front-end-high"
    ],
@@ -665,18 +677,6 @@
   {
    "cameras": [
     "taped",
-    "wall-high",
-    "end-back-corner"
-   ],
-   "seen_by_2plus_pct": 85.2,
-   "seen_by_any_pct": 98.0,
-   "median_err_mm": 1.22,
-   "p90_err_mm": null,
-   "within_2mm_pct": 76.2
-  },
-  {
-   "cameras": [
-    "taped",
     "end-front-corner",
     "front-end-high"
    ],
@@ -693,10 +693,10 @@
     "end-back-corner"
    ],
    "seen_by_2plus_pct": 79.2,
-   "seen_by_any_pct": 98.5,
-   "median_err_mm": 1.27,
+   "seen_by_any_pct": 98.8,
+   "median_err_mm": 1.24,
    "p90_err_mm": null,
-   "within_2mm_pct": 74.5
+   "within_2mm_pct": 74.8
   },
   {
    "cameras": [
@@ -809,6 +809,18 @@
   {
    "cameras": [
     "taped",
+    "door-end",
+    "end-back-corner"
+   ],
+   "seen_by_2plus_pct": 95.5,
+   "seen_by_any_pct": 98.2,
+   "median_err_mm": 1.68,
+   "p90_err_mm": 4.7,
+   "within_2mm_pct": 64.0
+  },
+  {
+   "cameras": [
+    "taped",
     "raised-tape",
     "end-front-corner"
    ],
@@ -829,18 +841,6 @@
    "median_err_mm": 1.37,
    "p90_err_mm": null,
    "within_2mm_pct": 62.5
-  },
-  {
-   "cameras": [
-    "taped",
-    "door-end",
-    "end-back-corner"
-   ],
-   "seen_by_2plus_pct": 95.5,
-   "seen_by_any_pct": 98.0,
-   "median_err_mm": 1.71,
-   "p90_err_mm": 4.7,
-   "within_2mm_pct": 62.3
   },
   {
    "cameras": [
