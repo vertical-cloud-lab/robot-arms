@@ -15,9 +15,14 @@ every other hold by normalised cross-correlation. For each hold that gives
   kinematics and the camera model.
 Their difference, in pixels and in mm at the arm, is the error the issue asks about. It does
 not depend on how well the camera was placed at READY, only on how well the model predicts
-motion. The absolute placement is checked separately by refitting the camera to all holds
-(--refit), leaving one pose out at a time, and reporting how well the left-out pose is
-predicted.
+motion.
+
+--refit refits the camera pose to all holds, leaving one pose out at a time. It shows how
+consistent the model is across poses, but it cannot find the absolute camera pose: each patch
+is anchored where the current model puts it at READY, so a camera error moves the anchors with
+it. In the synthetic self-test (docs/issue-24/selftest) the refit moved the camera 7.4 mm, but
+it ended 9.6 mm from the true pose, about as far as it started (7.6 mm). Checking the absolute
+placement needs points found without the model (a marker, or the arm's outline).
 
 Time. The video's frame times (rpicam's --save-pts) start at its first frame; the trace is in
 Unix time. The offset between them starts from the recorded video start and is refined by
