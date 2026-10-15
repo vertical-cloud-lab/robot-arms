@@ -187,8 +187,7 @@ def main():
         log(f"stopping: {str(stop) or 'Ctrl+C'}")
     finally:
         # Step 6: end at rest, and only turn the motors off there. A second Ctrl+C, a dropped
-        # SSH session or another `kill` must not cut this short: the arm would still finish
-        # the move to rest it has been sent, but its motors would be left on.
+        # SSH session or another `kill` must not cut this short and leave the motors on.
         for s in (signal.SIGINT, signal.SIGHUP, signal.SIGTERM):
             signal.signal(s, signal.SIG_IGN)
         if all(piper.GetArmEnableStatus()):
