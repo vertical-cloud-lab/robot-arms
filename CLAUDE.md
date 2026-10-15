@@ -10,7 +10,8 @@ on 2026-10-09. The issues moved here with their comments, but older Claude comme
 branches that stayed in byu-vcl (`claude/issue-199-…`, `claude/issue-229-…`, `claude/issue-239-…`
 and so on). Those links still work, and the full commit history for that work is there: each
 branch here is the same files squashed into one import commit. byu-vcl's CLAUDE.md is still the
-reference for the rest of the lab (stream cams, OT-2, CubXL, Hugging Face Spaces, YouTube).
+reference for the rest of the lab (stream cams, OT-2, CubXL, Hugging Face Spaces, YouTube
+livestreams). Uploading videos to YouTube from here is covered below.
 
 ### The GitHub token dies at minute 60 (push early, re-mint to continue)
 
@@ -160,6 +161,7 @@ sessions.
 | `H2D_IP` / `H2D_ACCESS_CODE` / `H2D_SERIAL` | secret | Bambu Lab H2D, LAN mode. On the lab LAN, not the tailnet: connect from the Pi. |
 | `A1_MINI_IP` / `A1_MINI_ACCESS_CODE` / `A1_MINI_SERIAL` | secret | The same for the A1 mini. |
 | `BAMBU_USERNAME` / `BAMBU_PASSWORD` | secret | Bambu cloud login. A cloud-bound printer refuses LAN start/pause/stop commands not signed by Bambu's apps (HMS `0500-0500-0001-0007`); status, camera and SD upload still work over LAN. See byu-vcl's CLAUDE.md. |
+| `YOUTUBE_UPLOAD_TOKEN_PICKLE_B64` | secret | Base64 `token.pickle` for the **BYU Vertical Cloud Lab** YouTube channel (`UCKC7WzMu6QEh7O55zZlT2lw`), scopes `youtube.upload` + `youtube.readonly` only: can upload, cannot delete or edit. Use via `youtube/yt_service.py`; see "YouTube uploads" below. byu-vcl's full-control `YOUTUBE_TOKEN_PICKLE_B64` is deliberately not here. |
 
 **Setting or rotating.** `python scripts/set_secret.py NAME` reads a value without echoing it and
 sets it both as a repo secret and in `.claude/settings.local.json` (add `--gh-only` for
@@ -167,7 +169,34 @@ sets it both as a repo secret and in `.claude/settings.local.json` (add `--gh-on
 Tailscale identity: Settings → Trust credentials, delete and recreate with issuer GitHub,
 subject `repo:vertical-cloud-lab@228975003/robot-arms@1412458486:*`, scope auth keys (write) with tag
 `tag:rpi-5-eufi`, then update the two secrets. Everything else is shared with byu-vcl, so rotate
-it in both repos.
+it in both repos. The YouTube token is minted in byu-vcl and copied here; `youtube/README.md`
+has the copy step.
+
+## YouTube uploads
+
+Arm demos, calibration runs and failure clips go to the **BYU Vertical Cloud Lab** channel, not
+to the repo (video bloats git history) and not to *BYU VCL Hardware Streams*, which is the
+stream cams' livestream channel. Every `@claude` run has `YOUTUBE_UPLOAD_TOKEN_PICKLE_B64`:
+
+```bash
+pip install -r youtube/requirements.txt
+python youtube/yt_service.py                         # confirm channel and scopes
+python youtube/yt_service.py upload clip.mp4 --title "PiPER <what it shows>, <date>" \
+  --description "From <issue/PR link>, commit <sha7>."
+```
+
+- Uploads are `private` (API uploads from an unaudited Cloud project are locked private
+  anyway). Post the `youtube.com/watch?v=…` link in the comment and say it is private;
+  sgbaird publishes or unlists it from YouTube Studio.
+- The token cannot delete, edit metadata, change privacy, or manage playlists. If a run needs
+  that, say so in the comment instead of looking for another credential: it takes byu-vcl's
+  full-control token, behind `@claude-youtube` there (sgbaird only, each run approved).
+- Upload deliberately: one video per clip worth keeping, with a title and description that say
+  what it shows and link back to the issue or PR. Never upload footage of people without their
+  OK; the arm Pi's cameras can see the lab.
+- A camera on the Pi records there; copy the file back over SSH (`scp`, rate-capped) and upload
+  from the runner, since only the runner has the token. Nothing YouTube-related is installed on
+  the Pi.
 
 ## Receiving files from other repos (`sgbaird/agent-staging`)
 
