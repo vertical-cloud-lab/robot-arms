@@ -110,6 +110,10 @@ jobs:
       ZENODO_BASE_URL: ${{ secrets.ZENODO_BASE_URL }}
       ZENODO_SANDBOX_API_TOKEN: ${{ secrets.ZENODO_SANDBOX_API_TOKEN }}
       ZENODO_SANDBOX_BASE_URL: ${{ secrets.ZENODO_SANDBOX_BASE_URL }}
+      # YouTube, BYU Vertical Cloud Lab channel: upload + read only, cannot
+      # delete or edit (see youtube/README.md). byu-vcl's full-control token
+      # stays in its youtube-admin environment and is not wired in here.
+      YOUTUBE_UPLOAD_TOKEN_PICKLE_B64: ${{ secrets.YOUTUBE_UPLOAD_TOKEN_PICKLE_B64 }}
       # Allow long-blocking foreground commands (e.g., Edison polling)
       BASH_DEFAULT_TIMEOUT_MS: "900000" # 15 min default per Bash call
       BASH_MAX_TIMEOUT_MS: "3600000" # 60 min ceiling per Bash call
