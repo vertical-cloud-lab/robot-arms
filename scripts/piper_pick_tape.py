@@ -852,8 +852,14 @@ def run(args, piper, p, q_home):
     try:
         print(f"opening gripper to {args.open_mm:.0f} mm", flush=True)
         TRACE["phase"] = "open"
+        # After a quick-stop reset the controller ignores the gripper until it is put back in
+        # CAN command mode (2026-10-15: it stayed shut), so hold the start pose in that mode first.
+        settle(piper, clamp_limits(joints_deg(piper)), args.speed, timeout_s=1.0)
         w = set_gripper(piper, args.open_mm, args.grip_nm, args.grip_mm_s)
         print(f"  gripper at {w:.1f} mm", flush=True)
+        if w < args.open_mm - 5:
+            print("  gripper did not open: not going on", flush=True)
+            return
         print("to pregrasp", flush=True)
         TRACE["phase"] = "to_pregrasp"
         if not move_to(piper, p["q_pre"], args.speed, args.tol_deg, args.timeout_s):
