@@ -35,8 +35,9 @@ line (one IK solution per --res-mm); the return home follows the straight joint-
 
 Gripping. The gripper reports its opening and its motor effort (N*m, the SDK's unit; the
 spec sheet rates the gripper at 40 N clamping, 50 N max, for efforts up to 5 N*m). It closes
-with --grip-nm and lifts only if the fingers stop on the roll (wider than 3 mm) and the effort
-they hold reaches --min-grip-nm. While lifting and holding, a change in opening of more than
+with --grip-nm, its target running at --grip-mm-s (the gripper's own position control slams
+shut at up to 500 mm/s), and lifts only if the fingers stop on the roll (wider than 3 mm) and
+the effort they hold reaches --min-grip-nm. While lifting and holding, a change in opening of more than
 --slip-mm or a drop in effort puts the roll back down.
 
 Parking. J2 = 0 and J3 = 0 are firmware limits (min and max), but the arm rests at about
@@ -460,8 +461,22 @@ def log_tip(piper, tcp_mm, label):
           f"z = {P[2]:.0f} mm", flush=True)
 
 
-def set_gripper(piper, width_mm, effort_nm, wait_s=2.0):
+def ramp_gripper(piper, width_mm, effort_nm, mm_s):
+    """Stream the gripper target from its opening to width_mm at mm_s (the gripper's own
+    position control runs at about 250 mm/s on average and 500 mm/s peak, too fast to close
+    on the roll without knocking it)."""
+    w0 = gripper_mm(piper)
+    steps = max(1, round(abs(width_mm - w0) / mm_s * STREAM_HZ))
+    t0 = time.time()
+    for k in range(1, steps + 1):
+        piper.GripperCtrl(round((w0 + (width_mm - w0) * k / steps) * MDEG),
+                          round(effort_nm * MDEG), 0x01, 0)
+        time.sleep(max(0.0, t0 + k / STREAM_HZ - time.time()))
+
+
+def set_gripper(piper, width_mm, effort_nm, mm_s, wait_s=1.0):
     width_mm = max(0.0, min(70.0, width_mm))
+    ramp_gripper(piper, width_mm, effort_nm, mm_s)
     t0 = time.time()
     while time.time() - t0 < wait_s:
         piper.GripperCtrl(round(width_mm * MDEG), round(effort_nm * MDEG), 0x01, 0)
@@ -469,12 +484,15 @@ def set_gripper(piper, width_mm, effort_nm, wait_s=2.0):
     return gripper_mm(piper)
 
 
-def close_on(piper, effort_nm, timeout_s=4.0, still_s=0.3):
-    """Close with effort_nm until the fingers stop (opening steady to 0.2 mm for still_s);
-    return the opening and the median effort over that last still_s."""
+def close_on(piper, effort_nm, mm_s, still_s=0.3):
+    """Close with effort_nm, the target running down at mm_s, until the fingers stop (opening
+    steady to 0.2 mm for still_s); return the opening and the median effort over that last
+    still_s."""
     w_start, t0, hist = gripper_mm(piper), time.time(), []
+    timeout_s = w_start / mm_s + 3.0
     while time.time() - t0 < timeout_s:
-        piper.GripperCtrl(0, round(effort_nm * MDEG), 0x01, 0)
+        target = max(0.0, w_start - mm_s * (time.time() - t0))
+        piper.GripperCtrl(round(target * MDEG), round(effort_nm * MDEG), 0x01, 0)
         hist.append((time.time(), gripper_mm(piper), gripper_nm(piper)))
         recent = [h for h in hist if h[0] >= hist[-1][0] - still_s]
         ws = [h[1] for h in recent]
@@ -568,9 +586,12 @@ def main():
     ap.add_argument("--tilt-deg", type=float, default=10.0,
                     help="tip the tool outward from vertical, in the arm plane (keeps J5 < 70)")
     ap.add_argument("--clear-mm", type=float, default=60.0, help="pregrasp clearance over roll")
-    ap.add_argument("--overlap-mm", type=float, default=15.0,
-                    help="how far the fingertips go below the top of the roll")
+    ap.add_argument("--overlap-mm", type=float, default=28.0,
+                    help="how far the fingertips go below the top of the roll (15 on 2026-10-09 "
+                         "left the real fingertips at the roll's rim, and it slipped out)")
     ap.add_argument("--open-mm", type=float, default=65.0, help="gripper opening (max 70)")
+    ap.add_argument("--grip-mm-s", type=float, default=60.0,
+                    help="gripper opening and closing speed (1/4 of its own ~250 mm/s)")
     ap.add_argument("--grip-nm", type=float, default=1.0,
                     help="gripper effort when closing on the roll, N*m (0-5)")
     ap.add_argument("--min-grip-nm", type=float, default=0.5,
@@ -691,7 +712,8 @@ def run(args, piper, p, q_home):
     try:
         print(f"opening gripper to {args.open_mm:.0f} mm", flush=True)
         TRACE["phase"] = "open"
-        print(f"  gripper at {set_gripper(piper, args.open_mm, args.grip_nm):.1f} mm", flush=True)
+        w = set_gripper(piper, args.open_mm, args.grip_nm, args.grip_mm_s)
+        print(f"  gripper at {w:.1f} mm", flush=True)
         print("to pregrasp", flush=True)
         TRACE["phase"] = "to_pregrasp"
         if not move_to(piper, p["q_pre"], args.speed, args.tol_deg, args.timeout_s):
@@ -710,7 +732,7 @@ def run(args, piper, p, q_home):
         print(f"closing with {args.grip_nm:.2f} N*m", flush=True)
         TRACE["phase"] = "close"
         gripping = True
-        w, e = close_on(piper, args.grip_nm)
+        w, e = close_on(piper, args.grip_nm, args.grip_mm_s)
         print(f"  fingers stopped at {w:.1f} mm, holding {e:.2f} N*m", flush=True)
         photo(args.photos, "closed")
         if w < 3.0 or e < args.min_grip_nm:
@@ -731,7 +753,8 @@ def run(args, piper, p, q_home):
         along_line(n)
         log_tip(piper, args.tcp_mm, "settled at")
         TRACE["phase"] = "release"
-        print(f"  gripper at {set_gripper(piper, args.open_mm, args.grip_nm):.1f} mm", flush=True)
+        w = set_gripper(piper, args.open_mm, args.grip_nm, args.grip_mm_s)
+        print(f"  gripper at {w:.1f} mm", flush=True)
         gripping = False
         photo(args.photos, "released")
     finally:
@@ -739,7 +762,7 @@ def run(args, piper, p, q_home):
             if at < n:
                 print("putting the roll back down", flush=True)
                 along_line(n)
-            print(f"  gripper at {set_gripper(piper, args.open_mm, args.grip_nm):.1f} mm",
+            print(f"  gripper at {set_gripper(piper, args.open_mm, args.grip_nm, args.grip_mm_s):.1f} mm",
                   flush=True)
         if at is not None and at > 0:
             print("rising to pregrasp", flush=True)
@@ -750,7 +773,7 @@ def run(args, piper, p, q_home):
         err = stream(piper, lambda s: [a + (b - a) * s for a, b in zip(q0, p["q_park"])],
                      p["home_s"], p["home_pct"])
         TRACE["phase"] = "gripper"
-        set_gripper(piper, g0, args.grip_nm, wait_s=1.5)
+        set_gripper(piper, g0, args.grip_nm, args.grip_mm_s)
         q = joints_deg(piper)
         if err <= args.tol_deg and all(abs(a - b) <= args.zero_tol_deg for a, b in zip(q, q_home)):
             piper.GripperCtrl(round(g0 * MDEG), 0, 0x00, 0)
