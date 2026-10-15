@@ -52,6 +52,18 @@ Stages, each starting and ending at the start pose (the arm is never left away f
               --overlap-mm, photo, rise back to pregrasp, go home (no closing)
     grasp     ... then close and check the grip, photo, lift to the pregrasp height, hold,
               photo, lower, open (the tape goes back where it was), rise, go home
+    survey    no grasp: from pregrasp fly the place path below with the gripper open, photo at
+              the release point (to measure the fingertip-to-shelf gap), rise, go home
+    place     grasp and lift as above, then carry the roll onto the shelf (issue #30): rise
+              to --carry-z-mm, out along the arm plane to --place-r-mm, straight down until
+              the bottom of the roll is --drop-mm above --shelf-top-mm, open, rise, go home.
+              If the grip is lost or anything fails on the way, it retraces the carry path
+              and sets the roll down where it was picked up.
+
+The shelf (issue #30) is a perforated plate on legs just beyond the roll. From the side-on
+still of 2026-10-15 its near edge is about 320 mm from the J1 axis, its far edge about 680 mm
+and its top about 60 mm up, in the arm plane. The carry and the return home are checked to
+keep the arm --table-margin-mm, and the held roll's bottom --shelf-margin-mm, above it.
 
 Safety:
 - Without --go nothing is sent to the arm; only ConnectPort's queries and feedback reads.
@@ -90,6 +102,8 @@ REST_JOINTS_DEG = [3.99, -1.96, 2.15, 1.38, 23.34, 64.29]
 # From that photo (see the module docstring), in the arm plane: radius from J1 and height, mm.
 TAPE_R_MM = 247.0
 TAPE_TOP_MM = 49.0
+# The shelf in the still of 2026-10-15 (issue #30), same frame: near and far edge, top, mm.
+SHELF_NEAR_MM, SHELF_FAR_MM, SHELF_TOP_MM = 320.0, 680.0, 60.0
 
 
 # ---------------------------------------------------------------- small linear algebra
@@ -322,10 +336,10 @@ def plan(args, q_home):
         if pe < 0.5 and re < 0.5 and in_limits(q):
             cost = abs(q[5] - q_home[5]) + abs(q[3])
             if best is None or cost < best[0]:
-                best = (cost, R_t, q)
+                best = (cost, R_t, q, sign)
     if best is None:
         sys.exit("no IK solution for the pregrasp pose inside the joint limits")
-    _, R_t, q_pre = best
+    _, R_t, q_pre, sign = best
 
     # straight vertical fingertip line from pregrasp down to grasp, one IK solution per --res-mm
     n = max(1, math.ceil((z_pre - z_grasp) / args.res_mm))
@@ -371,8 +385,90 @@ def plan(args, q_home):
     if any(low < args.table_margin_mm or keep_out < args.clear_mm - 10 for low, keep_out in worst) \
             or drift > 1.0:
         sys.exit("planned path comes too close to the table or the roll; not moving")
-    return {"q_pre": q_pre, "line": line, "q_park": q_park, "line_s": line_s,
-            "home_s": home_s, "home_pct": home_pct}
+    p = {"q_pre": q_pre, "line": line, "q_park": q_park, "line_s": line_s,
+         "home_s": home_s, "home_pct": home_pct}
+    if args.until in ("survey", "place"):
+        p.update(plan_place(args, j1, sign, q_pre, z_pre, z_grasp, q_park))
+    return p
+
+
+def cart_line(a, b, tilts, sign, seed, args, j1):
+    """IK along the straight fingertip line from a to b, (r, z) in the arm plane, one solution
+    per --res-mm, the tool tilt going linearly from tilts[0] to tilts[1] (deg)."""
+    u = [math.cos(math.radians(j1)), math.sin(math.radians(j1))]
+    n = max(1, math.ceil(math.dist(a, b) / args.res_mm))
+    path, q = [seed], seed
+    for k in range(1, n + 1):
+        r, z = (a[i] + (b[i] - a[i]) * k / n for i in range(2))
+        R_t = target_rotation(j1, sign, tilts[0] + (tilts[1] - tilts[0]) * k / n)
+        q, pe, re = ik([r * u[0], r * u[1], z], R_t, q, args.tcp_mm)
+        if pe > 0.5 or re > 0.5 or not in_limits(q):
+            sys.exit(f"IK failed at fingertip r = {r:.0f}, z = {z:.0f} mm")
+        path.append(q)
+    return path
+
+
+def shelf_clearance(path, tcp_mm, args, roll_below_mm=None):
+    """Lowest height (mm) above the shelf top of the elbow, wrist, flange and fingertips (and
+    the held roll's bottom, roll_below_mm under the fingertips) while over the shelf."""
+    worst = (math.inf, "")
+    for q in path:
+        Ts = fk_all(q)
+        pts = [("elbow", pos(Ts[2])), ("wrist", pos(Ts[4])), ("flange", pos(Ts[5])),
+               ("fingertip", tip(Ts[5], tcp_mm))]
+        if roll_below_mm is not None:
+            P = pts[-1][1]
+            pts.append(("roll bottom", [P[0], P[1], P[2] - roll_below_mm]))
+        for name, P in pts:
+            if args.shelf_near_mm - 30 <= math.hypot(P[0], P[1]) <= args.shelf_far_mm + 30:
+                worst = min(worst, (P[2] - args.shelf_top_mm, name))
+    return worst
+
+
+def plan_place(args, j1, sign, q_pre, z_pre, z_grasp, q_park):
+    """Carry from the pregrasp hover over the roll onto the shelf: up (tipping the tool out to
+    --place-tilt-deg, which only turns the roll about its own axis), out, down (fingertip
+    lines), then back up and home along the joint-space line. Reaching the shelf at --tilt-deg
+    would need J5 past its 70 deg limit."""
+    t0, t1 = args.tilt_deg, args.place_tilt_deg
+    r_t, r_p, z_c = args.tape_r_mm, args.place_r_mm, args.carry_z_mm
+    z_rel = args.shelf_top_mm + args.drop_mm + z_grasp  # the roll's bottom is z_grasp under the tips
+    if not args.shelf_near_mm + 35 <= r_p <= args.shelf_far_mm - 35:
+        sys.exit("--place-r-mm puts the roll off the shelf")
+    if z_c < z_pre or z_c < z_rel:
+        sys.exit("--carry-z-mm is below the pregrasp or release height")
+    up = cart_line((r_t, z_pre), (r_t, z_c), (t0, t1), sign, q_pre, args, j1)
+    out = cart_line((r_t, z_c), (r_p, z_c), (t1, t1), sign, up[-1], args, j1)
+    down = cart_line((r_p, z_c), (r_p, z_rel), (t1, t1), sign, out[-1], args, j1)
+    segs = []
+    for name, path in (("up", up), ("out", out), ("down", down)):
+        length = abs(z_c - z_pre) if name == "up" else abs(r_p - r_t) if name == "out" \
+            else abs(z_c - z_rel)
+        t, peak = stream_timing(path, args.speed, length / args.line_mm_s)
+        segs.append({"name": name, "path": path, "s": t})
+        print(f"{name:5s} {fmt(path[-1])}   {len(path) - 1} IK points, {t:.1f} s, "
+              f"fastest joint {peak:.1f} deg/s")
+    home_path = line_path(out[-1], q_park)
+    home_pct = min(30, max(args.speed, math.ceil(
+        1.5 * 1.875 * max(abs(a - b) for a, b in zip(out[-1], q_park)) / args.home_s / DEG_S_PER_PCT)))
+    home_s, _ = stream_timing(home_path, home_pct, args.home_s)
+    print(f"carry at fingertip z = {z_c:.0f} mm (roll bottom {z_c - z_grasp:.0f}); release at "
+          f"r = {r_p:.0f}, fingertip z = {z_rel:.0f} mm (roll bottom {z_rel - z_grasp:.0f}, "
+          f"shelf top {args.shelf_top_mm:.0f})")
+    print(f"from over the shelf home: streamed over {home_s:.1f} s at {home_pct} %")
+    bad = False
+    for name, path, roll in (("up", up, z_grasp), ("out", out, z_grasp), ("down", down, None),
+                             ("shelf -> home", home_path, None)):
+        (low, what) = lowest_and_keep_out(path, args.tcp_mm, r_t, args.tape_top_mm, j1)[0]
+        clr, cwhat = shelf_clearance(path, args.tcp_mm, args, roll)
+        print(f"{name}: lowest point z = {low:.0f} mm ({what}); closest above the shelf "
+              f"{clr:.0f} mm ({cwhat or 'never over it'})")
+        need = args.shelf_margin_mm if roll is not None else \
+            min(args.shelf_margin_mm, z_rel - args.shelf_top_mm - 1)
+        bad |= low < args.table_margin_mm or clr < need
+    if bad:
+        sys.exit("planned carry comes too close to the table or the shelf; not moving")
+    return {"segs": segs, "place_home_s": home_s, "place_home_pct": home_pct}
 
 
 # ---------------------------------------------------------------- hardware
@@ -576,7 +672,8 @@ def main():
     ap.add_argument("--plan-only", action="store_true",
                     help="no CAN: plan from the recorded rest pose")
     ap.add_argument("--go", action="store_true", help="enable the motors and move")
-    ap.add_argument("--until", choices=["pregrasp", "descend", "grasp"], default="pregrasp")
+    ap.add_argument("--until", choices=["pregrasp", "descend", "grasp", "survey", "place"],
+                    default="pregrasp")
     ap.add_argument("--tape-r-mm", type=float, default=TAPE_R_MM,
                     help="roll centre, distance from the J1 axis")
     ap.add_argument("--tape-top-mm", type=float, default=TAPE_TOP_MM,
@@ -602,6 +699,19 @@ def main():
     ap.add_argument("--line-mm-s", type=float, default=20.0,
                     help="average fingertip speed along the vertical (slower if a joint needs)")
     ap.add_argument("--home-s", type=float, default=6.0, help="duration of the return home")
+    ap.add_argument("--place-r-mm", type=float, default=390.0,
+                    help="where to set the roll down on the shelf, distance from the J1 axis")
+    ap.add_argument("--place-tilt-deg", type=float, default=25.0,
+                    help="tool tilt while carrying and placing (reached during the rise)")
+    ap.add_argument("--carry-z-mm", type=float, default=140.0,
+                    help="fingertip height while carrying the roll over to the shelf")
+    ap.add_argument("--shelf-top-mm", type=float, default=SHELF_TOP_MM)
+    ap.add_argument("--shelf-near-mm", type=float, default=SHELF_NEAR_MM)
+    ap.add_argument("--shelf-far-mm", type=float, default=SHELF_FAR_MM)
+    ap.add_argument("--drop-mm", type=float, default=12.0,
+                    help="height of the roll's bottom above the shelf when the gripper opens")
+    ap.add_argument("--shelf-margin-mm", type=float, default=25.0,
+                    help="clearance over the shelf for the arm and the held roll while carrying")
     ap.add_argument("--park", choices=["estop", "drop"], default="estop",
                     help="how to turn the motors off at home (see the docstring)")
     ap.add_argument("--table-margin-mm", type=float, default=20.0)
@@ -681,6 +791,12 @@ def run(args, piper, p, q_home):
     n = len(line) - 1
     at = None  # position on the line (0 = pregrasp, n = grasp; fractional mid-stream)
     gripping = False  # the fingers have closed on the roll and not opened since
+    segs = p.get("segs", [])
+    carry = [q for k, sg in enumerate(segs) for q in (sg["path"] if k == 0 else sg["path"][1:])]
+    bps = [0]  # carry indices where the up, out and down segments end
+    for sg in segs:
+        bps.append(bps[-1] + len(sg["path"]) - 1)
+    ct = None  # position on the carry path (0 = pregrasp, bps[3] = release point)
 
     def along_line(to, check=None):
         """Stream along the vertical line from where the arm is on it to index to."""
@@ -693,6 +809,28 @@ def run(args, piper, p, q_home):
 
         TRACE["phase"] = "down" if to > a else "up"
         return stream(piper, where, p["line_s"] * abs(to - a) / n, args.speed, check)
+
+    def along_carry(to_bp, check=None):
+        """Stream along the carry path from where the arm is on it to breakpoint to_bp, one
+        segment at a time (each on its own min-jerk profile, stopping at the corners)."""
+        nonlocal ct
+        while True:
+            k = next(i for i in range(3) if bps[i] <= ct <= bps[i + 1] and
+                     (ct < bps[i + 1] if to_bp > ct else ct > bps[i]))
+            end = bps[k + 1] if to_bp > ct else bps[k]
+            a, sg = ct, segs[k]
+
+            def where(s):
+                nonlocal ct
+                ct = a + (end - a) * s
+                return path_at(carry, ct)
+
+            TRACE["phase"] = sg["name"] + ("" if to_bp > a else "_back")
+            span = bps[k + 1] - bps[k]
+            if stream(piper, where, sg["s"] * abs(end - a) / span, args.speed, check) is False:
+                return False
+            if ct == bps[to_bp]:
+                return True
 
     def holding(w0):
         """Per-tick grip check: the opening stays within --slip-mm of w0 and the effort stays
@@ -723,6 +861,13 @@ def run(args, piper, p, q_home):
         photo(args.photos, "pregrasp")
         if args.until == "pregrasp":
             return
+        if args.until == "survey":
+            print("flying the place path with the gripper open", flush=True)
+            ct = 0
+            along_carry(3)
+            log_tip(piper, args.tcp_mm, "release point")
+            photo(args.photos, "release_point")
+            return
         print(f"descending over {p['line_s']:.1f} s", flush=True)
         along_line(n)
         log_tip(piper, args.tcp_mm, "settled at")
@@ -749,6 +894,19 @@ def run(args, piper, p, q_home):
         t0 = time.time()
         while time.time() - t0 < 1.0 and check():
             time.sleep(0.01)
+        if args.until == "place":
+            print("carrying it to the shelf", flush=True)
+            ct = 0
+            if along_carry(3, check) is False:
+                return
+            log_tip(piper, args.tcp_mm, "over the shelf at")
+            photo(args.photos, "over_shelf")
+            TRACE["phase"] = "release"
+            w = set_gripper(piper, args.open_mm, args.grip_nm, args.grip_mm_s)
+            print(f"  released: gripper at {w:.1f} mm", flush=True)
+            gripping = False
+            photo(args.photos, "placed")
+            return
         print("putting it back", flush=True)
         along_line(n)
         log_tip(piper, args.tcp_mm, "settled at")
@@ -758,20 +916,33 @@ def run(args, piper, p, q_home):
         gripping = False
         photo(args.photos, "released")
     finally:
+        if gripping and ct:  # lost the grip or failed on the way to the shelf: retrace
+            print("retracing the carry path to where the roll was picked up", flush=True)
+            along_carry(0)
+            ct = None
+        home_s, home_pct = p["home_s"], p["home_pct"]
+        if ct is not None and ct >= bps[2]:  # over the shelf: rise, home from there
+            print("rising over the shelf", flush=True)
+            along_carry(2)
+            home_s, home_pct = p["place_home_s"], p["place_home_pct"]
+        elif ct:  # part way out (no roll held): go back the way it came
+            along_carry(0)
+        if ct is not None and ct < bps[2]:
+            ct = None
         if gripping:  # a failed grip, a slip or an interruption: set the roll down and let go
             if at < n:
                 print("putting the roll back down", flush=True)
                 along_line(n)
             print(f"  gripper at {set_gripper(piper, args.open_mm, args.grip_nm, args.grip_mm_s):.1f} mm",
                   flush=True)
-        if at is not None and at > 0:
+        if ct is None and at is not None and at > 0:
             print("rising to pregrasp", flush=True)
             along_line(0)
-        print(f"returning home over {p['home_s']:.1f} s", flush=True)
+        print(f"returning home over {home_s:.1f} s", flush=True)
         TRACE["phase"] = "home"
         q0 = joints_deg(piper)
         err = stream(piper, lambda s: [a + (b - a) * s for a, b in zip(q0, p["q_park"])],
-                     p["home_s"], p["home_pct"])
+                     home_s, home_pct)
         TRACE["phase"] = "gripper"
         set_gripper(piper, g0, args.grip_nm, args.grip_mm_s)
         q = joints_deg(piper)
