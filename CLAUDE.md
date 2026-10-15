@@ -160,7 +160,7 @@ sessions.
 | `ONSHAPE_USERNAME` / `ONSHAPE_PASSWORD` | secret | Onshape login, for browser work only (WebGL canvas, so real pointer events on a display on a Pi). |
 | `H2D_IP` / `H2D_ACCESS_CODE` / `H2D_SERIAL` | secret | Bambu Lab H2D, LAN mode. On the lab LAN, not the tailnet: connect from the Pi. |
 | `A1_MINI_IP` / `A1_MINI_ACCESS_CODE` / `A1_MINI_SERIAL` | secret | The same for the A1 mini. |
-| `BAMBU_USERNAME` / `BAMBU_PASSWORD` | secret | Bambu cloud login. A cloud-bound printer refuses LAN start/pause/stop commands not signed by Bambu's apps (HMS `0500-0500-0001-0007`); status, camera and SD upload still work over LAN. See byu-vcl's CLAUDE.md. |
+| `BAMBU_USERNAME` / `BAMBU_PASSWORD` / `BAMBU_TOTP_SEED` | environment secret | Bambu cloud login and its authenticator seed. Only in the `bambu-print` environment, for `claude-print.yml`; not in `claude.yml`. See [Printing on the lab's Bambu Lab printers](#printing-on-the-labs-bambu-lab-printers-claude-print). |
 | `YOUTUBE_UPLOAD_TOKEN_PICKLE_B64` | secret | Base64 `token.pickle` for the **BYU Vertical Cloud Lab** YouTube channel (`UCKC7WzMu6QEh7O55zZlT2lw`), scopes `youtube.upload` + `youtube.readonly` only: can upload, cannot delete or edit. Use via `youtube/yt_service.py`; see "YouTube uploads" below. byu-vcl's full-control `YOUTUBE_TOKEN_PICKLE_B64` is deliberately not here. |
 
 **Setting or rotating.** `python scripts/set_secret.py NAME` reads a value without echoing it and
@@ -198,6 +198,52 @@ python youtube/yt_service.py upload clip.mp4 --title "PiPER <what it shows>, <da
   from the runner, since only the runner has the token. Nothing YouTube-related is installed on
   the Pi.
 
+## Printing on the lab's Bambu Lab printers (`@claude-print`)
+
+A plain `@claude` run cannot log in to the lab's Bambu Lab account, so it cannot send a print.
+While a printer is bound to Bambu's cloud, its firmware refuses LAN start/pause/stop commands
+that Bambu's own apps did not sign (HMS `0500-0500-0001-0007`), so sending a print means Bambu
+Studio logged in as the lab account. Only [`claude-print.yml`](.github/workflows/claude-print.yml)
+gets that login:
+
+- **A person starts it** with `@claude-print` in a comment or a new issue, in place of
+  `@claude`. Claude's own comments can't start it.
+- **A person approves it.** The run waits in the `bambu-print` environment until a member of
+  [`bambu-print-approvers`](https://github.com/orgs/vertical-cloud-lab/teams/bambu-print-approvers)
+  approves it (the run's page → **Review deployments**, or GitHub Mobile). The workflow posts
+  the link in the thread. An approver may approve their own request. Approvers: read the
+  request first, because an approved run holds the whole login.
+- **Its secrets** are `BAMBU_USERNAME`, `BAMBU_PASSWORD` and `BAMBU_TOTP_SEED`, all environment
+  secrets of `bambu-print`. They are not repo secrets and are not in `claude.yml`.
+- **Second factor: an authenticator code, computed on the runner.** The account has
+  authenticator-app 2-step verification, so Studio's login asks for a 6-digit code after the
+  password. The workflow installs `bambu-totp`, which computes the current code from the seed.
+  Type the code and the password through stdin so neither reaches argv, a log or a screenshot:
+  `bambu-totp | DISPLAY=:99 xdotool type --delay 90 --file -`, and
+  `printenv BAMBU_PASSWORD | DISPLAY=:99 xdotool type --delay 90 --file -`. Never print, post,
+  commit or screenshot these values or a code.
+- **Never ask for, relay or post an e-mailed Bambu verification code.** Bambu accepts the
+  account's e-mail address plus a current e-mailed code as a complete login, with no password,
+  even when 2-step verification is on
+  ([robot-arms PR 10](https://github.com/vertical-cloud-lab/robot-arms/pull/10#issuecomment-6140001145),
+  [ha-bambulab PR 2058](https://github.com/greghesp/ha-bambulab/pull/2058)). A code posted in a
+  thread is the account until it expires. If Studio asks for an e-mailed code instead of the
+  authenticator code, stop and say so in the thread.
+- **Prepare in a plain `@claude` run; send in `@claude-print`.** Slicing, plate checks, and
+  status and camera over LAN from a Pi need no login. End the prep run by asking the person to
+  comment `@claude-print` naming the exact file (branch and path) and printer, so the approver
+  can see what they are approving.
+- **Studio GUI details** are in byu-vcl's runbook, `bambu/studio/README.md` on
+  [byu-vcl PR 234](https://github.com/vertical-cloud-lab/byu-vcl/pull/234)'s branch: setup,
+  the login page, Send, and watching a print. Its "e-mail code" section is superseded by this
+  one. The authenticator prompt is a different dialog from the e-mail-code one, so find its
+  field from a screenshot rather than reusing `wait_code.py`'s click positions.
+- **Rotating** (if the seed or password may have leaked): on bambulab.com, turn 2-step
+  verification off and on again to get a new seed (everyone who logs in to the account
+  re-scans it), change the password, then update the three secrets in the `bambu-print`
+  environment of every repo that has one: byu-vcl, robot-arms, powder-doser,
+  tensegrity-optimization and caliber.
+
 ## Receiving files from other repos (`sgbaird/agent-staging`)
 
 [`sgbaird/agent-staging`](https://github.com/sgbaird/agent-staging) (private) is a one-way
@@ -223,3 +269,7 @@ GH_TOKEN=$GH_READ_PAT_STAGING gh api "repos/sgbaird/agent-staging/contents/<path
   Sterling asked to bring over, and don't copy `MANIFEST.md` in.
 - Never echo the token or save it in a remote or a commit. If it is unset or returns
   401/403/404, say so and stop; don't rebuild the content some other way.
+
+## Zenodo
+
+`ZENODO_API_TOKEN` and `ZENODO_SANDBOX_API_TOKEN` can upload *and* publish; `ZENODO_BASE_URL` and `ZENODO_SANDBOX_BASE_URL` end in `/api`. Publishing mints a permanent DOI that only Zenodo support can remove, so test on the sandbox and publish only when asked. `zenodo_client`'s `ensure_zenodo` reads both tokens from env as named: [example](https://github.com/sparks-baird/matsci-opt-benchmarks/blob/c58cd80/notebooks/crabnet_hyperparameter/1.3-sgb-zenodo-upload.ipynb).
