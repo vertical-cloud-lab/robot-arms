@@ -240,3 +240,7 @@ GH_TOKEN=$GH_READ_PAT_STAGING gh api "repos/sgbaird/agent-staging/contents/<path
   Sterling asked to bring over, and don't copy `MANIFEST.md` in.
 - Never echo the token or save it in a remote or a commit. If it is unset or returns
   401/403/404, say so and stop; don't rebuild the content some other way.
+
+## Zenodo
+
+`ZENODO_API_TOKEN` and `ZENODO_SANDBOX_API_TOKEN` can upload *and* publish; `ZENODO_BASE_URL` and `ZENODO_SANDBOX_BASE_URL` end in `/api`. Publishing mints a permanent DOI that only Zenodo support can remove, so test on the sandbox and publish only when asked. `zenodo_client`'s `ensure_zenodo` reads both tokens from env as named: [example](https://github.com/sparks-baird/matsci-opt-benchmarks/blob/c58cd80/notebooks/crabnet_hyperparameter/1.3-sgb-zenodo-upload.ipynb).
