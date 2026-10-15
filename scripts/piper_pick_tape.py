@@ -814,10 +814,12 @@ def run(args, piper, p, q_home):
         """Stream along the carry path from where the arm is on it to breakpoint to_bp, one
         segment at a time (each on its own min-jerk profile, stopping at the corners)."""
         nonlocal ct
-        while True:
+        goal = bps[to_bp]
+        while ct != goal:
+            fwd = goal > ct
             k = next(i for i in range(3) if bps[i] <= ct <= bps[i + 1] and
-                     (ct < bps[i + 1] if to_bp > ct else ct > bps[i]))
-            end = bps[k + 1] if to_bp > ct else bps[k]
+                     (ct < bps[i + 1] if fwd else ct > bps[i]))
+            end = min(bps[k + 1], goal) if fwd else max(bps[k], goal)
             a, sg = ct, segs[k]
 
             def where(s):
@@ -825,12 +827,12 @@ def run(args, piper, p, q_home):
                 ct = a + (end - a) * s
                 return path_at(carry, ct)
 
-            TRACE["phase"] = sg["name"] + ("" if to_bp > a else "_back")
+            TRACE["phase"] = sg["name"] + ("" if fwd else "_back")
             span = bps[k + 1] - bps[k]
             if stream(piper, where, sg["s"] * abs(end - a) / span, args.speed, check) is False:
                 return False
-            if ct == bps[to_bp]:
-                return True
+            ct = end  # min_jerk(1) is 1, but make the segment end exact
+        return True
 
     def holding(w0):
         """Per-tick grip check: the opening stays within --slip-mm of w0 and the effort stays
