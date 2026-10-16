@@ -1,0 +1,29 @@
+{
+ "rvec": [
+  1.3584146357527427,
+  -0.0051075359559730645,
+  -0.0026197238733029764
+ ],
+ "tvec": [
+  -202.09716565812866,
+  363.4355734178116,
+  685.839573127188
+ ],
+ "f": 920.4795448646046,
+ "k1": -0.16691213376081404,
+ "cx": 1152.0,
+ "cy": 648.0,
+ "held_offset_px": [
+  3.652334750399556,
+  -0.7834605975065525
+ ],
+ "time_offset_s": 0.7000000000000002,
+ "median_resid_px": 2.463698748196663,
+ "feature": "bbox centre of the green blob (piper_vision.py), roll centre in 3D",
+ "size": [
+  2304,
+  1296
+ ],
+ "frame": "arm base frame, mm (piper_pick_tape.fk_all)",
+ "fit": "2026-10-16 test 1 video (2304x1296 at 15 fps, detected at 1152x648) + 100 Hz trace"
+}
