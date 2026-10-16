@@ -357,10 +357,25 @@ def plan(args, q_home):
         x1, y1 = args.place_r_mm * math.cos(math.radians(a1)), args.place_r_mm * math.sin(math.radians(a1))
         m = max(1, math.ceil((z_carry - z_pre) / args.res_mm))
         pts = [(x0, y0, z_pre + (z_carry - z_pre) * k / m, 0.0) for k in range(m + 1)]
-        carry_mm = math.hypot(x1 - x0, y1 - y0)
-        m = math.ceil(carry_mm / args.res_mm)
-        pts += [(x0 + (x1 - x0) * k / m, y0 + (y1 - y0) * k / m, z_carry, k / m)
-                for k in range(1, m + 1)]
+        if args.carry_arc:
+            # swing around the base instead: radius and azimuth change together, so a place
+            # far round to the side or behind (the shelf at J1 = 130 deg, 2026-10-16) never
+            # brings the roll in over the base
+            r0, b0 = r, math.radians(j1)
+            r1, b1 = args.place_r_mm, math.radians(a1)
+            arc = [(r0 + (r1 - r0) * k / 400, b0 + (b1 - b0) * k / 400) for k in range(401)]
+            carry_mm = sum(math.dist((ra * math.cos(ba), ra * math.sin(ba)),
+                                     (rb * math.cos(bb), rb * math.sin(bb)))
+                           for (ra, ba), (rb, bb) in zip(arc, arc[1:]))
+            m = math.ceil(carry_mm / args.res_mm)
+            pts += [((r0 + (r1 - r0) * k / m) * math.cos(b0 + (b1 - b0) * k / m),
+                     (r0 + (r1 - r0) * k / m) * math.sin(b0 + (b1 - b0) * k / m), z_carry, k / m)
+                    for k in range(1, m + 1)]
+        else:
+            carry_mm = math.hypot(x1 - x0, y1 - y0)
+            m = math.ceil(carry_mm / args.res_mm)
+            pts += [(x0 + (x1 - x0) * k / m, y0 + (y1 - y0) * k / m, z_carry, k / m)
+                    for k in range(1, m + 1)]
         place_up = len(pts) - 1  # index of the hover over the place point
         m = math.ceil((z_carry - z_rel) / args.res_mm)
         pts += [(x1, y1, z_carry - (z_carry - z_rel) * k / m, 1.0) for k in range(1, m + 1)]
@@ -657,6 +672,9 @@ def main():
                          "the J1 axis instead of putting it back")
     ap.add_argument("--place-deg", type=float,
                     help="J1 angle of the place point (default: the pick plane)")
+    ap.add_argument("--carry-arc", action="store_true",
+                    help="carry along an arc around the base (radius and J1 angle together) "
+                         "instead of a straight line; for places far round to the side or behind")
     ap.add_argument("--place-tilt-deg", type=float,
                     help="tool tilt at the place point, reached along the carry (default: "
                          "--tilt-deg); farther places need more to keep J5 under 70")
@@ -754,6 +772,17 @@ def run(args, piper, p, q_home):
         print("arm is still in the quick-stop state: resetting before enabling", flush=True)
         piper.ResetPiper()
         time.sleep(0.5)
+    foc = piper.GetArmGripperMsgs().gripper_state.foc_status
+    if foc.motor_overheating or foc.driver_error_status or foc.driver_overheating:
+        # latched after the 2026-10-16 overheat until cleared (code 0x02: disable, clear error)
+        print("gripper reports an error: clearing it", flush=True)
+        for _ in range(5):
+            piper.GripperCtrl(0, 0, 0x02, 0)
+            time.sleep(0.1)
+        time.sleep(0.5)
+        foc = piper.GetArmGripperMsgs().gripper_state.foc_status
+        if foc.motor_overheating or foc.driver_error_status or foc.driver_overheating:
+            sys.exit("gripper error did not clear (still hot?); not moving")
     t0 = time.time()
     while not (piper.EnablePiper() and all(piper.GetArmEnableStatus())):
         if time.time() - t0 > 5:
