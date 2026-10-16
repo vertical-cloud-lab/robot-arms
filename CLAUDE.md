@@ -136,6 +136,67 @@ around it. sudo is password-gated, so feed the password over stdin so it never a
 process list or shell history: `ssh … "sudo -S -p '' <cmd>" <<< "$ARM_PI_PASSWORD"`. Never
 print the hostname or any credential in comments, commits, or logs.
 
+**What is on the Pi.** `piper_sdk` 0.6.2 lives in `~/piper-venv`. The arm scripts in the home
+directory (`piper_status.py`, `piper_up_down.py`, `piper_pick_tape.py`) are copies, and
+`piper_pick_tape.py` is versioned in `scripts/`. The only camera is a Pi Camera Module 3 Wide
+(imx708_wide) on CSI. It is fixed on the table and looks at the arm side-on, so it shows reach
+and height but not depth across the arm plane. Grab a frame with
+`rpicam-still -n -t 1500 -o /tmp/f.jpg`. At rest the arm reads about
+`[4, -2, 2, 1, 23, 64]` deg, not zero: the wrist (J5, J6) sits off zero when the motors are
+disabled. J2 = -2 and J3 = +2 are just outside the joint limits, so a move "back to the start
+joints" never completes; aim for the clamped pose (J2 = J3 = 0) and disable there.
+
+**How the arm moves (firmware S-V1.8-1).** The joint limits live in the joint drivers (read them
+with `SearchMotorMaxAngleSpdAccLimit(m, 0x01)`, a query): J2 is [0, 180] and J3 is [-170, 0],
+so nothing in position mode gets the folded arm closer to its rest. Writing new limits
+(`MotorAngleLimitMaxSpdSet`) goes to driver flash; don't do it without the lab's say-so. One
+MOVE J target runs every joint at about 1.67 deg/s per speed percent, and each joint stops on its
+own when it arrives; the joints are not synchronized. So a MOVE J path is not the joint-space
+line, and a chain of short MOVE J steps stops and restarts each joint at every step (the jerky
+stage-2 descent). For smooth, predictable paths, stream `JointCtrl` targets at 100 Hz along the
+path with the speed cap above the fastest joint's need, as `piper_pick_tape.py` does. The
+gripper reports its opening and motor effort (0.001 N*m) at 200 Hz. `*.log` is gitignored, so
+`git add -f` run logs. Notes on the arm's motion live in issue #19.
+
+**Recording motion.** The Pi 5 has no H.264 encoder and its `rpicam-vid` has no libav, so
+record MJPEG: `rpicam-vid -n -t 0 --width 1536 --height 864 --framerate 20 --codec mjpeg
+--quality 70 --save-pts f.pts -o f.mjpeg` (about 1.2 MB/s; that mode is a centre crop of the
+sensor). The Pi has no ffmpeg; copy the file off with `scp -l 16000` and convert on the
+runner. `piper_pick_tape.py --video PATH` does this for a run, and logs marks in place of
+stills while the camera is busy. Only one process can hold the camera at a time.
+
+**Camera-guided picking (2026-10-16).** `~/vision-venv` (numpy and opencv-python-headless,
+installed from wheels in `~/vision-wheels`; the arm venv is untouched) runs
+`piper_vision.py`, which `piper_seek_tape.py` starts; copies of both, with `camera.json` and
+`iktable.json`, sit in the home directory, and their runs in `~/seek/`. For frame rate, the full
+field (2304x1296 mode) runs at 56 fps; the 120 fps mode (1536x864) is a centre crop that cuts
+off the table in front of the arm, including the roll's start spot. `camera.json` fits the
+camera to the arm (see `docs/issue-19/test1-2026-10-16-shelf-to-start/fit_camera.py`); it
+only holds while the camera and the arm's J1 zero stay where they were on 2026-10-16.
+
+**Enabling, and a J1 warning (2026-10-16).** After the parking reset the arm sits in STANDBY
+control mode and ignores joint and gripper commands even with the motors enabled; that was the
+"first try doesn't move" glitch. `MotionCtrl_2(0x01, 0x01, ...)` before `EnablePiper` fixes it,
+but on every run enabled that way J1's reading jumped from -3.91 to +3.98 deg without the arm
+moving, and parking at the old reading then turned the folded arm about 8 deg further each run.
+After three such runs the camera shows the parked arm turned about 20-25 deg from its morning
+pose while J1 still reads -3.9. Until J1 is checked (power-cycle, then compare the folded arm with the morning pose in
+`docs/issue-19/test2-2026-10-16-seek/folded_arm_before_after.jpg`), treat J1 as
+untrustworthy. `piper_seek_tape.py` now refuses to move if a joint's reading changes on
+enabling. After the lab fixed J1 (evening of 2026-10-16), the parked arm read J1 = +23.45 deg,
+and the modelled folded arm drawn over a still at that reading seemed to confirm it. It was
+wrong. On the next enable (run 3, 04:05 UTC) the reading changed by -23.84 deg with the arm
+still (its video shows no motion) and the script refused to move; on run 4 the reading held
+(-0.29 to -0.18 deg) and the arm reached and picked the roll, so about 0 deg was right. The
+folded arm sits in the same place in the 03:39 still and at the start of runs 3 and 4, and the
+model drawn at +23.45 fits all of them, including run 4's end, where the reading is known to be
+right (`docs/issue-19/test2-2026-10-16-seek/j1_overlay_not_a_check.jpg`). So the folded-arm
+overlay is not a J1 check. Both jumps so far are whole multiples of about 7.95 deg (+7.89,
+-23.84), as if J1 picks the wrong motor turn when it starts. Until there is a real check (a
+mark on the base and turntable the camera can see, say), compare a still with one taken at a
+known-good reading (run 4's end), trust J1 only once its reading has held through an enable,
+and keep the refuse-on-change check.
+
 **Using the Pi as a proxy.** Some vendor sites (and YouTube's player) block GitHub Actions IP
 ranges; the Pi's residential IP is not blocked. The Pi is on constrained Wi-Fi and may be
 running the arm, so rate-cap transfers (`curl --limit-rate`) and never run speed tests.
