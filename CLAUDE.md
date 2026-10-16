@@ -182,7 +182,11 @@ After three such runs the camera shows the parked arm turned about 20-25 deg fro
 pose while J1 still reads -3.9. Until J1 is checked (power-cycle, then compare the folded arm with the morning pose in
 `docs/issue-19/test2-2026-10-16-seek/folded_arm_before_after.jpg`), treat J1 as
 untrustworthy. `piper_seek_tape.py` now refuses to move if a joint's reading changes on
-enabling.
+enabling. After the lab fixed J1 (evening of 2026-10-16), the parked arm read J1 = +23.45 deg,
+and the camera model drawn at that reading lies on the folded arm in a still while the model at
+-3.9 deg is off by about 100 px at the elbow, so the reading again matches the arm (and the
+camera had not moved). Check this the same way (`piper_status.py` plus a still with the
+modelled arm drawn over it) after any power cycle or J1 incident.
 
 **Using the Pi as a proxy.** Some vendor sites (and YouTube's player) block GitHub Actions IP
 ranges; the Pi's residential IP is not blocked. The Pi is on constrained Wi-Fi and may be
