@@ -589,10 +589,11 @@ def park(piper, how, settle_s=6.0):
 VIDEO = {"proc": None, "t0": None}  # set by start_video; stills are skipped while it holds the camera
 
 
-def start_video(path):
+def start_video(path, size="1536x864", fps=20):
     """Record MJPEG (no H.264 encoder on the Pi 5) with frame timestamps alongside, from now on."""
     VIDEO["proc"] = subprocess.Popen(
-        ["rpicam-vid", "-n", "-t", "0", "--width", "1536", "--height", "864", "--framerate", "20",
+        ["rpicam-vid", "-n", "-t", "0", "--width", size.split("x")[0], "--height", size.split("x")[1],
+         "--framerate", str(fps),
          "--codec", "mjpeg", "--quality", "70", "--save-pts", path + ".pts", "-o", path],
         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     time.sleep(2.0)  # let the camera start and settle exposure before anything moves
@@ -673,6 +674,9 @@ def main():
     ap.add_argument("--timeout-s", type=float, default=20.0)
     ap.add_argument("--photos", default=os.path.expanduser("~/pick_tape_photos"))
     ap.add_argument("--video", help="record the run to this .mjpeg file (marks replace stills)")
+    ap.add_argument("--video-size", default="1536x864",
+                    help="1536x864 is a centre crop; 2304x1296 sees the whole field at 15 fps")
+    ap.add_argument("--video-fps", type=int, default=20)
     ap.add_argument("--trace", help="log joints, gripper and targets at 100 Hz to this CSV")
     args = ap.parse_args()
     if not 1 <= args.speed <= 30:
@@ -715,7 +719,7 @@ def main():
     if args.trace:
         tracer.start()
     if args.video:
-        start_video(args.video)
+        start_video(args.video, args.video_size, args.video_fps)
     try:
         run(args, piper, p, q_home)
     finally:
@@ -732,7 +736,7 @@ def run(args, piper, p, q_home):
         piper.ResetPiper()
         time.sleep(0.5)
     t0 = time.time()
-    while not piper.EnablePiper():
+    while not (piper.EnablePiper() and all(piper.GetArmEnableStatus())):
         if time.time() - t0 > 5:
             sys.exit("motors did not enable within 5 s")
         time.sleep(0.01)
@@ -746,7 +750,6 @@ def run(args, piper, p, q_home):
     place = p["place"]
 
     def along_place(to, check=None):
-        nonlocal pl
         a = pl
         m = len(place) - 1
 
