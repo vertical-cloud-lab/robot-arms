@@ -183,10 +183,18 @@ pose while J1 still reads -3.9. Until J1 is checked (power-cycle, then compare t
 `docs/issue-19/test2-2026-10-16-seek/folded_arm_before_after.jpg`), treat J1 as
 untrustworthy. `piper_seek_tape.py` now refuses to move if a joint's reading changes on
 enabling. After the lab fixed J1 (evening of 2026-10-16), the parked arm read J1 = +23.45 deg,
-and the camera model drawn at that reading lies on the folded arm in a still while the model at
--3.9 deg is off by about 100 px at the elbow, so the reading again matches the arm (and the
-camera had not moved). Check this the same way (`piper_status.py` plus a still with the
-modelled arm drawn over it) after any power cycle or J1 incident.
+and the modelled folded arm drawn over a still at that reading seemed to confirm it. It was
+wrong. On the next enable (run 3, 04:05 UTC) the reading changed by -23.84 deg with the arm
+still (its video shows no motion) and the script refused to move; on run 4 the reading held
+(-0.29 to -0.18 deg) and the arm reached and picked the roll, so about 0 deg was right. The
+folded arm sits in the same place in the 03:39 still and at the start of runs 3 and 4, and the
+model drawn at +23.45 fits all of them, including run 4's end, where the reading is known to be
+right (`docs/issue-19/test2-2026-10-16-seek/j1_overlay_not_a_check.jpg`). So the folded-arm
+overlay is not a J1 check. Both jumps so far are whole multiples of about 7.95 deg (+7.89,
+-23.84), as if J1 picks the wrong motor turn when it starts. Until there is a real check (a
+mark on the base and turntable the camera can see, say), compare a still with one taken at a
+known-good reading (run 4's end), trust J1 only once its reading has held through an enable,
+and keep the refuse-on-change check.
 
 **Using the Pi as a proxy.** Some vendor sites (and YouTube's player) block GitHub Actions IP
 ranges; the Pi's residential IP is not blocked. The Pi is on constrained Wi-Fi and may be
