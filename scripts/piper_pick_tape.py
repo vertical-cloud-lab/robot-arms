@@ -54,7 +54,7 @@ Stages, each starting and ending at the start pose (the arm is never left away f
               photo, lower, open (the tape goes back where it was), rise, go home
 
 Placing elsewhere. With --place-r-mm the grasp stage carries the roll to a raised surface in
-the same plane (the black shelf, 2026-10-16) instead of putting it back: up to --carry-mm
+the same plane, or at J1 = --place-deg (the black shelf, 2026-10-16) instead of putting it back: up to --carry-mm
 above --place-top-mm, out along a straight horizontal fingertip line, straight down until the
 roll's bottom is --drop-mm above the surface, open, back up, and home. Every point is checked
 to stay --table-margin-mm above the shelf top from --shelf-near-mm outward. If the grip slips
@@ -329,10 +329,10 @@ def plan(args, q_home):
         if pe < 0.5 and re < 0.5 and in_limits(q):
             cost = abs(q[5] - q_home[5]) + abs(q[3])
             if best is None or cost < best[0]:
-                best = (cost, R_t, q)
+                best = (cost, R_t, q, sign)
     if best is None:
         sys.exit("no IK solution for the pregrasp pose inside the joint limits")
-    _, R_t, q_pre = best
+    _, R_t, q_pre, sign = best
 
     # straight vertical fingertip line from pregrasp down to grasp, one IK solution per --res-mm
     n = max(1, math.ceil((z_pre - z_grasp) / args.res_mm))
@@ -350,20 +350,31 @@ def plan(args, q_home):
         # fingertips sit z_grasp above the bottom of the held roll
         z_carry = max(z_pre, args.place_top_mm + args.carry_mm + z_grasp)
         z_rel = args.place_top_mm + args.drop_mm + z_grasp
-        pts = [(r, z_pre + (z_carry - z_pre) * k / max(1, math.ceil((z_carry - z_pre) / args.res_mm)))
-               for k in range(max(1, math.ceil((z_carry - z_pre) / args.res_mm)) + 1)]
-        m = math.ceil(abs(args.place_r_mm - r) / args.res_mm)
-        pts += [(r + (args.place_r_mm - r) * k / m, z_carry) for k in range(1, m + 1)]
+        # the place point may be off the pick plane (--place-deg): the carry is a straight
+        # horizontal fingertip line, the tool tipped outward toward each point's own azimuth
+        a1 = args.place_deg if args.place_deg is not None else j1
+        x0, y0 = r * u[0], r * u[1]
+        x1, y1 = args.place_r_mm * math.cos(math.radians(a1)), args.place_r_mm * math.sin(math.radians(a1))
+        m = max(1, math.ceil((z_carry - z_pre) / args.res_mm))
+        pts = [(x0, y0, z_pre + (z_carry - z_pre) * k / m, 0.0) for k in range(m + 1)]
+        carry_mm = math.hypot(x1 - x0, y1 - y0)
+        m = math.ceil(carry_mm / args.res_mm)
+        pts += [(x0 + (x1 - x0) * k / m, y0 + (y1 - y0) * k / m, z_carry, k / m)
+                for k in range(1, m + 1)]
         place_up = len(pts) - 1  # index of the hover over the place point
         m = math.ceil((z_carry - z_rel) / args.res_mm)
-        pts += [(args.place_r_mm, z_carry - (z_carry - z_rel) * k / m) for k in range(1, m + 1)]
+        pts += [(x1, y1, z_carry - (z_carry - z_rel) * k / m, 1.0) for k in range(1, m + 1)]
+        tilt1 = args.place_tilt_deg if args.place_tilt_deg is not None else args.tilt_deg
         place, q = [q_pre], q_pre
-        for rr, z in pts[1:]:
-            q, pe, re = ik([rr * u[0], rr * u[1], z], R_t, q, args.tcp_mm)
+        for x, y, z, f in pts[1:]:  # f: how far along the carry, for the tilt
+            R_p = target_rotation(math.degrees(math.atan2(y, x)), sign,
+                                  args.tilt_deg + (tilt1 - args.tilt_deg) * f)
+            q, pe, re = ik([x, y, z], R_p, q, args.tcp_mm)
             if pe > 0.5 or re > 0.5 or not in_limits(q):
-                sys.exit(f"IK failed placing at r = {rr:.0f} mm, fingertip z = {z:.0f} mm")
+                sys.exit(f"IK failed placing at r = {math.hypot(x, y):.0f} mm ({pe:.1f} mm, {re:.1f} deg, {fmt(q)}), "
+                         f"fingertip z = {z:.0f} mm")
             place.append(q)
-        path_mm = (z_carry - z_pre) + abs(args.place_r_mm - r) + (z_carry - z_rel)
+        path_mm = (z_carry - z_pre) + carry_mm + (z_carry - z_rel)
         place_s, place_peak = stream_timing(place, args.speed, path_mm / args.line_mm_s)
 
     line_s, line_peak = stream_timing(line, args.speed, (z_pre - z_grasp) / args.line_mm_s)
@@ -385,7 +396,8 @@ def plan(args, q_home):
           f"{home_peak:.1f} deg/s (cap {home_pct * DEG_S_PER_PCT:.1f})")
     if place:
         print(f"place: shelf top z = {args.place_top_mm:.0f} mm from r = {args.shelf_near_mm:.0f} mm; "
-              f"carry at fingertip z = {z_carry:.0f} mm, out to r = {args.place_r_mm:.0f} mm, "
+              f"carry at fingertip z = {z_carry:.0f} mm, out to r = {args.place_r_mm:.0f} mm "
+              f"at J1 = {a1:.1f} deg, "
               f"release at fingertip z = {z_rel:.0f} mm (roll {args.drop_mm:.0f} mm above the shelf)")
         print(f"place path: {len(place) - 1} IK points; streamed over {place_s:.1f} s at "
               f"{args.speed} %, fastest joint peaks at {place_peak:.1f} deg/s")
@@ -642,7 +654,12 @@ def main():
                          "left the real fingertips at the roll's rim, and it slipped out)")
     ap.add_argument("--place-r-mm", type=float,
                     help="grasp stage: set the roll on a raised surface at this distance from "
-                         "the J1 axis, in the same plane, instead of putting it back")
+                         "the J1 axis instead of putting it back")
+    ap.add_argument("--place-deg", type=float,
+                    help="J1 angle of the place point (default: the pick plane)")
+    ap.add_argument("--place-tilt-deg", type=float,
+                    help="tool tilt at the place point, reached along the carry (default: "
+                         "--tilt-deg); farther places need more to keep J5 under 70")
     ap.add_argument("--place-top-mm", type=float, default=60.0,
                     help="height of that surface above the table")
     ap.add_argument("--shelf-near-mm", type=float, default=300.0,
@@ -656,6 +673,8 @@ def main():
                     help="gripper opening and closing speed (1/4 of its own ~250 mm/s)")
     ap.add_argument("--grip-nm", type=float, default=1.0,
                     help="gripper effort when closing on the roll, N*m (0-5)")
+    ap.add_argument("--squeeze-mm", type=float, default=3.0,
+                    help="after closing, hold the gripper target this far inside the roll")
     ap.add_argument("--min-grip-nm", type=float, default=0.5,
                     help="lift only if the fingers hold at least this effort on the roll")
     ap.add_argument("--slip-mm", type=float, default=2.0,
@@ -813,6 +832,16 @@ def run(args, piper, p, q_home):
         gripping = True
         w, e = close_on(piper, args.grip_nm, args.grip_mm_s)
         print(f"  fingers stopped at {w:.1f} mm, holding {e:.2f} N*m", flush=True)
+        if w >= 3.0:
+            # close_on leaves the target well past the roll, and the gripper then squeezes far
+            # harder than --grip-nm (5.8 and 7.2 N*m on 2026-10-16; the second overheated
+            # the gripper motor 19 s in and it let go). Hold just inside the roll instead.
+            piper.GripperCtrl(round(max(0.0, w - args.squeeze_mm) * MDEG),
+                              round(args.grip_nm * MDEG), 0x01, 0)
+            time.sleep(0.5)
+            w, e = gripper_mm(piper), gripper_nm(piper)
+            print(f"  target {args.squeeze_mm:.0f} mm inside the roll: {w:.1f} mm, holding "
+                  f"{e:.2f} N*m", flush=True)
         photo(args.photos, "closed")
         if w < 3.0 or e < args.min_grip_nm:
             print("  closed on nothing: not lifting" if w < 3.0 else
