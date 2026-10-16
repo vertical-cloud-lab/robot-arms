@@ -164,6 +164,26 @@ sensor). The Pi has no ffmpeg; copy the file off with `scp -l 16000` and convert
 runner. `piper_pick_tape.py --video PATH` does this for a run, and logs marks in place of
 stills while the camera is busy. Only one process can hold the camera at a time.
 
+**Camera-guided picking (2026-10-16).** `~/vision-venv` (numpy and opencv-python-headless,
+installed from wheels in `~/vision-wheels`; the arm venv is untouched) runs
+`piper_vision.py`, which `piper_seek_tape.py` starts; copies of both, with `camera.json` and
+`iktable.json`, sit in the home directory, and their runs in `~/seek/`. For frame rate, the full
+field (2304x1296 mode) runs at 56 fps; the 120 fps mode (1536x864) is a centre crop that cuts
+off the table in front of the arm, including the roll's start spot. `camera.json` fits the
+camera to the arm (see `docs/issue-19/test1-2026-10-16-shelf-to-start/fit_camera.py`); it
+only holds while the camera and the arm's J1 zero stay where they were on 2026-10-16.
+
+**Enabling, and a J1 warning (2026-10-16).** After the parking reset the arm sits in STANDBY
+control mode and ignores joint and gripper commands even with the motors enabled; that was the
+"first try doesn't move" glitch. `MotionCtrl_2(0x01, 0x01, ...)` before `EnablePiper` fixes it,
+but on every run enabled that way J1's reading jumped from -3.91 to +3.98 deg without the arm
+moving, and parking at the old reading then turned the folded arm about 8 deg further each run.
+After three such runs the camera shows the parked arm turned about 20-25 deg from its morning
+pose while J1 still reads -3.9. Until J1 is checked (power-cycle, then compare the folded arm with the morning pose in
+`docs/issue-19/test2-2026-10-16-seek/folded_arm_before_after.jpg`), treat J1 as
+untrustworthy. `piper_seek_tape.py` now refuses to move if a joint's reading changes on
+enabling.
+
 **Using the Pi as a proxy.** Some vendor sites (and YouTube's player) block GitHub Actions IP
 ranges; the Pi's residential IP is not blocked. The Pi is on constrained Wi-Fi and may be
 running the arm, so rate-cap transfers (`curl --limit-rate`) and never run speed tests.

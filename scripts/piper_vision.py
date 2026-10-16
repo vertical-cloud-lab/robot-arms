@@ -14,7 +14,9 @@ Detection. Green in HSV (the same thresholds that find the roll in the run video
 part of the image the arm can reach (the camera calibration puts the reachable table and shelf in
 u 140..1520, v >= 850 of the 2304x1296 image; outside that are the glass door and a green box),
 then the connected blob nearest the last one (or the largest). Each frame sends one JSON datagram:
-the capture time, the bbox centre and size in 2304x1296 pixels, and the blob's area.
+the capture time, the bbox centre and size in 2304x1296 pixels, the blob's area, and for each
+surface the roll could stand on (table, 60 mm shelf) where the ray through the bbox's bottom
+meets it and how well the bbox size fits that distance.
 
 Recording. Every --record-every'th frame goes to an MJPEG file with a .pts file alongside (ms
 from the first frame), the same layout rpicam-vid --save-pts writes, so the run can be turned
@@ -24,6 +26,7 @@ import argparse
 import json
 import os
 import queue
+import signal
 import socket
 import subprocess
 import threading
@@ -60,13 +63,15 @@ class Camera:
 # The roll's bbox is about ROLL_BOX_MM tall in 3D (49 mm across plus the tape's 18 mm depth
 # seen from 12 deg above: 66 px at 771 mm in the 2026-10-16 test 1 video). Which surface it
 # stands on (table, or the 60 mm shelf) is the one whose distance makes that size match.
+# Where it stands comes from the bottom of its bbox (its lowest point, on the surface), the
+# feature the camera was fitted with: green against the black shelf or the pale table is a
+# sharp edge, while the top of the ring washes out in the light.
 ROLL_BOX_MM = 55.3
 SURFACES = (0.0, 60.0)
-ROLL_CENTRE_MM = 24.5
 
 
 def writer(q, path):
-    with open(path, "wb") as f, open(path + ".pts", "w") as p:
+    with open(path, "wb") as f, open(path + ".pts", "w", buffering=1) as p:
         p.write("# timecode format v2\n")
         while True:
             item = q.get()
@@ -89,6 +94,8 @@ def main():
     ap.add_argument("--camera", default=os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                                      "camera.json"))
     args = ap.parse_args()
+    # a SIGTERM from piper_seek_tape.py must still close the recording and the log
+    signal.signal(signal.SIGTERM, lambda *a: (_ for _ in ()).throw(SystemExit(0)))
 
     u0, v0, u1, v1 = (c // 2 for c in ROI)
     roi = np.zeros((H - v0, W), np.uint8)
@@ -105,7 +112,7 @@ def main():
         q = queue.Queue(maxsize=64)
         wt = threading.Thread(target=writer, args=(q, args.record), daemon=True)
         wt.start()
-    log = open(args.log, "w") if args.log else None
+    log = open(args.log, "w", buffering=1) if args.log else None
     if log:
         log.write("k,t,u,v,bw,bh,area,n,x0,y0,s0,x60,y60,s60\n")
     n = W * H * 3 // 2
@@ -146,7 +153,7 @@ def main():
                 # each surface hypothesis: roll centre (x, y) and how well the bbox size fits
                 hyp = []
                 for zs in SURFACES:
-                    P = cam.to_plane(msg["u"], msg["v"], zs + ROLL_CENTRE_MM)
+                    P = cam.to_plane(msg["u"], 2.0 * (v0 + y + bh), zs)
                     size = cam.f * ROLL_BOX_MM / float(np.linalg.norm(P - cam.C))
                     hyp.append([round(float(P[0]), 1), round(float(P[1]), 1), zs,
                                 round(float(np.log(msg["bh"] / size)), 3)])

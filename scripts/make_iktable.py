@@ -11,7 +11,7 @@ from multiprocessing import Pool
 sys.path.insert(0, __import__("os").path.dirname(__import__("os").path.abspath(__file__)))
 from piper_pick_tape import ik, target_rotation, in_limits, fk_all, tip, pos, REST_JOINTS_DEG
 
-R0, R1, DR = 120, 470, 5
+R0, R1, DR = 120, 540, 5
 Z0, Z1, DZ = 0, 340, 5
 
 def tilt(r):

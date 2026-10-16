@@ -1,0 +1,6 @@
+camera: frames flowing (20 in 0.9 s)
+start joints [  -3.91,   -1.89,    0.46,    0.00,   30.84,   64.21]  gripper 67.4 mm
+  gripper did not move (67.4 -> 67.4 mm): motors enabled but idle; cycling them
+  gripper did not move (67.4 -> 67.4 mm): motors enabled but idle; cycling them
+  gripper did not move (67.4 -> 67.4 mm): motors enabled but idle; cycling them
+arm does not respond after three enables; not moving

@@ -7,7 +7,7 @@ what the camera sees (issue #19, test 2), then stand it back at the start (r = 2
 
 How it sees. piper_vision.py (its own process, in ~/vision-venv) finds the green roll on every
 camera frame (56 fps, full field) and sends its bbox and, for each surface it could stand on
-(the table, or the 60 mm shelf), the roll's centre where the camera ray meets that height. The
+(the table, or the 60 mm shelf), where the ray through its lowest point meets that surface. The
 camera model (camera.json) was fitted to the arm itself: the roll's image position in the
 2026-10-16 test 1 video against its position from the forward kinematics while the arm carried
 it (900 frames, 2.5 px median error). This script keeps the hypothesis that is reachable and
@@ -23,13 +23,16 @@ table of the tool-down pose (iktable.json: J2, J3, J5 against radius and height 
 fingers across the arm plane as piper_pick_tape.py grasps; J1 is the azimuth, J4 = 0, J6 fixed),
 interpolated each tick and streamed with MOVE J, as piper_pick_tape.py streams its paths.
 
-Sequence. Open the gripper (which also proves the motors respond: the known enabled-but-idle
-start is caught here and the motors are cycled), rise out of the camera's way into the look
-pose (the arm pointing at the camera, gripper up at 120 mm, so it hides only what the base
-already hides), and as soon as the roll is locked, steer to the hover above it; descend once the hover
-is reached and the estimate has settled (it is frozen from then on), close, check the grip,
-lift, carry around to the start, set it down, open, rise, and go home and park as
-piper_pick_tape.py does.
+Sequence. Switch to CAN command mode, enable, and open the gripper, which proves the motors
+respond (after the parking reset the arm sits in STANDBY mode and ignores commands: the
+enabled-but-idle first tries). Refuse to move if a joint's reading changed on enabling (J1
+jumped +7.9 deg on every such enable on 2026-10-16; see docs/issue-19/test2-2026-10-16-seek).
+Rise out of the camera's way into the look pose (unfolded up and out to the camera's right,
+where it hides 1.5 % of the reachable table and shelf, against 24 % folded at rest), and as
+soon as the roll is locked, steer to the hover above it; descend once the hover is reached and
+the estimate has settled (it is frozen from then on, and frames where the arm is between the
+camera and the roll are never used), close, check the grip, lift, carry around to the start,
+set it down, open, rise, and go home and park as piper_pick_tape.py does.
 """
 import argparse
 import json
@@ -83,10 +86,53 @@ class Table:
         return q
 
 
+class Cam:
+    """camera.json in pure Python (the arm venv has no numpy): arm frame (mm) -> 2304x1296 px."""
+
+    def __init__(self, path):
+        c = json.load(open(path))
+        rv = c["rvec"]
+        th = math.sqrt(sum(x * x for x in rv))
+        k = [x / th for x in rv]
+        K = [[0, -k[2], k[1]], [k[2], 0, -k[0]], [-k[1], k[0], 0]]
+        K2 = P.matmul(K, K)
+        self.R = [[(1 if i == j else 0) + math.sin(th) * K[i][j] + (1 - math.cos(th)) * K2[i][j]
+                   for j in range(3)] for i in range(3)]
+        self.t, self.f, self.cx, self.cy, self.k1 = c["tvec"], c["f"], c["cx"], c["cy"], c["k1"]
+
+    def project(self, X):
+        """(u, v, depth) of arm-frame point X."""
+        Xc = [a + b for a, b in zip(P.mat_vec(self.R, X), self.t)]
+        x, y = Xc[0] / Xc[2], Xc[1] / Xc[2]
+        d = 1 + self.k1 * (x * x + y * y)
+        return self.f * x * d + self.cx, self.f * y * d + self.cy, Xc[2]
+
+
+def arm_segments(q):
+    """The arm as thick 3D segments (a, b, radius mm): links, gripper body and its rail (about
+    150 mm along the finger axis), and the finger pair."""
+    Ts = P.fk_all(q)
+    el, wr, fl, tp = P.pos(Ts[2]), P.pos(Ts[4]), P.pos(Ts[5]), P.tip(Ts[5], 150.0)
+    fa = P.mat_vec(P.rot(Ts[5]), P.finger_axis_6())
+    zt = [Ts[5][0][2], Ts[5][1][2], Ts[5][2][2]]
+    gb = [a + 45 * b for a, b in zip(fl, zt)]
+    ft = [a - 30 * b for a, b in zip(tp, zt)]
+    return [([0, 0, 123.0], el, 50), (el, wr, 45), (wr, fl, 45), (fl, tp, 30),
+            ([a - 75 * b for a, b in zip(gb, fa)], [a + 75 * b for a, b in zip(gb, fa)], 25),
+            ([a - 35 * b for a, b in zip(ft, fa)], [a + 35 * b for a, b in zip(ft, fa)], 15)]
+
+
+def seg_px_dist(p, a, b):
+    vx, vy = b[0] - a[0], b[1] - a[1]
+    n = vx * vx + vy * vy
+    t = 0.0 if n == 0 else max(0.0, min(1.0, ((p[0] - a[0]) * vx + (p[1] - a[1]) * vy) / n))
+    return math.hypot(p[0] - a[0] - t * vx, p[1] - a[1] - t * vy)
+
+
 class Seen:
     """Latest detections from piper_vision.py over UDP, and the filtered roll estimate."""
 
-    def __init__(self, port, r_lo=140, r_hi=455):
+    def __init__(self, port, cam=None, joints=None, r_lo=140, r_hi=520):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.bind(("127.0.0.1", port))
         self.sock.setblocking(False)
@@ -99,6 +145,21 @@ class Seen:
         self.frozen = False
         self.n_used = 0
         self.n_rejected = 0
+        self.n_occluded = 0
+        self.cam, self.joints = cam, joints  # to drop frames where the arm is in front of the roll
+
+    def arm_in_front(self, msg, h, segs):
+        """True if a part of the arm nearer the camera than the roll overlaps its bbox."""
+        _, _, d_roll = self.cam.project([h[0], h[1], h[2] + 24.5])
+        half = 0.5 * max(msg["bw"], msg["bh"])
+        for a, b, rad in segs:
+            pa, pb = self.cam.project(a), self.cam.project(b)
+            if min(pa[2], pb[2]) > d_roll:
+                continue
+            r_px = self.cam.f * rad / max(1.0, min(pa[2], pb[2]))
+            if seg_px_dist((msg["u"], msg["v"]), pa, pb) < half + r_px + 6:
+                return True
+        return False
 
     def pick(self, msg):
         ok = [h for h in msg.get("hyp", []) if self.r_lo <= math.hypot(h[0], h[1]) <= self.r_hi
@@ -107,6 +168,7 @@ class Seen:
 
     def poll(self):
         new = 0
+        segs = arm_segments(self.joints()) if self.cam and self.joints else None
         while True:
             try:
                 data, _ = self.sock.recvfrom(4096)
@@ -120,6 +182,9 @@ class Seen:
             h = self.pick(msg)
             if h is None:
                 continue
+            if segs is not None and self.arm_in_front(msg, h, segs):
+                self.n_occluded += 1
+                continue
             new += 1
             self.recent = [r for r in self.recent if r[0] > msg["t"] - 0.4] + [(msg["t"], h[0], h[1], h[2])]
             if self.frozen:
@@ -129,12 +194,14 @@ class Seen:
                 if len(pts) >= 12:
                     mx = sorted(p[1] for p in pts)[len(pts) // 2]
                     my = sorted(p[2] for p in pts)[len(pts) // 2]
-                    near = [p for p in pts if math.hypot(p[1] - mx, p[2] - my) < 15]
+                    # far along the camera's line of sight one pixel is ~12 mm (shelf) on
+                    # this low camera, so consistency is judged loosely and the filter smooths
+                    near = [p for p in pts if math.hypot(p[1] - mx, p[2] - my) < 40]
                     if len(near) >= 10:
                         self.est = [sum(p[1] for p in near) / len(near),
                                     sum(p[2] for p in near) / len(near), h[2]]
                         self.locked_t = msg["t"]
-            elif h[2] == self.est[2] and math.hypot(h[0] - self.est[0], h[1] - self.est[1]) < 30:
+            elif h[2] == self.est[2] and math.hypot(h[0] - self.est[0], h[1] - self.est[1]) < 60:
                 self.est[0] += 0.08 * (h[0] - self.est[0])
                 self.est[1] += 0.08 * (h[1] - self.est[1])
                 self.n_used += 1
@@ -153,17 +220,18 @@ def main():
     ap.add_argument("--udp", type=int, default=5005)
     ap.add_argument("--video", help="record every 4th camera frame to this MJPEG file")
     ap.add_argument("--trace", help="100 Hz CSV: joints, gripper, targets, estimate")
-    ap.add_argument("--look", default="180,-75,120",
-                    help="look pose r_mm,azimuth_deg,z_mm (default: the arm pointing at the camera, "
-                         "so it hides only what the base already hides)")
+    ap.add_argument("--look", default="300,0,155",
+                    help="look pose r_mm,azimuth_deg,z_mm (default: unfolded up and out to the "
+                         "camera's right, seen edge-on; it hides 1.5 %% of the reachable table and "
+                         "shelf that the base doesn't, against 24 %% folded at rest)")
     ap.add_argument("--home-r-mm", type=float, default=247.0, help="where to stand the roll")
     ap.add_argument("--home-deg", type=float, default=0.0)
     ap.add_argument("--tape-top-mm", type=float, default=49.0)
     ap.add_argument("--clear-mm", type=float, default=60.0, help="hover above the roll's top")
     ap.add_argument("--overlap-mm", type=float, default=28.0)
     ap.add_argument("--drop-mm", type=float, default=5.0)
-    ap.add_argument("--vmax", type=float, default=35.0, help="fingertip speed cap, mm/s")
-    ap.add_argument("--vdown", type=float, default=20.0, help="speed cap descending to the roll")
+    ap.add_argument("--vmax", type=float, default=50.0, help="fingertip speed cap, mm/s")
+    ap.add_argument("--vdown", type=float, default=20.0, help="speed cap going straight up or down")
     ap.add_argument("--gain", type=float, default=0.8, help="1/s: speed per mm of distance")
     ap.add_argument("--tau-s", type=float, default=0.3,
                     help="velocity low-pass (gain * tau <= 0.25 keeps it critically damped)")
@@ -177,10 +245,13 @@ def main():
     ap.add_argument("--seek-s", type=float, default=20.0, help="give up if not seen in this long")
     ap.add_argument("--watch-s", type=float, default=8.0, help="read-only: watch this long")
     ap.add_argument("--table-margin-mm", type=float, default=20.0)
+    ap.add_argument("--visit", help="instead of seeking, steer through these poses "
+                                    "(r,az,z;r,az,z...), holding 2 s at each, then park: a check "
+                                    "of the arm against the camera")
     args = ap.parse_args()
 
     table = Table(args.table)
-    seen = Seen(args.udp)
+    seen = Seen(args.udp, cam=Cam(args.camera))
     vcmd = [args.vision_python, os.path.join(HERE, "piper_vision.py"), "--udp", str(args.udp),
             "--camera", args.camera, "--seconds", "600"]
     if args.video:
@@ -233,6 +304,7 @@ def run(args, table, seen):
         time.sleep(0.1)
     time.sleep(0.3)
     q_home = P.joints_deg(piper)
+    seen.joints = lambda: P.joints_deg(piper)
     g0 = P.gripper_mm(piper)
     print(f"start joints {P.fmt(q_home)}  gripper {g0:.1f} mm", flush=True)
     if any(abs(v) > 5.0 for v in q_home[1:3]):
@@ -281,11 +353,23 @@ def run(args, table, seen):
                 piper.GripperCtrl(0, 0, 0x02, 0)
                 time.sleep(0.1)
             time.sleep(0.5)
+        # After the reset that parks the arm, it sits in STANDBY control mode and ignores joint
+        # and gripper commands even with the motors enabled (the enabled-but-idle first tries on
+        # 2026-10-16: a second run worked only because the first had switched the mode). So
+        # switch to CAN command mode, MOVE J, before enabling.
+        t0 = time.time()
+        while int(piper.GetArmStatus().arm_status.ctrl_mode) != 0x01:
+            piper.MotionCtrl_2(0x01, 0x01, args.speed, 0x00)
+            if time.time() - t0 > 2:
+                print("  control mode still not CAN after 2 s", flush=True)
+                break
+            time.sleep(0.02)
         t0 = time.time()
         while not (piper.EnablePiper() and all(piper.GetArmEnableStatus())):
             if time.time() - t0 > 5:
                 sys.exit("motors did not enable within 5 s")
             time.sleep(0.01)
+        piper.MotionCtrl_2(0x01, 0x01, args.speed, 0x00)
 
     # -------- enable, and prove the motors respond with a small gripper move (no arm motion)
     for attempt in range(3):
@@ -303,7 +387,19 @@ def run(args, table, seen):
         time.sleep(1.5)
     else:
         sys.exit("arm does not respond after three enables; not moving")
-    print(f"enabled; gripper at {w:.1f} mm", flush=True)
+    q_on = P.joints_deg(piper)
+    print(f"enabled; gripper at {w:.1f} mm; J1 reads {q_on[0]:.2f} deg "
+          f"(before enabling {q_home[0]:.2f})", flush=True)
+    if abs(q_on[0] - q_home[0]) > 1.0:
+        # 2026-10-16: on every run that enabled this way J1's reading jumped +7.9 deg without the
+        # arm moving, so the arm went 7.9 deg short of the roll, and parking at the old reading
+        # turned the folded arm 7.9 deg further each run. Don't move on a joint reference that
+        # just changed.
+        print(f"  J1's reading changed by {q_on[0] - q_home[0]:+.2f} deg on enabling, without "
+              f"moving: its reference is not trustworthy; parking without moving", flush=True)
+        piper.GripperCtrl(round(g0 * MDEG), 0, 0x00, 0)
+        P.park(piper, "estop")
+        sys.exit(2)
     if abs(w - args.open_mm) > 1.5:
         w = P.set_gripper(piper, args.open_mm, args.grip_nm, args.grip_mm_s, wait_s=0.5)
 
@@ -375,6 +471,17 @@ def run(args, table, seen):
         def hover_z(rr, top):
             return min(top + args.clear_mm, table.zmax(rr) - 5.0)
 
+        if args.visit:
+            for k_, pose in enumerate(args.visit.split(";")):
+                tgt = tuple(float(v) for v in pose.split(","))
+                S["phase"] = f"visit{k_}"
+                steer(lambda: tgt, args.vmax, lambda e: math.sqrt(sum(x * x for x in e)) < 1.0
+                      and speed() < 1.0, 40.0)
+                t_h = time.time()
+                steer(lambda: tgt, args.vmax, lambda e: time.time() - t_h > 2.0, 10.0)
+                print(f"  held at {tgt}: joints {P.fmt(P.joints_deg(piper))}", flush=True)
+            return
+
         # wait at the look pose until the roll is locked (steering holds the pose meanwhile)
         S["phase"] = "seek"
         t_seek = time.time()
@@ -414,7 +521,8 @@ def run(args, table, seen):
         if z_grasp - es < args.table_margin_mm:
             sys.exit("grasp height under the margin above the surface")
         print(f"over the roll: r = {rr:.1f} mm, azimuth {aa:.2f} deg ({seen.n_used} frames "
-              f"refined it, {seen.n_rejected} rejected); descending to z = {z_grasp:.0f} mm",
+              f"refined it, {seen.n_rejected} rejected, {seen.n_occluded} with the arm in front); "
+              f"descending to z = {z_grasp:.0f} mm",
               flush=True)
 
         # straight down (r and azimuth held)
@@ -457,7 +565,7 @@ def run(args, table, seen):
         # lift, carry around to the start, set it down
         z_lift = hover_z(rr, surface_top())
         S["phase"] = "lift"
-        if not steer(lambda: (rr, aa, z_lift), args.vmax, lambda e: abs(e[2]) < 1.0, 30.0, holding):
+        if not steer(lambda: (rr, aa, z_lift), args.vdown, lambda e: abs(e[2]) < 1.0, 30.0, holding):
             return
         z_place_hover = hover_z(args.home_r_mm, args.tape_top_mm)
         z_carry = max(z_lift, z_place_hover)
@@ -476,7 +584,7 @@ def run(args, table, seen):
         gripping = False
         print(f"  released, gripper at {w:.1f} mm", flush=True)
         S["phase"] = "rise"
-        steer(lambda: (args.home_r_mm, args.home_deg, z_place_hover), args.vmax,
+        steer(lambda: (args.home_r_mm, args.home_deg, z_place_hover), args.vdown,
               lambda e: abs(e[2]) < 1.0, 30.0)
     finally:
         if gripping:  # interrupted while holding: set it down where the arm is and let go
