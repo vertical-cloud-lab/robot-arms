@@ -312,14 +312,15 @@ def fmt(q):
 def plan(args, q_home):
     j1 = args.plane_deg if args.plane_deg is not None else q_home[0]
     u = [math.cos(math.radians(j1)), math.sin(math.radians(j1))]
-    r, top = args.tape_r_mm, args.tape_top_mm
+    r, base = args.tape_r_mm, args.pick_top_mm
+    top = base + args.tape_top_mm
 
     def over(z):
         return [r * u[0], r * u[1], z]
 
     z_pre, z_grasp = top + args.clear_mm, top - args.overlap_mm
-    if z_grasp < args.table_margin_mm:
-        sys.exit(f"grasp puts the fingertips {z_grasp:.0f} mm above the table; "
+    if z_grasp - base < args.table_margin_mm:
+        sys.exit(f"grasp puts the fingertips {z_grasp - base:.0f} mm above the surface under the roll; "
                  f"under --table-margin-mm {args.table_margin_mm}")
     # pick the finger-axis sign that gives the J6 nearest the rest J6
     best = None
@@ -347,9 +348,9 @@ def plan(args, q_home):
 
     place, place_s, place_up, shelf_low = None, 0.0, 0, math.inf
     if args.place_r_mm is not None:
-        # fingertips sit z_grasp above the bottom of the held roll
-        z_carry = max(z_pre, args.place_top_mm + args.carry_mm + z_grasp)
-        z_rel = args.place_top_mm + args.drop_mm + z_grasp
+        # fingertips sit z_grasp - base above the bottom of the held roll
+        z_carry = max(z_pre, args.place_top_mm + args.carry_mm + z_grasp - base)
+        z_rel = args.place_top_mm + args.drop_mm + z_grasp - base
         # the place point may be off the pick plane (--place-deg): the carry is a straight
         # horizontal fingertip line, the tool tipped outward toward each point's own azimuth
         a1 = args.place_deg if args.place_deg is not None else j1
@@ -421,16 +422,22 @@ def plan(args, q_home):
     # home -> pregrasp is one MOVE J, checked as the arm runs it; the return is streamed along
     # the joint-space line. Both stay off the table and out of the space above the roll, and
     # the descent really is a straight vertical line.
+    # Off a raised pick surface (--pick-top-mm), everything but the release descent at the place
+    # point also stays the margin above that surface's height, wherever it is.
+    paths = [("home -> pregrasp (MOVE J)", movej_path(q_home, q_pre), base),
+             ("place path (streamed)", place or [q_pre], 0.0),
+             ("return home (streamed)", home_path, base)]
+    if place and base > 0:
+        paths[1] = ("place path, up to the hover over the place", place[:place_up + 1], base)
+        paths.append(("place path, release descent", place[place_up:], 0.0))
     worst = []
-    for name, path in (("home -> pregrasp (MOVE J)", movej_path(q_home, q_pre)),
-                       ("place path (streamed)", place or [q_pre]),
-                       ("return home (streamed)", home_path)):
+    for name, path, floor in paths:
         (low, what), keep_out = lowest_and_keep_out(path, args.tcp_mm, r, top, j1)
         print(f"{name}: lowest point z = {low:.0f} mm ({what}), "
               f"closest above the roll {keep_out:.0f} mm")
         if name.startswith("place"):
             keep_out = math.inf  # the place path starts at the hover over the roll by design
-        worst.append((low, keep_out))
+        worst.append((low - floor, keep_out))
     if place:
         # nothing but the held roll goes lower than table margin over the shelf, except the
         # fingertips at the release point (they straddle the roll there)
@@ -658,7 +665,11 @@ def main():
     ap.add_argument("--tape-r-mm", type=float, default=TAPE_R_MM,
                     help="roll centre, distance from the J1 axis")
     ap.add_argument("--tape-top-mm", type=float, default=TAPE_TOP_MM,
-                    help="top of the roll above the table")
+                    help="top of the roll above the surface it stands on")
+    ap.add_argument("--pick-top-mm", type=float, default=0.0,
+                    help="height of the surface the roll stands on at the pick (the shelf top "
+                         "when picking it back off the shelf); the rest of the path stays "
+                         "--table-margin-mm above it")
     ap.add_argument("--plane-deg", type=float, help="J1 angle of the roll (default: start J1)")
     ap.add_argument("--tcp-mm", type=float, default=150.0, help="flange to fingertips")
     ap.add_argument("--tilt-deg", type=float, default=10.0,
