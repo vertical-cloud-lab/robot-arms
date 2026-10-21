@@ -79,8 +79,8 @@ The overhead Pi could also be replaced with a USB camera, as the 2026-10-14 comm
 
 ![](parts.jpg)
 
-Every file in [`parts/`](parts/) is exported in its print orientation and needs no supports
-([STL](parts/) for slicing, STEP for editing).
+Every file in [`cad/`](cad/) is exported in its print orientation and needs no supports
+(STL for slicing, STEP for editing).
 
 | File | Qty | What it does | Prints |
 |---|---|---|---|
@@ -93,7 +93,7 @@ Every file in [`parts/`](parts/) is exported in its print orientation and needs 
 | `ribbon_clip` | 8 | Slides into a T-slot from the open end and holds a ribbon flat against the post. | flat |
 
 Print in PETG or PLA at 0.2 mm, with 4 walls and 40 % infill (100 % for the wedges, so the angle
-can't creep). `parts/*.stl` are in mm.
+can't creep). The files are in mm.
 
 **Check the camera before printing all three cases.** The hole pattern (21 × 12.5 mm, Ø2.2 mm,
 2 mm in from the edges) is the Camera Module 3 drawing as I know it. I haven't checked it against a

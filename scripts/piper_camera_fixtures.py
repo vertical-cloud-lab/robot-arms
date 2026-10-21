@@ -769,7 +769,7 @@ if __name__ == "__main__":
     import sys
     sys.path.insert(0, HERE)
     parts = build_parts()
-    info = export(parts, os.path.join(args.out, "parts"))
+    info = export(parts, os.path.join(args.out, "cad"))
     scores = score(args.score) if args.score else None
     old = os.path.join(args.out, "summary.json")
     if scores is None and os.path.exists(old):
