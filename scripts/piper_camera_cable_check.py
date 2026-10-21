@@ -152,9 +152,7 @@ def main():
     print(f"{len(spots)} side spots outside the reach; scoring on {args.poses} poses", flush=True)
 
     poses = pcp.sample_poses(args.poses)
-    seen, info, tips = info_matrices(cams, poses, meshes)
-    np.savez_compressed(os.path.join(args.out, "cable_check_arrays.npz"), seen=seen, info=info,
-                        tips=tips, eyes=np.array(eyes, float), names=np.array(names))
+    seen, info, _ = info_matrices(cams, poses, meshes)
 
     side = list(range(1, 1 + len(spots)))
     pairs = []

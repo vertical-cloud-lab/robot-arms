@@ -35,7 +35,13 @@ is toward the wall, and z is up from the arm's plate.
 
 - **Heights:** anything from 150 to 450 mm up scores the same within noise (90.8-92.2 %). I'd use about 300 mm, which also sees over objects on the table.
 - **Spacing:** keep the side cameras about 900 mm apart, which puts their views about 70 deg apart at the arm. At 600 mm apart the score drops to 87 %, and at 300 mm (both cameras on one post) to 73 %.
-- **The spots overhang the table:** they are about 10 cm past the right-hand end of #9's 1290 mm table model, so they need posts or arms clamped to the table, with the Pi on the same rail.
+- **The spots overhang the table:** they are about 10 cm past the right-hand end of #9's 1290 mm table model, and about 13.5 cm past the end of the 4 x 4 ft topper. They need a ~900 mm bar across the end, held by arms clamped to the table, with the Pi in the middle of the bar. A single rigid bar also keeps the two cameras' relative pose fixed.
+- **If everything has to stay on the topper:** the run that designed the fixtures
+  ([`claude/issue-24-20261021-2052`](https://github.com/vertical-cloud-lab/robot-arms/tree/af6e7a6/docs/issue-24/camera-fixtures))
+  found that only the topper's corners are outside the reach. It put the side cameras on posts in
+  the two right-hand corners, with the overhead camera on a boom. Those lenses are 1.09 m apart,
+  too far for two 500 mm ribbons, so that layout needs a Pi per camera. On the same 400 poses it
+  scores 90.2 % within 2 mm, the same as the bar within noise.
 
 ![](cable_check.png)
 
@@ -50,6 +56,7 @@ cable budget. Right: score against the angle the two side cameras make at the ar
 | Best, no cable limit: room edge near the corner (150 mm up) + right-hand end, wall side (300 mm up) | 1.52 m / 1.24 m | 92 deg | 93.8 % | 25.8 % | 1.12 mm |
 | **Best on one Pi:** S1 + S2 at 150 mm | 0.90 m / 0.90 m | 70 deg | **92.2 %** | 36.8 % | 1.05 mm |
 | S1 + S2 at 300 mm (recommended) | 0.90 m / 0.90 m | 68 deg | 91.8 % | 43.0 % | 1.02 mm |
+| Fixture run's corner posts (front-right 350 mm up, back-right 500 mm up, its overhead) | 1.23 m / 1.09 m | 93 deg | 90.2 % | 44.2 % | 1.02 mm |
 | One Pi, cameras 600 mm apart | 0.60 m | 49 deg | 87.0 % | | |
 | One Pi, cameras 450 mm apart | 0.45 m | 35 deg | 80.2 % | | |
 
