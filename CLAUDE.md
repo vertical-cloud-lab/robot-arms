@@ -85,8 +85,43 @@ live in this repo, so record them here so they can be reproduced.
 
 The PiPER cell's fixed cameras get their own Pi, `CAM_PI_HOSTNAME`, tagged `tag:rpi-5-76zj`
 (login `CAM_PI_USERNAME`, sudo password `CAM_PI_PASSWORD`). It does not drive the arm, but the
-same rules apply: read-only first, and record every change made on it here. Everything below
-covers both Pis unless it names one.
+same rules apply: read-only first, and record every change made on it here.
+
+**The camera Pi as found** (read-only check on 2026-10-21,
+[#33](https://github.com/vertical-cloud-lab/robot-arms/issues/33); nothing on it was changed):
+
+- **Hardware and OS.** Raspberry Pi 5 Model B Rev 1.1, 8 GB RAM, 32 GB microSD (21 GB free),
+  2 GB zram swap. Raspberry Pi OS with desktop, 64-bit (image 2026-10-06, Debian 13.7 trixie),
+  kernel `6.18.50+rpt-rpi-2712`. Boots to the desktop with autologin on tty1 and in LightDM, the
+  image's default. Timezone `America/Denver`; the journal is persistent.
+- **Access.** Tailscale SSH logs in as `CAM_PI_USERNAME` (uid 1000, in `sudo` and `video`), and
+  `sudo -S` with `CAM_PI_PASSWORD` works. Two other ways in bypass the tailnet policy:
+  - OpenSSH with password login, enabled by Imager's `enable_ssh`/`ssh_pwauth`. It answers `:22`
+    on the LAN; on the tailnet, `tcp:22` goes to Tailscale SSH instead. There is no
+    `~/.ssh/authorized_keys`.
+  - Raspberry Pi Connect, signed in, with screen sharing and remote shell allowed. It runs as the
+    login user's `rpi-connect*` units, with linger on, so it is up without anyone logged in.
+    Tailscale SSH sessions have no `XDG_RUNTIME_DIR`, so `rpi-connect status` and other
+    user-session tools need `XDG_RUNTIME_DIR=/run/user/$(id -u)` set first.
+- **Network.** Wi-Fi only (`wlan0`); `eth0` has no cable. Plus `tailscale0`.
+- **No cameras attached yet.** `lsusb` lists only the root hubs, and
+  `rpicam-hello --list-cameras` says `No cameras available!` (`camera_auto_detect=1` is set).
+  `v4l2-ctl --list-devices` lists only the Pi 5's own ISP back end (`pispbe`, `/dev/video20`–`35`)
+  and HEVC decoder (`/dev/video19`), which are not cameras. `rpicam-apps` 1.13.0 and
+  `v4l-utils` 1.30.1 are installed.
+- **Added after flashing: only Tailscale.** `apt-get install tailscale=1.86.2` from
+  `pkgs.tailscale.com` on 2026-10-21, which pulled in `iptables`. That repo now offers 1.104.2;
+  nothing holds the version, and `unattended-upgrades` is not installed. Key expiry is off.
+- **Enabled services** are the desktop image's stock set plus `tailscaled` and `ssh`, and
+  Raspberry Pi Connect's user units. The only file under `/etc/systemd/system` is the autologin
+  drop-in. No units have failed.
+- **cron.** Neither root nor the login user has a crontab; `/etc/cron.d` has only the stock
+  `e2scrub_all`.
+- **Listening.** `sshd` on `:22` and `rpcbind` on `:111` (TCP and UDP), both on all interfaces;
+  `avahi-daemon` on `:5353/udp`; `tailscaled` on `:41641/udp`, plus its peer API on the tailnet
+  addresses. No camera stream, web UI or ROS.
+
+Everything below covers both Pis unless it names one.
 
 **How CI gets on the tailnet.** `claude.yml`'s `Connect to Tailscale` step joins every session
 as an ephemeral node carrying `tag:rpi-5-eufi` and `tag:rpi-5-76zj`, so you are already on the
