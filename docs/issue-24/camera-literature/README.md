@@ -104,7 +104,32 @@ and the angle bins. `overhead_check.json` has the overhead variants.
 
 ## Edison Scientific
 
-See [`edison/`](edison/) for the four queries, answers and full trajectories.
+All four tasks succeeded. Each answer is in `edison/<query>.md`, next to its full trajectory
+(`*_trajectory.json`) and small artifacts. The PaperQA document indexes attached to each
+trajectory (47-197 MB pickles) are not committed; `*_files.json` keeps their IDs.
+
+- **[Triangulation geometry](edison/q1_triangulation_geometry.md)** (high effort): **supports the layout.**
+  - **Angle:** about 90 deg between rays is ideal, and 60-120 deg is the practical band. Height error is smallest near 90 deg and overall position error near 60 deg (Di et al. 2016). Rover studies put the optimum at 99-108 deg (Li et al. 2014).
+  - **Network shape:** a mixed normal-plus-convergent network is strong, and convergent views make precision even in all directions (Fraser).
+  - **Obliques:** oblique views 20-35 deg from nadir improve a nadir block by ~50 %.
+  - **More cameras:** past two, error falls roughly as 1/sqrt(number of cameras).
+  - **Limit:** very wide angles stop helping once foreshortening degrades target detection.
+  - Summary tables: [rules](edison/q1_triangulation_geometry_artifact3_Quantitative_Camera_Placement_Rules.txt), [Fraser networks](edison/q1_triangulation_geometry_artifact2_Fraser_Imaging_Geometry_Comparison.txt).
+- **[Robot-learning viewpoints](edison/q2_robot_learning_viewpoints.md)**: **supports the layout, with nuance.**
+  - Overhead plus two oblique cameras is "a defensible design for workspace monitoring and independent fingertip triangulation".
+  - It is "not an arrangement that the policy-learning literature has established as uniquely optimal". Most systems pair a global view with a front or low view, plus wrist cameras.
+  - More views are not automatically better for a policy: in AV-ALOHA, adding views sometimes lowered success.
+  - It flags that at 1.2 m the overhead camera covers the 1.36 m table depth with only ~0.12 m to spare at each edge (1.03 m is the minimum), so 1.5 m gives margin.
+  - Aim the side cameras at the middle of the fingertips' working volume, not at the base.
+- **[Camera-based arm calibration](edison/q3_vision_calibration_accuracy.md)**: **supports two widely separated views.**
+  - Two calibrated, well-separated views beat one, and a third mainly buys coverage against occlusion.
+  - **Raspberry Pi cameras:** LARK (Sideris et al. 2026), with five Raspberry Pi global-shutter cameras ~1 m away, reached ~1.0 mm with 2-3 cameras and 0.75 mm with 5 on a grid target. On a harder head phantom it reached 1.7 mm with 2 cameras and 1.3 mm with 5.
+  - **Marker choice:** a planar tag seen face-on is ill-conditioned: 1.50 mm RMSE, against 0.17-0.20 mm for a non-coplanar four-tag fiducial (Wakiuchi et al. 2026). A 3D marker or spheres on the gripper is better than one flat tag.
+  - [Summary table](edison/q3_vision_calibration_accuracy_artifact2_Quantitative_Camera-Tracking_Evidence.txt).
+- **[Raspberry Pi multi-camera precedent](edison/q4_pi_multicamera_sync.md)**: **no direct precedent for the ribbons; supports wired Ethernet for separate Pis.**
+  - It found no published build with several cameras on one Pi over 0.5 m or longer ribbons, and no measured ribbon-length limit.
+  - Networked Pi arrays are well documented. A 14-Pi cluster (Ren 2024) held NTP clock offsets of -0.16 to +0.77 ms over wired Ethernet, but -17 to -2 ms with up to 15 ms jitter over Wi-Fi.
+  - So if you use three Pis, wire them.
 
 ## Sources
 
