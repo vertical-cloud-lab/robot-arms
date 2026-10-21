@@ -1,9 +1,10 @@
 name: Tailscale check
 
-# Manual, read-only proof that CI can reach the arm Pi: joins the tailnet the same
-# way claude.yml does (federated identity, no stored secret), shows the tags the
-# runner was given, and checks that the Pi answers on tcp:22. With ARM_PI_USERNAME
-# set it also logs in over Tailscale SSH and runs hostname/uptime/id, nothing else.
+# Manual, read-only proof that CI can reach the arm Pi and the camera Pi: joins the
+# tailnet the same way claude.yml does (federated identity, no stored secret), shows
+# the tags the runner was given, and checks that each Pi answers on tcp:22. For each
+# Pi whose *_USERNAME is set it also logs in over Tailscale SSH and runs
+# hostname/uptime/id, nothing else.
 on:
   workflow_dispatch:
 
@@ -18,13 +19,15 @@ jobs:
     env:
       ARM_PI_USERNAME: ${{ vars.ARM_PI_USERNAME }}
       ARM_PI_HOSTNAME: ${{ vars.ARM_PI_HOSTNAME }}
+      CAM_PI_USERNAME: ${{ vars.CAM_PI_USERNAME }}
+      CAM_PI_HOSTNAME: ${{ vars.CAM_PI_HOSTNAME }}
     steps:
       - name: Connect to Tailscale
         uses: tailscale/github-action@v4
         with:
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
           audience: ${{ secrets.TS_AUDIENCE }}
-          tags: tag:rpi-5-eufi
+          tags: tag:rpi-5-eufi,tag:rpi-5-76zj
 
       - name: Runner tags and peer status
         run: |
@@ -40,3 +43,14 @@ jobs:
         run: |
           ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o ConnectTimeout=15 \
             "$ARM_PI_USERNAME@$ARM_PI_HOSTNAME" 'hostname >/dev/null && uptime -p && id -un && uname -m'
+
+      - name: Camera Pi answers on tcp:22
+        run: |
+          timeout 20 bash -c "until nc -z -w 3 \"$CAM_PI_HOSTNAME\" 22; do sleep 2; done"
+          echo "tcp:22 reachable"
+
+      - name: Camera Pi read-only SSH login
+        if: env.CAM_PI_USERNAME != ''
+        run: |
+          ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o ConnectTimeout=15 \
+            "$CAM_PI_USERNAME@$CAM_PI_HOSTNAME" 'hostname >/dev/null && uptime -p && id -un && uname -m'

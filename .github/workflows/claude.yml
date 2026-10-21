@@ -85,6 +85,10 @@ jobs:
       ARM_PI_PASSWORD: ${{ secrets.ARM_PI_PASSWORD }}
       ARM_PI_USERNAME: ${{ vars.ARM_PI_USERNAME }}
       ARM_PI_HOSTNAME: ${{ vars.ARM_PI_HOSTNAME }}
+      # The PiPER cell's fixed-camera Pi, same arrangement as the arm Pi.
+      CAM_PI_PASSWORD: ${{ secrets.CAM_PI_PASSWORD }}
+      CAM_PI_USERNAME: ${{ vars.CAM_PI_USERNAME }}
+      CAM_PI_HOSTNAME: ${{ vars.CAM_PI_HOSTNAME }}
       # Hugging Face, byu-vcl account (LeRobot datasets and policies)
       HF_TOKEN: ${{ secrets.HF_TOKEN }}
       # Onshape REST API key pair, and the account login for browser work
@@ -132,15 +136,16 @@ jobs:
       # job's GitHub OIDC token for an auth key, so no Tailscale secret is
       # stored anywhere. The identity accepts only subjects matching
       # repo:vertical-cloud-lab@228975003/robot-arms@1412458486:* (GitHub's immutable
-      # subject format, which carries org and repo IDs) and may mint only tag:rpi-5-eufi.
-      # Access to the arm Pi is still bounded by the tailnet policy in
-      # vertical-cloud-lab/tailscale-policy (SSH within the tag, tcp:22 only).
+      # subject format, which carries org and repo IDs) and mints keys for exactly
+      # tag:rpi-5-eufi (arm Pi) + tag:rpi-5-76zj (camera Pi), so `tags:` must list both;
+      # requesting a subset fails. Access to the Pis is still bounded by the tailnet
+      # policy in vertical-cloud-lab/tailscale-policy (SSH within each tag, tcp:22 only).
       - name: Connect to Tailscale
         uses: tailscale/github-action@v4
         with:
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
           audience: ${{ secrets.TS_AUDIENCE }}
-          tags: tag:rpi-5-eufi
+          tags: tag:rpi-5-eufi,tag:rpi-5-76zj
 
       # Copilot-style model selector: @claude+<model>[:<effort>]
       # Examples: @claude, @claude+opus-5, @claude+opus-4.8:max, @claude:high

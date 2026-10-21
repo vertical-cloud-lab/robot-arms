@@ -72,7 +72,7 @@ client = EdisonClient(api_key=os.environ["EDISON_PLATFORM_API_KEY"])
 scans used. Its answers live in `environment_frame`, not on the task object, which once made a
 fetch helper silently drop every answer.
 
-## The arm Pi (`rpi-5-eufi`) over Tailscale
+## The arm Pi (`rpi-5-eufi`) and camera Pi (`rpi-5-76zj`) over Tailscale
 
 The Pi that drives the AgileX PiPER is on the lab tailnet as `ARM_PI_HOSTNAME`, tagged
 `tag:rpi-5-eufi`. **Treat it as live hardware that moves an arm.** Inspect read-only first
@@ -83,18 +83,29 @@ services only when necessary and verify the arm is healthy end to end afterwards
 failures as failures. Changes made on the Pi (systemd units, udev rules, cron, config) do not
 live in this repo, so record them here so they can be reproduced.
 
+The PiPER cell's fixed cameras get their own Pi, `CAM_PI_HOSTNAME`, tagged `tag:rpi-5-76zj`
+(login `CAM_PI_USERNAME`, sudo password `CAM_PI_PASSWORD`). It does not drive the arm, but the
+same rules apply: read-only first, and record every change made on it here. Everything below
+covers both Pis unless it names one.
+
 **How CI gets on the tailnet.** `claude.yml`'s `Connect to Tailscale` step joins every session
-as an ephemeral node carrying `tag:rpi-5-eufi`, so you are already on the tailnet; run
+as an ephemeral node carrying `tag:rpi-5-eufi` and `tag:rpi-5-76zj`, so you are already on the
+tailnet; run
 `tailscale status` to confirm, and do not run `tailscale up` or mint keys yourself. The step
 authenticates with a Tailscale **federated identity** (admin console → Settings → Trust
 credentials → OpenID Connect), not an OAuth client secret. The action presents this job's
 GitHub OIDC token, Tailscale checks its subject against
 `repo:vertical-cloud-lab@228975003/robot-arms@1412458486:*`, and only then issues an auth key,
-which can only carry `tag:rpi-5-eufi`. There is no long-lived Tailscale secret to leak or
+which carries exactly `tag:rpi-5-eufi` and `tag:rpi-5-76zj`. There is no long-lived Tailscale
+secret to leak or
 rotate. `TS_OAUTH_CLIENT_ID` and `TS_AUDIENCE` are stored as secrets but Tailscale itself says
 neither value is secret. This needs `id-token: write` on the job and
-`tailscale/github-action@v4`. Unlike byu-vcl's OAuth client, there is no "request every tag the
-client owns" trap here: one identity, one tag.
+`tailscale/github-action@v4`. **The identity issues keys only for its exact tag set**, so every
+workflow's `tags:` must list both tags; a run that requests only one fails at "Connect to
+Tailscale". Adding a Pi therefore means, in this order: a tailscale-policy PR adding its tag;
+tagging the Pi in the console; then, back to back, adding the tag to the trust credential
+(Edit → Scopes → Keys → Auth Keys → Tags; the client ID and audience do not change) and to
+`tags:` in `claude.yml` and `tailscale-check.yml`.
 
 **The subject carries numeric IDs, not just names.** This repo issues GitHub's *immutable*
 subject format, `repo:<org>@<org id>/<repo>@<repo id>:ref:refs/heads/main`, so a pattern
@@ -104,22 +115,24 @@ IDs survive renames, so a deleted-and-recreated repo of the same name cannot bor
 identity. `gh api repos/vertical-cloud-lab/robot-arms/actions/oidc/customization/sub` shows
 the prefix, and the credential's edit page shows the last subject Tailscale received. The
 manual **Tailscale check** workflow (`tailscale-check.yml`) is the read-only way to prove the
-whole path: it joins, prints the runner's tags, checks the Pi's `tcp:22`, and logs in over SSH
-once `ARM_PI_USERNAME` is set.
+whole path: it joins, prints the runner's tags, checks each Pi's `tcp:22`, and logs in over SSH
+to each Pi whose `*_USERNAME` is set.
 
 **What the policy allows.** The policy lives in
 [`vertical-cloud-lab/tailscale-policy`](https://github.com/vertical-cloud-lab/tailscale-policy)
-(`policy.hujson`; edit by PR, the console copy is overwritten on merge). For this Pi it grants:
+(`policy.hujson`; edit by PR, the console copy is overwritten on merge). For each Pi it grants:
 
-- **CI → Pi:** `tag:rpi-5-eufi` → `tag:rpi-5-eufi`, `tcp:22` only, SSH `accept` as
-  `autogroup:nonroot`. Tagged sources never get check mode, so CI never sees a browser prompt.
+- **CI → Pi:** `tag:rpi-5-eufi` → `tag:rpi-5-eufi` and `tag:rpi-5-76zj` → `tag:rpi-5-76zj`,
+  `tcp:22` only, SSH `accept` as `autogroup:nonroot`. The two Pis cannot reach each other, since
+  neither carries the other's tag. Tagged sources never get check mode, so CI never sees a
+  browser prompt.
   Root over Tailscale SSH is not allowed from CI; use `sudo` on the Pi.
 - **People:** sgbaird has direct SSH (non-root and root). Other team members reach the Pi
   through `@claude` runs here until they are added to that rule.
 - **Only `tcp:22` from CI.** A service that listens on the Pi (ROS 2, Zenoh, a camera stream, a
-  web UI) is unreachable from a runner until a port is added to the `tag:rpi-5-eufi` grant. Bind
+  web UI) is unreachable from a runner until a port is added to that Pi's tag grant. Bind
   new services to `127.0.0.1` and reach them over SSH unless they genuinely need the tailnet.
-- Keep `tag:tailscale-ssh` **off** this Pi. That tag's `check` rule sits first in the policy and
+- Keep `tag:tailscale-ssh` **off** these Pis. That tag's `check` rule sits first in the policy and
   is first-match-wins, so adding it would put browser re-authentication in front of every human
   and give every tailnet member root.
 
@@ -128,6 +141,7 @@ find or generate:
 
 ```bash
 ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new "$ARM_PI_USERNAME@$ARM_PI_HOSTNAME" 'hostname && uptime -p && id -un'
+ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new "$CAM_PI_USERNAME@$CAM_PI_HOSTNAME" 'hostname && uptime -p && id -un'
 ```
 
 If SSH is refused (`tailnet policy does not permit you to SSH to this node`), the fix is a
@@ -154,6 +168,8 @@ sessions.
 | `TS_OAUTH_CLIENT_ID` / `TS_AUDIENCE` | secret | Tailscale federated identity: client ID and audience (`api.tailscale.com/<client ID>`). Not sensitive, see above. Only useful from this repo's workflows, since the identity checks the GitHub OIDC subject. |
 | `ARM_PI_PASSWORD` | secret | sudo password on the arm Pi. |
 | `ARM_PI_USERNAME` / `ARM_PI_HOSTNAME` | variable | Login user and tailnet name of the arm Pi. Variables, not secrets: a 3-character secret is masked everywhere it appears as a substring, which once rewrote `byu-vcl` as `byu-***` throughout byu-vcl's logs. |
+| `CAM_PI_PASSWORD` | secret | sudo password on the camera Pi. |
+| `CAM_PI_USERNAME` / `CAM_PI_HOSTNAME` | variable | Login user and tailnet name of the camera Pi. Variables for the same reason. |
 | `EDISON_PLATFORM_API_KEY` | secret | Edison Scientific platform API. |
 | `HF_TOKEN` | secret | Hugging Face `byu-vcl` account, fine-grained read + write on its own repos (LeRobot datasets and policies). |
 | `ONSHAPE_ACCESS_KEY` / `ONSHAPE_SECRET_KEY` | secret | Onshape REST API key pair. Prefer these for anything the API can do; the PiPER mount lives in vcl-shared > 6DOF Robot Arm. |
@@ -167,8 +183,8 @@ sessions.
 sets it both as a repo secret and in `.claude/settings.local.json` (add `--gh-only` for
 `CLAUDE_CODE_OAUTH_TOKEN`, which would otherwise override the local Claude Code login). The
 Tailscale identity: Settings → Trust credentials, delete and recreate with issuer GitHub,
-subject `repo:vertical-cloud-lab@228975003/robot-arms@1412458486:*`, scope auth keys (write) with tag
-`tag:rpi-5-eufi`, then update the two secrets. Everything else is shared with byu-vcl, so rotate
+subject `repo:vertical-cloud-lab@228975003/robot-arms@1412458486:*`, scope auth keys (write) with tags
+`tag:rpi-5-eufi` and `tag:rpi-5-76zj`, then update the two secrets. Everything else is shared with byu-vcl, so rotate
 it in both repos. The YouTube token is minted in byu-vcl and copied here; `youtube/README.md`
 has the copy step.
 
