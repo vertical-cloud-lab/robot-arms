@@ -1,0 +1,8 @@
+camera: frames flowing (20 in 0.9 s)
+start joints [  -3.91,   -1.89,    1.51,    0.99,   27.25,   64.25]  gripper 66.2 mm
+enabled; gripper at 61.2 mm; J1 reads 3.98 deg (before enabling -3.91)
+at the look pose after 7.0 s; roll locked
+  held at (450.0, 114.0, 180.0): joints [ 113.94,  102.00,  -93.59,    0.00,   61.67,   65.52]
+  held at (250.0, -40.0, 140.0): joints [ -39.92,   73.83,  -57.48,    0.00,   68.71,   65.52]
+  quick stop: J2 0.00 -> -1.75, J3 0.00 -> 0.75 deg in 1.5 s; resetting
+disabled at home: [  -1.42,    2.20,   -2.56,    5.27,   -5.50,  -10.50]; arm status NORMAL(0x0), motors enabled [False, False, False, False, False, False]

@@ -1,0 +1,39 @@
+start joints [  -3.91,   -1.38,   -1.48,    1.21,   37.65,   66.39]  gripper 63.0 mm, 0.07 N*m; arm status NORMAL(0x0)
+arm plane J1 = 4.05 deg; tape centre at r = 247 mm, top at z = 49 mm
+fingertip = flange + 150 mm along the tool axis
+home       [  -3.91,   -1.38,   -1.48,    1.21,   37.65,   66.39]   (parks at [  -3.91,    0.00,   -1.48,    1.21,   37.65,   66.39])
+pregrasp   [   4.06,   74.23,  -50.68,   -0.01,   61.44,   65.57]   fingertips at z = 109 mm
+grasp      [   4.05,   82.78,  -36.29,   -0.00,   38.52,   65.56]   fingertips at z = 21 mm
+vertical line: 88 IK points; streamed over 4.4 s at 10 %, fastest joint peaks at 10.5 deg/s (cap 16.7)
+return home: streamed over 8.0 s at 21 %, fastest joint peaks at 23.0 deg/s (cap 35.1)
+place: shelf top z = 60 mm from r = 300 mm; carry at fingertip z = 131 mm, out to r = 370 mm, release at fingertip z = 101 mm (roll 20 mm above the shelf)
+place path: 175 IK points; streamed over 8.8 s at 10 %, fastest joint peaks at 9.9 deg/s
+place      [   4.05,   99.17,  -76.01,   -0.00,   61.85,   65.56]
+home -> pregrasp (MOVE J): lowest point z = 91 mm (fingertip), closest above the roll 60 mm
+place path (streamed): lowest point z = 101 mm (fingertip), closest above the roll 60 mm
+return home (streamed): lowest point z = 87 mm (fingertip), closest above the roll 110 mm
+over the shelf (outside the final descent): lowest point 71 mm above its top
+descent drifts 0.02 mm sideways from the vertical
+recording /tmp/stage3e.mjpeg
+enabled
+opening gripper to 65 mm
+  gripper at 64.3 mm
+to pregrasp
+  mark pregrasp at t = 5.6 s of the video
+descending over 4.4 s
+  settled at [   4.04,   82.75,  -36.33,    0.00,   38.59,   65.61]: fingertips at r = 247 mm, z = 21 mm
+  mark descended at t = 11.0 s of the video
+closing with 1.00 N*m
+  fingers stopped at 18.2 mm, holding 5.83 N*m
+  mark closed at t = 13.4 s of the video
+lifting to pregrasp height
+  holding at 17.9 mm, 5.76 N*m
+  mark lifted at t = 18.8 s of the video
+carrying it to the shelf over 8.8 s
+  settled at [   4.04,   99.09,  -76.08,    0.00,   61.87,   65.61]: fingertips at r = 370 mm, z = 102 mm
+  gripper at 64.3 mm
+  mark released at t = 31.4 s of the video
+rising off the shelf
+returning home over 8.0 s
+  quick stop: J2 0.00 -> -1.74, J3 -1.55 -> -1.01 deg in 1.5 s; resetting
+disabled at home: [  -1.41,    2.17,    3.77,    5.45,    1.23,   -8.36]; arm status NORMAL(0x0), motors enabled [False, False, False, False, False, False]
