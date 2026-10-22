@@ -68,7 +68,7 @@ PLATE_T, PLATE_D = 0.008, 0.076     # camera plate: #24's overhead spacer, ears 
 EAR_X, M5_PITCH = 0.020, 0.030      # case ears +-20 mm (#24's interface), M5 +-30 mm along the bar
 LENS_BELOW_CASE = 0.014             # #24's LENS_Z_CASE
 LENS = np.array([0.0, 0.0, Z_BAR_BOTTOM - PLATE_T - LENS_BELOW_CASE])
-PI_AT = 0.26                        # Pi 5 on top of the bar, this far from the middle toward the back
+PI_AT = 0.18                        # Pi 5 on top of the bar, this far from the middle toward the back
 
 # #24's side cameras (corner posts on printed feet screwed to the plywood), for context only
 FOOT, POST_IN = 0.090, 0.045
@@ -81,7 +81,7 @@ CAM_W, CAM_H, CAM_F = 4608, 2592, 1964.0
 PRINT, ALU, PVC, PLYC, CAMC, PIC = ((0.93, 0.55, 0.20), (0.72, 0.74, 0.77), (0.96, 0.96, 0.94),
                                     (0.89, 0.82, 0.68), (0.10, 0.10, 0.10), (0.12, 0.55, 0.27))
 REST = np.zeros(6)
-POSE = np.radians([35, 95, -75, 0, 55, 0])          # a reach toward the front-right, for the figures
+POSE = np.radians([35, 95, -75, 0, 55, 0])          # a reach toward the back-right, for the figures
 
 
 def T(R_=np.eye(3), t=(0, 0, 0)):

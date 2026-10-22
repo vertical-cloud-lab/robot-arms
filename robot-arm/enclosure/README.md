@@ -16,6 +16,12 @@ The two-level version, with the arm on a raised plywood deck and 0.5 m of worksp
 is in [`hutch/`](hutch/): five structural options compared, a cut list, a section, an exploded
 view and an assembly GIF.
 
+The enclosure as Chris built it ([#38](https://github.com/vertical-cloud-lab/robot-arms/issues/38))
+is a 48 in PVC cube screwed to the arm's plywood. [`camera-bar/`](camera-bar/) adds the bar across
+its top for #24's overhead camera: a 2020 bar from corner to corner on two printed saddles that
+locate against the elbows. It also covers how to keep every camera's position repeatable (pin the
+sockets, wire-brace three walls) and still fit #24's side-camera posts.
+
 A low shelf for the arm to pick from is in [`shelf/`](shelf/): where it sits relative to the arm,
 how to make item positions repeatable, how stiff it needs to be, a cut list, a 3D view and a
 dimensioned drawing. It also covers the changes needed on the raised deck.
