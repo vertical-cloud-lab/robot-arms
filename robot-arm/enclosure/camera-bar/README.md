@@ -85,6 +85,9 @@ The fixes are to pin the sockets and brace three walls. Both are cheap, and the 
 - **Pi 5:** it sits on top of the bar on #24's `pi5_plate`, about 18 cm from the camera toward the
   back-right corner, so a 300 mm ribbon reaches round the bar with some slack. The cloth top lies
   over the bar and the Pi.
+- **Light:** with the cloth top on, the cell will be dim. The bar's free side slot can also carry
+  an LED strip in an aluminium channel. That lights the plywood from above and sits above the
+  lens, out of the overhead camera's view.
 
 ### Why corner to corner, not across the middle
 
