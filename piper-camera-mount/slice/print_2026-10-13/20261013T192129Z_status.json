@@ -1,0 +1,109 @@
+{
+ "utc": "20261013T192129Z",
+ "printer": "A1_MINI",
+ "via": "ARM_PI",
+ "command": "status",
+ "tls": {
+  "tls_version": "TLSv1.2",
+  "cert_sha256": "19b3d4361c691d23\u2026",
+  "cn_matches_serial": true,
+  "issuer_cn": "BBL CA",
+  "not_after": "2036-03-30"
+ },
+ "mqtt": {
+  "messages": 2,
+  "connected": true,
+  "rc": "Success",
+  "seconds": 2.0
+ },
+ "summary": {
+  "gcode_state": "RUNNING",
+  "stage": 4,
+  "print_error": 0,
+  "hms": [],
+  "percent": 0,
+  "remaining_min": 166,
+  "layer": [
+   0,
+   213
+  ],
+  "nozzle_c": [
+   206.1875,
+   200
+  ],
+  "bed_c": [
+   44.625,
+   65
+  ],
+  "nozzle": {
+   "diameter": "0.4",
+   "type": "stainless_steel"
+  },
+  "sdcard": true,
+  "wifi_signal": "-43dBm",
+  "external_spool": {
+   "type": "",
+   "colour": "00000000"
+  },
+  "ams_trays": [
+   {
+    "unit": "0",
+    "slot": "0",
+    "type": "PLA",
+    "idx": "GFA00",
+    "name": "PLA Basic",
+    "colour": "0A2989FF",
+    "remain_pct": 100
+   },
+   {
+    "unit": "0",
+    "slot": "1",
+    "type": "PLA",
+    "idx": "GFSNL04",
+    "name": "",
+    "colour": "46A8F9FF",
+    "remain_pct": 100
+   },
+   {
+    "unit": "0",
+    "slot": "2",
+    "type": "PLA",
+    "idx": "GFA00",
+    "name": "PLA Basic",
+    "colour": "000000FF",
+    "remain_pct": 100
+   },
+   {
+    "unit": "0",
+    "slot": "3",
+    "type": "PETG",
+    "idx": "GFG00",
+    "name": "PETG Basic",
+    "colour": "FFFFFFFF",
+    "remain_pct": 100
+   }
+  ],
+  "ams_units": 1,
+  "xcam": {
+   "buildplate_marker_detector": true
+  },
+  "ipcam": {
+   "ipcam_record": "enable",
+   "timelapse": "disable",
+   "resolution": "1080p",
+   "mode_bits": 3
+  },
+  "last_job": {
+   "subtask_name": "piper_mount_A1mini_black.gcode.3mf",
+   "gcode_file": "piper_mount_A1mini_black.gcode.3mf"
+  },
+  "firmware": {
+   "ota": "01.08.00.00",
+   "esp32": "01.16.41.34",
+   "mc": "00.01.30.43",
+   "th": "00.01.07.73",
+   "ams_f1/0": "00.00.08.15"
+  },
+  "fun": null
+ }
+}
