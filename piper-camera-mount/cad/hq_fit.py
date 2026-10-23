@@ -8,7 +8,7 @@ focus ring, a screw sits in each shoulder, and the whole housing is 51.9 mm from
 lock block to the foot. This builds both pods, measures each against the housing as the drawing
 has it, and draws the plate sectioned through its middle, seen from the front.
 
-    python hq_fit.py        # writes exports/hq_fit.json and renders/hq_fit.png
+    xvfb-run -a -s "-screen 0 1920x1080x24" python hq_fit.py   # exports/hq_fit.json, renders/hq_fit*.png
 """
 from __future__ import annotations
 
@@ -137,6 +137,33 @@ def main() -> None:
     (OUT / "renders").mkdir(exist_ok=True)
     fig.savefig(OUT / "renders" / "hq_fit.png", dpi=130)
     print("wrote", OUT / "renders" / "hq_fit.png")
+    render_3d(p)
+    print("wrote", OUT / "renders" / "hq_fit_3d.png")
+
+
+def render_3d(p: pm.Params) -> None:
+    """Both pods from the board's side, with the board lifted off: the housing as the drawing has it
+    (dark), its shoulder screws (grey), and where it runs into the pod (red)."""
+    import pyvista as pv
+    from render import mesh
+    cam = pm.make_hq_camera_local(p)
+    pl = pv.Plotter(off_screen=True, window_size=(1700, 800), shape=(1, 2), border=False)
+    pl.set_background("white")
+    pl.enable_anti_aliasing("ssaa")
+    for col, (name, printed) in enumerate((("printed 13 October", True), ("now", False))):
+        pl.subplot(0, col)
+        pod = pod_in_camera_frame(p, printed)
+        pl.add_mesh(mesh(pod, 0.05), color=(0.96, 0.58, 0.20), smooth_shading=False, specular=0.15)
+        for n, colr in (("hq_mount", (0.16, 0.16, 0.17)), ("hq_tripod_screws", (0.55, 0.55, 0.58))):
+            pl.add_mesh(mesh(cam[n], 0.05), color=colr, opacity=0.3, smooth_shading=False, specular=0.3)
+            hit = cam[n].intersect(pod)
+            if hit.solids().size():
+                pl.add_mesh(mesh(hit, 0.05), color=(0.9, 0.05, 0.1))
+        pl.camera_position = [(0, -40, 160), (0, -16, -6), (0, 1, 0)]
+        pl.add_text(f"Pod {name}, from the board's side with the board off:\n"
+                    "housing see-through, red where it runs into the pod", font_size=12, color="black")
+    pl.screenshot(OUT / "renders" / "hq_fit_3d.png")
+    pl.close()
 
 
 def _screw_corners():
