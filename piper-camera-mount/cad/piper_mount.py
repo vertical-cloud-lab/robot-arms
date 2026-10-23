@@ -328,7 +328,7 @@ def _poly_z(pts, z0, z1, c: float = 0.0) -> cq.Workplane:
     return (sk.offset2D(c) if c > 0 else sk).extrude(z1 - z0)
 
 
-def hq_tripod_screw_heads(c: float = 0.0) -> list[tuple[cq.Vector, cq.Vector]]:
+def hq_tripod_screw_heads() -> list[tuple[cq.Vector, cq.Vector]]:
     """(start, axis) of each screw head, from 1 mm inside the mount; mirrored about x = 0."""
     (x, y), (ux, uy), z = HQ_TRIPOD_SCREW
     out = []
@@ -397,8 +397,8 @@ def hq_keepout_local(p: Params, c: float = 1.5) -> cq.Workplane:
     k = k.union(cyl_z(36.0 + 2 * c, seat - c, 0))
     k = k.union(lbox(-6.985 - c, 6.985 + c, -b / 2 - 11.2 - c, -b / 2 + 4.0, -12.0 - c, 0))
     k = k.union(lbox(-5.08 - c, 5.08 + c, b / 2 - 3.5, b / 2 + 1.5 + c, seat + 1.0 - c, seat + 6.0 + c))
-    # The two boxes above are the tripod foot and lock block as first modelled, kept so the bracket
-    # printed on 13 October stays as it is; these are the drawing's shapes, shoulders and screws.
+    # The two boxes above are the tripod foot and lock block as first modelled. They stay, so the
+    # bracket only loses material; next, the drawing's shapes, with the shoulders and their screws.
     k = k.union(hq_housing_extras_local(p, c)).union(hq_tripod_screws_local(c))
     k = k.union(lens_keepout_local(p.lens_spec, seat, c))
     return k
