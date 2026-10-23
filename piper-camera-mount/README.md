@@ -131,6 +131,51 @@ tab screws, and loads the HQ bosses with the camera and lens (83 g) at 1 g, one 
 
 ![Old vs new under 1 g along Y](renders/joint_fea.png)
 
+## The HQ Camera in the pod
+
+**The pod printed on 2026-10-13 didn't take the HQ Camera.** Its housing hit the pod in three places
+(reported in #4). The pod had been cut for the housing as first modelled: a round body with a plain
+13.97 mm tripod foot. The real housing has more to it.
+[Raspberry Pi's mechanical drawing](https://pip-assets.raspberrypi.com/categories/659-raspberry-pi-high-quality-camera/documents/RP-008200-DS-1-hq-camera-cs-mechanical-drawing.pdf)
+(RP-008200) is vector, so [`cad/piper_mount.py`](cad/piper_mount.py) now takes the outline straight
+off its linework, scaled by the 38 mm board. The drawing only shows the holes for the two screws, so
+their heads are placed from Raspberry Pi's photos of the camera.
+[`cad/hq_fit.py`](cad/hq_fit.py) measures both pods against it
+([`exports/hq_fit.json`](exports/hq_fit.json)):
+
+![The HQ housing in the printed pod and in the new one](renders/hq_fit.png)
+
+| | The housing, per the drawing | Pod printed 13 October | Pod now |
+|---|---|---|---|
+| **Tripod mount's shoulders** | Flare out to ±12.07 mm, 16.65 mm below the axis, just under the focus ring | Notch only ±8.0 mm wide: hits them (225 mm³, with the foot) | Pocket follows the outline, 1.0 mm clear |
+| **The screws in the shoulders** | One per shoulder, under the board's edge, square to the shoulder's underside; M2 socket heads, about 25.9 mm across the outside | Hits both (73 mm³) | 1.0 mm clear |
+| **Top to bottom** | 51.9 mm: the focus-lock block's top is 21.55 mm above the axis (2.55 mm above the board), the foot's end 30.35 mm below | 52.7 mm of notch, but the top notch stopped 0.05 mm short of the lock block | 53.9 mm, 1.0 mm clear at each end |
+
+- **The bracket changes too, slightly.** The tripod mount's front face stands 0.35 mm proud of the pod
+  into the seat, which the printed bracket hit (3.8 mm³). The bracket now keeps 1.5 mm clear of the
+  housing's shoulders, foot and screws, as it does of the rest of the camera, which takes 62 mm³ out of
+  the seat next to the foot. Reprint the pod and the bracket; the carrier, spacers and tag wedges
+  haven't changed.
+- **The pocket trims the two lower bosses.** The shoulders pass 0.6 mm from the bosses round the
+  lower M2.5 holes, so with 1 mm clearance the pocket shaves a 0.4 mm sliver off the side of each boss
+  facing a shoulder. Each hole keeps a wall of about 1 mm, and the screw heads still sit fully on their
+  counterbore floors.
+- **Where the drawing disagrees with itself:** its side view adds up to 21.5 mm overall, but it is
+  dimensioned 18.58 mm. The pocket goes right through the plate, so this doesn't change the fit. The
+  lens seat stays where 18.58 puts it, 14.43 mm in front of the board, which is also where a CS lens's
+  12.53 mm flange distance puts it.
+- **Please measure before printing:**
+  - across the shoulders (24.1 mm on the drawing);
+  - across the screw heads, outside to outside (about 25.9 mm);
+  - from the top of the lock block to the end of the foot (51.9 mm).
+
+  If any of these is more than about 0.5 mm bigger than that, `hq_pocket_c` in `cad/piper_mount.py`
+  widens the pocket all round.
+- **Or take the tripod mount off.** Raspberry Pi's exploded drawing calls it optional, and the two
+  shoulder screws look to be what holds it to the housing. The housing stays on the board, held by the
+  two hex lock keys on the back. Without the tripod mount, the shoulders and their screws are gone, so the printed pod
+  needs only its top notch filed about 0.5 mm deeper for the lock block. This hasn't been tried.
+
 ## Which HQ lens: the 6 mm wide-angle
 
 The HQ Camera comes without a lens. Raspberry Pi sells two for it: the **6 mm wide-angle** (CS
