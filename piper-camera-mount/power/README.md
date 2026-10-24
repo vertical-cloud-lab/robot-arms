@@ -10,7 +10,80 @@ A lab Pi 5 has already lost its USB-C socket to a yanked cable
 ([#234](https://github.com/vertical-cloud-lab/byu-vcl/pull/234#issuecomment-5841723129), the CubXL
 Pi). So besides getting power up the arm, the socket must never be what takes the pull.
 
+## The plan: extend the official supply (24 October 2026)
+
+sgbaird's call on [#10](https://github.com/vertical-cloud-lab/robot-arms/pull/10): keep Raspberry
+Pi's 27 W supply and add a USB-C extension. The 12 V and 24 V routes further down stay as the
+fallbacks if the Pi sags.
+
+**What to buy:** [AINOPE USB-C extension, 240 W, 6.6 ft (2 m), B09FDWG61C](https://www.amazon.com/dp/B09FDWG61C),
+$8.99, in stock on 24 October ([`shopping_2026-10-24.json`](shopping_2026-10-24.json)).
+
+- **It's rated 5 A** (48 V / 5 A), which is the most the supply can push. It's male to female with
+  all 24 pins, so the CC line carries the supply's 5.1 V / 5 A USB-PD offer through to the Pi.
+- **Reach:** with the supply's 1.2 m lead, 3.2 m. It has 4.7 stars from 33,714 ratings (model H338-2M).
+- **Shorter, if the supply can plug in nearer the arm:** [Faracent 240 W, 5 ft (1.5 m), B0BX34WY6W](https://www.amazon.com/dp/B0BX34WY6W)
+  ($12.23) or [Cable Matters USB4 240 W, 3.3 ft (1 m), B0CNY9NJ4B](https://www.amazon.com/dp/B0CNY9NJ4B)
+  ($13.99). Each metre less gives the Pi about 0.1 V more at 1.5 A.
+- **Not** the UGREEN 30205: its title says 100 W, but its spec table says 3 A.
+- **McMaster-Carr** turned up no plain USB-C extension: a search of its site found only active USB
+  extenders (a transmitter and a receiver). Its catalogue pages need JavaScript, so I couldn't read
+  part numbers from it.
+- **No listing gives the gauge of the power wires**, so the voltages below assume 20 AWG.
+
+**The draw, measured on the 8 GB board** ([`measured_2026-10-24.json`](measured_2026-10-24.json)).
+Camera Pi 1 has the HQ Camera and the Camera Module 3 Wide. Both ran for 30 s, encoding H.264 in
+software at 30 fps (2028 × 1520 and 2304 × 1296), with the output thrown away.
+
+- The PMIC's own rail readings went from 2.1 W idle to 4.4–5.9 W, about 0.5 A idle and 1.2 to 1.5 A
+  streaming at the input. That matches the 1.5 A this page has always used.
+- Robot control or vision models on the same board push it toward 2 to 2.5 A.
+
+**What it leaves at the Pi** ([`voltage_drop.py`](voltage_drop.py)): the official supply at 5.1 V
+plus one 240 W extension.
+
+| Official 27 W supply + one 240 W extension (20 AWG) | at 1.5 A | at 2.0 A | at 2.5 A |
+|---|---|---|---|
+| 1 m extension, 2.2 m in all | 4.88 V | 4.81 V | 4.73 V |
+| 1.5 m extension, 2.7 m in all | 4.83 V | 4.74 V | 4.65 V |
+| 2 m extension, 3.2 m in all | 4.78 V | 4.67 V | 4.57 V (low) |
+| 3 m extension, 4.2 m in all | 4.68 V | 4.54 V (low) | 4.40 V (low) |
+
+- **Streaming two cameras, the 2 m extension leaves 4.78 V,** 0.15 V above the 4.63 V limit. At a
+  busier 2.5 A it goes under, and only the 1 m one keeps a clear margin.
+- **The 27 W supplies on the arm Pi and camera Pi 2 read 5.12 to 5.15 V at the Pi, idle,** a little
+  above the 5.1 V the model uses.
+
+**The 8 GB board isn't on a 27 W supply now.** Camera Pi 1's supply offers no USB-PD, so the Pi
+assumes 3 A. It has flagged under-voltage since this boot (`throttled=0x50000`), and in the test it
+sagged to 4.67–4.82 V, which is no better than the extension should give. The arm Pi and camera Pi 2
+are on Raspberry Pi 27 W supplies (PD vendor 0x2e8a, offering 5.1 V / 5 A). Move the 8 GB board to
+one of the lab's 27 W supplies now, without waiting for the extension.
+
+**Which board rides on the wrist** (sgbaird, 24 October): the 8 GB, or else the 8 GB goes on
+whichever camera Pi streams and controls the arm. Either way the 8 GB board does the most work, so
+it's the one the extension has to carry. Swapping SD cards between boards is fine: the hostname,
+Tailscale identity and logins live on the card, so the role moves with the card and the RAM stays
+with the board.
+
+**Checking it on the arm:**
+
+1. Plug the extension between the 27 W supply's lead and the Pi, with the lead clamped to the
+   carrier ([below](#stopping-a-yank-from-reaching-the-socket)).
+2. Check that the Pi still sees 5 A: `od -An -tu4 --endian=big /proc/device-tree/chosen/power/max_current`
+   should print 5000. It prints 3000 if the extension drops the PD offer.
+3. Stream both cameras, run the real job, and read `vcgencmd pmic_read_adc EXT5V_V` and
+   `vcgencmd get_throttled`. Above about 4.7 V, with bits 0 and 16 clear after a fresh boot, it's
+   fine.
+4. If not, keep the supply and the extension and add the PD step-down board
+   ([below](#supplies-not-made-by-raspberry-pi-8-october-2026)): it asks the same supply for 12 V
+   and makes 5 V on the carrier.
+
 ## Why not a USB-C extension
+
+The background from 27 September and 8 October, and the reason the plan above gets checked on the
+arm.
+
 
 - **At 5 V, every milliohm counts.** The Pi 5 flags under-voltage below **4.63 V**, measured after
   its input fuse. A 5.1 V supply leaves 0.47 V for everything between the supply and the board.

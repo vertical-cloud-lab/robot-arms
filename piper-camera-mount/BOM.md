@@ -31,7 +31,7 @@ the Pi should have is in [`compute/README.md`](compute/README.md).
 
 | Qty | Item | Each | Stock |
 |---|---|---|---|
-| 1 | [AINOPE USB-C extension, 240 W, 6.6 ft, B09FDWG61C](https://www.amazon.com/dp/B09FDWG61C). The listing's other sizes are USB-A two-packs, so take the 6.6 ft | $8.99 | In stock, shipped by Amazon |
+| 1 | [AINOPE USB-C extension, 240 W, 6.6 ft, B09FDWG61C](https://www.amazon.com/dp/B09FDWG61C). The listing's other sizes are USB-A two-packs, so take the 6.6 ft. Shorter ones are in [`power/README.md`](power/README.md#the-plan-extend-the-official-supply-24-october-2026) | $8.99 | In stock, shipped by Amazon. Still $8.99 and in stock on 24 October |
 | 1 | [HAVE ME TD zip ties, 400 pack, 4 + 6 + 8 + 12 in, B08TVLYB3Q](https://www.amazon.com/dp/B08TVLYB3Q) | $6.99 | In stock |
 | | **Subtotal** (free shipping over $35, or with Prime) | **$15.98** | |
 
@@ -193,7 +193,7 @@ change to 24 V up the arm with 5 V made on the carrier ([`power/README.md`](powe
 
 | Qty | Part | Lab has |
 |---|---|---|
-| 1 | Raspberry Pi 27 W USB-C supply (5.1 V / 5 A, 1.2 m lead) | **On hand:** at least one. #164 ordered ten more with the Pi 5s |
+| 1 | Raspberry Pi 27 W USB-C supply (5.1 V / 5 A, 1.2 m lead) | **On hand:** at least one. #164 ordered ten more with the Pi 5s. On 24 October the arm Pi and camera Pi 2 were on 27 W supplies, but the 8 GB board (camera Pi 1) was on a 3 A supply without PD, so give it a 27 W one |
 | 1 | USB-C extension, 240 W (5 A), about 2 m | **To buy** ([The order](#the-order-9-october-2026)) |
 | 1 | Magnetic breakaway (Adafruit 5521, right-angle USB-C), optional | **None.** It was proposed on 27 September and not ordered |
 | — | Zip ties: strain relief on the carrier, and the service loops | **Some** are in use on the doser, sizes unknown. A 400-pack is on the order |

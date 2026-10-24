@@ -1,0 +1,17 @@
+{
+ "date": "2026-10-24",
+ "what": "Read-only power readings over Tailscale SSH, plus both cameras on camera Pi 1 run for 30 s with output to /dev/null (no frames kept).",
+ "supplies": {
+  "arm Pi (rpi-5-eufi), 1 GB": {"usb_pd": "Raspberry Pi (vendor 0x2e8a, product 0x000f)", "offers": ["5.00 V 5.00 A", "9.00 V 3.00 A", "12.00 V 2.25 A", "15.00 V 1.80 A"], "max_current_mA": 5000, "EXT5V_V idle": [5.135, 5.121], "pmic_rails_W idle": 2.27, "throttled": "0x0"},
+  "camera Pi 2 (rpi-5-mpzy), 1 GB": {"usb_pd": "Raspberry Pi (vendor 0x2e8a, product 0x000f)", "offers": ["5.00 V 5.00 A", "9.00 V 3.00 A", "12.00 V 2.25 A", "15.00 V 1.80 A"], "max_current_mA": 5000, "EXT5V_V idle": [5.151, 5.123], "pmic_rails_W idle": 2.06, "throttled": "0x0"},
+  "camera Pi 1 (rpi-5-76zj), 8 GB, HQ + Camera Module 3 Wide": {"usb_pd": "none: no PD objects offered", "max_current_mA": 3000, "throttled": "0x50000 (under-voltage and throttling have occurred since boot)"}
+ },
+ "camera Pi 1 load test": {
+  "commands": ["rpicam-vid --camera 0 -t 30000 -n --mode 2028:1520 --width 2028 --height 1520 --framerate 30 --libav-format h264 -o /dev/null",
+               "rpicam-vid --camera 1 -t 30000 -n --mode 2304:1296 --width 2304 --height 1296 --framerate 30 --libav-format h264 -o /dev/null"],
+  "note": "Run together. The Pi 5 has no H.264 encoder, so both streams are encoded in software (libx264). Fan 0 rpm, 40.6 to 49.9 C.",
+  "idle": {"pmic_rails_W": [2.20, 2.18, 2.03], "EXT5V_V": [4.953, 4.977, 4.962]},
+  "both cameras streaming": {"pmic_rails_W": [5.44, 4.40, 5.92, 5.63, 5.80], "EXT5V_V": [4.821, 4.807, 4.790, 4.667, 4.737]},
+  "input current estimate": "rails / 0.85 conversion efficiency / EXT5V: about 0.5 A idle and 1.2 to 1.5 A streaming. The PMIC rails leave out the 5 V loads (USB ports, fan), which were idle."
+ }
+}

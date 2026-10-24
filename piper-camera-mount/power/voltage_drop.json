@@ -97,5 +97,63 @@
       "volts at the converter": 11.72,
       "lost (%)": 2.3
     }
+  ],
+  "extension_by_length": [
+    {
+      "extension (m)": 1.0,
+      "reach (m)": 2.2,
+      "amps": [
+        1.5,
+        2.0,
+        2.5
+      ],
+      "volts at the Pi": [
+        4.88,
+        4.81,
+        4.73
+      ]
+    },
+    {
+      "extension (m)": 1.5,
+      "reach (m)": 2.7,
+      "amps": [
+        1.5,
+        2.0,
+        2.5
+      ],
+      "volts at the Pi": [
+        4.83,
+        4.74,
+        4.65
+      ]
+    },
+    {
+      "extension (m)": 2.0,
+      "reach (m)": 3.2,
+      "amps": [
+        1.5,
+        2.0,
+        2.5
+      ],
+      "volts at the Pi": [
+        4.78,
+        4.67,
+        4.57
+      ]
+    },
+    {
+      "extension (m)": 3.0,
+      "reach (m)": 4.2,
+      "amps": [
+        1.5,
+        2.0,
+        2.5
+      ],
+      "volts at the Pi": [
+        4.68,
+        4.54,
+        4.4
+      ]
+    }
   ]
 }

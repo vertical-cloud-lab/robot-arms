@@ -70,6 +70,19 @@ def main() -> None:
         out["buck"].append({"route": name, "supply (V)": 12.0, "volts at the converter": round(12.0 - drop, 2),
                             "lost (%)": round(100 * drop / 12.0, 2)})
         print(f"| {name} | 5.10 V | 5.10 V (board sees {12.0 - drop:.2f} V, {100 * drop / 12.0:.1f} % lost) |")
+    # 24 October 2026: the official supply through one 240 W (5 A) extension, by extension length,
+    # at the 8 GB board's measured draw streaming both cameras (about 1.5 A), with more CPU (2.0 A)
+    # and the 2.5 A worst case. Extension conductors taken as 20 AWG; no listing gives them.
+    amps = (1.5, 2.0, 2.5)
+    out["extension_by_length"] = []
+    print(f"\n| Official 27 W supply + one 240 W extension (20 AWG) | " + " | ".join(f"at {a} A" for a in amps) + " |")
+    print("|---|" + "---|" * len(amps))
+    for metres in (1.0, 1.5, 2.0, 3.0):
+        v = [usb(V_OFFICIAL, [(1.2, 17), (metres, 20)], 2, a) for a in amps]
+        out["extension_by_length"].append({"extension (m)": metres, "reach (m)": round(1.2 + metres, 1),
+                                           "amps": list(amps), "volts at the Pi": [round(x, 2) for x in v]})
+        print(f"| {metres:g} m extension, {1.2 + metres:.1f} m in all | "
+              + " | ".join(f"{x:.2f} V{'' if x > UV else ' (low)'}" for x in v) + " |")
     (Path(__file__).with_suffix(".json")).write_text(json.dumps(out, indent=2) + "\n")
 
 
