@@ -36,7 +36,7 @@
     {
       "part": "bracket",
       "stl": "bracket.stl",
-      "sha256": "bf9c1f853fe5",
+      "sha256": "aa11ca47658a",
       "centre": [
         128.0,
         125.0
@@ -68,7 +68,7 @@
     {
       "part": "pod",
       "stl": "pod.stl",
-      "sha256": "dceffbdc6569",
+      "sha256": "ec813c995743",
       "centre": [
         220.0,
         201.0
@@ -150,9 +150,9 @@
         "tag_wedge_1",
         "tag_wedge_1"
       ],
-      "print_time_s": 13511,
-      "filament_g": 70.66,
-      "filament_m": 27.72,
+      "print_time_s": 13498,
+      "filament_g": 70.35,
+      "filament_m": 27.59,
       "filament_type": "PA-CF",
       "nozzles_used": [
         {
@@ -180,22 +180,22 @@
       "slicer_warnings": [],
       "gcode_warnings": [],
       "feature_time_s": {
-        "Bottom surface": 316,
-        "Bridge": 395,
+        "Bottom surface": 313,
+        "Bridge": 392,
         "Custom": 1038,
         "Flush": 26,
-        "Gap infill": 144,
-        "Inner wall": 2971,
-        "Internal solid infill": 1644,
-        "Outer wall": 1815,
+        "Gap infill": 156,
+        "Inner wall": 2969,
+        "Internal solid infill": 1609,
+        "Outer wall": 1823,
         "Overhang wall": 62,
-        "Sparse infill": 3355,
-        "Top surface": 260,
-        "Travel": 1494,
-        "Undefined": 1486
+        "Sparse infill": 3340,
+        "Top surface": 257,
+        "Travel": 1523,
+        "Undefined": 1515
       }
     }
   ],
-  "total_print_time_s": 13511,
-  "total_filament_g": 70.66
+  "total_print_time_s": 13498,
+  "total_filament_g": 70.35
 }

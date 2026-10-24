@@ -43,9 +43,11 @@ show two features to hold on to:
 The cameras hang on the tab side (-X) and the Pi 5 on the other side (+X), so the load on J6 roughly
 balances. The collar joins the two halves, and the tab screws lock the whole ring against rotation.
 
-**Nothing goes behind the J6 flange face.** The rearmost point is 64.5 mm (the Pi 5's USB-C socket)
-against a flange face at 64.98. So the mount can't reach the J6 housing or link 5 at any J5 or J6
-angle. From AgileX's full-arm STEP, everything behind the flange stays within about 33 mm of the J6
+**Nothing goes behind the J6 flange face.** The rearmost point is 64.98 mm, the end of the HQ
+Camera's tripod foot, which Raspberry Pi's drawing runs back to the board's back face. That is level
+with the flange face at 64.98, and 60 mm off the J6 axis. Of the printed parts and the Pi, the
+rearmost is the Pi 5's USB-C socket, at 64.5 mm. So the mount can't reach the J6 housing or link 5
+at any J5 or J6 angle. From AgileX's full-arm STEP, everything behind the flange stays within about 33 mm of the J6
 axis for the next 125 mm.
 
 ## The parts
@@ -73,8 +75,10 @@ Now the bracket widens outward at 45 degrees from its pad until it meets the pod
 pod sits on it from its inner edge out to the HQ lens axis, and along its top and bottom edges
 either side of the lens:
 
-- **901 mm² of contact** (2.8 times as much), measured by `piper_mount.py` (`pod_joint` in
-  `checks.json`). It was 987 mm² until the cradle was widened for the lens's thumbscrews (below).
+- **845 mm² of contact** (2.6 times as much), measured by `piper_mount.py` (`pod_joint` in
+  `checks.json`). It was 987 mm² until the cradle was widened for the lens's thumbscrews (below), and
+  901 mm² until the seat made room for the HQ Camera's tripod mount
+  ([The HQ Camera in the pod](#the-hq-camera-in-the-pod)).
 - **4 x M3** (16 to 20 mm long; the drawer's M3 x 18), 38 mm apart vertically and 9 mm across, into
   nuts dropped into slots in the seat's top and bottom faces. The heads are on the pod's back, clear of the HQ ribbon.
 - The lens and its mount sit in a cradle cut through the seat with 1.5 mm to spare, so the pod goes
@@ -104,7 +108,8 @@ each screw once round the lens and cuts both brackets through it
 - **Only the bracket changed.** The pod, carrier, spacers and tag wedges are the same parts as before,
   so fixing the PLA set means reprinting the bracket alone: 36.2 g and 1 h 19 min on the A1 mini
   ([Printing](#printing)). Until then, the old bracket only works if both screws end up pointing
-  away from the gripper.
+  away from the gripper. (Since then, the 13 October set needs a new pod and bracket for the HQ
+  Camera's tripod mount: see [The HQ Camera in the pod](#the-hq-camera-in-the-pod).)
 
 **How much stiffer, simulated.** [`sim/joint_fea.py`](sim/joint_fea.py) meshes bracket and pod
 as one bonded body (quadratic tets, gmsh + scikit-fem), fixes the collar bore and the pad round the
@@ -130,6 +135,59 @@ tab screws, and loads the HQ bosses with the camera and lens (83 g) at 1 g, one 
   the load is applied at the bosses, so tilt under sideways loads is understated for both designs.
 
 ![Old vs new under 1 g along Y](renders/joint_fea.png)
+
+## The HQ Camera in the pod
+
+**The pod printed on 2026-10-13 didn't take the HQ Camera.** Its housing hit the pod in three places
+(reported in #4). The pod had been cut for the housing as first modelled: a round body with a plain
+13.97 mm tripod foot. The real housing has more to it.
+[Raspberry Pi's mechanical drawing](https://pip-assets.raspberrypi.com/categories/659-raspberry-pi-high-quality-camera/documents/RP-008200-DS-1-hq-camera-cs-mechanical-drawing.pdf)
+(RP-008200) is vector, so [`cad/piper_mount.py`](cad/piper_mount.py) now takes the outline straight
+off its linework, scaled by the 38 mm board. The drawing only shows the holes for the two screws, so
+their heads are placed from Raspberry Pi's photos of the camera.
+[`cad/hq_fit.py`](cad/hq_fit.py) measures both pods against it
+([`exports/hq_fit.json`](exports/hq_fit.json)):
+
+![The HQ housing in the printed pod and in the new one](renders/hq_fit.png)
+
+| | The housing, per the drawing | Pod printed 13 October | Pod now |
+|---|---|---|---|
+| **Tripod mount's shoulders** | Flare out to ±12.07 mm, 16.65 mm below the axis, just under the focus ring | Notch only ±8.0 mm wide: hits them (225 mm³, with the foot) | Pocket follows the outline, 1.0 mm clear |
+| **The screws in the shoulders** | One per shoulder, under the board's edge, square to the shoulder's underside; M2 socket heads, about 25.9 mm across the outside | Hits both (73 mm³) | 1.0 mm clear |
+| **Top to bottom** | 51.9 mm: the focus-lock block's top is 21.55 mm above the axis (2.55 mm above the board), the foot's end 30.35 mm below | 52.7 mm of notch, but the top notch stopped 0.05 mm short of the lock block | 53.9 mm, 1.0 mm clear at each end |
+
+- **The bracket changes too, slightly.** The tripod mount's front face stands 0.35 mm proud of the pod
+  into the seat, which the printed bracket hit (3.8 mm³). The bracket now keeps 1.5 mm clear of the
+  housing's shoulders, foot and screws, as it does of the rest of the camera, which takes 62 mm³ out of
+  the seat next to the foot. Reprint the pod and the bracket; the carrier, spacers and tag wedges
+  haven't changed.
+- **The pocket trims the two lower bosses.** The shoulders pass 0.6 mm from the bosses round the
+  lower M2.5 holes, so with 1 mm clearance the pocket shaves a 0.4 mm sliver off the side of each boss
+  facing a shoulder. Each hole keeps a wall of about 1 mm, and the screw heads still sit fully on their
+  counterbore floors.
+- **Where the drawing disagrees with itself:** its side view adds up to 21.5 mm overall, but it is
+  dimensioned 18.58 mm. The pocket goes right through the plate, so this doesn't change the fit. The
+  lens seat stays where 18.58 puts it, 14.43 mm in front of the board, which is also where a CS lens's
+  12.53 mm flange distance puts it.
+- **Please measure before printing:**
+  - across the shoulders (24.1 mm on the drawing);
+  - across the screw heads, outside to outside (about 25.9 mm);
+  - from the top of the lock block to the end of the foot (51.9 mm).
+
+  If any of these is more than about 0.5 mm bigger than that, `hq_pocket_c` in `cad/piper_mount.py`
+  widens the pocket all round.
+- **Re-run for this:** the checks, the STEP/STL exports, the renders, and both one-plate slices plus
+  the per-part slices (A1 mini PLA: 2 h 48 min and 85.5 g for the set; H2D PAHT-CF: 3 h 45 min and
+  70.4 g). The slices raise no warnings beyond Bambu's usual timelapse note, and the support check
+  flags nothing.
+- **Not re-run:** the joint FEA, the CalculiX runs and the sliced FEA. The seat lost 56 mm² of its
+  901 mm² next to the foot, so expect the pod joint a little softer than [The pod seat](#the-pod-seat)
+  says. The assembly GIF, the fastener check and the Onshape copy still show the housing as first
+  modelled.
+- **Or take the tripod mount off.** Raspberry Pi's exploded drawing calls it optional, and the two
+  shoulder screws look to be what holds it to the housing. The housing stays on the board, held by the
+  two hex lock keys on the back. Without the tripod mount, the shoulders and their screws are gone, so the printed pod
+  needs only its top notch filed about 0.5 mm deeper for the lock block. This hasn't been tried.
 
 ## Which HQ lens: the 6 mm wide-angle
 
@@ -408,17 +466,19 @@ CLI, the same way as #234 and #238, and writes
 [`slice/piper_camera_mount_A1mini_PLA.3mf`](slice/piper_camera_mount_A1mini_PLA.3mf) and
 [`slice/report.json`](slice/report.json):
 
-- **One plate:** all five part types, **2 h 48 min and 85.8 g** with 3 walls and 25 % infill on the
-  Textured PEI plate. The same parts on the H2D in PAHT-CF weigh 70.6 g (0.4 mm nozzle) or 82.0 g
+- **One plate:** all five part types, **2 h 48 min and 85.5 g** with 3 walls and 25 % infill on the
+  Textured PEI plate. The same parts on the H2D in PAHT-CF weigh 70.3 g (0.4 mm nozzle) or 81.6 g
   (0.6 mm); see [As sliced](#as-sliced-paht-cf-and-pla-simsliced_feapy). The wider lens cradle took
   1.6 g of PLA off the bracket.
-- **The bracket alone,** to fix the PLA set printed on 2026-10-08 (its bracket has the old O33
-  cradle): **1 h 19 min and 36.2 g** on the A1 mini, with the same settings
-  ([`slice/slice_configs.json`](slice/slice_configs.json), `a1m_pla_04`, plate 2). Open the plate in
-  Bambu Studio and delete everything but the bracket. Nothing else needs reprinting.
+- **The pod and the bracket,** to fix the PLA set printed on 2026-10-13 (its pod and bracket were
+  cut for the HQ housing as first modelled; see [The HQ Camera in the pod](#the-hq-camera-in-the-pod)):
+  the pod is **37 min and 14.2 g** and the bracket **1 h 19 min and 36.2 g** on the A1 mini, with the
+  same settings ([`slice/slice_configs.json`](slice/slice_configs.json), `a1m_pla_04`, plates 3 and 2).
+  Open the plate in Bambu Studio and delete everything but those two. The carrier, spacers and tag
+  wedges haven't changed.
 - **The whole set on the H2D in PAHT-CF, one plate:**
   [`slice/piper_camera_mount_H2D_PAHT-CF.3mf`](slice/piper_camera_mount_H2D_PAHT-CF.3mf), **3 h 45 min
-  and 70.7 g**. It prints from the left nozzle, the 0.4 mm hardened-steel one, and is mapped there by
+  and 70.4 g**. It prints from the left nozzle, the 0.4 mm hardened-steel one, and is mapped there by
   hand: left alone the slicer picks the right. [The H2D in PAHT-CF](slice/README.md#the-h2d-in-paht-cf-one-plate-slice_h2dpy)
   has the details and what to check in Studio before sending it.
 - **No supports.** Supports are off, and Bambu's own support check flags none of the six objects.
@@ -648,9 +708,9 @@ with the Bambu Studio 02.08.02.61 CLI, using Bambu's system presets plus this RE
 
 | | Bracket | Pod | Carrier | Whole job | Job time |
 |---|---|---|---|---|---|
-| H2D, PAHT-CF, 0.6 mm hardened nozzle, 0.30 mm layers | 36.1 g | 13.5 g | 31.7 g | 82.0 g | 3 h 44 min |
-| H2D, PAHT-CF, 0.4 mm hardened nozzle, 0.20 mm layers | 29.8 g | 11.9 g | 28.3 g | 70.6 g | 3 h 45 min |
-| A1 mini, PLA Basic, 0.4 mm nozzle, 0.20 mm layers | 36.2 g | 14.5 g | 34.4 g | 85.8 g | 2 h 48 min |
+| H2D, PAHT-CF, 0.6 mm hardened nozzle, 0.30 mm layers | 36.1 g | 13.1 g | 31.7 g | 81.6 g | 3 h 44 min |
+| H2D, PAHT-CF, 0.4 mm hardened nozzle, 0.20 mm layers | 29.8 g | 11.6 g | 28.3 g | 70.3 g | 3 h 45 min |
+| A1 mini, PLA Basic, 0.4 mm nozzle, 0.20 mm layers | 36.1 g | 14.1 g | 34.4 g | 85.4 g | 2 h 48 min |
 
 - **The models below were built from the slices before the lens cradle was widened,** when the
   bracket was 1.3 to 1.6 g heavier (37.7, 31.1 and 37.8 g). The other parts haven't changed.
@@ -880,8 +940,12 @@ bore and tab pad fixed):
 `piper_mount.py` builds everything, runs the checks and exits non-zero if anything interferes. All
 pass:
 
-- **Overlap:** 0 mm³ for all 61 pairs. Each part is checked against the gripper body, against the
+- **Overlap:** 0 mm³ for all 66 pairs. Each part is checked against the gripper body, against the
   fingers both closed (0 mm) and fully open (100 mm), and against each other.
+- **The HQ Camera's housing,** as Raspberry Pi's drawing has it: the tripod mount's shoulders and
+  foot, the screws in the shoulders and the focus-lock block stay 1.0 mm from the pod and 1.5 mm
+  from the bracket. The focus ring keeps the 0.5 mm it always had in the pod's O37 hole
+  ([The HQ Camera in the pod](#the-hq-camera-in-the-pod)).
 - **The lens's thumbscrews at any angle:** each screw's whole circle is checked against the bracket,
   the pod, the Wide and the gripper, and comes out at 0 mm³. They stay 1.5 mm from the bracket and
   14.2 mm from the finger plate.
@@ -892,7 +956,8 @@ pass:
 - **Split:** the collar halves are 0.6 mm apart (it was 1.0 mm). The clamp closes that at about
   130 N per screw, after squeezing the body (see [The split as a stop](#the-split-as-a-stop)). The
   bore is 0.15 mm over the body per side.
-- **Rear limit:** the rearmost point is 64.5 mm, against the flange face at 64.98.
+- **Rear limit:** the rearmost point is 64.98 mm, the HQ Camera's tripod foot, level with the flange
+  face at 64.98. The printed parts stop at 63.5 mm and the Pi 5 at 64.5.
 
 **AgileX's flange solid is a special case.** OCC treats it as touching everything: the distance to
 the Pi 5, 15 mm away, comes out as 0. So the checks stand a plain O57 x 10.5 mm cylinder in its place
@@ -955,6 +1020,7 @@ xvfb-run -a -s "-screen 0 1920x1080x24" python fiducials.py         # renders/vi
 xvfb-run -a -s "-screen 0 1920x1080x24" python lens_compare.py      # 6 mm vs 16 mm: renders/lens_compare.png (~5 min)
 xvfb-run -a -s "-screen 0 1920x1080x24" python wrist_zoom.py        # renders/wrist_zoom.gif: the OT-2's zoom on the wrist (~2 min)
 python cradle_fit.py                                                 # renders/cradle_fit.gif: the lens's thumbscrews, old and new cradle
+xvfb-run -a -s "-screen 0 1920x1080x24" python hq_fit.py            # renders/hq_fit*.png: the HQ housing in the printed pod and the new one
 python detail_compare.py                                             # renders/detail_compare.png: fine detail, wrist vs a fixed zoom
 python envelope.py                                                   # renders/tight_spaces.png
 python fastener_fit.py                                               # exports/fastener_fit.json: screw lengths, heads, tool room (about 15 min)
@@ -993,10 +1059,12 @@ python ../onshape/add_gripper.py --doc 93ef145982c24192bfd160be --ws e3d08fcb2dc
     cradle allows for 5 mm plus 1.5 mm of clearance.
   - The Pi 5's connector positions are read off Raspberry Pi's drawing, and its outline is a
     simplified envelope, as in #234.
-- **Nothing has been fitted yet.** The first PLA set went to the A1 mini on 2026-10-08
-  ([record](slice/print_2026-10-08/README.md)), with the old O33 lens cradle in its bracket. A second
-  set with the O43 cradle went to it on 2026-10-13 ([record](slice/print_2026-10-13/README.md)); use
-  that bracket for the 6 mm lens (see [The pod seat](#the-pod-seat)).
+- **The HQ Camera didn't fit the 2026-10-13 set.** The first PLA set went to the A1 mini on
+  2026-10-08 ([record](slice/print_2026-10-08/README.md)), with the old O33 lens cradle in its
+  bracket. A second set with the O43 cradle went to it on 2026-10-13
+  ([record](slice/print_2026-10-13/README.md)). Its pod had too little room for the HQ housing's
+  height, its shoulders and the screws in them (#4). The pod and bracket here fix that; see
+  [The HQ Camera in the pod](#the-hq-camera-in-the-pod).
   - The clearances reuse the numbers from #234's A1 mini fit study (M3 nut slot 5.8 mm across
     flats, 0.15 mm per side on the body).
   - The collar grips by squeezing the body until the split closes. The solid model put that squeeze

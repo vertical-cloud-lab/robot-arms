@@ -126,6 +126,11 @@ class Params:
     hq_pcb_t: float = 1.4
     hq_cs_seat: float = 14.43       # PCB front face to the CS lens seat (18.58 - 2.75 - 1.4)
     hq_hole_d: float = 37.0         # through the plate: the O36 back-focus ring
+    hq_housing_d: float = 34.8      # the milled housing between the board and the focus ring
+    hq_housing_front: float = 10.35 # PCB front face to the housing's front face, which the tripod
+                                    # mount and the focus-lock block share
+    hq_pocket_c: float = 1.0        # the pod's pocket round the lock block, the tripod mount's
+                                    # shoulders and foot, and the two screws in the shoulders
     m25_clear_d: float = 2.8
     boss_d: float = 5.5
     # Raspberry Pi 6 mm CS-mount lens (PT361060M3MP12): O30 x 34 mm, 53 g. lenses.py has it and the
@@ -290,6 +295,84 @@ def cm_holes(p):
     return [(sx * 10.5, y) for sx in (-1, 1) for y in (top, top - 12.5)]
 
 
+# The HQ Camera's housing beyond its round body, from Raspberry Pi's drawing (RP-008200-DS-1,
+# "hq-camera-cs-mechanical-drawing"), measured off the PDF's linework and scaled by the 38 mm
+# board. Camera frame: lens axis at the origin, the tripod foot toward -y. The drawing shows only
+# the holes for the two screws in the tripod mount's shoulders; their heads are placed from
+# Raspberry Pi's photos of the camera.
+HQ_LOCK_BLOCK = (5.08, 16.0, 21.55)         # focus-lock block: half width (10.16), from y0 to its top,
+                                            # 2.55 mm above the board's edge
+HQ_TRIPOD_SCREW = ((10.3, -20.9), (0.433, -0.901), -6.32)   # head seat (x, y), axis out of the head
+                                            # (down and outward, square to the face), z (in front of the board)
+HQ_TRIPOD_SCREW_HEAD = (3.8, 2.2)           # M2 socket head, diameter x height
+
+
+def _bezier(a, b, c, d, n=6):
+    return [tuple((1 - t) ** 3 * a[i] + 3 * (1 - t) ** 2 * t * b[i] + 3 * (1 - t) * t ** 2 * c[i] + t ** 3 * d[i]
+                  for i in (0, 1)) for t in (k / n for k in range(1, n + 1))]
+
+
+def hq_tripod_outline() -> list[tuple[float, float]]:
+    """The tripod mount seen from the front: it leaves the focus ring at x = +/-9.9, flares out to
+    +/-12.07 (the shoulders) 16.65 mm below the axis, narrows to the 13.97 mm foot and ends 30.35 mm
+    below the axis, 11.35 mm past the board's edge."""
+    half = [(9.91, -13.56), (12.07, -16.65), (11.467, -19.975)]
+    half += _bezier((11.467, -19.975), (10.631, -20.442), (9.767, -20.857), (8.88, -21.22))
+    half += _bezier((8.88, -21.22), (7.695, -21.708), (6.985, -22.858), (6.985, -24.136))
+    half += [(6.985, -30.35)]
+    return half + [(-x, y) for x, y in reversed(half)]
+
+
+def _poly_z(pts, z0, z1, c: float = 0.0) -> cq.Workplane:
+    sk = cq.Workplane("XY").workplane(offset=z0).polyline(pts).close()
+    return (sk.offset2D(c) if c > 0 else sk).extrude(z1 - z0)
+
+
+def hq_tripod_screw_heads() -> list[tuple[cq.Vector, cq.Vector]]:
+    """(start, axis) of each screw head, from 1 mm inside the mount; mirrored about x = 0."""
+    (x, y), (ux, uy), z = HQ_TRIPOD_SCREW
+    out = []
+    for s in (1, -1):
+        axis = cq.Vector(s * ux, uy, 0)
+        out.append((cq.Vector(s * x, y, z) - axis * 1.0, axis))
+    return out
+
+
+def hq_tripod_screws_local(c: float = 0.0) -> cq.Workplane:
+    d, h = HQ_TRIPOD_SCREW_HEAD
+    out = None
+    for start, axis in hq_tripod_screw_heads():
+        head = cq.Workplane("XY").add(cq.Solid.makeCylinder(d / 2 + c, h + 1.0 + c, start, axis))
+        out = head if out is None else out.union(head)
+    return out
+
+
+def hq_housing_extras_local(p: Params, c: float = 0.0, z0: float | None = None, z1: float = 0.0) -> cq.Workplane:
+    """The tripod mount (shoulders and foot) and the focus-lock block, grown by c, from z0 (default:
+    the housing's front face, less c) back to z1. Both stand off the board: the tripod mount from
+    2.6 mm in front of it, the lock block from 5.1 mm, and the mount's foot runs on behind the
+    board below its edge. Taking them back to the board face only makes the checks stricter."""
+    z0 = -p.hq_housing_front - c if z0 is None else z0
+    w, ly0, ly1 = HQ_LOCK_BLOCK
+    out = _poly_z(hq_tripod_outline(), z0, z1, c)
+    return out.union(lbox(-w - c, w + c, ly0, ly1 + c, z0, z1))
+
+
+def hq_pocket_local(p: Params, z0: float, z1: float) -> cq.Workplane:
+    """What the pod's plate must leave open round the housing, as a prism from z0 to z1: the tripod
+    mount's outline, the focus-lock block and the outline of each shoulder screw's head as seen
+    from the front, all grown by hq_pocket_c."""
+    c = p.hq_pocket_c
+    out = hq_housing_extras_local(p, c, z0, z1)
+    d, h = HQ_TRIPOD_SCREW_HEAD
+    for start, axis in hq_tripod_screw_heads():
+        perp = cq.Vector(-axis.y, axis.x, 0) * (d / 2)
+        end = start + axis * (h + 1.0)
+        pts = [(q.x, q.y) for q in (start - perp, end - perp, end + perp, start + perp)]
+        out = out.union(_poly_z(pts, z0, z1, c))
+    return out
+
+
 def make_hq_camera_local(p: Params) -> dict[str, cq.Workplane]:
     b, t = p.hq_board, p.hq_pcb_t
     pcb = lbox(-b / 2, b / 2, -b / 2, b / 2, 0, t).edges("|Z").fillet(1.0)
@@ -297,10 +380,12 @@ def make_hq_camera_local(p: Params) -> dict[str, cq.Workplane]:
         pcb = pcb.cut(cyl_z(2.5, -1, t + 1, x, y))
     pcb = pcb.union(lbox(-10, 10, -b / 2 + 0.55, -b / 2 + 6.25, t, t + 2.75))            # FPC connector
     seat = -p.hq_cs_seat
-    mount = cyl_z(36.0, seat, seat + 5.8).union(cyl_z(30.75, seat + 5.8, 0))              # ring + body
-    mount = mount.union(lbox(-6.985, 6.985, -b / 2 - 11.2, -b / 2 + 4.0, -12.0, 0))      # tripod foot
-    mount = mount.union(lbox(-5.08, 5.08, b / 2 - 3.5, b / 2 + 1.5, seat + 1.0, seat + 6.0))  # focus lock
-    return {"hq_pcb": pcb, "hq_mount": mount, "hq_lens": lens_body_local(p.lens_spec, seat),
+    mount = cyl_z(36.0, seat, seat + 5.8).union(cyl_z(p.hq_housing_d, seat + 5.8, 0))     # ring + housing
+    mount = mount.union(hq_housing_extras_local(p))                     # tripod mount, focus-lock block
+    foot = _poly_z(hq_tripod_outline(), 0, p.hq_pcb_t + 0.29).intersect(lbox(-20, 20, -40, -b / 2 - 0.3, 0, 5))
+    mount = mount.union(foot)                                           # the foot, behind the board
+    return {"hq_pcb": pcb, "hq_mount": mount, "hq_tripod_screws": hq_tripod_screws_local(),
+            "hq_lens": lens_body_local(p.lens_spec, seat),
             "hq_lens_screws": lens_screws_local(p.lens_spec, seat, p.lens_screw_deg)}
 
 
@@ -312,6 +397,9 @@ def hq_keepout_local(p: Params, c: float = 1.5) -> cq.Workplane:
     k = k.union(cyl_z(36.0 + 2 * c, seat - c, 0))
     k = k.union(lbox(-6.985 - c, 6.985 + c, -b / 2 - 11.2 - c, -b / 2 + 4.0, -12.0 - c, 0))
     k = k.union(lbox(-5.08 - c, 5.08 + c, b / 2 - 3.5, b / 2 + 1.5 + c, seat + 1.0 - c, seat + 6.0 + c))
+    # The two boxes above are the tripod foot and lock block as first modelled. They stay, so the
+    # bracket only loses material; next, the drawing's shapes, with the shoulders and their screws.
+    k = k.union(hq_housing_extras_local(p, c)).union(hq_tripod_screws_local(c))
     k = k.union(lens_keepout_local(p.lens_spec, seat, c))
     return k
 
@@ -327,11 +415,12 @@ def make_cm_camera_local(p: Params) -> dict[str, cq.Workplane]:
 
 
 def hq_station_cuts(p: Params) -> cq.Workplane:
-    """Lens hole, tripod-foot and focus-lock notches, and screw holes, in the camera frame."""
+    """Lens hole, the pocket round the tripod mount (shoulders, screws, foot) and the focus-lock
+    block, and screw holes, in the camera frame. The pocket goes right through the plate and back
+    to the board, so it also trims the two lower bosses where the shoulders pass them."""
     s = p.hq_standoff
     cut = cyl_z(p.hq_hole_d, -80, -s + 0.5)
-    cut = cut.union(lbox(-8.0, 8.0, -p.hq_board / 2 - 12.2, -14.0, -80, -s + 0.5))        # tripod foot
-    cut = cut.union(lbox(-6.0, 6.0, 14.0, p.hq_board / 2 + 2.5, -80, -s + 0.5))          # focus lock
+    cut = cut.union(hq_pocket_local(p, -80, 0))
     for x, y in hq_holes(p):
         cut = cut.union(cyl_z(p.m25_clear_d, -80, 5, x, y))
         cut = cut.union(cyl_z(5.0, -80, -s - p.pod_t + 2.0, x, y))                       # head counterbore
@@ -707,8 +796,8 @@ def axis_in_view_beyond_tips(p: Params) -> float:
 
 
 def run_checks(p: Params, parts: dict[str, cq.Workplane]) -> dict:
-    solids = ("bracket", "pod", "carrier", "hq_pcb", "hq_mount", "hq_lens", "hq_lens_screws", "cm_pcb",
-              "cm_module", "pi5", "pi_spacers")
+    solids = ("bracket", "pod", "carrier", "hq_pcb", "hq_mount", "hq_tripod_screws", "hq_lens", "hq_lens_screws",
+              "cm_pcb", "cm_module", "pi5", "pi_spacers")
     # Wherever the lens's thumbscrews end up pointing: focusing turns the aperture ring with it.
     sweep = hq_place(p)(screw_sweep_local(p.lens_spec, -p.hq_cs_seat))
     res: dict = {"overlap_mm3": {}, "gap_mm": {}, "view": {}, "extent_mm": {}}
@@ -735,13 +824,17 @@ def run_checks(p: Params, parts: dict[str, cq.Workplane]) -> dict:
              ("bracket", "hq_lens_screws"), ("pod", "hq_lens_screws"), ("bracket", "cm_pcb"),
              ("bracket", "cm_module"), ("pod", "hq_pcb"), ("pod", "hq_mount"), ("pod", "hq_lens"),
              ("pod", "cm_pcb"), ("pod", "cm_module"), ("carrier", "pi_spacers"), ("carrier", "pi5"),
-             ("pi_spacers", "pi5"), ("hq_mount", "cm_module"), ("hq_pcb", "cm_pcb"), ("hq_mount", "cm_pcb")]
+             ("pi_spacers", "pi5"), ("hq_mount", "cm_module"), ("hq_pcb", "cm_pcb"), ("hq_mount", "cm_pcb"),
+             ("pod", "hq_tripod_screws"), ("bracket", "hq_tripod_screws")]
     for a, b in pairs:
         res["overlap_mm3"][f"{a} vs {b}"] = overlap(parts[a], parts[b])
     res["gap_mm"]["bracket to gripper body"] = gap(parts["bracket"], g["body"])
     res["gap_mm"]["pod to gripper body"] = gap(parts["pod"], g["body"])
     res["gap_mm"]["carrier to gripper body"] = gap(parts["carrier"], g["body"])
     res["gap_mm"]["collar halves (split)"] = gap(parts["bracket"], parts["carrier"])
+    res["gap_mm"]["HQ housing and tripod mount to the pod"] = gap(parts["hq_mount"], parts["pod"])
+    res["gap_mm"]["HQ tripod mount screws to the pod"] = gap(parts["hq_tripod_screws"], parts["pod"])
+    res["gap_mm"]["HQ housing and tripod mount to the bracket"] = gap(parts["hq_mount"], parts["bracket"])
     res["gap_mm"]["HQ lens to the bracket"] = gap(parts["hq_lens"], parts["bracket"])
     res["gap_mm"]["HQ lens to the finger plate"] = gap(parts["hq_lens"], g["body"])
     res["gap_mm"]["HQ lens thumbscrews, at any angle, to the bracket"] = gap(sweep, parts["bracket"])
@@ -816,15 +909,15 @@ def build(p: Params) -> dict[str, cq.Workplane]:
     return parts
 
 
-ASSEMBLY = ("bracket", "pod", "carrier", "pi_spacers", "hq_pcb", "hq_mount", "hq_lens", "hq_lens_screws", "cm_pcb",
-            "cm_module", "pi5")
+ASSEMBLY = ("bracket", "pod", "carrier", "pi_spacers", "hq_pcb", "hq_mount", "hq_tripod_screws", "hq_lens",
+            "hq_lens_screws", "cm_pcb", "cm_module", "pi5")
 PRINTED = ("bracket", "pod", "carrier", "spacers", "tag_wedge")
 ORANGE = (0.93, 0.45, 0.13)
 COLORS = {
     "bracket": ORANGE, "pod": (0.96, 0.58, 0.20), "carrier": ORANGE, "pi_spacers": ORANGE, "spacers": ORANGE,
     "tag_wedge": ORANGE,
     "hq_pcb": (0.12, 0.48, 0.25), "hq_mount": (0.13, 0.13, 0.14), "hq_lens": (0.08, 0.08, 0.09),
-    "hq_lens_screws": (0.78, 0.74, 0.62),
+    "hq_lens_screws": (0.78, 0.74, 0.62), "hq_tripod_screws": (0.25, 0.25, 0.27),
     "cm_pcb": (0.12, 0.48, 0.25), "cm_module": (0.1, 0.1, 0.1), "pi5": (0.18, 0.55, 0.34),
 }
 
