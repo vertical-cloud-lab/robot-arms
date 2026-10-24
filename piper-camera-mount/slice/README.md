@@ -149,7 +149,7 @@ mass comes from its own G-code, split by feature, in
 [`slice_configs.json`](slice_configs.json). Each part's G-code also goes to `build_<setup>/` (ignored
 by git), where [`../sim/sliced_fea.py`](../sim/sliced_fea.py) reads it to model the part as printed.
 
-## Has it been printed? (`print_2026-10-08/`, `print_2026-10-13/`, `a1mini_history/`)
+## Has it been printed? (`print_2026-10-08/`, `print_2026-10-13/`, `a1mini_history/`, `print_history_2026-10-24/`)
 
 **The first PLA set went to the A1 mini on 2026-10-08.** It was sent at 12:39 UTC from Bambu
 Studio on a CI runner, as one plate, in black PLA Basic on Textured PEI. The record is in
@@ -174,3 +174,11 @@ the printer's own SD card, with the two read-only scripts that fetch it.
 
 **Nothing has been printed in PAHT-CF yet.** The H2D plate above was sliced on 2026-10-12, with the
 O43 cradle.
+
+**Checked in Bambu Studio on 2026-10-24** ([`print_history_2026-10-24/`](print_history_2026-10-24/README.md)).
+- The two A1 mini sets are still the only prints of the mount. Neither the cloud history nor
+  either printer's storage has another.
+- The 13 October set matches this branch's STLs part for part.
+- The 8 October set differs only in its bracket.
+- `claude/issue-4-20261023-1814` has since changed the pod and bracket again, for the HQ Camera
+  housing's shoulders and screws.
