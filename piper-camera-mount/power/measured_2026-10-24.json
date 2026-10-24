@@ -12,6 +12,6 @@
   "note": "Run together. The Pi 5 has no H.264 encoder, so both streams are encoded in software (libx264). Fan 0 rpm, 40.6 to 49.9 C.",
   "idle": {"pmic_rails_W": [2.20, 2.18, 2.03], "EXT5V_V": [4.953, 4.977, 4.962]},
   "both cameras streaming": {"pmic_rails_W": [5.44, 4.40, 5.92, 5.63, 5.80], "EXT5V_V": [4.821, 4.807, 4.790, 4.667, 4.737]},
-  "input current estimate": "rails / 0.85 conversion efficiency / EXT5V: about 0.5 A idle and 1.2 to 1.5 A streaming. The PMIC rails leave out the 5 V loads (USB ports, fan), which were idle."
+  "input current estimate": "rails / 0.85 conversion efficiency / EXT5V: about 0.5 A idle and 1.1 to 1.5 A streaming (1.3 A on average). The PMIC rails leave out the 5 V loads (USB ports, fan), which were idle."
  }
 }

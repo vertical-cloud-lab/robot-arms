@@ -26,6 +26,8 @@ $8.99, in stock on 24 October ([`shopping_2026-10-24.json`](shopping_2026-10-24.
   ($12.23) or [Cable Matters USB4 240 W, 3.3 ft (1 m), B0CNY9NJ4B](https://www.amazon.com/dp/B0CNY9NJ4B)
   ($13.99). Each metre less gives the Pi about 0.1 V more at 1.5 A.
 - **Not** the UGREEN 30205: its title says 100 W, but its spec table says 3 A.
+- **Distributors:** Tripp Lite's USB-C extensions (the U421 series) are 3 A / 60 W parts, and Adafruit's
+  2 m one (5216, also at DigiKey) lists 31/32 AWG wire and no current rating, so neither.
 - **McMaster-Carr** turned up no plain USB-C extension: a search of its site found only active USB
   extenders (a transmitter and a receiver). Its catalogue pages need JavaScript, so I couldn't read
   part numbers from it.
@@ -35,8 +37,9 @@ $8.99, in stock on 24 October ([`shopping_2026-10-24.json`](shopping_2026-10-24.
 Camera Pi 1 has the HQ Camera and the Camera Module 3 Wide. Both ran for 30 s, encoding H.264 in
 software at 30 fps (2028 × 1520 and 2304 × 1296), with the output thrown away.
 
-- The PMIC's own rail readings went from 2.1 W idle to 4.4–5.9 W, about 0.5 A idle and 1.2 to 1.5 A
-  streaming at the input. That matches the 1.5 A this page has always used.
+- The PMIC's own rail readings went from 2.1 W idle to 4.4–5.9 W. Taking 85 % for the PMIC's
+  efficiency, that's about 0.5 A idle and 1.1 to 1.5 A streaming at the input, 1.3 A on average.
+  That's within the 1.5 A this page has always used.
 - Robot control or vision models on the same board push it toward 2 to 2.5 A.
 
 **What it leaves at the Pi** ([`voltage_drop.py`](voltage_drop.py)): the official supply at 5.1 V
