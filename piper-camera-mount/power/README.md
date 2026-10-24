@@ -82,6 +82,53 @@ with the board.
    ([below](#supplies-not-made-by-raspberry-pi-8-october-2026)): it asks the same supply for 12 V
    and makes 5 V on the carrier.
 
+## A supply with a longer lead instead? (24 October 2026)
+
+sgbaird asked on [#41](https://github.com/vertical-cloud-lab/robot-arms/pull/41) whether a different
+supply with a longer cable could do it. At 5 V, no. A third search through camera Pi 2 ran 17
+Amazon searches (360 results), opened 10 product pages, and checked PiShop.us, Adafruit, SparkFun
+and Vilros. DigiKey, Mouser, Newark, Jameco and Micro Center answered 403 to the Pi. The results
+are in [`shopping_2026-10-24_long-leads.json`](shopping_2026-10-24_long-leads.json).
+
+- **Every supply that gives 5 V at 3 A or more has a captive lead of 1.5 m at most.**
+  - Pi 5 supplies (5.1 V / 5 A): Raspberry Pi's 45 W has 1.5 m of 17 AWG, Argon's 27 W 1.5 m,
+    TRASKIT's 59 in and Vilros's 27 W 5 ft. Most others are 1.2 m.
+  - Vilros's own page says its cable is attached, which answers the question left open on
+    8 October. No Pi 5 supply has a USB-C socket that would take a longer cable.
+  - Pi 4 supplies (3 to 4 A) are no longer: CanaKit's 3.5 A has 5 ft of 18 AWG, and Adafruit's
+    5 V / 4 A has 1.5 m of 20 AWG.
+- **Everything with a lead of 8 ft or more gives 3 A or less at 5 V.**
+  - The 10 ft and 16 ft 5 V adapters are 1 to 2 A, for security cameras.
+  - JSAUX's 45 W Steam Deck charger ([B0BHYN49SV](https://www.amazon.com/dp/B0BHYN49SV), $25.99)
+    has a 10 ft captive cable, but its 5 V profile is 3 A.
+  - Phone and laptop chargers sold with 10 or 15 ft cables give 5 V at 3 A at most. That's the "any
+    PD charger" row [below](#why-not-a-usb-c-extension).
+
+What the longer leads would leave at the Pi ([`voltage_drop.py`](voltage_drop.py), same model):
+
+| Supply and lead | Reach | at 1.5 A | at 2.0 A | at 2.5 A |
+|---|---|---|---|---|
+| Raspberry Pi 27 W (1.2 m, 17 AWG) + 2 m extension: the plan | 3.2 m | 4.78 V | 4.67 V | 4.57 V (low) |
+| Raspberry Pi 45 W (1.5 m, 17 AWG) + 1.5 m extension | 3.0 m | 4.81 V | 4.72 V | 4.62 V (low) |
+| Raspberry Pi 45 W (1.5 m, 17 AWG) + 2 m extension | 3.5 m | 4.77 V | 4.65 V | 4.54 V (low) |
+| iUniker 5.25 V / 4 A (1.5 m, if 18 AWG) + 2 m extension | 3.5 m | 4.90 V | 4.78 V | 4.66 V |
+| JSAUX 45 W, its own 10 ft lead at 5 V / 3 A (if 20 AWG), no extension | 3.05 m | 4.67 V | 4.55 V (low) | 4.44 V (low) |
+
+- **If 3.2 m turns out short, use Raspberry Pi's 45 W supply** (SC1731): $16.95 and in stock at
+  [PiShop.us](https://www.pishop.us/product/raspberry-pi-45w-usb-c-power-supply-white/), $16.50
+  and in stock at [Adafruit](https://www.adafruit.com/product/6320). It makes the same 5.1 V / 5 A
+  PD offer as the 27 W, on a lead 0.3 m longer and just as thick. With the same 2 m extension it
+  reaches 3.5 m, the far end of the run, and leaves the Pi what the 27 W does at 3.2 m. It adds
+  reach, not margin.
+- **A longer lead can't add margin on its own.** Each metre of 20 AWG costs about 0.1 V at 1.5 A,
+  so the Pi only gets more if the supply starts higher. The iUniker's 5.25 V (its 8 October
+  listing) does that, but it has no PD, so the Pi assumes 3 A. It's already in the BOM as the other
+  cheap test.
+- **The JSAUX's single 10 ft cable is worse than the extension.** A charger's 5 V profile is
+  nominally 5.0 V, not 5.1 V, and no listing gives the wire, so 20 AWG is the best case.
+- **One cable with real margin means sending more than 5 V:** 12 V over USB-C to the PD step-down
+  board, 24 V to a buck converter, or PoE ([below](#what-people-do-instead-send-a-higher-voltage-and-convert-at-the-pi)).
+
 ## Why not a USB-C extension
 
 The background from 27 September and 8 October, and the reason the plan above gets checked on the

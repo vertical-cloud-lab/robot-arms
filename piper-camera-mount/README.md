@@ -423,7 +423,10 @@ its own lead up the arm, with a service loop at each joint. It does not share th
 - **Or send 12 V over USB-C.** A PD step-down board on the carrier asks the supply for 12 V and makes
   5 V next to the Pi, so the official supply and a USB-C extension, or any charger that offers 12 V
   and a 10 ft cable, will reach. No 5 V supply, from any maker, was found that both reaches and
-  gives 3 A or more ([`power/shopping_2026-10-08.md`](power/shopping_2026-10-08.md)).
+  gives 3 A or more ([`power/shopping_2026-10-08.md`](power/shopping_2026-10-08.md), and again on
+  [24 October](power/README.md#a-supply-with-a-longer-lead-instead-24-october-2026)). The longest
+  lead is Raspberry Pi's 45 W supply's, at 1.5 m: with the same extension it reaches 3.5 m but
+  leaves no more margin.
 - **The gripper's power/CAN lead is not for the Pi.** It is a short 4-wire jumper from a socket on
   J6 into a notch in the gripper's back cover, right at the flange ring (y ≈ 48 to 54). The mount
   only has to stay out of its way, and it does: the collar stops at y = 46.

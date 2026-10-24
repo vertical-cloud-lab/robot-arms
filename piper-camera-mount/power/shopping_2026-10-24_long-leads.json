@@ -1,0 +1,3259 @@
+{
+ "date": "2026-10-24",
+ "question": "Is there a different power supply with a longer cable that can power the wrist Pi 5 (3 to 3.5 m from the arm's base; 1.1 to 1.5 A streaming, up to 2.5 A busy; under-voltage below 4.63 V)? (sgbaird, PR 41)",
+ "method": "curl on camera Pi 2, rate-capped at 300 kB/s, over Tailscale SSH from the CI runner; HTML parsed on the runner. Amazon served a bot-check page after nine searches in quick succession and once more later; those requests were dropped and repeated at one every 15 to 20 s. One search ('usb c cable 18awg 10ft 5a') hit the bot check and was not repeated.",
+ "amazon_searches": {
+  "raspberry pi 5 power supply 10ft": [
+   {
+    "asin": "B0DQY2Z3G6",
+    "title": "27W USB-C Power Supply for Raspberry Pi 5 5.1V 5A PD PPS Charger",
+    "price": "$13.59",
+    "rating": "3.8",
+    "reviews": "(16)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BLZ928WS",
+    "title": "27W Power Supply for Raspberry Pi 5 16GB/8GB/4GB/2GB 5.1V 5A GaN USB-C Power Adapter",
+    "price": "$11.72",
+    "rating": "4.6",
+    "reviews": "(43)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0CGV4YZ5Q",
+    "title": "SoulBay 5V 3A Micro USB Power Supply for Raspberry Pi, 6FT, 2 Pack",
+    "price": "$17.99",
+    "rating": "4.6",
+    "reviews": "(3)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CLV6WB4L",
+    "title": "RasTech for Raspberry Pi 5 GaN PD 27W Power Supply 5.1V 5A USB-C Pi 5 Power Adapter for Raspberry Pi 5 16GB/8GB/4GB/2GB",
+    "price": "$12.34",
+    "rating": "4.6",
+    "reviews": "(409)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F6C6L7G5",
+    "title": "RasTech 27W Power Supply with Switch for Raspberry Pi 5 Power Adapter GaN PD 5.1V5A USB-C Compatible with Raspberry Pi 5 16GB/8GB/4GB/2GB (On/Off Switch)",
+    "price": "$12.15",
+    "rating": "4.4",
+    "reviews": "(50)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07H125ZRL",
+    "title": "CanaKit 45W USB-C Power Supply with PD for Raspberry Pi 5 (27W @ 5A)",
+    "price": "$15.77",
+    "rating": "4.7",
+    "reviews": "(533)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07X8C6PV6",
+    "title": "GeeekPi 18W 5V 3.6A Power Supply for Raspberry Pi 4/Orange Pi 5&5B, Type C with ON/Off Switch and Micro USB Adapter",
+    "price": "$10.99",
+    "rating": "4.6",
+    "reviews": "(566)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0D3MFLNC1",
+    "title": "Raspberry Pi 27W USB-C Power Supply (White)",
+    "price": "$23.91",
+    "rating": "4.9",
+    "reviews": "(109)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CQ2DL2RW",
+    "title": "GeeekPi 27W Power Supply for Raspberry Pi 5, PD Adapter USB C Power Adapter for Raspberry Pi 5 16GB/8GB/4GB/2GB",
+    "price": "$12.99",
+    "rating": "4.4",
+    "reviews": "(402)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FGN6Q8BC",
+    "title": "Geekworm PD 27W 5.1V 5A USB-C Power Supply for Raspberry Pi 5 2/4/8/16GB",
+    "price": "$12.99",
+    "rating": "4.6",
+    "reviews": "(88)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FX3TG2SV",
+    "title": "27W 5.1V 5A GaN PD USB-C Power Supply for Raspberry Pi 5",
+    "price": "$10.99",
+    "rating": "4.8",
+    "reviews": "(37)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FJLDFMF7",
+    "title": "27W GaN USB-C PD Power Supply for Raspberry Pi 5",
+    "price": "$12.19",
+    "rating": "4.5",
+    "reviews": "(81)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0BLZ928WS",
+    "title": "27W Power Supply for Raspberry Pi 5 16GB/8GB/4GB/2GB 5.1V 5A GaN USB-C Power Adapter",
+    "price": "$11.72",
+    "rating": "4.6",
+    "reviews": "(43)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CQV29QSX",
+    "title": "Official 27W USB-C Power Supply for Raspberry Pi 5, 5.1V/5A, 9V/3A, 12V/2.25A, 15V/1.8A, Black US",
+    "price": "$25.97",
+    "rating": "4.6",
+    "reviews": "(125)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CT2HH7FJ",
+    "title": "27W 5.1V/5A USB-C Power Supply with PD for Raspberry Pi 5（UL Listed）",
+    "price": "$12.99",
+    "rating": "4.4",
+    "reviews": "(160)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0DP7BRJ67",
+    "title": "IJP 27W Power Supply Adapter for Raspberry Pi 5, Orange Pi 5, 5 Pro, 5 Plus, 5 Max, CM5, Type C Power Supply Cord, 5.1V 5A Charger, USB C Power Supply Cable 3.3FT (Black)",
+    "price": "$13.99",
+    "rating": "3.5",
+    "reviews": "(13)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FX3TG2SV",
+    "title": "27W 5.1V 5A GaN PD USB-C Power Supply for Raspberry Pi 5",
+    "price": "$10.99",
+    "rating": "4.8",
+    "reviews": "(37)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0D6CJHYZV",
+    "title": "10FT USB Type C to Type C Cable Compatible with Raspberry Pi 5 Pi5",
+    "price": "$19.96",
+    "rating": null,
+    "reviews": null,
+    "sponsored": false
+   },
+   {
+    "asin": "B0CPWB84WT",
+    "title": "for Raspberry Pi 5 Power Supply 27W USB-C PD Power Supply Output 5.1V/5A, 9V/3A, 12V/2.25A, 15V/1.8A ETL Listed-【GaN PD 5A 27W】",
+    "price": "$11.90",
+    "rating": "4.6",
+    "reviews": "(18)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0HFN69VGH",
+    "title": "27W 5.1V 5A USB‑C Power Supply for Raspberry Pi 5 2GB 4GB 8GB 16GB",
+    "price": "$9.99",
+    "rating": null,
+    "reviews": null,
+    "sponsored": false
+   },
+   {
+    "asin": "B0DK4L9W6B",
+    "title": "Raspberry Pi 5 Essentials Starter Kit PRO (128GB Edition) (8GB RAM) Micro SD Card Pre-Loaded 64-bit OS, Type-C Power Supply, Active Cooling Case for Edge AI, Docker & Pro Workstation",
+    "price": "$249.99",
+    "rating": "4.7",
+    "reviews": "(67)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0D232HN74",
+    "title": "Vilros Raspberry Pi 5 Starter Kit MAX – Official 8GB RAM Pi 5 Board, 128GB Preloaded Micro SD, Case, Power Supply & Cooling – Complete Plug-and-Play Kit for Beginners & Advanced Users",
+    "price": "$274.99",
+    "rating": "4.5",
+    "reviews": "(203)",
+    "sponsored": true
+   }
+  ],
+  "raspberry pi 5 power supply long cable": [
+   {
+    "asin": "B0F6C6L7G5",
+    "title": "RasTech 27W Power Supply with Switch for Raspberry Pi 5 Power Adapter GaN PD 5.1V5A USB-C Compatible with Raspberry Pi 5 16GB/8GB/4GB/2GB (On/Off Switch)",
+    "price": "$12.15",
+    "rating": "4.4",
+    "reviews": "(50)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0BMGJNSVS",
+    "title": "GeeekPi 20W 5V 4A Power Supply for Raspberry Pi 4/Orange Pi 5/5B, UL Listed Type C Power Supply with ON/Off Switch",
+    "price": "$9.99",
+    "rating": "4.4",
+    "reviews": "(324)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0CLV6WB4L",
+    "title": "RasTech for Raspberry Pi 5 GaN PD 27W Power Supply 5.1V 5A USB-C Pi 5 Power Adapter for Raspberry Pi 5 16GB/8GB/4GB/2GB",
+    "price": "$12.34",
+    "rating": "4.6",
+    "reviews": "(409)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07H125ZRL",
+    "title": "CanaKit 45W USB-C Power Supply with PD for Raspberry Pi 5 (27W @ 5A)",
+    "price": "$15.77",
+    "rating": "4.7",
+    "reviews": "(533)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BLZ928WS",
+    "title": "27W Power Supply for Raspberry Pi 5 16GB/8GB/4GB/2GB 5.1V 5A GaN USB-C Power Adapter",
+    "price": "$11.72",
+    "rating": "4.6",
+    "reviews": "(43)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FPFQY8ST",
+    "title": "TRASKIT for Raspberry pi 5 Power Supply 5.1V 5A ，Cable Length 59 inch 27W PD Power Adapter for Raspberry Pi 5 （UL Listed）",
+    "price": "$12.99",
+    "rating": "4.6",
+    "reviews": "(40)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CTBXL2CQ",
+    "title": "Raspberry Pi 5 27W USB C Power Supply with ON/Off Switch (Black)",
+    "price": "$11.99",
+    "rating": "3.6",
+    "reviews": "(44)",
+    "sponsored": true
+   },
+   {
+    "asin": "B00MARDJZ4",
+    "title": "CanaKit 5V 2.5A Raspberry Pi 3 B+ Power Supply/Adapter (UL Listed)",
+    "price": "$9.99",
+    "rating": "4.7",
+    "reviews": "(4.9K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FHH9K47T",
+    "title": "27W GaN USB-C PD Power Supply for Raspberry Pi 5",
+    "price": "$9.99",
+    "rating": "4.7",
+    "reviews": "(312)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F47BMXFS",
+    "title": "Argon 27W PWR GaN USB-C Power Supply for Raspberry Pi 5-5V 5A PD, 1.5M Cable",
+    "price": "$14.99",
+    "rating": "4.7",
+    "reviews": "(50)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07X8C6PV6",
+    "title": "GeeekPi 18W 5V 3.6A Power Supply for Raspberry Pi 4/Orange Pi 5&5B, Type C with ON/Off Switch and Micro USB Adapter",
+    "price": "$10.99",
+    "rating": "4.6",
+    "reviews": "(566)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F47BMXFS",
+    "title": "Argon 27W PWR GaN USB-C Power Supply for Raspberry Pi 5-5V 5A PD, 1.5M Cable",
+    "price": "$14.99",
+    "rating": "4.7",
+    "reviews": "(50)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0CQV29QSX",
+    "title": "Official 27W USB-C Power Supply for Raspberry Pi 5, 5.1V/5A, 9V/3A, 12V/2.25A, 15V/1.8A, Black US",
+    "price": "$25.97",
+    "rating": "4.6",
+    "reviews": "(125)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CT5B5ZLP",
+    "title": "27W Power Supply PD Adapter for Raspberry Pi 5 Power 5.1V 5A Type-C Power Supply for Raspberry Pi 5 8GB 4GB (White US Plug) ﻿",
+    "price": "$7.51",
+    "rating": "4.4",
+    "reviews": "(24)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07YD2LZDC",
+    "title": "Raspberry Pi Official Power Supply 15.3W USB-C with 1.5M Cable - US Plug 5.1V 3A, Black",
+    "price": "$16.97",
+    "rating": "5.0",
+    "reviews": "(16)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CSMBR63K",
+    "title": "Official 27W USB Type-C Power Supply for Raspberry Pi 5 White @XYGStudy (Pi 5 Official 27W PSU White US NEW)",
+    "price": null,
+    "rating": "4.6",
+    "reviews": "(76)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07X8C6PV6",
+    "title": "GeeekPi 18W 5V 3.6A Power Supply for Raspberry Pi 4/Orange Pi 5&5B, Type C with ON/Off Switch and Micro USB Adapter",
+    "price": "$10.99",
+    "rating": "4.6",
+    "reviews": "(566)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0HFW9QJ41",
+    "title": "15W 5V 3A Power Supply for Raspberry Pi 4",
+    "price": "$9.99",
+    "rating": "5.0",
+    "reviews": "(1)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CL41ZGYH",
+    "title": "20W 5V 4.0A Power Supply Compatible with Raspberry Pi 4/ Orange Pi 5&5B, UL Listed Type C Power Supply Compatible with ON/Off Switch for Raspberry Pi 4 Model B 8GB/4GB/2GB/1GB[UL Listed]",
+    "price": "$10.99",
+    "rating": "5.0",
+    "reviews": "(1)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0HBBR7CPH",
+    "title": "Pi 5 27W 5V5A type-c power 1.2M",
+    "price": "$44.13",
+    "rating": null,
+    "reviews": null,
+    "sponsored": false
+   },
+   {
+    "asin": "B08523QCT6",
+    "title": "5V 3A USB Type C Adapter for Raspberry Pi 4 Model B Power Supply Cord with ON/Off Switch",
+    "price": "$9.99",
+    "rating": "4.5",
+    "reviews": "(170)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H6W88X1P",
+    "title": "Retractable 3 Prong AC PC Power Cord with 39.37in Universal Cable",
+    "price": "$29.99",
+    "rating": null,
+    "reviews": null,
+    "sponsored": true
+   }
+  ],
+  "raspberry pi 5 power supply 6ft": [
+   {
+    "asin": "B0FPFQY8ST",
+    "title": "TRASKIT for Raspberry pi 5 Power Supply 5.1V 5A ，Cable Length 59 inch 27W PD Power Adapter for Raspberry Pi 5 （UL Listed）",
+    "price": "$12.99",
+    "rating": "4.6",
+    "reviews": "(40)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BLZ928WS",
+    "title": "27W Power Supply for Raspberry Pi 5 16GB/8GB/4GB/2GB 5.1V 5A GaN USB-C Power Adapter",
+    "price": "$11.72",
+    "rating": "4.6",
+    "reviews": "(43)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0CLV6WB4L",
+    "title": "RasTech for Raspberry Pi 5 GaN PD 27W Power Supply 5.1V 5A USB-C Pi 5 Power Adapter for Raspberry Pi 5 16GB/8GB/4GB/2GB",
+    "price": "$12.34",
+    "rating": "4.6",
+    "reviews": "(409)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07H125ZRL",
+    "title": "CanaKit 45W USB-C Power Supply with PD for Raspberry Pi 5 (27W @ 5A)",
+    "price": "$15.77",
+    "rating": "4.7",
+    "reviews": "(533)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FHH9K47T",
+    "title": "27W GaN USB-C PD Power Supply for Raspberry Pi 5",
+    "price": "$9.99",
+    "rating": "4.7",
+    "reviews": "(312)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F6C6L7G5",
+    "title": "RasTech 27W Power Supply with Switch for Raspberry Pi 5 Power Adapter GaN PD 5.1V5A USB-C Compatible with Raspberry Pi 5 16GB/8GB/4GB/2GB (On/Off Switch)",
+    "price": "$12.15",
+    "rating": "4.4",
+    "reviews": "(50)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CTBXL2CQ",
+    "title": "Raspberry Pi 5 27W USB C Power Supply with ON/Off Switch (Black)",
+    "price": "$11.99",
+    "rating": "3.6",
+    "reviews": "(44)",
+    "sponsored": true
+   },
+   {
+    "asin": "B08HYVD3VL",
+    "title": "MaxLLTo 6ft Extra Long 5V 2A Micro USB AC/DC Wall Charger Adapter Power Supply Cord for Raspberry Pi 1",
+    "price": "$13.99",
+    "rating": "4.6",
+    "reviews": "(3)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CQ2DL2RW",
+    "title": "GeeekPi 27W Power Supply for Raspberry Pi 5, PD Adapter USB C Power Adapter for Raspberry Pi 5 16GB/8GB/4GB/2GB",
+    "price": "$12.99",
+    "rating": "4.4",
+    "reviews": "(402)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FPDC4T7F",
+    "title": "5V 2.5A Micro USB Power Supply Adapter Replacement for Raspberry Pi 3 B+",
+    "price": "$9.36",
+    "rating": "4.1",
+    "reviews": "(36)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FJLDFMF7",
+    "title": "27W GaN USB-C PD Power Supply for Raspberry Pi 5",
+    "price": "$12.19",
+    "rating": "4.5",
+    "reviews": "(81)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F47BMXFS",
+    "title": "Argon 27W PWR GaN USB-C Power Supply for Raspberry Pi 5-5V 5A PD, 1.5M Cable",
+    "price": "$14.99",
+    "rating": "4.7",
+    "reviews": "(50)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0FGN6Q8BC",
+    "title": "Geekworm PD 27W 5.1V 5A USB-C Power Supply for Raspberry Pi 5 2/4/8/16GB",
+    "price": "$12.99",
+    "rating": "4.6",
+    "reviews": "(88)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0DP7BRJ67",
+    "title": "IJP 27W Power Supply Adapter for Raspberry Pi 5, Orange Pi 5, 5 Pro, 5 Plus, 5 Max, CM5, Type C Power Supply Cord, 5.1V 5A Charger, USB C Power Supply Cable 3.3FT (Black)",
+    "price": "$13.99",
+    "rating": "3.5",
+    "reviews": "(13)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CT2HH7FJ",
+    "title": "27W 5.1V/5A USB-C Power Supply with PD for Raspberry Pi 5（UL Listed）",
+    "price": "$12.99",
+    "rating": "4.4",
+    "reviews": "(160)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FX3TG2SV",
+    "title": "27W 5.1V 5A GaN PD USB-C Power Supply for Raspberry Pi 5",
+    "price": "$10.99",
+    "rating": "4.8",
+    "reviews": "(37)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07X8C6PV6",
+    "title": "GeeekPi 18W 5V 3.6A Power Supply for Raspberry Pi 4/Orange Pi 5&5B, Type C with ON/Off Switch and Micro USB Adapter",
+    "price": "$10.99",
+    "rating": "4.6",
+    "reviews": "(566)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0DGTDC9M7",
+    "title": "SunFounder 27W PD Power Supply for Raspberry Pi 5, 5.1V 5A GaN 1.2m 3.6ft USB-C Changer Adapter for Raspberry Pi 5 8G/4G/2G/Raspberry Pi 4/Pironman 5 (ETL Listed)",
+    "price": "$12.99",
+    "rating": "4.7",
+    "reviews": "(60)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0G2BYH1M8",
+    "title": "Geekworm X1209 5.1V 6A UPS HAT for Raspberry Pi 5 with Wide 6-18V Input",
+    "price": "$45.00",
+    "rating": "4.4",
+    "reviews": "(4)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0GWM1JC3V",
+    "title": "Geekworm X1206 V2.0 5V UPS for Raspberry Pi 5 with 9-18V Wide Voltage Input",
+    "price": "$55.00",
+    "rating": "5.0",
+    "reviews": "(1)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0DK4L9W6B",
+    "title": "Raspberry Pi 5 Essentials Starter Kit PRO (128GB Edition) (8GB RAM) Micro SD Card Pre-Loaded 64-bit OS, Type-C Power Supply, Active Cooling Case for Edge AI, Docker & Pro Workstation",
+    "price": "$249.99",
+    "rating": "4.7",
+    "reviews": "(67)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0FD735LFG",
+    "title": "2-Pack Waterproof DC 12V/24V to 5V 5A Buck Converter, USB-C Output",
+    "price": "$15.99",
+    "rating": "4.5",
+    "reviews": "(89)",
+    "sponsored": true
+   }
+  ],
+  "27w usb c power supply 5.1v 5a 10ft cable": [
+   {
+    "asin": "B0CLV6WB4L",
+    "title": "RasTech for Raspberry Pi 5 GaN PD 27W Power Supply 5.1V 5A USB-C Pi 5 Power Adapter for Raspberry Pi 5 16GB/8GB/4GB/2GB",
+    "price": "$12.34",
+    "rating": "4.6",
+    "reviews": "(409)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FX3TG2SV",
+    "title": "27W 5.1V 5A GaN PD USB-C Power Supply for Raspberry Pi 5",
+    "price": "$10.99",
+    "rating": "4.8",
+    "reviews": "(37)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0FHH9K47T",
+    "title": "27W GaN USB-C PD Power Supply for Raspberry Pi 5",
+    "price": "$9.99",
+    "rating": "4.7",
+    "reviews": "(312)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0D3MFLNC1",
+    "title": "Raspberry Pi 27W USB-C Power Supply (White)",
+    "price": "$23.91",
+    "rating": "4.9",
+    "reviews": "(109)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07H125ZRL",
+    "title": "CanaKit 45W USB-C Power Supply with PD for Raspberry Pi 5 (27W @ 5A)",
+    "price": "$15.77",
+    "rating": "4.7",
+    "reviews": "(533)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F3CHM1R1",
+    "title": "27W Power Supply Adapter for Raspberry Pi 5, USB-C 5.1V/5A PD Power Supply for Rasp Pi 5, GaN PD Power Supply Unit",
+    "price": "$11.99",
+    "rating": "4.1",
+    "reviews": "(20)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FGN6Q8BC",
+    "title": "Geekworm PD 27W 5.1V 5A USB-C Power Supply for Raspberry Pi 5 2/4/8/16GB",
+    "price": "$12.99",
+    "rating": "4.6",
+    "reviews": "(88)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FX3TG2SV",
+    "title": "27W 5.1V 5A GaN PD USB-C Power Supply for Raspberry Pi 5",
+    "price": "$10.99",
+    "rating": "4.8",
+    "reviews": "(37)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CT2HH7FJ",
+    "title": "27W 5.1V/5A USB-C Power Supply with PD for Raspberry Pi 5（UL Listed）",
+    "price": "$12.99",
+    "rating": "4.4",
+    "reviews": "(160)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BLZ928WS",
+    "title": "27W Power Supply for Raspberry Pi 5 16GB/8GB/4GB/2GB 5.1V 5A GaN USB-C Power Adapter",
+    "price": "$11.72",
+    "rating": "4.6",
+    "reviews": "(43)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0DQY2Z3G6",
+    "title": "27W USB-C Power Supply for Raspberry Pi 5 5.1V 5A PD PPS Charger",
+    "price": "$13.59",
+    "rating": "3.8",
+    "reviews": "(16)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CQV29QSX",
+    "title": "Official 27W USB-C Power Supply for Raspberry Pi 5, 5.1V/5A, 9V/3A, 12V/2.25A, 15V/1.8A, Black US",
+    "price": "$25.97",
+    "rating": "4.6",
+    "reviews": "(125)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0GK66FG8J",
+    "title": "PD 27W 5.1V 5A USB-C Power Supply for Raspberry Pi 5",
+    "price": "$10.99",
+    "rating": "5.0",
+    "reviews": "(2)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F6C6L7G5",
+    "title": "RasTech 27W Power Supply with Switch for Raspberry Pi 5 Power Adapter GaN PD 5.1V5A USB-C Compatible with Raspberry Pi 5 16GB/8GB/4GB/2GB (On/Off Switch)",
+    "price": "$12.15",
+    "rating": "4.4",
+    "reviews": "(50)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0D3FZ5VQM",
+    "title": "Power Supply Compatible with Raspberry Pi 5, 5.1V 5A 27W PD Power Supply USB-C Power Supply Compatible with Raspberry Pi Compatible with Raspberry Pi 5(ETL Listed), black, KM10F120INPT-306",
+    "price": "$12.99",
+    "rating": "4.2",
+    "reviews": "(13)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0D5B55QN6",
+    "title": "27W Power Supply Compatible with Raspberry Pi 5, PD Adapter USB C 5.1V 5A Power Adapter Compatible with Raspberry Pi 5 8GB 4GB",
+    "price": "$13.98",
+    "rating": null,
+    "reviews": null,
+    "sponsored": false
+   },
+   {
+    "asin": "B0C4TBLQ67",
+    "title": "Dayaoncy 30 Watt USB C for iPhone 15 Charger Fast Charging, 30W USB C Fast Charger Type C Wall Charger Block & 10FT Nylon USB C to USB C Charging Cable Compatible with iPhone 15 Pro Max Plus, Samsung",
+    "price": "$25.99",
+    "rating": "4.1",
+    "reviews": "(41)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BWKBLP9C",
+    "title": "USB C to USB C, 240W USB C Cable, 6.6ft C to C Cable Fast Charging for Macbook Pro/Macbook Air, iPad Pro 12.9-inch, iPhone 15/Pro Max/Pro/Plus, Samsung Galaxy S23,Compatible 140W/100W /65W/45W/35W/20W",
+    "price": "$16.99",
+    "rating": "4.6",
+    "reviews": "(828)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0H8YGHPVH",
+    "title": "USB to USB C Cable 90 Degree USB Type C Cable Right Angle 10ft 2Pack-Black",
+    "price": "$19.99",
+    "rating": "4.2",
+    "reviews": "(19)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0GYRCJ2NJ",
+    "title": "[2-Pack]Portable Charger USB C for iPhone 18/17/16/15 Series,Black&White",
+    "price": "$25.99",
+    "rating": "4.4",
+    "reviews": "(2.6K)",
+    "sponsored": true
+   }
+  ],
+  "5v 5a usb c power supply 10ft": [
+   {
+    "asin": "B0DZX332P7",
+    "title": "DC 5V 2A 10W USB Wall Charger with 10ft/3M USB C Cable, AC Adapter for Type-C Enabled Home Security Cameras, Power Charging & Power Supply for More USB-C Devices-White",
+    "price": "$9.99",
+    "rating": "4.8",
+    "reviews": "(91)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FFB7Q5XZ",
+    "title": "40W iPhone 18 17 16 15 Charger Fast Charging, USB C Super Fast Charger Block and Long C to C Cable Cord 10ft for Apple iPhone 18 Pro Max/18 Pro/DUO/17 Pro Max/17 Air/16 Pro Max/15 Plus/iPad Plug Cube",
+    "price": "$15.98",
+    "rating": "4.5",
+    "reviews": "(555)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0GYQSMXZH",
+    "title": "DC 5V 2A 10W USB Wall Charger with 10ft/3M USB C Cable, AC Adapter for Type-C Enabled Home Security Cameras, Power Charging & Power Supply for More USB-C Devices-Black",
+    "price": "$9.99",
+    "rating": "4.8",
+    "reviews": "(91)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CLV6WB4L",
+    "title": "RasTech for Raspberry Pi 5 GaN PD 27W Power Supply 5.1V 5A USB-C Pi 5 Power Adapter for Raspberry Pi 5 16GB/8GB/4GB/2GB",
+    "price": "$12.34",
+    "rating": "4.6",
+    "reviews": "(409)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07H125ZRL",
+    "title": "CanaKit 45W USB-C Power Supply with PD for Raspberry Pi 5 (27W @ 5A)",
+    "price": "$15.77",
+    "rating": "4.7",
+    "reviews": "(533)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FHH9K47T",
+    "title": "27W GaN USB-C PD Power Supply for Raspberry Pi 5",
+    "price": "$9.99",
+    "rating": "4.7",
+    "reviews": "(312)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FHK97QS7",
+    "title": "Extra Long 10Foot 45W Samsung USB C Fast Charger Block Dual Port PD Power Adapter Fast Charging Block,2Pack 10FT Type C Super Quick Charging Cord for Samsung Galaxy S25 Ultra/S25/S24/S23/S22 and More",
+    "price": "$27.99",
+    "rating": "4.4",
+    "reviews": "(340)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0FX3TG2SV",
+    "title": "27W 5.1V 5A GaN PD USB-C Power Supply for Raspberry Pi 5",
+    "price": "$10.99",
+    "rating": "4.8",
+    "reviews": "(37)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FGN6Q8BC",
+    "title": "Geekworm PD 27W 5.1V 5A USB-C Power Supply for Raspberry Pi 5 2/4/8/16GB",
+    "price": "$12.99",
+    "rating": "4.6",
+    "reviews": "(88)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0DZX3NWMW",
+    "title": "DC 5V 2A 10W USB Wall Charger with 16.4ft/5M USB C Cable, AC Adapter for Type-C Enabled Home Security Cameras, Power Charging & Power Supply for More USB-C Devices-White",
+    "price": "$11.99",
+    "rating": "4.8",
+    "reviews": "(91)",
+    "sponsored": false
+   },
+   {
+    "asin": "B09W8X9VGK",
+    "title": "5V 1A DC Power Supply Adapter 5W AC/DC Charger AC 100V-240V to D C 5 Volt 1Amp 0.5A Replacement Power Cord for Security Camera Baby Monitor Graco Swing TV Box Raspberry Pi Type C with 8TIPS",
+    "price": "$7.99",
+    "rating": "4.3",
+    "reviews": "(2.8K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H6M9GSRC",
+    "title": "USB C Fast Charger Block, 40W Type C Charging Block Plug and 6ft 6ft 10ft 10ft Long USB C Cable for Apple iPhone Duo/18 Pro/17 Pro Max/17 Air/16 Pro/15 Plus/iPad mini/Samsung Wall Power Adapter Brick",
+    "price": "$25.99",
+    "rating": "4.4",
+    "reviews": "(539)",
+    "sponsored": true
+   },
+   {
+    "asin": "B078PDP5T4",
+    "title": "icv 5V 2A USB C Wall Charger with US Adapter for Samsung Galaxy S8, S8 Plus, Note 8, LG G5, G6, HTC 10, Nexus 6P, 5X and Other Type-C 5V Supported Device (Black)",
+    "price": "$10.99",
+    "rating": "4.6",
+    "reviews": "(392)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0GSVG4YPP",
+    "title": "240W USB-C Charger Power Adapter GaN PD3.1 48V 5A Power Supply PSU for Framework Laptop 16 Upgraded 2025 Customizable Laptop Setups with Graphics Module 240Watt Powerhouse 10Ft Long ETL Certified",
+    "price": "$91.49",
+    "rating": "5.0",
+    "reviews": "(3)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BHYN49SV",
+    "title": "JSAUX 45W USB C Charger for Steam Deck/OLED with 10FT Cable",
+    "price": "$25.99",
+    "rating": "4.3",
+    "reviews": "(1.8K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0837N9LVF",
+    "title": "96W USB C Charger for MacBook Pro 16, 15, 14, 13 inch 2025 2024, 2023, 2022, 2021, M4 M3 M2 M1 MacBook Air, USBC Laptop Power Adapter, iPad, LED, 6.6ft 5A Cable Charging as Fast as Original Quality",
+    "price": "$25.19",
+    "rating": "4.4",
+    "reviews": "(3.3K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H35FR121",
+    "title": "Super Fast Charger Type C,65W USB C Wall Charger Fast Charging 10FT Cable",
+    "price": "$20.99",
+    "rating": "4.6",
+    "reviews": "(465)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FN7JWTXK",
+    "title": "Anker Nano Charger, USB C GaN Charger 30W, PIQ 3.0 Foldable PPS Fast Charger, USB C Cable, Type-C Charging Cord Fast Charge(10FT,100W)",
+    "price": "$25.72",
+    "rating": "4.8",
+    "reviews": "(11)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H7BYR8CC",
+    "title": "Type C Charger Fast Charging,USB C Charger,25W Samsung Super Fast Charger",
+    "price": "$16.90",
+    "rating": "4.4",
+    "reviews": "(15.5K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H2YL4JVM",
+    "title": "12-Outlet Power Strip with 2400J Surge Protector, 6 USB(3 USB C) &10FT Cord",
+    "price": "$20.99",
+    "rating": "4.7",
+    "reviews": "(241)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0GYRCJ2NJ",
+    "title": "[2-Pack]Portable Charger USB C for iPhone 18/17/16/15 Series,Black&White",
+    "price": "$25.99",
+    "rating": "4.4",
+    "reviews": "(2.6K)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0GSQLWGXX",
+    "title": "10 FT Surge Protector Power Strip with 6 USB, 16 Outlets, 2400J",
+    "price": "$24.99",
+    "rating": "4.7",
+    "reviews": "(661)",
+    "sponsored": true
+   }
+  ],
+  "5v 5a power supply 3m cable usb c": [
+   {
+    "asin": "B0CLV6WB4L",
+    "title": "RasTech for Raspberry Pi 5 GaN PD 27W Power Supply 5.1V 5A USB-C Pi 5 Power Adapter for Raspberry Pi 5 16GB/8GB/4GB/2GB",
+    "price": "$12.34",
+    "rating": "4.6",
+    "reviews": "(409)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FN76P1ZG",
+    "title": "USB-C Charger Cable 5V 2A for Kyocera DuraForce Pro 2 E6910 E6920",
+    "price": "$8.99",
+    "rating": "4.6",
+    "reviews": "(35)",
+    "sponsored": true
+   },
+   {
+    "asin": "B07H125ZRL",
+    "title": "CanaKit",
+    "price": "$15.77",
+    "rating": "4.7",
+    "reviews": "(533)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FHH9K47T",
+    "title": "27W GaN USB-C PD Power Supply for Raspberry Pi 5",
+    "price": "$9.99",
+    "rating": "4.7",
+    "reviews": "(312)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0D12R3JH7",
+    "title": "Orange Pi 5 Pro PD27W 5V5A Type-C Power Supply Adapter for Orange Pi 5 Pro, Orange Pi 5 Plus, Orange Pi 5 Max, Orange Pi CM5, Multiple Circuit Protection USB C Charger Transformer Compatible",
+    "price": "$20.99",
+    "rating": "4.1",
+    "reviews": "(4)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BVVR2DP7",
+    "title": "Universal 5V 2A Type C Charger - USB C Charging Cable for Beats Flex Headphones, JBL Wireless Bluetooth Earbuds and Other Type-C Supported Device Power Supply Adapter",
+    "price": "$9.98",
+    "rating": "4.4",
+    "reviews": "(205)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0GXFMRK6C",
+    "title": "iPad Charger Fast Charging,[Apple MFi Certified]40W Fast USB C Charger Block 10FT USB C to C Cable Cord for iPad Pro 13/12.9/11 inch,iPad A16 11/10th,iPad Air 13/11 inch M4/M3/M2/5th/4th,iPad mini 7/6",
+    "price": "$19.99",
+    "rating": "4.6",
+    "reviews": "(83)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0DZX332P7",
+    "title": "DC 5V 2A 10W USB Wall Charger with 10ft/3M USB C Cable, AC Adapter for Type-C Enabled Home Security Cameras, Power Charging & Power Supply for More USB-C Devices-White",
+    "price": "$9.99",
+    "rating": "4.8",
+    "reviews": "(91)",
+    "sponsored": false
+   },
+   {
+    "asin": "B09JW4QQJ2",
+    "title": "5V 3A Power Supply USB C Charger for Raspberry Pi 4 Model B, 15W 5FT",
+    "price": "$9.99",
+    "rating": "4.6",
+    "reviews": "(523)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FGN6Q8BC",
+    "title": "Geekworm",
+    "price": "$12.99",
+    "rating": "4.6",
+    "reviews": "(88)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F4MFH5BB",
+    "title": "Power Supply for Raspberry Pi 5, PD Adapter USB C 5V 5A Power Adapter",
+    "price": "$11.99",
+    "rating": "4.5",
+    "reviews": "(26)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BWKBLP9C",
+    "title": "USB C to USB C, 240W USB C Cable, 6.6ft C to C Cable Fast Charging for Macbook Pro/Macbook Air, iPad Pro 12.9-inch, iPhone 15/Pro Max/Pro/Plus, Samsung Galaxy S23,Compatible 140W/100W /65W/45W/35W/20W",
+    "price": "$16.99",
+    "rating": "4.6",
+    "reviews": "(828)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0FX3TG2SV",
+    "title": "27W 5.1V 5A GaN PD USB-C Power Supply for Raspberry Pi 5",
+    "price": "$10.99",
+    "rating": "4.8",
+    "reviews": "(37)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F3CHM1R1",
+    "title": "27W Power Supply Adapter for Raspberry Pi 5, USB-C 5.1V/5A PD Power Supply for Rasp Pi 5, GaN PD Power Supply Unit",
+    "price": "$11.99",
+    "rating": "4.1",
+    "reviews": "(20)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CT2HH7FJ",
+    "title": "27W 5.1V/5A USB-C Power Supply with PD for Raspberry Pi 5（UL Listed）",
+    "price": "$12.99",
+    "rating": "4.4",
+    "reviews": "(160)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0DQY2Z3G6",
+    "title": "27W USB-C Power Supply for Raspberry Pi 5 5.1V 5A PD PPS Charger",
+    "price": "$13.59",
+    "rating": "3.8",
+    "reviews": "(16)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FH4MX7RT",
+    "title": "USB to USB C Cable 60W Fast Charging [2 Pack 6FT], USB A to USB C Cable for",
+    "price": "$15.49",
+    "rating": "4.5",
+    "reviews": "(1K)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0H6FV74LX",
+    "title": "MECCANIXITY",
+    "price": "$17.49",
+    "rating": null,
+    "reviews": null,
+    "sponsored": false
+   },
+   {
+    "asin": "B0DYMPLLJ8",
+    "title": "USB-C Type-C AC Adapter 5.1V 5A/9V 3A/12V 2.5A/15V 1.8A ETL Power Supply Charger Universal",
+    "price": "$14.99",
+    "rating": "3.5",
+    "reviews": "(2)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0DCBTNXZG",
+    "title": "for Raspberry Pi 5 Power Supply 27W USB-C PD Power Supply Output 5.1V/5A, 9V/3A, 12V/2.25A, 15V/1.8A GaN PD 5A 27W with ON/Off Switch ETL Listed",
+    "price": "$14.95",
+    "rating": "3.9",
+    "reviews": "(24)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0GBGLNR52",
+    "title": "USB-C Power Pigtail to Bare Wire 20AWG 5V 5A Cable 1M 3.3FT 2 Pack",
+    "price": "$7.99",
+    "rating": "4.5",
+    "reviews": "(19)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0DPN758M2",
+    "title": "USB C to USB C Cable 0.5FT 5Pack,Short 6inch USB-C 60W Fast Charging Cords",
+    "price": "$7.99",
+    "rating": "4.5",
+    "reviews": "(85)",
+    "sponsored": true
+   }
+  ],
+  "raspberry pi 4 power supply 10ft": [
+   {
+    "asin": "B07TYQRXTK",
+    "title": "CanaKit 3.5A Raspberry Pi 4 Power Supply (USB-C)",
+    "price": "$9.99",
+    "rating": "4.8",
+    "reviews": "(3.8K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FPF3PBGV",
+    "title": "5V 3A USB-C Power Supply Adapter Replacement for Raspberry Pi 4 Model B",
+    "price": "$9.36",
+    "rating": "4.2",
+    "reviews": "(55)",
+    "sponsored": true
+   },
+   {
+    "asin": "B08523QCT6",
+    "title": "5V 3A USB Type C Adapter for Raspberry Pi 4 Model B Power Supply Cord with ON/Off Switch",
+    "price": "$9.99",
+    "rating": "4.5",
+    "reviews": "(170)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07W8XHMJZ",
+    "title": "Raspberry Pi 15W USB-C Power Supply US - Black",
+    "price": "$16.45",
+    "rating": "4.8",
+    "reviews": "(1.5K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B097P2NLVH",
+    "title": "5V 4A USB-C Power Supply for Raspberry Pi 4, 20W Charger with ON/Off Switch, 5ft Cable, UL Listed - Compatible with Pi 4 Model B (8GB/4GB/2GB/1GB) & Orange Pi 5/5B",
+    "price": "$9.99",
+    "rating": "4.6",
+    "reviews": "(552)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0919CQKQ8",
+    "title": "Argon 18W 5.25V 3.5A USB-C Power Supply with Switch for Raspberry Pi 4 - UL Listed",
+    "price": "$12.99",
+    "rating": "4.8",
+    "reviews": "(222)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07X8C6PV6",
+    "title": "GeeekPi 18W 5V 3.6A Power Supply for Raspberry Pi 4/Orange Pi 5&5B, Type C with ON/Off Switch and Micro USB Adapter",
+    "price": "$10.99",
+    "rating": "4.6",
+    "reviews": "(566)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07VFDYNL4",
+    "title": "Smarza 5.1V 3A Power Supply Charger for Raspberry Pi 4 with Switch, USB-C",
+    "price": "$8.99",
+    "rating": "4.6",
+    "reviews": "(591)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07TSFYXBC",
+    "title": "CanaKit 3.5A Raspberry Pi 4 Power Supply with PiSwitch (USB-C)",
+    "price": "$12.99",
+    "rating": "4.8",
+    "reviews": "(1.1K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BMGJNSVS",
+    "title": "GeeekPi 20W 5V 4A Power Supply for Raspberry Pi 4/Orange Pi 5/5B, UL Listed Type C Power Supply with ON/Off Switch",
+    "price": "$9.99",
+    "rating": "4.4",
+    "reviews": "(324)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07H125ZRL",
+    "title": "CanaKit 45W USB-C Power Supply with PD for Raspberry Pi 5 (27W @ 5A)",
+    "price": "$15.77",
+    "rating": "4.7",
+    "reviews": "(533)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07Z8P61DQ",
+    "title": "Raspberry Pi 15W USB-C Power Supply US - White",
+    "price": "$16.49",
+    "rating": "4.8",
+    "reviews": "(473)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07VNQ3YHG",
+    "title": "Raspberry Pi 4 Power Supply 5.1V/3A Multihead",
+    "price": "$7.99",
+    "rating": "4.2",
+    "reviews": "(41)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CQV29QSX",
+    "title": "Official 27W USB-C Power Supply for Raspberry Pi 5, 5.1V/5A, 9V/3A, 12V/2.25A, 15V/1.8A, Black US",
+    "price": "$25.97",
+    "rating": "4.6",
+    "reviews": "(125)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CL41ZGYH",
+    "title": "20W 5V 4.0A Power Supply Compatible with Raspberry Pi 4/ Orange Pi 5&5B, UL Listed Type C Power Supply Compatible with ON/Off Switch for Raspberry Pi 4 Model B 8GB/4GB/2GB/1GB[UL Listed]",
+    "price": "$10.99",
+    "rating": "5.0",
+    "reviews": "(1)",
+    "sponsored": false
+   },
+   {
+    "asin": "B09KMX7Z2P",
+    "title": "Geekworm Raspberry Pi 4 UPS with Power Adapter, X728 (Max 5.1V 6A) UPS & Power Management Board + 20W Type-C 5V 4A Power Adapter Compatible with Raspberry Pi 4 Model B",
+    "price": "$53.75",
+    "rating": null,
+    "reviews": null,
+    "sponsored": false
+   },
+   {
+    "asin": "B0FHH9K47T",
+    "title": "27W GaN USB-C PD Power Supply for Raspberry Pi 5",
+    "price": "$9.99",
+    "rating": "4.7",
+    "reviews": "(312)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07XTRK8D4",
+    "title": "Vilros Raspberry Pi 4 4GB Basic Starter Kit with Fan-Cooled Heavy-Duty Aluminum Alloy Case",
+    "price": "$139.99",
+    "rating": "4.6",
+    "reviews": "(1.5K)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0F1LBWS8Q",
+    "title": "4-pin 48V Power Adapter is Compatible with The FSP Group Model FSP120-AFB 120W Power Charger. (Plug Connection: 1-3 pin Negative Pole, 2-4 pin Positive Pole)",
+    "price": "$25.99",
+    "rating": "2.5",
+    "reviews": "(3)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0CVJ28MFT",
+    "title": "Vilros 27W -5V/5A USB-C Power Supply Compatible with Raspberry Pi 5 & Apple Devices with USB-C Charging Port (Clear/Transparent)",
+    "price": "$16.99",
+    "rating": "4.6",
+    "reviews": "(155)",
+    "sponsored": true
+   }
+  ],
+  "5v 4a usb c power supply 10ft": [
+   {
+    "asin": "B0DZX332P7",
+    "title": "DC 5V 2A 10W USB Wall Charger with 10ft/3M USB C Cable, AC Adapter for Type-C Enabled Home Security Cameras, Power Charging & Power Supply for More USB-C Devices-White",
+    "price": "$9.99",
+    "rating": "4.8",
+    "reviews": "(91)",
+    "sponsored": false
+   },
+   {
+    "asin": "B09XK4ZH3N",
+    "title": "25W Super Fast Charger Type C 3ft 6ft 10ft 10ft, USB C Wall Charging and Long Android Phone Charger Cable Cord for Samsung Galaxy S26 Ultra/S25 Plus/S25/S24+/S24 Ultra/S23/S22 Plus/S21/Note 20/Note10+",
+    "price": "$25.99",
+    "rating": "4.5",
+    "reviews": "(3.2K)",
+    "sponsored": true
+   },
+   {
+    "asin": "B097P2NLVH",
+    "title": "5V 4A USB-C Power Supply for Raspberry Pi 4, 20W Charger with ON/Off Switch, 5ft Cable, UL Listed - Compatible with Pi 4 Model B (8GB/4GB/2GB/1GB) & Orange Pi 5/5B",
+    "price": "$9.99",
+    "rating": "4.6",
+    "reviews": "(552)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0GYQSMXZH",
+    "title": "DC 5V 2A 10W USB Wall Charger with 10ft/3M USB C Cable, AC Adapter for Type-C Enabled Home Security Cameras, Power Charging & Power Supply for More USB-C Devices-Black",
+    "price": "$9.99",
+    "rating": "4.8",
+    "reviews": "(91)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CD7FYFK8",
+    "title": "45W Dual Port Super Fast Charger with Long USB C to C Cable 10ft,Type C Wall Charger Block and Android Phone Charging Cord for Samsung Galaxy S26 Plus/S25 Ultra/S25+/S24+/S23+/S22+/S21/S20/Note 20/10+",
+    "price": "$17.99",
+    "rating": "4.6",
+    "reviews": "(1.2K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B09J856PND",
+    "title": "Geekworm 20W 5V 4A USB C Power Supply for Raspberry Pi 4 Model B",
+    "price": "$9.99",
+    "rating": "4.7",
+    "reviews": "(208)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0DNQ94R61",
+    "title": "USB C Charger Block 100W, 3-Port Super Fast Type C Phone Charger with Cable",
+    "price": "$39.99",
+    "rating": "4.4",
+    "reviews": "(1.6K)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0FHH9K47T",
+    "title": "27W GaN USB-C PD Power Supply for Raspberry Pi 5",
+    "price": "$9.99",
+    "rating": "4.7",
+    "reviews": "(312)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07H125ZRL",
+    "title": "CanaKit 45W USB-C Power Supply with PD for Raspberry Pi 5 (27W @ 5A)",
+    "price": "$15.77",
+    "rating": "4.7",
+    "reviews": "(533)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07TYQRXTK",
+    "title": "CanaKit 3.5A Raspberry Pi 4 Power Supply (USB-C)",
+    "price": "$9.99",
+    "rating": "4.8",
+    "reviews": "(3.8K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0813TDBPT",
+    "title": "LJO-EEIH 90W USB-C Laptop Charger, PD 20V 4.5A Power Adapter, 10FT Cord",
+    "price": "$19.99",
+    "rating": "4.4",
+    "reviews": "(2K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FHK97QS7",
+    "title": "Extra Long 10Foot 45W Samsung USB C Fast Charger Block Dual Port PD Power Adapter Fast Charging Block,2Pack 10FT Type C Super Quick Charging Cord for Samsung Galaxy S25 Ultra/S25/S24/S23/S22 and More",
+    "price": "$27.99",
+    "rating": "4.4",
+    "reviews": "(340)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0DZX3NWMW",
+    "title": "DC 5V 2A 10W USB Wall Charger with 16.4ft/5M USB C Cable, AC Adapter for Type-C Enabled Home Security Cameras, Power Charging & Power Supply for More USB-C Devices-White",
+    "price": "$11.99",
+    "rating": "4.8",
+    "reviews": "(91)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FD9GRKSZ",
+    "title": "60W USB C Charger,2Pack 10FT iPhone 18 Pro Max Charger Fast Charging,4Port USB-A USBC Charger Block with 10ft USB C Cable Cord for Apple iPhone 18 Pro Max/17 Pro Max/16 Pro/15 Plus/16/iPad,AirPods",
+    "price": "$29.98",
+    "rating": "4.7",
+    "reviews": "(294)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0D99QLKBL",
+    "title": "Super Fast Charger USB C, 45W Dual Port Android Phone Type C Charger 2Pack",
+    "price": "$15.99",
+    "rating": "4.6",
+    "reviews": "(5.6K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0GS8Q6JFW",
+    "title": "60W USB C Super Fast Charger,Type C Charger Fast Charging for Samsung Phone",
+    "price": "$26.99",
+    "rating": "4.6",
+    "reviews": "(1.5K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0G6W2V1V8",
+    "title": "2Pack PD 3.0 Super Fast Charger USB C Dual Port Charger Block (60W total output) with 4Pack 60W [3FT+6FT+10FT+10FT] USB C to USB C Cable for Galaxy S26/S25/S24,for iPhone 17/16/15,for iPad and More",
+    "price": "$26.99",
+    "rating": "4.4",
+    "reviews": "(68)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0BNTTJRZB",
+    "title": "Type C Charger Fast Charging, 45W USB C Fast Charger Block with 10FT Cable",
+    "price": "$22.98",
+    "rating": "4.6",
+    "reviews": "(12.4K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0DBHLF71Z",
+    "title": "45W Super Fast Charger USB C, Type-C Android Phone Charger Fast Charging",
+    "price": "$22.99",
+    "rating": "4.3",
+    "reviews": "(8.6K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0D7HK74J9",
+    "title": "USB C Charger Type C Charger Fast Charging Long 10FT 45W Samsung Charger",
+    "price": "$22.41",
+    "rating": "4.6",
+    "reviews": "(1.1K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H2YL4JVM",
+    "title": "12-Outlet Power Strip with 2400J Surge Protector, 6 USB(3 USB C) &10FT Cord",
+    "price": "$20.99",
+    "rating": "4.7",
+    "reviews": "(241)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0GSQLWGXX",
+    "title": "10 FT Surge Protector Power Strip with 6 USB, 16 Outlets, 2400J",
+    "price": "$24.99",
+    "rating": "4.7",
+    "reviews": "(661)",
+    "sponsored": true
+   }
+  ],
+  "5v 3a usb c power supply 10ft 18awg": [
+   {
+    "asin": "B09JW4QQJ2",
+    "title": "5V 3A Power Supply USB C Charger for Raspberry Pi 4 Model B, 15W 5FT",
+    "price": "$9.99",
+    "rating": "4.6",
+    "reviews": "(523)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H395XZBM",
+    "title": "60W USB C Fast Charger Block, 3ft 6ft 10ft 10ft Type C to C Cable Cord Long and USB C Wall Charging Adapter Plug for Apple iPhone 18 Pro Max/18 Pro/DUO/17 Pro/17 Air/16 Pro/15 Plus/iPad/mini/Samsung",
+    "price": "$21.99",
+    "rating": "4.5",
+    "reviews": "(555)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0H6GJG6WJ",
+    "title": "5V 3A USB-C Power Supply for Raspberry Pi 4, Nex Play System,UL Non-PD",
+    "price": "$9.29",
+    "rating": "4.7",
+    "reviews": "(21)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0DZX332P7",
+    "title": "DC 5V 2A 10W USB Wall Charger with 10ft/3M USB C Cable, AC Adapter for Type-C Enabled Home Security Cameras, Power Charging & Power Supply for More USB-C Devices-White",
+    "price": "$9.99",
+    "rating": "4.8",
+    "reviews": "(91)",
+    "sponsored": false
+   },
+   {
+    "asin": "B09JW2H7KK",
+    "title": "2-Pack 5V 3A USB-C Power Adapter, Type-C 5V 3000mA Power Supply for Battery Camera, TV Box, Router, Speaker, Mobile Devices – UL Listed, FCC Certified",
+    "price": "$18.99",
+    "rating": "4.6",
+    "reviews": "(523)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FHH9K47T",
+    "title": "27W GaN USB-C PD Power Supply for Raspberry Pi 5",
+    "price": "$9.99",
+    "rating": "4.7",
+    "reviews": "(312)",
+    "sponsored": false
+   },
+   {
+    "asin": "B09JW4QQJ2",
+    "title": "5V 3A Power Supply USB C Charger for Raspberry Pi 4 Model B, 15W 5FT",
+    "price": "$9.99",
+    "rating": "4.6",
+    "reviews": "(523)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0GYQSMXZH",
+    "title": "DC 5V 2A 10W USB Wall Charger with 10ft/3M USB C Cable, AC Adapter for Type-C Enabled Home Security Cameras, Power Charging & Power Supply for More USB-C Devices-Black",
+    "price": "$9.99",
+    "rating": "4.8",
+    "reviews": "(91)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07W8XHMJZ",
+    "title": "Raspberry Pi 15W USB-C Power Supply US - Black",
+    "price": "$16.45",
+    "rating": "4.8",
+    "reviews": "(1.5K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FPF3PBGV",
+    "title": "5V 3A USB-C Power Supply Adapter Replacement for Raspberry Pi 4 Model B",
+    "price": "$9.36",
+    "rating": "4.2",
+    "reviews": "(55)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0GYCC4Y2J",
+    "title": "DC 5V 2A 10W USB Wall Charger with 10ft/3M Flat Type USB C Cable, AC Adapter for Type-C Enabled Home Security Cameras, Power Charging & Power Supply for More USB-C Devices (UL Listed, White)",
+    "price": "$9.99",
+    "rating": "5.0",
+    "reviews": "(2)",
+    "sponsored": false
+   },
+   {
+    "asin": "B08ZSTRDM8",
+    "title": "Belker 5V 3A USB C AC DC Adapter 15W Power Supply with 9 Tips",
+    "price": "$10.90",
+    "rating": "4.4",
+    "reviews": "(217)",
+    "sponsored": true
+   },
+   {
+    "asin": "B07TYQRXTK",
+    "title": "CanaKit 3.5A Raspberry Pi 4 Power Supply (USB-C)",
+    "price": "$9.99",
+    "rating": "4.8",
+    "reviews": "(3.8K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FQNV52N2",
+    "title": "UL 5V 2A 10W USB Portable Wall Charger with 10FT/3M USB C Cable, AC DC Adapter Universal Travel Plug, Power Supply for Security Cameras, Speakers, and More Type-C Enabled Devices-White",
+    "price": "$9.99",
+    "rating": "4.9",
+    "reviews": "(17)",
+    "sponsored": false
+   },
+   {
+    "asin": "B09WYRFWMW",
+    "title": "15W 5V 3A USB-C Power Supply with ON/Off Switch for Raspberry Pi 4",
+    "price": "$8.99",
+    "rating": "4.5",
+    "reviews": "(141)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0DZX3NWMW",
+    "title": "DC 5V 2A 10W USB Wall Charger with 16.4ft/5M USB C Cable, AC Adapter for Type-C Enabled Home Security Cameras, Power Charging & Power Supply for More USB-C Devices-White",
+    "price": "$11.99",
+    "rating": "4.8",
+    "reviews": "(91)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BB1GC8SK",
+    "title": "USB C Cable 10FT 3Pack Fast Charging Nylon Braided Long Type C Charger Cable for Samsung Galaxy S24 S23 S22 S21 S10 S9 S8 A02s A03s A11 A12 A13 A14 A21 A22 A32 A42 A53, Tablet, LG, Moto, TCL",
+    "price": "$8.99",
+    "rating": "4.5",
+    "reviews": "(17.5K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BXKY72G5",
+    "title": "Teyssor USB C Cable 10FT 5-Pack Nylon Braided USB A to Type C Fast Charging Cord Compatible with Samsung Galaxy S24 S23 S22, Note 20 10 9 8, Moto G7 G8",
+    "price": "$9.99",
+    "rating": "4.5",
+    "reviews": "(5.3K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F5QPFLRM",
+    "title": "LISEN 10FT USB C Cable Fast Charging Chubby 240W USB C to USB C Cable Cord",
+    "price": "$11.99",
+    "rating": "4.4",
+    "reviews": "(1.6K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H2YL4JVM",
+    "title": "12-Outlet Power Strip with 2400J Surge Protector, 6 USB(3 USB C) &10FT Cord",
+    "price": "$20.99",
+    "rating": "4.7",
+    "reviews": "(241)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0GSQLWGXX",
+    "title": "10 FT Surge Protector Power Strip with 6 USB, 16 Outlets, 2400J",
+    "price": "$24.99",
+    "rating": "4.7",
+    "reviews": "(661)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0H4VV7Y82",
+    "title": "2 Pack USB C Charger Block, 200W GaN Super Fast Charger Type C Fast Charging 6 Port Foldable PD Charging Station for All Phone/Android Samsung Galaxy S25/S24/MacBook iPad",
+    "price": "$34.99",
+    "rating": "4.4",
+    "reviews": "(782)",
+    "sponsored": true
+   }
+  ],
+  "usb c power supply 5v 15ft cable": [
+   {
+    "asin": "B0DZX3NWMW",
+    "title": "DC 5V 2A 10W USB Wall Charger with 16.4ft/5M USB C Cable, AC Adapter for Type-C Enabled Home Security Cameras, Power Charging & Power Supply for More USB-C Devices-White",
+    "price": "$11.99",
+    "rating": "4.8",
+    "reviews": "(91)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FXSFNYJP",
+    "title": "USB to USB C Cable 15FT 1Pack, Extra Long USB C Cable 3A Fast Charging",
+    "price": "$16.99",
+    "rating": "4.6",
+    "reviews": "(211)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0DZX332P7",
+    "title": "DC 5V 2A 10W USB Wall Charger with 10ft/3M USB C Cable, AC Adapter for Type-C Enabled Home Security Cameras, Power Charging & Power Supply for More USB-C Devices-White",
+    "price": "$9.99",
+    "rating": "4.8",
+    "reviews": "(91)",
+    "sponsored": false
+   },
+   {
+    "asin": "B09JW4QQJ2",
+    "title": "5V 3A Power Supply USB C Charger for Raspberry Pi 4 Model B, 15W 5FT",
+    "price": "$9.99",
+    "rating": "4.6",
+    "reviews": "(523)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0GYQWS3KN",
+    "title": "DC 5V 2A 10W USB Wall Charger with 16.4ft/5M USB C Cable, AC Adapter for Type-C Enabled Home Security Cameras, Power Charging & Power Supply for More USB-C Devices-Black",
+    "price": "$11.99",
+    "rating": "4.8",
+    "reviews": "(91)",
+    "sponsored": false
+   },
+   {
+    "asin": "B08V95W2TY",
+    "title": "etguuds Long USB C Cable, 15ft USB to USB C Cable Fast Charger Cord Type C",
+    "price": "$7.99",
+    "rating": "4.6",
+    "reviews": "(3.2K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CP9M7CM9",
+    "title": "USB C Cable 15 ft 2Pack, 240W USB C to USB C 3.2 Gen 2 Cable 4K Video",
+    "price": "$35.69",
+    "rating": "4.5",
+    "reviews": "(373)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0HFZXG98M",
+    "title": "5V 1.5A USB-C AC/DC Power Adapter, 8 ft Cable",
+    "price": "$11.96",
+    "rating": "4.6",
+    "reviews": "(22)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CSFFY39Z",
+    "title": "Extra Long USB C to USB C Cable 15FT 100W Type C Charger Fast Charging Cord",
+    "price": "$17.99",
+    "rating": "4.5",
+    "reviews": "(965)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0D4F42GW2",
+    "title": "USB C to DC 5.5mm x 2.1mm Power Cord, USB Type C Input to DC 5V Out Charging Cable, Work with PD Charger and PD Power Bank.Output DC 5V 3A Max. Portable for Outdoor Test, Studio, Office",
+    "price": "$6.98",
+    "rating": "4.2",
+    "reviews": "(25)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FJRNLLGD",
+    "title": "Long USB C to USB C Cable 15FT for iPhone 17 16 15 Pro Max,60W Fast Charging Type C to Type C Charger Cord for iPhone 17 16 15/16 15 Plus/17 Air/17 16 15 Pro, iPad Pro/Air,MacBook,Galaxy S25-White",
+    "price": "$19.99",
+    "rating": "4.5",
+    "reviews": "(1.4K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CSFFY39Z",
+    "title": "Extra Long USB C to USB C Cable 15FT 100W Type C Charger Fast Charging Cord",
+    "price": "$17.99",
+    "rating": "4.5",
+    "reviews": "(965)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0FZBLGF4X",
+    "title": "Anina USB C to DC Power Cable for Starlink Mini (5M/16.4FT)",
+    "price": "$19.99",
+    "rating": "3.8",
+    "reviews": "(92)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F7X8WTSG",
+    "title": "15FT USB C Cable 5-Pack, 60W Fast Charging, 480Mbps Data",
+    "price": "$25.99",
+    "rating": "4.6",
+    "reviews": "(28)",
+    "sponsored": false
+   },
+   {
+    "asin": "B08SMKQDX4",
+    "title": "15ft USB C to USB C Cable Long [2 Pack], Awnuwuy 60W Type C Charger Super Fast Charging Cord Compatible with iPhone 15/15 Pro,iPad Pro Air 5th 4th, Samsung Galaxy S23/S22 Ultra/Note 20, Pixel 6 Pro 4a",
+    "price": "$13.99",
+    "rating": "4.6",
+    "reviews": "(2.4K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FDB97W96",
+    "title": "15FT Right Angle USB C to USB C Cable 60W Fast Charging, USBC to USBC Cord, Nylon Braided Extra Long Type C to Type C Charger for iPhone 17/16/15 Pro Max, MacBook Pro/Air, iPad Pro, Samsung Galaxy S25",
+    "price": "$12.99",
+    "rating": "4.2",
+    "reviews": "(51)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CP5Q2CKC",
+    "title": "AGVEE 2 Pack 15ft Extra Long USB-C Cable, Type-C Charging Data Transfer",
+    "price": "$15.99",
+    "rating": "4.5",
+    "reviews": "(388)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0DM9C92DV",
+    "title": "toocki 15FT Right Angle USB C Cable, 60W Extra Long Charging Cord",
+    "price": "$15.99",
+    "rating": "4.0",
+    "reviews": "(47)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0GX9TBN7Z",
+    "title": "USB C Cable 15FT 2-Pack,Pink USBC 60W Fast Charging for MacBook Neo",
+    "price": "$17.99",
+    "rating": "5.0",
+    "reviews": "(33)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FVLYQW82",
+    "title": "15ft USB C to C Charging Cable,Extra Long Fast Type C to C Charger Cord 5M for Apple iPhone Duo/18 Pro Max/17 Air/16 Pro/15 Plus, MacBook Pro 2023/2022/2021,iPad 12.9/11 inch/Mini/Air,Samsung Galaxy",
+    "price": "$17.99",
+    "rating": "4.7",
+    "reviews": "(3.2K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B08V95W2TY",
+    "title": "etguuds Long USB C Cable, 15ft USB to USB C Cable Fast Charger Cord Type C",
+    "price": "$7.99",
+    "rating": "4.6",
+    "reviews": "(3.2K)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0FH4MX7RT",
+    "title": "USB to USB C Cable 60W Fast Charging [2 Pack 6FT], USB A to USB C Cable for",
+    "price": "$15.49",
+    "rating": "4.5",
+    "reviews": "(1K)",
+    "sponsored": true
+   }
+  ],
+  "5.25v usb c power supply": [
+   {
+    "asin": "B0919CQKQ8",
+    "title": "Argon 18W 5.25V 3.5A USB-C Power Supply with Switch for Raspberry Pi 4 - UL Listed",
+    "price": "$12.99",
+    "rating": "4.8",
+    "reviews": "(222)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0C8SSR2JV",
+    "title": "TobenONE 100W USB C Laptop Charger, Universal GaN III Power Supply Adapter",
+    "price": "$30.99",
+    "rating": "4.2",
+    "reviews": "(303)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0CLV6WB4L",
+    "title": "RasTech for Raspberry Pi 5 GaN PD 27W Power Supply 5.1V 5A USB-C Pi 5 Power Adapter for Raspberry Pi 5 16GB/8GB/4GB/2GB",
+    "price": "$12.34",
+    "rating": "4.6",
+    "reviews": "(409)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07MC7B9X3",
+    "title": "Argon 5.25V 3A Power Supply for Raspberry Pi 3 & Zero - Micro USB, UL",
+    "price": "$12.99",
+    "rating": "4.7",
+    "reviews": "(711)",
+    "sponsored": false
+   },
+   {
+    "asin": "B097P2NLVH",
+    "title": "5V 4A USB-C Power Supply for Raspberry Pi 4, 20W Charger with ON/Off Switch, 5ft Cable, UL Listed - Compatible with Pi 4 Model B (8GB/4GB/2GB/1GB) & Orange Pi 5/5B",
+    "price": "$9.99",
+    "rating": "4.6",
+    "reviews": "(552)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07TYQRXTK",
+    "title": "CanaKit 3.5A Raspberry Pi 4 Power Supply (USB-C)",
+    "price": "$9.99",
+    "rating": "4.8",
+    "reviews": "(3.8K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0919CQKQ8",
+    "title": "Argon 18W 5.25V 3.5A USB-C Power Supply with Switch for Raspberry Pi 4 - UL Listed",
+    "price": "$12.99",
+    "rating": "4.8",
+    "reviews": "(222)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0FHH9K47T",
+    "title": "27W GaN USB-C PD Power Supply for Raspberry Pi 5",
+    "price": "$9.99",
+    "rating": "4.7",
+    "reviews": "(312)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07H125ZRL",
+    "title": "CanaKit 45W USB-C Power Supply with PD for Raspberry Pi 5 (27W @ 5A)",
+    "price": "$15.77",
+    "rating": "4.7",
+    "reviews": "(533)",
+    "sponsored": false
+   },
+   {
+    "asin": "B09JW4QQJ2",
+    "title": "5V 3A Power Supply USB C Charger for Raspberry Pi 4 Model B, 15W 5FT",
+    "price": "$9.99",
+    "rating": "4.6",
+    "reviews": "(523)",
+    "sponsored": false
+   },
+   {
+    "asin": "B09JW2H7KK",
+    "title": "2-Pack 5V 3A USB-C Power Adapter, Type-C 5V 3000mA Power Supply for Battery Camera, TV Box, Router, Speaker, Mobile Devices – UL Listed, FCC Certified",
+    "price": "$18.99",
+    "rating": "4.6",
+    "reviews": "(523)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FGN6Q8BC",
+    "title": "Geekworm PD 27W 5.1V 5A USB-C Power Supply for Raspberry Pi 5 2/4/8/16GB",
+    "price": "$12.99",
+    "rating": "4.6",
+    "reviews": "(88)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CT2HH7FJ",
+    "title": "27W 5.1V/5A USB-C Power Supply with PD for Raspberry Pi 5（UL Listed）",
+    "price": "$12.99",
+    "rating": "4.4",
+    "reviews": "(160)",
+    "sponsored": false
+   },
+   {
+    "asin": "B086S9PHFP",
+    "title": "HQRP USB-C AC Adapter Compact Portable Fast Charger PD/QC 3.0 Type-C USB Power Supply Cord Black Cable (15W 27W 45W 65W 5V 9V 12V 15V 20V 3A 3.25A) Plus HQRP Euro Plug Adapter",
+    "price": "$17.95",
+    "rating": "4.3",
+    "reviews": "(92)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BXL1N9S2",
+    "title": "5V 2.4A Type-C USB-C AC Adapter Charger Power Supply Compatible with Phone 5-Volt 2000mA",
+    "price": "$12.99",
+    "rating": "5.0",
+    "reviews": "(2)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BF5F5JSC",
+    "title": "Orange Pi 5 5V4A Type-C Power Supply Adapter - Multiple Circuit Protection USB C Charger Transformer Compatible with Orange Pi 5, 5 Pro, CM5, 5B/5 Plus, Pi 800, 4 LTS",
+    "price": "$17.99",
+    "rating": "4.7",
+    "reviews": "(21)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0D9XLBSTF",
+    "title": "45W USB-C AC/DC Adapter Compatible with Raspberry Pi 5 Interface Pi 5 45.0W Type C Power Supply Cord Battery Charger",
+    "price": "$25.99",
+    "rating": null,
+    "reviews": null,
+    "sponsored": false
+   },
+   {
+    "asin": "B0837N9LVF",
+    "title": "96W USB C Charger for MacBook Pro 16, 15, 14, 13 inch 2025 2024, 2023, 2022, 2021, M4 M3 M2 M1 MacBook Air, USBC Laptop Power Adapter, iPad, LED, 6.6ft 5A Cable Charging as Fast as Original Quality",
+    "price": "$25.19",
+    "rating": "4.4",
+    "reviews": "(3.3K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CT5F7WCD",
+    "title": "iPhone 18/17/17E/16/16E/15 USB A to USB C Woven Cable for iPhone Duo, 18 17 16 15 Pro Max,15 Plus, iPad 10th Gen,iPad Pro 12.9/11,iPad Air 5th/4th Gen,Mini 6th Charger Cord,Car CarPlay Charging Cable",
+    "price": "$8.99",
+    "rating": "4.2",
+    "reviews": "(2.1K)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0GYRCJ2NJ",
+    "title": "[2-Pack]Portable Charger USB C for iPhone 18/17/16/15 Series,Black&White",
+    "price": "$25.99",
+    "rating": "4.4",
+    "reviews": "(2.6K)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0DPRT6H1N",
+    "title": "Replacement for Dell 130W Laptop Charger USB C Type C Slim AC Power Adapter for Dell Xps 17,Precision 5550 5530 2in1,XPS 15 2in1 9575，Latitude 7410 7310 7210 9410 9510 5420 5520 5510",
+    "price": "$23.99",
+    "rating": "4.0",
+    "reviews": "(117)",
+    "sponsored": true
+   }
+  ],
+  "5.2v 5a usb c power supply": [
+   {
+    "asin": "B0CLV6WB4L",
+    "title": "RasTech for Raspberry Pi 5 GaN PD 27W Power Supply 5.1V 5A USB-C Pi 5 Power Adapter for Raspberry Pi 5 16GB/8GB/4GB/2GB",
+    "price": "$12.34",
+    "rating": "4.6",
+    "reviews": "(409)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0D3MFLNC1",
+    "title": "Raspberry Pi 27W USB-C Power Supply (White)",
+    "price": "$23.91",
+    "rating": "4.9",
+    "reviews": "(109)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07H125ZRL",
+    "title": "CanaKit 45W USB-C Power Supply with PD for Raspberry Pi 5 (27W @ 5A)",
+    "price": "$15.77",
+    "rating": "4.7",
+    "reviews": "(533)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FHH9K47T",
+    "title": "27W GaN USB-C PD Power Supply for Raspberry Pi 5",
+    "price": "$9.99",
+    "rating": "4.7",
+    "reviews": "(312)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BVVR2DP7",
+    "title": "Universal 5V 2A Type C Charger - USB C Charging Cable for Beats Flex Headphones, JBL Wireless Bluetooth Earbuds and Other Type-C Supported Device Power Supply Adapter",
+    "price": "$9.98",
+    "rating": "4.4",
+    "reviews": "(205)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FGN6Q8BC",
+    "title": "Geekworm PD 27W 5.1V 5A USB-C Power Supply for Raspberry Pi 5 2/4/8/16GB",
+    "price": "$12.99",
+    "rating": "4.6",
+    "reviews": "(88)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CT2HH7FJ",
+    "title": "27W 5.1V/5A USB-C Power Supply with PD for Raspberry Pi 5（UL Listed）",
+    "price": "$12.99",
+    "rating": "4.4",
+    "reviews": "(160)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BLZ928WS",
+    "title": "27W Power Supply for Raspberry Pi 5 16GB/8GB/4GB/2GB 5.1V 5A GaN USB-C Power Adapter",
+    "price": "$11.72",
+    "rating": "4.6",
+    "reviews": "(43)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FX3TG2SV",
+    "title": "27W 5.1V 5A GaN PD USB-C Power Supply for Raspberry Pi 5",
+    "price": "$10.99",
+    "rating": "4.8",
+    "reviews": "(37)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F3CHM1R1",
+    "title": "27W Power Supply Adapter for Raspberry Pi 5, USB-C 5.1V/5A PD Power Supply for Rasp Pi 5, GaN PD Power Supply Unit",
+    "price": "$11.99",
+    "rating": "4.1",
+    "reviews": "(20)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F47BMXFS",
+    "title": "Argon 27W PWR GaN USB-C Power Supply for Raspberry Pi 5-5V 5A PD, 1.5M Cable",
+    "price": "$14.99",
+    "rating": "4.7",
+    "reviews": "(50)",
+    "sponsored": false
+   },
+   {
+    "asin": "B09JW2H7KK",
+    "title": "2-Pack 5V 3A USB-C Power Adapter, Type-C 5V 3000mA Power Supply for Battery Camera, TV Box, Router, Speaker, Mobile Devices – UL Listed, FCC Certified",
+    "price": "$18.99",
+    "rating": "4.6",
+    "reviews": "(523)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CQ2DL2RW",
+    "title": "GeeekPi 27W Power Supply for Raspberry Pi 5, PD Adapter USB C Power Adapter for Raspberry Pi 5 16GB/8GB/4GB/2GB",
+    "price": "$12.99",
+    "rating": "4.4",
+    "reviews": "(402)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F6C6L7G5",
+    "title": "RasTech 27W Power Supply with Switch for Raspberry Pi 5 Power Adapter GaN PD 5.1V5A USB-C Compatible with Raspberry Pi 5 16GB/8GB/4GB/2GB (On/Off Switch)",
+    "price": "$12.15",
+    "rating": "4.4",
+    "reviews": "(50)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BF5F5JSC",
+    "title": "Orange Pi 5 5V4A Type-C Power Supply Adapter - Multiple Circuit Protection USB C Charger Transformer Compatible with Orange Pi 5, 5 Pro, CM5, 5B/5 Plus, Pi 800, 4 LTS",
+    "price": "$17.99",
+    "rating": "4.7",
+    "reviews": "(21)",
+    "sponsored": false
+   },
+   {
+    "asin": "B086S9PHFP",
+    "title": "HQRP USB-C AC Adapter Compact Portable Fast Charger PD/QC 3.0 Type-C USB Power Supply Cord Black Cable (15W 27W 45W 65W 5V 9V 12V 15V 20V 3A 3.25A) Plus HQRP Euro Plug Adapter",
+    "price": "$17.95",
+    "rating": "4.3",
+    "reviews": "(92)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0G28Q8XMW",
+    "title": "2 Pack USB C Charger Block with 4 USB Cables 120W GaN Type C Fast",
+    "price": "$29.99",
+    "rating": "3.9",
+    "reviews": "(343)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0GYRCJ2NJ",
+    "title": "[2-Pack]Portable Charger USB C for iPhone 18/17/16/15 Series,Black&White",
+    "price": "$25.99",
+    "rating": "4.4",
+    "reviews": "(2.6K)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0CT5F7WCD",
+    "title": "iPhone 18/17/17E/16/16E/15 USB A to USB C Woven Cable for iPhone Duo, 18 17 16 15 Pro Max,15 Plus, iPad 10th Gen,iPad Pro 12.9/11,iPad Air 5th/4th Gen,Mini 6th Charger Cord,Car CarPlay Charging Cable",
+    "price": "$8.99",
+    "rating": "4.2",
+    "reviews": "(2.1K)",
+    "sponsored": true
+   }
+  ],
+  "raspberry pi 5 power supply detachable cable": [
+   {
+    "asin": "B0FX3TG2SV",
+    "title": "27W 5.1V 5A GaN PD USB-C Power Supply for Raspberry Pi 5",
+    "price": "$10.99",
+    "rating": "4.8",
+    "reviews": "(37)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0F47BMXFS",
+    "title": "Argon 27W PWR GaN USB-C Power Supply for Raspberry Pi 5-5V 5A PD, 1.5M Cable",
+    "price": "$14.99",
+    "rating": "4.7",
+    "reviews": "(50)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0CLV6WB4L",
+    "title": "RasTech for Raspberry Pi 5 GaN PD 27W Power Supply 5.1V 5A USB-C Pi 5 Power Adapter for Raspberry Pi 5 16GB/8GB/4GB/2GB",
+    "price": "$12.34",
+    "rating": "4.6",
+    "reviews": "(409)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07H125ZRL",
+    "title": "CanaKit 45W USB-C Power Supply with PD for Raspberry Pi 5 (27W @ 5A)",
+    "price": "$15.77",
+    "rating": "4.7",
+    "reviews": "(533)",
+    "sponsored": false
+   },
+   {
+    "asin": "B00MARDJZ4",
+    "title": "CanaKit 5V 2.5A Raspberry Pi 3 B+ Power Supply/Adapter (UL Listed)",
+    "price": "$9.99",
+    "rating": "4.7",
+    "reviews": "(4.9K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FHH9K47T",
+    "title": "27W GaN USB-C PD Power Supply for Raspberry Pi 5",
+    "price": "$9.99",
+    "rating": "4.7",
+    "reviews": "(312)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CTBXL2CQ",
+    "title": "Raspberry Pi 5 27W USB C Power Supply with ON/Off Switch (Black)",
+    "price": "$11.99",
+    "rating": "3.6",
+    "reviews": "(44)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0D3MFLNC1",
+    "title": "Raspberry Pi 27W USB-C Power Supply (White)",
+    "price": "$23.91",
+    "rating": "4.9",
+    "reviews": "(109)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07W8XHMJZ",
+    "title": "Raspberry Pi 15W USB-C Power Supply US - Black",
+    "price": "$16.45",
+    "rating": "4.8",
+    "reviews": "(1.5K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FPDC4T7F",
+    "title": "5V 2.5A Micro USB Power Supply Adapter Replacement for Raspberry Pi 3 B+",
+    "price": "$9.36",
+    "rating": "4.1",
+    "reviews": "(36)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FJLDFMF7",
+    "title": "27W GaN USB-C PD Power Supply for Raspberry Pi 5",
+    "price": "$12.19",
+    "rating": "4.5",
+    "reviews": "(81)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07X8C6PV6",
+    "title": "GeeekPi 18W 5V 3.6A Power Supply for Raspberry Pi 4/Orange Pi 5&5B, Type C with ON/Off Switch and Micro USB Adapter",
+    "price": "$10.99",
+    "rating": "4.6",
+    "reviews": "(566)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0F47BMXFS",
+    "title": "Argon 27W PWR GaN USB-C Power Supply for Raspberry Pi 5-5V 5A PD, 1.5M Cable",
+    "price": "$14.99",
+    "rating": "4.7",
+    "reviews": "(50)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CRSGW2HV",
+    "title": "CanaKit 45W USB-C Power Supply with PD for Raspberry Pi 5 with PiSwitch (On/Off Switch)",
+    "price": "$19.99",
+    "rating": "4.7",
+    "reviews": "(138)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F6C6L7G5",
+    "title": "RasTech 27W Power Supply with Switch for Raspberry Pi 5 Power Adapter GaN PD 5.1V5A USB-C Compatible with Raspberry Pi 5 16GB/8GB/4GB/2GB (On/Off Switch)",
+    "price": "$12.15",
+    "rating": "4.4",
+    "reviews": "(50)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07MC7B9X3",
+    "title": "Argon 5.25V 3A Power Supply for Raspberry Pi 3 & Zero - Micro USB, UL",
+    "price": "$12.99",
+    "rating": "4.7",
+    "reviews": "(711)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0DP7BRJ67",
+    "title": "IJP 27W Power Supply Adapter for Raspberry Pi 5, Orange Pi 5, 5 Pro, 5 Plus, 5 Max, CM5, Type C Power Supply Cord, 5.1V 5A Charger, USB C Power Supply Cable 3.3FT (Black)",
+    "price": "$13.99",
+    "rating": "3.5",
+    "reviews": "(13)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0CQ2DL2RW",
+    "title": "GeeekPi 27W Power Supply for Raspberry Pi 5, PD Adapter USB C Power Adapter for Raspberry Pi 5 16GB/8GB/4GB/2GB",
+    "price": "$12.99",
+    "rating": "4.4",
+    "reviews": "(402)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FGN6Q8BC",
+    "title": "Geekworm PD 27W 5.1V 5A USB-C Power Supply for Raspberry Pi 5 2/4/8/16GB",
+    "price": "$12.99",
+    "rating": "4.6",
+    "reviews": "(88)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0DP7BRJ67",
+    "title": "IJP 27W Power Supply Adapter for Raspberry Pi 5, Orange Pi 5, 5 Pro, 5 Plus, 5 Max, CM5, Type C Power Supply Cord, 5.1V 5A Charger, USB C Power Supply Cable 3.3FT (Black)",
+    "price": "$13.99",
+    "rating": "3.5",
+    "reviews": "(13)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0DGTDC9M7",
+    "title": "SunFounder 27W PD Power Supply for Raspberry Pi 5, 5.1V 5A GaN 1.2m 3.6ft USB-C Changer Adapter for Raspberry Pi 5 8G/4G/2G/Raspberry Pi 4/Pironman 5 (ETL Listed)",
+    "price": "$12.99",
+    "rating": "4.7",
+    "reviews": "(60)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0DK4L9W6B",
+    "title": "Raspberry Pi 5 Essentials Starter Kit PRO (128GB Edition) (8GB RAM) Micro SD Card Pre-Loaded 64-bit OS, Type-C Power Supply, Active Cooling Case for Edge AI, Docker & Pro Workstation",
+    "price": "$249.99",
+    "rating": "4.7",
+    "reviews": "(67)",
+    "sponsored": true
+   }
+  ],
+  "usb c charger 5v 5a pd port raspberry pi 5": [
+   {
+    "asin": "B0D3FZ5VQM",
+    "title": "Power Supply Compatible with Raspberry Pi 5, 5.1V 5A 27W PD Power Supply USB-C Power Supply Compatible with Raspberry Pi Compatible with Raspberry Pi 5(ETL Listed), black, KM10F120INPT-306",
+    "price": "$12.99",
+    "rating": "4.2",
+    "reviews": "(13)",
+    "sponsored": true
+   },
+   {
+    "asin": "B07X8C6PV6",
+    "title": "GeeekPi 18W 5V 3.6A Power Supply for Raspberry Pi 4/Orange Pi 5&5B, Type C with ON/Off Switch and Micro USB Adapter",
+    "price": "$10.99",
+    "rating": "4.6",
+    "reviews": "(566)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0CLV6WB4L",
+    "title": "RasTech for Raspberry Pi 5 GaN PD 27W Power Supply 5.1V 5A USB-C Pi 5 Power Adapter for Raspberry Pi 5 16GB/8GB/4GB/2GB",
+    "price": "$12.34",
+    "rating": "4.6",
+    "reviews": "(409)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07H125ZRL",
+    "title": "CanaKit 45W USB-C Power Supply with PD for Raspberry Pi 5 (27W @ 5A)",
+    "price": "$15.77",
+    "rating": "4.7",
+    "reviews": "(533)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FHH9K47T",
+    "title": "27W GaN USB-C PD Power Supply for Raspberry Pi 5",
+    "price": "$9.99",
+    "rating": "4.7",
+    "reviews": "(312)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FX3TG2SV",
+    "title": "27W 5.1V 5A GaN PD USB-C Power Supply for Raspberry Pi 5",
+    "price": "$10.99",
+    "rating": "4.8",
+    "reviews": "(37)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F3CHM1R1",
+    "title": "27W Power Supply Adapter for Raspberry Pi 5, USB-C 5.1V/5A PD Power Supply for Rasp Pi 5, GaN PD Power Supply Unit",
+    "price": "$11.99",
+    "rating": "4.1",
+    "reviews": "(20)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FJLDFMF7",
+    "title": "27W GaN USB-C PD Power Supply for Raspberry Pi 5",
+    "price": "$12.19",
+    "rating": "4.5",
+    "reviews": "(81)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F6C6L7G5",
+    "title": "RasTech 27W Power Supply with Switch for Raspberry Pi 5 Power Adapter GaN PD 5.1V5A USB-C Compatible with Raspberry Pi 5 16GB/8GB/4GB/2GB (On/Off Switch)",
+    "price": "$12.15",
+    "rating": "4.4",
+    "reviews": "(50)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FGN6Q8BC",
+    "title": "Geekworm PD 27W 5.1V 5A USB-C Power Supply for Raspberry Pi 5 2/4/8/16GB",
+    "price": "$12.99",
+    "rating": "4.6",
+    "reviews": "(88)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F47BMXFS",
+    "title": "Argon 27W PWR GaN USB-C Power Supply for Raspberry Pi 5-5V 5A PD, 1.5M Cable",
+    "price": "$14.99",
+    "rating": "4.7",
+    "reviews": "(50)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CVJ7S3NF",
+    "title": "Vilros 27W -5V/5A USB-C Power Supply Compatible with Raspberry Pi 5 & Apple Devices with USB-C Charging Port (Black)",
+    "price": "$18.99",
+    "rating": "4.6",
+    "reviews": "(155)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CQ2DL2RW",
+    "title": "GeeekPi 27W Power Supply for Raspberry Pi 5, PD Adapter USB C Power Adapter for Raspberry Pi 5 16GB/8GB/4GB/2GB",
+    "price": "$12.99",
+    "rating": "4.4",
+    "reviews": "(402)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F4MFH5BB",
+    "title": "Power Supply for Raspberry Pi 5, PD Adapter USB C 5V 5A Power Adapter",
+    "price": "$11.99",
+    "rating": "4.5",
+    "reviews": "(26)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CT2HH7FJ",
+    "title": "27W 5.1V/5A USB-C Power Supply with PD for Raspberry Pi 5（UL Listed）",
+    "price": "$12.99",
+    "rating": "4.4",
+    "reviews": "(160)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CRSGW2HV",
+    "title": "CanaKit 45W USB-C Power Supply with PD for Raspberry Pi 5 with PiSwitch (On/Off Switch)",
+    "price": "$19.99",
+    "rating": "4.7",
+    "reviews": "(138)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0DGTDC9M7",
+    "title": "SunFounder 27W PD Power Supply for Raspberry Pi 5, 5.1V 5A GaN 1.2m 3.6ft USB-C Changer Adapter for Raspberry Pi 5 8G/4G/2G/Raspberry Pi 4/Pironman 5 (ETL Listed)",
+    "price": "$12.99",
+    "rating": "4.7",
+    "reviews": "(60)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H4G6BZH9",
+    "title": "27W PD USB-C Power Supply Compatible with Raspberry Pi 5, 5.1V 5A 27W GaN PD Power Supply Compatible with Raspberry Pi 5 16GB/8GB/4GB/2GB (ETL Listed)",
+    "price": "$8.89",
+    "rating": null,
+    "reviews": null,
+    "sponsored": false
+   },
+   {
+    "asin": "B0FF9TXPRB",
+    "title": "1000W USB C Charging Station, 120W PD GaN5 Super Fast USB C Charger Block",
+    "price": "$39.99",
+    "rating": "4.4",
+    "reviews": "(671)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0GYRCJ2NJ",
+    "title": "[2-Pack]Portable Charger USB C for iPhone 18/17/16/15 Series,Black&White",
+    "price": "$25.99",
+    "rating": "4.4",
+    "reviews": "(2.6K)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0CLVSGC3B",
+    "title": "mophie GaN 60W Charger - USB-C Charger with USB-A Port, Fast Charging for Phones, Tablets, Laptops - Compact, Foldable Prongs, Eco-Friendly Materials, Black",
+    "price": "$36.99",
+    "rating": "4.2",
+    "reviews": "(24)",
+    "sponsored": true
+   }
+  ],
+  "5v 4a power supply 10ft cord": [
+   {
+    "asin": "B0DGF89PGG",
+    "title": "5V 1A 10ft Long Power Supply Adapter AC 100V-240V to DC 5 Volt 1Amp 0.5A Replacement Power Cord for Security Camera Baby Monitor USB Type C with 8TIPS (10ft Extension Power Cable)",
+    "price": "$7.99",
+    "rating": "4.5",
+    "reviews": "(91)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F23XPCJ6",
+    "title": "5V 4A Power Supply Adapter 20W 4.9T AC/DC Charger 5Volt 4Amp 3A 2A",
+    "price": "$12.34",
+    "rating": "4.0",
+    "reviews": "(62)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0D4R1TS4L",
+    "title": "5V 1A Power Supply Adapter 5W AC/DC Wall Power adaper,10ft Extension Power Cord Replacement with 5.5x2.5mm/2.1mm Plug, 5 Volt 1Amp Power Adapter Transformer Cable [10ft]",
+    "price": "$9.41",
+    "rating": "4.4",
+    "reviews": "(83)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0D65GZTR9",
+    "title": "5V 2A Power Supply Adapter 10W AC/DC Wall Charger Extension Power Cord Replacement with 5.5x2.5mm/2.1mm Plug, 5 Volt 2Amp Power Adapter Transformer Cable [10ft]",
+    "price": "$9.11",
+    "rating": "4.6",
+    "reviews": "(39)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H1KJHCG9",
+    "title": "5V 2A Power Supply Adapter 100-240V AC to DC 5V Power Adapter Cord 10ft",
+    "price": "$9.69",
+    "rating": "5.0",
+    "reviews": "(2)",
+    "sponsored": false
+   },
+   {
+    "asin": "B087LY41PV",
+    "title": "Facmogu 5V 4A AC to DC Power Supply Adapter, AC 100-240V to DC 5 Volt 4 Amp",
+    "price": "$12.34",
+    "rating": "4.3",
+    "reviews": "(299)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CPDG7JPV",
+    "title": "5V 4A Power Supply Adapter AC100-240 to DC 5Volt 4000mA 5.5mmx 2.5mm Plug 5V 4A AC/DC Power Supply Transformer",
+    "price": "$8.99",
+    "rating": "3.8",
+    "reviews": "(9)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F23XPCJ6",
+    "title": "5V 4A Power Supply Adapter 20W 4.9T AC/DC Charger 5Volt 4Amp 3A 2A",
+    "price": "$12.34",
+    "rating": "4.0",
+    "reviews": "(62)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0DMV8RCLZ",
+    "title": "5V 2A Power Adapter DC 5V Power Supply with 8 DC Plug Tips AC 100V-240V to 5 Volt 2Amp 1Amp 0.5A AC/DC Adapter Replacement 10ft DC5V Power Cord for TV Box Monitor Scanner",
+    "price": "$8.99",
+    "rating": "4.4",
+    "reviews": "(7)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CXSNF6CP",
+    "title": "DC 5V 4A Power Supply Adapter AC 100-240V to DC 5Volt 4000mA 4.6ft Power Cord with 8 Tips and 5.5mmx 2.5mm/2.1mm Plug, 5V 4A Power Supply Transformer",
+    "price": "$11.99",
+    "rating": "4.8",
+    "reviews": "(18)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0DZX332P7",
+    "title": "DC 5V 2A 10W USB Wall Charger with 10ft/3M USB C Cable, AC Adapter for Type-C Enabled Home Security Cameras, Power Charging & Power Supply for More USB-C Devices-White",
+    "price": "$9.99",
+    "rating": "4.8",
+    "reviews": "(91)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0HGY2MYY1",
+    "title": "5V 4A Adapter for Kensington K33970 M01166 SD3000v K33970US K33970EU K33972 M01167 SD3500v K33972US USB 3.0 SuperSpeed Dock Docking Station 5VDC 4.0A AC/DC Power Supply Charger",
+    "price": "$9.48",
+    "rating": null,
+    "reviews": null,
+    "sponsored": false
+   },
+   {
+    "asin": "B0B5QSCXNF",
+    "title": "AC/DC Adapter Replacement for Liteon 5V 4A PA-1200-3SA4 341-0536-01 Fits Cisco Router Wireles 819 C819 C819G-4G-V-K9 Cisco819-4G Power Supply Cord Cable PS Wall Home Battery Charger Mains",
+    "price": "$20.49",
+    "rating": null,
+    "reviews": null,
+    "sponsored": false
+   },
+   {
+    "asin": "B0H1KMP2MC",
+    "title": "DC 5V 1A Power Supply Adapter 5W AC/DC Charger, 10ft Replacement Power Cord",
+    "price": "$8.75",
+    "rating": "5.0",
+    "reviews": "(2)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0D65QF5T1",
+    "title": "DC 5V 4A Power Adapter with 10 Interchangeable DC Plug, AC 100-240V to DC 5 Volt 4 Amp 20W Power Supply 5V 4000mA Switching Transformer AC to DC Converter",
+    "price": "$5.39",
+    "rating": null,
+    "reviews": null,
+    "sponsored": false
+   },
+   {
+    "asin": "B0FH2ZPC1Q",
+    "title": "5V 2A Power Supply Adapter DC 5V Power Cord 9.8FT AC 100-240V to DC 5 Volt 2 Amp 1.5A 1A 0.5A Universal Converter AC Adapter with 5.5×2.5mm Pulg & 14 Tips for Routers, LED Strips, Baby Monitors & More",
+    "price": "$6.99",
+    "rating": "3.9",
+    "reviews": "(18)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F1N4VRKH",
+    "title": "PS5 Power Cord,AC Power Cord 10FT Compatible with Sony PS5/PS4/PS4 Slim/PS3 Slim, Xbox Series S/Series X, Xbox One S/X, PlayStation 5 PlayStation 4, Universal 2 Prong Cable Replacement",
+    "price": "$9.99",
+    "rating": "4.8",
+    "reviews": "(167)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0DYNW3KMZ",
+    "title": "Facmogu DC 5V 2A Power Supply Adapter, Wall Plug Power Converter (6 Pack)",
+    "price": "$25.99",
+    "rating": "4.4",
+    "reviews": "(701)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0BWY79DYQ",
+    "title": "Power Strip with USB, HUNIAN Flat Plug Extension Cord, 5Ft, White",
+    "price": "$22.99",
+    "rating": "4.7",
+    "reviews": "(2.1K)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0B16YFTQ4",
+    "title": "10FT Long Surge Protector Power Strip-with 5 Widely Outlets and 3 USB Ports(1 USB C Port),10 Foot Extension Cord(1250W/10A),Wall Mount for Home Office,700 J,Black(2 Pack)",
+    "price": "$39.99",
+    "rating": "4.7",
+    "reviews": "(3.7K)",
+    "sponsored": true
+   }
+  ],
+  "raspberry pi 5 power supply 2m cable": [
+   {
+    "asin": "B0CLV6WB4L",
+    "title": "RasTech for Raspberry Pi 5 GaN PD 27W Power Supply 5.1V 5A USB-C Pi 5 Power Adapter for Raspberry Pi 5 16GB/8GB/4GB/2GB",
+    "price": "$12.34",
+    "rating": "4.6",
+    "reviews": "(409)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F47BMXFS",
+    "title": "Argon 27W PWR GaN USB-C Power Supply for Raspberry Pi 5-5V 5A PD, 1.5M Cable",
+    "price": "$14.99",
+    "rating": "4.7",
+    "reviews": "(50)",
+    "sponsored": true
+   },
+   {
+    "asin": "B00MARDJZ4",
+    "title": "CanaKit 5V 2.5A Raspberry Pi 3 B+ Power Supply/Adapter (UL Listed)",
+    "price": "$9.99",
+    "rating": "4.7",
+    "reviews": "(4.9K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07TYQRXTK",
+    "title": "CanaKit 3.5A Raspberry Pi 4 Power Supply (USB-C)",
+    "price": "$9.99",
+    "rating": "4.8",
+    "reviews": "(3.8K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FPDC4T7F",
+    "title": "5V 2.5A Micro USB Power Supply Adapter Replacement for Raspberry Pi 3 B+",
+    "price": "$9.36",
+    "rating": "4.1",
+    "reviews": "(36)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0B79FVPQ4",
+    "title": "[5V 3A UL Listed] iUniker Power Supply for Raspberry Pi 3, MicroUSB Power Adapter with on/Off Switch Compatible with Raspberry Pi 3/ 3b+/ Zero/Zero 2w",
+    "price": "$8.99",
+    "rating": "4.6",
+    "reviews": "(549)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0DR5SCQLL",
+    "title": "5V 2.5A 3 A Raspberry Pi Power Supply Adapter for Raspberry Pi 3 B+, Pi 2 B, Pi Zero, Pi Model A A+, Model B B+ DC Power Cord Charger",
+    "price": "$9.98",
+    "rating": "4.4",
+    "reviews": "(52)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07H125ZRL",
+    "title": "CanaKit 45W USB-C Power Supply with PD for Raspberry Pi 5 (27W @ 5A)",
+    "price": "$15.77",
+    "rating": "4.7",
+    "reviews": "(533)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0C13T4S8T",
+    "title": "4 Pack 5V 3A Power Supply UL-Listed with Switch 2.5A 2A 1.5A 1A Fast Charge AC Adapter w/ 1.5m Extra Long On Off Power Switch Micro USB Cable for Raspberry Pi 3 Model B/B+ Plus",
+    "price": "$33.49",
+    "rating": "5.0",
+    "reviews": "(8)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FHH9K47T",
+    "title": "27W GaN USB-C PD Power Supply for Raspberry Pi 5",
+    "price": "$9.99",
+    "rating": "4.7",
+    "reviews": "(312)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FJLDFMF7",
+    "title": "27W GaN USB-C PD Power Supply for Raspberry Pi 5",
+    "price": "$12.19",
+    "rating": "4.5",
+    "reviews": "(81)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0C14224HM",
+    "title": "UL-Listed Power Supply 5V3A with Switch 2.5A 2A 1.5A 1A Fast Charge AC Adapter w/ 1.5m Extra Long On Off Power Switch Micro USB Cable for Raspberry Pi 3 Model B/B+",
+    "price": "$11.99",
+    "rating": "4.7",
+    "reviews": "(39)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BLZ928WS",
+    "title": "27W Power Supply for Raspberry Pi 5 16GB/8GB/4GB/2GB 5.1V 5A GaN USB-C Power Adapter",
+    "price": "$11.72",
+    "rating": "4.6",
+    "reviews": "(43)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FGN6Q8BC",
+    "title": "Geekworm PD 27W 5.1V 5A USB-C Power Supply for Raspberry Pi 5 2/4/8/16GB",
+    "price": "$12.99",
+    "rating": "4.6",
+    "reviews": "(88)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CT2HH7FJ",
+    "title": "27W 5.1V/5A USB-C Power Supply with PD for Raspberry Pi 5（UL Listed）",
+    "price": "$12.99",
+    "rating": "4.4",
+    "reviews": "(160)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0DGTDC9M7",
+    "title": "SunFounder 27W PD Power Supply for Raspberry Pi 5, 5.1V 5A GaN 1.2m 3.6ft USB-C Changer Adapter for Raspberry Pi 5 8G/4G/2G/Raspberry Pi 4/Pironman 5 (ETL Listed)",
+    "price": "$12.99",
+    "rating": "4.7",
+    "reviews": "(60)",
+    "sponsored": false
+   },
+   {
+    "asin": "B08523QCT6",
+    "title": "5V 3A USB Type C Adapter for Raspberry Pi 4 Model B Power Supply Cord with ON/Off Switch",
+    "price": "$9.99",
+    "rating": "4.5",
+    "reviews": "(170)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H6W88X1P",
+    "title": "Retractable 3 Prong AC PC Power Cord with 39.37in Universal Cable",
+    "price": "$29.99",
+    "rating": null,
+    "reviews": null,
+    "sponsored": true
+   },
+   {
+    "asin": "B0CTBXL2CQ",
+    "title": "Raspberry Pi 5 27W USB C Power Supply with ON/Off Switch (Black)",
+    "price": "$11.99",
+    "rating": "3.6",
+    "reviews": "(44)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0D3KXKGBC",
+    "title": "GeeekPi M.2 NVMe SSD Plus 2.5G Ethernet Adapter for Raspberry Pi 5, W01 U2500 Hat with NVMe SSD Expansion, USB 2.5G Network Port, GPIO Header, Support M.2 NVMe M-Key 2230/2242/2260/2280 SSD",
+    "price": "$29.99",
+    "rating": "4.0",
+    "reviews": "(14)",
+    "sponsored": true
+   }
+  ],
+  "raspberry pi 5 power supply 3m": [
+   {
+    "asin": "B00MARDJZ4",
+    "title": "CanaKit 5V 2.5A Raspberry Pi 3 B+ Power Supply/Adapter (UL Listed)",
+    "price": "$9.99",
+    "rating": "4.7",
+    "reviews": "(4.9K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FX3TG2SV",
+    "title": "27W 5.1V 5A GaN PD USB-C Power Supply for Raspberry Pi 5",
+    "price": "$10.99",
+    "rating": "4.8",
+    "reviews": "(37)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0B79FVPQ4",
+    "title": "[5V 3A UL Listed] iUniker Power Supply for Raspberry Pi 3, MicroUSB Power Adapter with on/Off Switch Compatible with Raspberry Pi 3/ 3b+/ Zero/Zero 2w",
+    "price": "$8.99",
+    "rating": "4.6",
+    "reviews": "(549)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CLV6WB4L",
+    "title": "RasTech for Raspberry Pi 5 GaN PD 27W Power Supply 5.1V 5A USB-C Pi 5 Power Adapter for Raspberry Pi 5 16GB/8GB/4GB/2GB",
+    "price": "$12.34",
+    "rating": "4.6",
+    "reviews": "(409)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07MC7B9X3",
+    "title": "Argon 5.25V 3A Power Supply for Raspberry Pi 3 & Zero - Micro USB, UL",
+    "price": "$12.99",
+    "rating": "4.7",
+    "reviews": "(711)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07TYQRXTK",
+    "title": "CanaKit 3.5A Raspberry Pi 4 Power Supply (USB-C)",
+    "price": "$9.99",
+    "rating": "4.8",
+    "reviews": "(3.8K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CTBXL2CQ",
+    "title": "Raspberry Pi 5 27W USB C Power Supply with ON/Off Switch (Black)",
+    "price": "$11.99",
+    "rating": "3.6",
+    "reviews": "(44)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0C13T4S8T",
+    "title": "4 Pack 5V 3A Power Supply UL-Listed with Switch 2.5A 2A 1.5A 1A Fast Charge AC Adapter w/ 1.5m Extra Long On Off Power Switch Micro USB Cable for Raspberry Pi 3 Model B/B+ Plus",
+    "price": "$33.49",
+    "rating": "5.0",
+    "reviews": "(8)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07H125ZRL",
+    "title": "CanaKit 45W USB-C Power Supply with PD for Raspberry Pi 5 (27W @ 5A)",
+    "price": "$15.77",
+    "rating": "4.7",
+    "reviews": "(533)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FPDC4T7F",
+    "title": "5V 2.5A Micro USB Power Supply Adapter Replacement for Raspberry Pi 3 B+",
+    "price": "$9.36",
+    "rating": "4.1",
+    "reviews": "(36)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0DR5SCQLL",
+    "title": "5V 2.5A 3 A Raspberry Pi Power Supply Adapter for Raspberry Pi 3 B+, Pi 2 B, Pi Zero, Pi Model A A+, Model B B+ DC Power Cord Charger",
+    "price": "$9.98",
+    "rating": "4.4",
+    "reviews": "(52)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FFS9X1DH",
+    "title": "5V Micro USB Power Supply Replacement for Raspberry Pi 3/3b+ with Switch",
+    "price": "$9.10",
+    "rating": "4.0",
+    "reviews": "(27)",
+    "sponsored": false
+   },
+   {
+    "asin": "B07BTHNW9W",
+    "title": "Miuzei Case for Raspberry Pi 3 with Fan 5V 3A Power Supply 3Pcs HeatSinks",
+    "price": "$14.99",
+    "rating": "4.6",
+    "reviews": "(2.7K)",
+    "sponsored": false
+   },
+   {
+    "asin": "B09WYRFWMW",
+    "title": "15W 5V 3A USB-C Power Supply with ON/Off Switch for Raspberry Pi 4",
+    "price": "$8.99",
+    "rating": "4.5",
+    "reviews": "(141)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0C13R9XNS",
+    "title": "5V3A Switching Power Supply UL-Listed 4 Pack with 1.5M Type C to Type A USB Cable with On/Off Switch Compatible with Raspberry Pi 4 Model B",
+    "price": "$37.99",
+    "rating": "5.0",
+    "reviews": "(6)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FJXS9LRH",
+    "title": "MA11 25W Linear Power Supply DC 5V 3A Compatible with Raspberry Pi 5 4 3",
+    "price": "$135.00",
+    "rating": "3.8",
+    "reviews": "(4)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0D633TFMF",
+    "title": "Geekworm X1203 5V UPS Expansion Board for Raspberry Pi 5, Wide 6-18V Input",
+    "price": "$45.00",
+    "rating": "4.7",
+    "reviews": "(23)",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BBC7CXVK",
+    "title": "5V 3A Adapter for Raspberry Pi 4 Model B Power Supply Cord with ON/Off Switch",
+    "price": "$8.99",
+    "rating": null,
+    "reviews": null,
+    "sponsored": false
+   },
+   {
+    "asin": "B0DK4L9W6B",
+    "title": "Raspberry Pi 5 Essentials Starter Kit PRO (128GB Edition) (8GB RAM) Micro SD Card Pre-Loaded 64-bit OS, Type-C Power Supply, Active Cooling Case for Edge AI, Docker & Pro Workstation",
+    "price": "$249.99",
+    "rating": "4.7",
+    "reviews": "(67)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0D232HN74",
+    "title": "Vilros Raspberry Pi 5 Starter Kit MAX – Official 8GB RAM Pi 5 Board, 128GB Preloaded Micro SD, Case, Power Supply & Cooling – Complete Plug-and-Play Kit for Beginners & Advanced Users",
+    "price": "$274.99",
+    "rating": "4.5",
+    "reviews": "(203)",
+    "sponsored": true
+   },
+   {
+    "asin": "B0FD735LFG",
+    "title": "2-Pack Waterproof DC 12V/24V to 5V 5A Buck Converter, USB-C Output",
+    "price": "$15.99",
+    "rating": "4.5",
+    "reviews": "(89)",
+    "sponsored": true
+   }
+  ]
+ },
+ "amazon_product_pages": [
+  {
+   "asin": "B07TYQRXTK",
+   "url": "https://www.amazon.com/dp/B07TYQRXTK",
+   "title": "CanaKit 3.5A Raspberry Pi 4 Power Supply (USB-C)",
+   "price": "$9.99",
+   "availability": "In Stock",
+   "rating": "4.8",
+   "reviews": "(3,823)",
+   "specs": {
+    "Connector Type": "usb",
+    "Input Voltage": "5 volts",
+    "Amperage": "3.5 A",
+    "Wattage": "18 watts",
+    "Output Current": "3.5 A",
+    "Output Voltage": "5 volts",
+    "Current Rating": "3.5 A",
+    "Main Power Connector Type": "2 Pin",
+    "Current": "DC",
+    "Wired Charging Connector Type": "USB Type C",
+    "Model Number": "USB-C",
+    "Model Name": "raspberry pi",
+    "Mfr Part Number": "USB-C"
+   },
+   "power_or_length_bullets": [
+    "18 AWG Cable",
+    "5ft Cable Length"
+   ],
+   "description_excerpt": "The CanaKit 3.5A USB-C power supply (UL Listed) is specially designed and tested for the Raspberry Pi 4. This CanaKit power supply incorporates a noise filter to provide the highest power stability. It incorporates a thick 18 AWG and well insulated cable with a 5-foot cable length. Important Note Compatible with Raspberry Pi 4 only. Not compatible with Raspberry Pi 3 B, B+, A+ or Pi Zero."
+  },
+  {
+   "asin": "B0919CQKQ8",
+   "url": "https://www.amazon.com/dp/B0919CQKQ8",
+   "title": "Argon 18W 5.25V 3.5A USB-C Power Supply with Switch for Raspberry Pi 4 - UL Listed",
+   "price": "$12.99",
+   "availability": "In Stock",
+   "rating": "4.8",
+   "reviews": "(222)",
+   "specs": {
+    "Connector Type": "USB",
+    "Input Voltage": "240 volts",
+    "Current Rating": "3.5 A",
+    "Model Number": "6974297860552"
+   },
+   "power_or_length_bullets": [
+    "BUILT-IN POWER SWITCH Inline power switch allows you to easily turn the Raspberry Pi on or off without unplugging the cable.",
+    "5.25V 3.5A OUTPUT Delivers stable 18W power output to support Raspberry Pi 4 boards and connected accessories.",
+    "UNIVERSAL INPUT VOLTAGE Supports 100-240V AC input and includes a durable USB-C cable for convenient power connectivity."
+   ],
+   "description_excerpt": null
+  },
+  {
+   "asin": "B0BF5F5JSC",
+   "url": "https://www.amazon.com/dp/B0BF5F5JSC",
+   "title": "Orange Pi 5 5V4A Type-C Power Supply Adapter - Multiple Circuit Protection USB C Charger Transformer Compatible with Orange Pi 5, 5 Pro, CM5, 5B/5 Plus, Pi 800, 4 LTS",
+   "price": "$17.99",
+   "availability": "Only 12 left in stock - order soon.",
+   "rating": "4.7",
+   "reviews": "(21)",
+   "specs": {
+    "Input Voltage": "240 volts",
+    "Output Voltage": "5 volts",
+    "Model Number": "Orange Pi 5"
+   },
+   "power_or_length_bullets": [
+    "Orange Pi 5V4A Type-C Power Supply Compatible with orange pi 5, orange pi 5 pro, orange pi 5b, orange pi 5 plus, Orange Pi 800/Pi 4 LTS/Pi 4B.",
+    "Input and output over-voltage protection, short-circuit protection, over-current protection,perfect protection, safe use",
+    "Three professional certifications for safety Orange Pi 5V4A power adapter 3C/FCC/CE professional certification."
+   ],
+   "description_excerpt": "Specifications Input Voltage Range : 90Vac to 264Vac Rated Input Voltage : 100 Vac-240 Vac Input Frequency Range : 47Hz-63Hz Input Current : 0.8A max. (I/P100-240Vac) Size : L76*W44*32mm Weight : 112g Cable length : 1.2m"
+  },
+  {
+   "asin": "B0BHYN49SV",
+   "url": "https://www.amazon.com/dp/B0BHYN49SV",
+   "title": "JSAUX 45W USB C Charger for Steam Deck/OLED with 10FT Cable",
+   "price": "$25.99",
+   "availability": "In Stock",
+   "rating": "4.3",
+   "reviews": "(1,843)",
+   "specs": {
+    "Connector Type": "USB Type C",
+    "Amperage": "3 A",
+    "Wattage": "45 watts",
+    "Output Voltage": "5 volts",
+    "Main Power Connector Type": "2 Pin",
+    "Wired Charging Connector Type": "USB Type C",
+    "Model Number": "JS-CH-4502",
+    "Model Name": "CH4502",
+    "Mfr Part Number": "JS-CH-4502"
+   },
+   "power_or_length_bullets": [
+    "Intelligent Output Adjustment: The JSAUX 45W USB C Power Delivery charger passed the UL 62368-1 test, with intelligent output adjustment function, support 45W 36W 27W 15W output, has the power to charge your steam deck, phone, tablet, and MacBook.",
+    "Fast Charge for Steam Deck & Steam Frame: Equipped with 45W output, this USB C fast charger fully replaces the original Steam Deck charger and charges the device to 100% in about 2.5 hours. Also supports full-speed charging for Steam Frame / Nintendo Switch / Switch OLED models (up to 39W), ensuring fast, reliable power for uninterrupted gaming.",
+    "10FT USB C Charging Cable: Come with an extra-long 10 Feet type C Integrated cable giving you plenty of cord to reach an outlet. Passed 10000+ times swing tests, the built-in USB-C cable is more durable & flexible to bend at any angle and withstand daily wear. No low-power issue while you playing time."
+   ],
+   "description_excerpt": null
+  },
+  {
+   "asin": "B0D12R3JH7",
+   "url": "https://www.amazon.com/dp/B0D12R3JH7",
+   "title": "Orange Pi 5 Pro PD27W 5V5A Type-C Power Supply Adapter for Orange Pi 5 Pro, Orange Pi 5 Plus, Orange Pi 5 Max, Orange Pi CM5, Multiple Circuit Protection USB C Charger Transformer Compatible",
+   "price": "$20.99",
+   "availability": "",
+   "rating": "4.1",
+   "reviews": "(4)",
+   "specs": {
+    "Connector Type": "USB Type C",
+    "Input Voltage": "220 volts",
+    "Amperage": "5 A",
+    "Wattage": "27 watts",
+    "Output Current": "5 A",
+    "Output Voltage": "5 volts",
+    "Current Rating": "5 A",
+    "Main Power Connector Type": "2 Pin",
+    "Current": "DC",
+    "Wired Charging Connector Type": "USB Type C"
+   },
+   "power_or_length_bullets": [
+    "Product Parameters: Input voltage range: 100-240 V~50/60Hz 0.8A MAX; Output voltage range: 5.1V⎓5.0A 25.5W,9.0V⎓3.0A 27.0W,12.0V⎓2.25A 27.0W,15.0V⎓1.8A 27.0W",
+    "Applicable range: Ambient temperature: 0℃~ 40; Storage temperature：-30℃~70℃; Relative humidity：10%~90%",
+    "Overall dimensions: 48*57*39mm; Wire length:1.2m; Weight:108g"
+   ],
+   "description_excerpt": "PD27W(Type-C) Power Supply (American Standard) ☆ GaN charger, fast charging, high efficiency, low heat ☆ Small size, stable and durable, multiple protection ☆ Type-C connector Available models: OrangePi 5 Pro, OrangePi 5 Max, OrangePi 5 Plus, OrangePi CM5 Professional certification OrangePi power adapter has passed FCC/UL and other professional certifications, to create a safer power adapter. Stri"
+  },
+  {
+   "asin": "B0D6CJHYZV",
+   "url": "https://www.amazon.com/dp/B0D6CJHYZV",
+   "title": "10FT USB Type C to Type C Cable Compatible with Raspberry Pi 5 Pi5",
+   "price": "$19.96",
+   "availability": "Only 16 left in stock - order soon.",
+   "rating": null,
+   "reviews": null,
+   "specs": {
+    "Connector Type": "USB Type C",
+    "Cable Type": "USB",
+    "Part Number": "OMNI0606024408"
+   },
+   "power_or_length_bullets": [
+    "High Speed 10 Foot Long 3.0 USB Cable",
+    "Ovp, Ocp, ScpProtection (Ovp: Over Voltage output Protection. Ocp: Over Current output Protection. Scp: Short Circuit output Protection)"
+   ],
+   "description_excerpt": null
+  },
+  {
+   "asin": "B0D9XLBSTF",
+   "url": "https://www.amazon.com/dp/B0D9XLBSTF",
+   "title": "45W USB-C AC/DC Adapter Compatible with Raspberry Pi 5 Interface Pi 5 45.0W Type C Power Supply Cord Battery Charger",
+   "price": "$25.99",
+   "availability": "In Stock",
+   "rating": null,
+   "reviews": null,
+   "specs": {
+    "Connector Type": "Connector",
+    "Input Voltage": "240 volts_of_alternating_current",
+    "Mfr Part Number": "24-A-7.23-483"
+   },
+   "power_or_length_bullets": [
+    "J-ZMQER 45W USB-C AC/DC Adapter Compatible with Raspberry Pi 5 Interface Pi 5 45.0W Type C Power Supply Cord Battery Charger"
+   ],
+   "description_excerpt": "J-ZMQER 45W USB-C AC/DC Adapter Compatible with Raspberry Pi 5 Interface Pi 5 45.0W Type C Power Supply Cord Battery Charger"
+  },
+  {
+   "asin": "B0DQY2Z3G6",
+   "url": "https://www.amazon.com/dp/B0DQY2Z3G6",
+   "title": "27W USB-C Power Supply for Raspberry Pi 5 5.1V 5A PD PPS Charger",
+   "price": "$13.59",
+   "availability": "In Stock",
+   "rating": "3.8",
+   "reviews": "(16)",
+   "specs": {
+    "Connector Type": "USB Type C",
+    "Input Voltage": "110 volts",
+    "Amperage": "5 A",
+    "Wattage": "27 watts",
+    "Output Current": "5 A",
+    "Output Voltage": "5.1 volts",
+    "Current Rating": "5 A",
+    "Current": "DC",
+    "Wired Charging Connector Type": "USB Type C",
+    "Model Number": "SK90A200225"
+   },
+   "power_or_length_bullets": [
+    "STABLE 27W OUTPUT WITH USB PD PPS FOR RASPBERRY PI 5: Unlike underpowered chargers that cause your Pi 5 to throttle or display the “low voltage” warning during intensive tasks, this Hflrzz USB-C power supply delivers a stable 5.1V 5A (27W max) with USB PD PPS protocol for intelligent voltage negotiation. This ensures your Raspberry Pi 5 4GB/8GB runs at full performance without throttling during AI, gaming, and compute-heavy projects — no more sudden slowdowns from insufficient power",
+    "FLEXIBLE MULTI-VOLTAGE OUTPUT FOR EVERY MAKER PROJECT: Unlike single-voltage chargers locked to one device, this adapter dynamically supports 5.1V 5A (27W), 9V 3A, 12V 2.25A, and 15V 1.8A. This makes it perfect not only for Raspberry Pi 5 but also for development boards and other USB-C devices requiring 5-15V input. One charger powers your entire maker workbench — Pi 5, dev boards, and PD-compatible accessories — reducing cable clutter and the cost of buying separate adapters",
+    "WHAT’S IN THE BOX: 1 × 27W USB-C Power Adapter, ready to power your Raspberry Pi 5 straight out of the box — no extra accessories required. Designed specifically for Raspberry Pi 5 and USB-C devices within its rated output. Important: This adapter is rated for up to 27W and is NOT recommended for medical devices, critical equipment, or hardware requiring more than 27W. Confirm your device accepts 5-15V USB-C PD input before use."
+   ],
+   "description_excerpt": null
+  },
+  {
+   "asin": "B0DYMPLLJ8",
+   "url": "https://www.amazon.com/dp/B0DYMPLLJ8",
+   "title": "USB-C Type-C AC Adapter 5.1V 5A/9V 3A/12V 2.5A/15V 1.8A ETL Power Supply Charger Universal",
+   "price": "$14.99",
+   "availability": "In Stock",
+   "rating": "3.5",
+   "reviews": "(2)",
+   "specs": {
+    "Connector Type": "USB Type C",
+    "Input Voltage": "120 volts",
+    "Amperage": "5 A",
+    "Output Current": "5 A",
+    "Output Voltage": "5.1 volts",
+    "Current Rating": "5 A",
+    "Current": "AC",
+    "Wired Charging Connector Type": "USB Type C",
+    "Model Number": "MDCG9C1514"
+   },
+   "power_or_length_bullets": [
+    "USB-C Type-C AC Adapter 5.1V 5A/9V 3A/12V 2.5A/15V 1.8A ETL Power Supply Charger Universal"
+   ],
+   "description_excerpt": "MDCGPower USB-C Type-C AC Adapter 5.1V 5A/9V 3A/12V 2.5A/15V 1.8A ETL Power Supply Charger Universal"
+  },
+  {
+   "asin": "B0FHH9K47T",
+   "url": "https://www.amazon.com/dp/B0FHH9K47T",
+   "title": "27W GaN USB-C PD Power Supply for Raspberry Pi 5",
+   "price": "$9.99",
+   "availability": "In Stock",
+   "rating": "4.7",
+   "reviews": "(312)",
+   "specs": {
+    "Connector Type": "USB Type C",
+    "Input Voltage": "240 volts_of_alternating_current",
+    "Amperage": "5 A",
+    "Wattage": "27 watts",
+    "Output Current": "5 A",
+    "Output Voltage": "5.1 volts",
+    "Current Rating": "5 A",
+    "Current": "AC",
+    "Wired Charging Connector Type": "USB Type C",
+    "Model Number": "XSL-GaN-27W USB-C Power Supply US",
+    "Model Name": "Raspberry Pi 5 Power Supply"
+   },
+   "power_or_length_bullets": [
+    "【Efficient GaN Power】GaN power conversion is designed for efficient, lower-heat, steady high-output operation in everyday Raspberry Pi 5 projects.",
+    "【ETL-Listed Output Profiles】ETL Listed with USB-C PD profiles of 5.1V/5A, 9V/3A, 12V/2.25A, and 15V/1.8A, giving you clear output specifications for Raspberry Pi 5 power planning.",
+    "【120cm Extended Reach】The 47-inch (120cm) cable provides ample length to reposition your Raspberry Pi effortlessly without feeling tethered. Unlike bulky excess wiring, this optimized length keeps your desktop and power strip tidy. Built with heavy-duty 18AWG copper wire, it ensures a safe, stable, and long-lasting power supply."
+   ],
+   "description_excerpt": null
+  }
+ ],
+ "other_retailers": {
+  "PiShop.us": [
+   {
+    "item": "Raspberry Pi 45W USB-C Power Supply, white (SC1731)",
+    "url": "https://www.pishop.us/product/raspberry-pi-45w-usb-c-power-supply-white/",
+    "price": "$16.95",
+    "stock": "IN STOCK",
+    "lead": "1.5m 17AWG captive cable",
+    "offers": "5.1V 5A; 9V 5A; 12V 3.75A; 15V 3A; 20V 2.25A (Raspberry Pi's spec; the page lists the first two)"
+   },
+   {
+    "item": "Raspberry Pi 27W USB-C Power Supply, black (SC1158) / white (SC1153)",
+    "price": "$12.95",
+    "lead": "1.2 m (Raspberry Pi's spec)"
+   },
+   {
+    "item": "Waveshare 32321 27W USB Type-C Power Supply, US plug",
+    "price": "$14.99",
+    "lead": "1.2m (title)"
+   },
+   {
+    "item": "USB-C PD Power Supply for Raspberry Pi 5, 27W, ETL Listed",
+    "url": "https://www.pishop.us/product/usb-c-pd-power-supply-for-raspberry-pi-5-27w-etl-listed/",
+    "price": "$11.95",
+    "stock": "IN STOCK",
+    "lead": "not given",
+    "offers": "5.1V 5.0A and other PD profiles"
+   },
+   {
+    "item": "USB-C Power Supply, 5.1V 3.0A, UL Listed, On/Off Switch",
+    "url": "https://www.pishop.us/product/usb-c-power-supply-5-1v-3-0a-ul-listed-on-off-switch/",
+    "price": "$11.95",
+    "stock": "IN STOCK",
+    "lead": "1.5 meter (5' approximately)"
+   }
+  ],
+  "Adafruit": [
+   {
+    "item": "Official Raspberry Pi 45W USB-C Power Supply (6320)",
+    "url": "https://www.adafruit.com/product/6320",
+    "price": "$16.50",
+    "stock": "InStock",
+    "lead": "1.5m 17AWG captive cable (not removable)"
+   },
+   {
+    "item": "Wall Power Supply with USB C - 5V 4A Output and Switch (5803)",
+    "url": "https://www.adafruit.com/product/5803",
+    "price": "$7.95",
+    "stock": "Out of stock",
+    "lead": "1.5m 20 AWG cable"
+   },
+   {
+    "item": "Wall Power Supply with USB C - 5V 3A Output and Switch (5802)",
+    "url": "https://www.adafruit.com/product/5802",
+    "price": "$5.95",
+    "stock": "Out of stock",
+    "lead": "1.5m 20 AWG cable"
+   },
+   {
+    "item": "Official Raspberry Pi Power Supply 5.1V 3A with USB C (4298)",
+    "lead": "1.5 meter (title)"
+   }
+  ],
+  "SparkFun": [
+   {
+    "item": "Raspberry Pi 45W USB-C Power Supply",
+    "price": "$20.15"
+   },
+   {
+    "item": "Raspberry Pi 27W USB-C PD Power Supply, white or black",
+    "price": "$17.25"
+   }
+  ],
+  "Vilros": [
+   {
+    "item": "Vilros 27W 5.1V/5A USB-C Power Supply for Raspberry Pi 5 (VILP274B/W/C)",
+    "url": "https://vilros.com/products/vilros-27w-5v-5a-raspberry-pi-5-compatible-usb-c-power-supply",
+    "price": "$14.49",
+    "lead": "Attached 5 ft USB-C cable (its own spec table: 'Cable Length 5 ft'; 'What's Included: ... with attached 5 ft USB-C cable')",
+    "offers": "5.1V/5A, 9V/3A, 12V/2.25A, 15V/1.8A"
+   }
+  ],
+  "CanaKit": "canakit.com's product pages render without the product data in the HTML; the Amazon listings were used instead.",
+  "blocked (HTTP 403 to the Pi)": [
+   "DigiKey",
+   "Mouser",
+   "Newark",
+   "Jameco",
+   "Micro Center"
+  ]
+ },
+ "notes": [
+  "No supply that offers 5 V at 3 A or more had a lead longer than 1.5 m. Leads given: Raspberry Pi 45 W 1.5 m 17 AWG; Argon 27 W 1.5 m; TRASKIT 59 in; Vilros 27 W 5 ft (attached); CanaKit 3.5 A (Pi 4) 5 ft 18 AWG; Adafruit 5 V 4 A 1.5 m 20 AWG; iUniker 5.25 V 4 A 5 ft; XSL 27 W GaN (B0FHH9K47T) 120 cm 18 AWG; SunFounder 27 W 1.2 m; Orange Pi 5 V 4 A 1.2 m.",
+  "Supplies with leads of 8 ft or more: 5 V 1 to 2 A adapters for security cameras (USB-C or barrel), a 5 V 1.5 A 8 ft adapter, and JSAUX's 45 W Steam Deck charger (B0BHYN49SV), whose 10 ft cable is captive and whose 5 V profile is 3 A. Phone and laptop chargers sold with separate 10 or 15 ft cables offer 5 V at 3 A at most.",
+  "No Pi 5 supply had a USB-C socket for a cable of one's own. The 'with USB-C Charging Port' in Vilros's Amazon title refers to the devices it charges.",
+  "No listing that gives a lead length over 1.5 m gives a wire gauge."
+ ]
+}

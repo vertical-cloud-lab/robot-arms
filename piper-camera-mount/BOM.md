@@ -209,8 +209,11 @@ loops on the arm.
 If the extension fails, the cheapest fix keeps it: a PD step-down board on the carrier asks the
 official supply for 12 V and makes 5 V next to the Pi ($20.99). The fallback after that is 24 V: a
 supply at the base (36 W or more), a 24 V to 5 V / 5 A USB-C converter on the carrier, and about
-3–4 m of lead. The lab has none of these. The search found no supply, from any maker, that gives
-5 V at 3 A or more on a lead long enough to reach the wrist ([`power/shopping_2026-10-08.md`](power/shopping_2026-10-08.md)).
+3–4 m of lead. The lab has none of these. Searches on 8 and 24 October found no supply, from any
+maker, that gives 5 V at 3 A or more on a lead long enough to reach the wrist
+([`power/shopping_2026-10-08.md`](power/shopping_2026-10-08.md),
+[`power/README.md`](power/README.md#a-supply-with-a-longer-lead-instead-24-october-2026)). The
+longest is Raspberry Pi's 45 W, at 1.5 m (below).
 
 ### Tools and consumables
 
@@ -229,6 +232,7 @@ supply at the base (36 W or more), a 24 V to 5 V / 5 A USB-C converter on the ca
 | Magnetic right-angle USB-C adapter, 120 W | A breakaway, so a snagged lead pulls apart instead of the socket. It adds another mated pair, about 0.03 V at 1.5 A | [Adafruit 5521](https://www.adafruit.com/product/5521), in stock, 9 October | $14.95 |
 | PD step-down board, 12 V in from USB-C PD, 5 V / 5 A out (eleUniverse) | If the extension leaves the Pi under-voltage: keep the official supply and the extension, and have the board ask for 12 V and make 5 V on the carrier. 34 g, with a fan; the carrier has no place for it yet | [Amazon B0FR8VRWFJ](https://www.amazon.com/dp/B0FR8VRWFJ), 9 October: no stock line, delivery 28 October to 19 November | $20.99 |
 | 24 V route: Mean Well GST36U24-P1J, PlusRoc 24 V to 5 V USB-C converter, two 1.5 m barrel extensions, a jack to screw terminal | Only if the Pi reports under-voltage through the extension, and you'd rather not rely on PD | [TRC Electronics](https://www.trcelectronics.com/products/mean-well-gst36u24-p1j) $19.48, [Amazon B0FD735LFG](https://www.amazon.com/dp/B0FD735LFG) $15.99, [Adafruit 327](https://www.adafruit.com/product/327) 2 × $2.95, [Adafruit 368](https://www.adafruit.com/product/368) $2.00 (7–8 October) | $43.37 |
+| Raspberry Pi 45 W USB-C supply (SC1731: 5.1 V / 5 A PD, 1.5 m 17 AWG lead) | If the 27 W's lead plus the 2 m extension doesn't reach: with the same extension it reaches 3.5 m and leaves the Pi what the 27 W does at 3.2 m (about 4.77 V streaming). It adds reach, not margin ([`power/README.md`](power/README.md#a-supply-with-a-longer-lead-instead-24-october-2026)) | [PiShop.us](https://www.pishop.us/product/raspberry-pi-45w-usb-c-power-supply-white/), in stock, 24 October; [Adafruit 6320](https://www.adafruit.com/product/6320) $16.50, in stock | $16.95 |
 | iUniker 5 V / 4 A supply (5.25 V out, 1.5 m lead) | Another cheap test in place of the official supply: its 0.15 V more puts the Pi at about 4.90 V through the extension. No PD, and its listing now says it isn't made for the Pi 5's full power | [Amazon B097P2NLVH](https://www.amazon.com/dp/B097P2NLVH), in stock, 9 October | $9.99 |
 | Raspberry Pi 5, 4 GB, instead of the 8 GB | Meets Claude Code's 4 GB minimum, but not with the cameras and a PyTorch model beside it | [PiShop.us](https://www.pishop.us/product/raspberry-pi-5-4gb/), in stock, 9 October | $110.00 |
 | Raspberry Pi AI HAT+, 13 TOPS (Hailo-8L) | For YOLO or segmentation at video rate: YOLO11n at 157 fps against about 7 fps on the Pi's CPU. It needs room on the carrier that the CAD doesn't have | [PiShop.us](https://www.pishop.us/product/raspberry-pi-ai-hat-13-tops/), 8 October | $76.95 (26 TOPS $119.95) |

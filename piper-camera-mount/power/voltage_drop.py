@@ -83,6 +83,24 @@ def main() -> None:
                                            "amps": list(amps), "volts at the Pi": [round(x, 2) for x in v]})
         print(f"| {metres:g} m extension, {1.2 + metres:.1f} m in all | "
               + " | ".join(f"{x:.2f} V{'' if x > UV else ' (low)'}" for x in v) + " |")
+    # 24 October 2026, second search: supplies with a longer lead than the 27 W's 1.2 m
+    # (power/shopping_2026-10-24_long-leads.json). The 45 W and its 17 AWG are from Raspberry Pi's
+    # spec; the iUniker's and JSAUX's gauges are guesses, as above.
+    out["longer_leads"] = []
+    print(f"\n| Supply and lead | Reach | " + " | ".join(f"at {a} A" for a in amps) + " |")
+    print("|---|---|" + "---|" * len(amps))
+    for name, v0, legs, mated in (
+        ("Raspberry Pi 27 W (1.2 m, 17 AWG) + 2 m extension: the plan", V_OFFICIAL, [(1.2, 17), (2.0, 20)], 2),
+        ("Raspberry Pi 45 W (1.5 m, 17 AWG) + 1.5 m extension", V_OFFICIAL, [(1.5, 17), (1.5, 20)], 2),
+        ("Raspberry Pi 45 W (1.5 m, 17 AWG) + 2 m extension", V_OFFICIAL, [(1.5, 17), (2.0, 20)], 2),
+        ("iUniker 5.25 V / 4 A (1.5 m, if 18 AWG) + 2 m extension", 5.25, [(1.5, 18), (2.0, 20)], 2),
+        ("JSAUX 45 W, its own 10 ft lead at 5 V / 3 A (if 20 AWG), no extension", 5.0, [(3.05, 20)], 1),
+    ):
+        v = [usb(v0, legs, mated, a) for a in amps]
+        reach = sum(m for m, _ in legs)
+        out["longer_leads"].append({"route": name, "reach (m)": round(reach, 2), "amps": list(amps),
+                                    "volts at the Pi": [round(x, 2) for x in v]})
+        print(f"| {name} | {reach:.2f} m | " + " | ".join(f"{x:.2f} V{'' if x > UV else ' (low)'}" for x in v) + " |")
     (Path(__file__).with_suffix(".json")).write_text(json.dumps(out, indent=2) + "\n")
 
 
