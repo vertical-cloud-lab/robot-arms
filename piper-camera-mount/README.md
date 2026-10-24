@@ -14,8 +14,9 @@ with interference checks, exports and renders from one script. The design notes 
 the starting point for the PiPER side. **The first PLA set went to the A1 mini on 2026-10-08**
 ([record](slice/print_2026-10-08/README.md)). Nothing has been fitted to the gripper yet. That set's
 bracket has the old O33 lens cradle, which the 6 mm lens's thumbscrews can hit. **A second PLA set,
-with the O43 cradle, went to the A1 mini on 2026-10-13** ([record](slice/print_2026-10-13/README.md));
-fit the lens with its bracket ([The pod seat](#the-pod-seat)).
+with the O43 cradle, went to the A1 mini on 2026-10-13** ([record](slice/print_2026-10-13/README.md)),
+but its pod has too little room for the HQ Camera's housing. Reprint the pod and the bracket from
+this branch ([The HQ Camera in the pod](#the-hq-camera-in-the-pod)).
 
 ![Assembly on AgileX's gripper model](renders/assembly.png)
 
@@ -720,7 +721,7 @@ with the Bambu Studio 02.08.02.61 CLI, using Bambu's system presets plus this RE
   with the 0.4 mm nozzle, so more of each part is solid.
 - **Bambu recommends the 0.6 mm nozzle for PAHT-CF,** because a wider nozzle clogs less: the
   [H2D 0.6 mm hardened-steel hotend](https://us.store.bambulab.com/products/bambu-hotend-h2-p2s?id=775924445524066388)
-  is $17.99. A 0.5 kg spool ($49.99) is about six sets at 82.0 g.
+  is $17.99. A 0.5 kg spool ($49.99) is about six sets at 81.6 g.
 
 **From G-code to a model:**
 

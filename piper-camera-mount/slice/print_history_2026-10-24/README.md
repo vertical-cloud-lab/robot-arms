@@ -62,20 +62,21 @@ matched by four things:
   card, `b6e2da0`'s plate, the 8 Oct card, the 8 Oct sent file);
 - the MD5 read back after the 13 Oct upload.
 
-## Newer than this PR
+## Newer than this check (merged in later the same day)
 
 **[`claude/issue-4-20261023-1814`](https://github.com/vertical-cloud-lab/robot-arms/tree/claude/issue-4-20261023-1814)
-(2026-10-23) changes the pod and the bracket again.**
+(2026-10-23) changes the pod and the bracket again.** It was merged into this branch on 2026-10-24,
+after this check, in `99fba43`. So neither printed set's pod or bracket is current now.
 - It models the HQ Camera housing's shoulders, screws and lock block from Raspberry Pi's drawing
   RP-008200.
 - Its commit `fb291f6` says the pod printed on 13 October hits that housing:
   - 225 mm³ at the shoulders and foot;
   - 73 mm³ at the screws;
   - 2.5 mm³ at the lock block.
-- There the pod is 18,226.2 mm³ and the bracket 51,757.4 mm³. The carrier, spacers and tag wedges
-  are unchanged.
-- If that branch lands, both printed sets need a new pod and bracket. Its commit gives the pod
-  alone as 37 min and 14.2 g on the A1 mini, and the bracket alone as 1 h 19 min and 36.2 g.
+- There the pod is 18,226.2 mm³ and the bracket 51,757.4 mm³, as they are in `exports/` now. The
+  carrier, spacers and tag wedges are unchanged.
+- So both printed sets need a new pod and bracket. On the A1 mini the pod alone is 37 min and
+  14.2 g, and the bracket alone 1 h 19 min and 36.2 g.
 
 ## Files
 

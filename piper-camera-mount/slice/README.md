@@ -89,7 +89,7 @@ nozzle and temperatures.
 
 ![The H2D plate](../renders/h2d_plate.png)
 
-- **One plate, 3 h 45 min and 70.7 g** by Bambu's estimate: 213 layers to 42.6 mm, with no supports,
+- **One plate, 3 h 45 min and 70.4 g** by Bambu's estimate: 213 layers to 42.6 mm, with no supports,
   no slicer warnings, nothing flagged by Bambu's support check and no toolpath off the bed.
 - **Settings:** Bambu's system presets `Bambu Lab H2D 0.4 nozzle`, `0.20mm Standard @BBL H2D` and
   `Bambu PAHT-CF @BBL H2D`, with the A1 mini's overrides on top (3 walls, 25 % infill, circle
@@ -125,7 +125,7 @@ xvfb-run -a python piper-camera-mount/slice/plate_view.py                    # -
   Studio selects the system preset of the same name and applies only the settings that list names. So
   `slice_h2d.py` now names the three there (`mark_overrides`), and Studio should keep them. That
   hasn't been tried in the GUI yet. If any of them reads 2, 15 % or off, set it back and re-slice. The
-  plate should come back at 70.66 g and 213 layers.
+  plate should come back at 70.35 g and 213 layers.
 - **Check the filament is on the left nozzle** in the plate's filament grouping, and that the left
   hotend is still the 0.4 mm hardened steel one. Studio reads the nozzles from the printer. The 27
   September reading is still the latest. A read-only status request from CI on 2026-10-12, through
@@ -156,8 +156,8 @@ Studio on a CI runner, as one plate, in black PLA Basic on Textured PEI. The rec
 [`print_2026-10-08/`](print_2026-10-08/README.md): pre-flights, the file Studio sent, `print.json`
 and camera frames.
 
-**A second PLA set, with the O43 cradle, went to the A1 mini on 2026-10-13.** It is the current
-`piper_camera_mount_A1mini_PLA.3mf`, uploaded unchanged to the printer's SD card over LAN and
+**A second PLA set, with the O43 cradle, went to the A1 mini on 2026-10-13.** It is
+`piper_camera_mount_A1mini_PLA.3mf` as of `b6e2da0`, uploaded unchanged to the printer's SD card over LAN and
 started at the touchscreen by jss265, in black PLA Basic from A3. When the session handed over it was
 at layer 18 of 213, with no error, and due to finish near 22:08 UTC. The record is in
 [`print_2026-10-13/`](print_2026-10-13/README.md).
@@ -168,17 +168,24 @@ The plate and `report.json` here are the new bracket; `print_2026-10-08/sent/` k
 Only the bracket changed: alone it is 1 h 19 min and 36.2 g on the A1 mini (`slice_configs.py`,
 `a1m_pla_04`, plate 2).
 
+**Both sets' pod and bracket are out of date now.** The 13 October pod didn't take the HQ Camera:
+the housing's shoulders, the screws in them and its lock block hit it (#4). On 2026-10-23 the pod's
+pocket was recut to clear them by 1.0 mm, and the bracket's seat now stays 1.5 mm from them
+([The HQ Camera in the pod](../README.md#the-hq-camera-in-the-pod)). Both plates and reports here
+have the new pair. Alone, on the A1 mini, the pod is 37 min and 14.2 g and the bracket 1 h 19 min and
+36.2 g (`a1m_pla_04`, plates 3 and 2). Either set's carrier, spacers and tag wedges are still current.
+
 Before that, nothing of the mount had been printed. [`a1mini_history/`](a1mini_history/README.md)
 lists everything the A1 mini printed from July to the morning of 2026-10-08, from Bambu's cloud and
 the printer's own SD card, with the two read-only scripts that fetch it.
 
 **Nothing has been printed in PAHT-CF yet.** The H2D plate above was sliced on 2026-10-12, with the
-O43 cradle.
+O43 cradle, and re-sliced on 2026-10-23 with the new pod and bracket.
 
 **Checked in Bambu Studio on 2026-10-24** ([`print_history_2026-10-24/`](print_history_2026-10-24/README.md)).
 - The two A1 mini sets are still the only prints of the mount. Neither the cloud history nor
   either printer's storage has another.
-- The 13 October set matches this branch's STLs part for part.
-- The 8 October set differs only in its bracket.
-- `claude/issue-4-20261023-1814` has since changed the pod and bracket again, for the HQ Camera
-  housing's shoulders and screws.
+- Against this branch as it was then (`9e00fd1`), the 13 October set matched part for part, and the
+  8 October set differed only in its bracket.
+- Later that day `claude/issue-4-20261023-1814` was merged in (`99fba43`), with the pod and bracket
+  that clear the HQ Camera housing. So neither set's pod or bracket is current now.
