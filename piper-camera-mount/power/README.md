@@ -92,9 +92,9 @@ are in [`shopping_2026-10-24_long-leads.json`](shopping_2026-10-24_long-leads.js
 
 - **Every supply that gives 5 V at 3 A or more has a captive lead of 1.5 m at most.**
   - Pi 5 supplies (5.1 V / 5 A): Raspberry Pi's 45 W has 1.5 m of 17 AWG, Argon's 27 W 1.5 m,
-    TRASKIT's 59 in and Vilros's 27 W 5 ft. Most others are 1.2 m.
+    TRASKIT's 59 in and Vilros's 27 W 5 ft. The others that give a length are 1.2 m.
   - Vilros's own page says its cable is attached, which answers the question left open on
-    8 October. No Pi 5 supply has a USB-C socket that would take a longer cable.
+    8 October. No Pi 5 listing describes a USB-C socket that would take a longer cable.
   - Pi 4 supplies (3 to 4 A) are no longer: CanaKit's 3.5 A has 5 ft of 18 AWG, and Adafruit's
     5 V / 4 A has 1.5 m of 20 AWG.
 - **Everything with a lead of 8 ft or more gives 3 A or less at 5 V.**
