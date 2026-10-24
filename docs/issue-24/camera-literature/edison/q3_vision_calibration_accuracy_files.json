@@ -1,0 +1,81 @@
+{
+ "data": [
+  {
+   "id": 29889553,
+   "data_storage_id": "06d5b63b-d1c4-475f-9a49-e8426e15ddd8",
+   "operation": "create",
+   "actor_id": "28a3e9e2-6c8d-4fb8-b77b-432f1408c7ac",
+   "actor_type": "trajectory",
+   "timestamp": "2026-10-21T21:22:00.528745Z",
+   "data_storage": {
+    "name": "pqa:docs:28a3e9e2-6c8d-4fb8-b77b-432f1408c7ac",
+    "description": null,
+    "is_collection": false,
+    "status": "active",
+    "content": null,
+    "embedding": null,
+    "user_id": "UxTMERa8SbeYkryBDMlwEgoJNF53",
+    "label": "6e1dc9cc2ee3",
+    "parent_id": null,
+    "dataset_id": "160cdb60-05a6-40ec-bd73-b64f748b01b4",
+    "project_id": null,
+    "share_status": "private",
+    "short_alias": null,
+    "id": "06d5b63b-d1c4-475f-9a49-e8426e15ddd8",
+    "path": "6e1dc9cc2ee3",
+    "created_at": "2026-10-21T21:22:00.419542Z",
+    "modified_at": "2026-10-21T21:22:03.360769Z",
+    "tags": null,
+    "file_path": "/tmp/tmprppa88us.pkl",
+    "metadata": {
+     "size": 53825788
+    },
+    "trajectory_id": null,
+    "project_name": null,
+    "project_description": null,
+    "is_kosmos_project": null
+   }
+  },
+  {
+   "id": 29889322,
+   "data_storage_id": "7ef0d307-755f-411c-b6cd-7206902da190",
+   "operation": "create",
+   "actor_id": "28a3e9e2-6c8d-4fb8-b77b-432f1408c7ac",
+   "actor_type": "trajectory",
+   "timestamp": "2026-10-21T21:18:44.608564Z",
+   "data_storage": {
+    "name": "Quantitative Camera-Tracking Evidence",
+    "description": "Compact comparison of robot and fiducial localization results, including camera geometry, measured accuracy, and validation limitations. Values based on different aggregation methods are explicitly distinguished.",
+    "is_collection": false,
+    "status": "active",
+    "content": null,
+    "embedding": null,
+    "user_id": "UxTMERa8SbeYkryBDMlwEgoJNF53",
+    "label": "6cc33129173c",
+    "parent_id": null,
+    "dataset_id": "b1eec557-6dda-40e6-b535-8159dd866f78",
+    "project_id": null,
+    "share_status": "private",
+    "short_alias": null,
+    "id": "7ef0d307-755f-411c-b6cd-7206902da190",
+    "path": "6cc33129173c",
+    "created_at": "2026-10-21T21:18:44.575606Z",
+    "modified_at": "2026-10-21T21:18:44.575606Z",
+    "tags": null,
+    "file_path": null,
+    "metadata": {
+     "session_id": "28a3e9e2-6c8d-4fb8-b77b-432f1408c7ac",
+     "artifact_id": "0254e1a0-2ff5-4019-ae5b-063211bfc8c0",
+     "state_artifact_id": "artifact-00",
+     "artifact_type": "table",
+     "artifact_title": "Quantitative Camera-Tracking Evidence",
+     "artifact_caption": "Compact comparison of robot and fiducial localization results, including camera geometry, measured accuracy, and validation limitations. Values based on different aggregation methods are explicitly distinguished."
+    },
+    "trajectory_id": null,
+    "project_name": null,
+    "project_description": null,
+    "is_kosmos_project": null
+   }
+  }
+ ]
+}

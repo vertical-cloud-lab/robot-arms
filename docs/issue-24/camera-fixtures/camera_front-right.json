@@ -1,0 +1,39 @@
+{
+ "width": 4608,
+ "height": 2592,
+ "K": [
+  [
+   1964.0,
+   0.0,
+   2304.0
+  ],
+  [
+   0.0,
+   1964.0,
+   1296.0
+  ],
+  [
+   0.0,
+   0.0,
+   1.0
+  ]
+ ],
+ "dist": [
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0
+ ],
+ "rvec": [
+  1.688605,
+  0.650083,
+  -0.527307
+ ],
+ "tvec": [
+  -40.235,
+  185.311,
+  817.573
+ ],
+ "note": "front-right corner (room side, the end the arm faces) (nominal, from the CAD; calibrate after mounting)"
+}

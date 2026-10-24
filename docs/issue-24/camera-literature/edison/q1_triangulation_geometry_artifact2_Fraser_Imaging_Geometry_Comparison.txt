@@ -1,0 +1,9 @@
+| Configuration | Convergence angle θ | q-factor | Mean σ_c (mm) | σ_XY (mm) | σ_Z (mm) | Δσ_XY (mm) | Δσ_Z (mm) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| “Normal,” stations 9–12 | — | 0.7 | 0.09 | 0.07 | 0.12 | 0.03 | 0.09 |
+| “Normal,” stations 5–8 | — | 1.0 | 0.12 | 0.08 | 0.17 | 0.03 | 0.12 |
+| “Normal” + convergent, stations 2, 4, 5, 7 | 120° for convergent component | 0.6 | 0.07 | 0.07 | 0.09 | 0.01 | 0.05 |
+| Convergent | 60° | 0.8 | 0.09 | 0.07 | 0.13 | 0.02 | 0.09 |
+| Convergent | 120° | 0.6 | 0.07 | 0.07 | 0.07 | 0.01 | 0.03 |
+| Convergent | 180° | 0.6 | 0.07 | 0.08 | 0.06 | 0.01 | 0.01 |
+| **Common simulation conditions** (pqac-00000027, pqac-00000028) | **Inner-constraints datum** | **Image scale 1:40** | **σ_image = 2.3 μm** | — | — | — | — |
