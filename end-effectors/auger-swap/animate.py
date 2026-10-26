@@ -24,6 +24,9 @@ import geometry as G  # noqa: E402
 import scene as S  # noqa: E402
 
 FPS = 10
+import os
+SIDE_OFFSET = np.array([400.0, -120.0, 235.0])    # at the doser: from +X, so the hook isn't behind the collar
+FRONT_OFFSET = np.array([230.0, -430.0, 420.0])   # elsewhere: high front view
 OUT = HERE / "renders"
 ARM_BASE = S.T((220.0, 400.0, 0.0)) @ S.T(R=S.rot((0, 0, 1), -90))
 L = S.doser_layout()
@@ -227,9 +230,10 @@ def build(kind: str) -> Seq:
     q.frames[-1]["collar"] = "fix"
 
     # ---- dispose
-    binx, biny = sum(G.BIN_X) / 2, sum(G.BIN_Y) / 2 - 10
-    bin_z = q.tool_z_for_axis(G.BIN_Z + 45)
-    q.path("Carry the old auger to the bin", [(G.FIX_X, fy + strip, z_fix + 50), (binx, biny + 30, bin_z)], 12)
+    binx = sum(G.BIN_X) / 2
+    biny = sum(G.BIN_Y) / 2 + (gy - G.OUTLET_Y) - G.AUGER_LEN / 2   # auger centred over the bin
+    bin_z = q.tool_z_for_axis(G.BIN_Z + (45 if custom else 15))
+    q.path("Carry the old auger to the bin", [(G.FIX_X, fy + strip, z_fix + 50), (binx, biny, bin_z)], 12)
     if custom and kind == "s2":
         q.step("Wheel 360-180°: carriage lowers, cam opens the hook at the bottom", 14, psi=180.0)
         q.release()
@@ -249,14 +253,14 @@ def build(kind: str) -> Seq:
     if custom:
         z_rack_down = q.tool_z_for_axis(G.RACK_AXIS_Z, s=G.STROKE)
         if kind == "s1":
-            q.path("Fetch a fresh auger from the rack", [(binx, biny, z_rack_down + 70), (rx, rack_gy, z_rack_down + 50)], 12)
+            q.path("Fetch a fresh auger from the rack", [(binx, biny, z_rack_down + 35), (rx, rack_gy, z_rack_down + 35)], 12)
             q.step("Carriage down, hook open, over the new tube", 8, s=G.STROKE)
             q.step("Lower onto the new tube", 10, pos=np.array([rx, rack_gy, z_rack_down]))
             q.step("Servo 2 closes the hook", 8, th=0.0)
             q.grasp("new")
             q.step("Servo 1 lifts the tube 28 mm", 10, s=0.0)
         else:
-            q.path("Fetch a fresh auger from the rack", [(binx, biny, z_rack_down + 70), (rx, rack_gy, z_rack_down + 50)], 12)
+            q.path("Fetch a fresh auger from the rack", [(binx, biny, z_rack_down + 35), (rx, rack_gy, z_rack_down + 35)], 12)
             q.step("Lower over the new tube (carriage up, hook open)", 10,
                    pos=np.array([rx, rack_gy, z_rack_down]))
             q.step("Wheel 0-210°: carriage down, hook closes", 14, psi=210.0)
@@ -264,17 +268,18 @@ def build(kind: str) -> Seq:
             q.step("Wheel 210-360°: lift 28 mm", 12, psi=360.0)
     else:
         z_rack = q.tool_z_for_axis(G.RACK_AXIS_Z)
-        q.path("Fetch a fresh auger from the rack", [(binx, biny, z_rack + 70), (rx, rack_gy, z_rack + 50)], 12)
+        q.path("Fetch a fresh auger from the rack", [(binx, biny, z_rack + 25), (rx, rack_gy, z_rack + 25)], 12)
         q.step("Lower around the new tube", 10, pos=np.array([rx, rack_gy, z_rack]))
         q.step("Close the sleeves", 8, grip=16.4)
         q.grasp("new")
     z_now = st["pos"][2]
-    q.step("Lift clear of the rack", 8, pos=np.array([rx, rack_gy, z_now + 40]))
+    q.step("Lift clear of the rack", 8, pos=np.array([rx, rack_gy, z_now + (40 if custom else 25)]))
 
     # ---- re-thread through the collar held in the fixture
     z_fix = q.tool_z_for_axis(G.FIX_AXIS_Z)
+    hop = 45 if custom else 22
     q.path("Line up on the fixture axis, outlet end first", [
-        (G.FIX_X, fy + strip + 5, z_fix + 45), (G.FIX_X, fy + strip + 5, z_fix)], 10)
+        (G.FIX_X, fy + strip + 5, z_fix + hop), (G.FIX_X, fy + strip + 5, z_fix)], 10)
     q.step("Push the new auger through the fork and the collar", 18, pos=np.array([G.FIX_X, fy, z_fix]))
     st["collar"] = "new"
     q.frames[-1]["collar"] = "new"
@@ -334,7 +339,7 @@ def clip_angle(delta: np.ndarray) -> float:
 
 
 class Renderer:
-    def __init__(self, kind: str, w: int = 900, h: int = 600):
+    def __init__(self, kind: str, w: int = 800, h: int = 520):
         import pyvista as pv
         self.pv = pv
         self.kind = kind
@@ -345,6 +350,7 @@ class Renderer:
         self.actors = {}
         self.arm = S.Piper(ARM_BASE)
         self.q = np.radians([0, 90, -80, 0, 60, 0])
+        self.focus = None
         self._static()
         self._dynamic()
         self.p.camera_position = [(760, -520, 560), (70, 210, 70), (0, 0, 1)]
@@ -369,7 +375,7 @@ class Renderer:
             self.add(f"clipbase{i}", S.part_mesh("clip_base"), COL["clip"], S.T((0, y, G.AXIS_Z)))
         self.add("fixture", S.part_mesh("finger_fixture"), COL["fixture"])
         self.add("rack", S.part_mesh("auger_rack"), COL["rack"])
-        self.add("bin", S.part_mesh("disposal_bin"), COL["bin"], opacity=0.55)
+        self.add("bin", S.part_mesh("disposal_bin"), COL["bin"], opacity=0.35)
         if self.kind == "alt_a":
             self.add("pin_housing", S.part_mesh("pin_housing"), COL["pin"])
 
@@ -391,8 +397,8 @@ class Renderer:
             self.add("arm_" + n, meshes[n], COL["arm"])
         if self.custom:
             self.add("adapter", S.part_mesh("flange_adapter"), COL["metal"])
-            self.add("frame", S.part_mesh("frame_s1" if self.kind == "s1" else "frame_s2"), COL["frame"])
-            self.add("carriage", S.part_mesh("carriage"), COL["jaw"])
+            self.add("frame", S.part_mesh("frame_s1" if self.kind == "s1" else "frame_s2"), COL["frame"], opacity=0.5)
+            self.add("carriage", S.part_mesh("carriage"), (0.05, 0.40, 0.22))
             self.add("hook", S.part_mesh("hook"), COL["jaw"])
             if self.kind == "s1":
                 self.add("servo_lift", S.part_mesh("servo_mg996r"), COL["servo"])
@@ -451,7 +457,7 @@ class Renderer:
                 A[k].user_matrix = E
             A["carriage"].user_matrix = Cg
             px, pz = G.HOOK_PIVOT
-            A["hook"].user_matrix = Cg @ S.about((0, 1, 0), st["th"], (px, 0, pz))
+            A["hook"].user_matrix = Cg @ S.about((0, 1, 0), -st["th"], (px, 0, pz))
             hz = G.HOOK_Z + G.STROKE              # hook centre (s = 0), E frame
             if self.kind == "s1":
                 A["servo_lift"].user_matrix = E @ S.T((30, 0, -40)) @ S.T(R=S.rot((1, 0, 0), -90))
@@ -461,18 +467,18 @@ class Renderer:
             else:
                 psi = st["psi"]
                 W = E @ S.T((0, G.WHEEL_Y, G.WHEEL_Z))
-                A["wheel"].user_matrix = W @ S.T(R=S.rot((0, 1, 0), -psi))
+                A["wheel"].user_matrix = W @ S.T(R=S.rot((0, 1, 0), -90 - psi))
                 A["driven_gear"].user_matrix = W @ S.T((0, -5, 0)) @ S.T(R=S.rot((1, 0, 0), 90)) @ S.T(R=S.rot((0, 0, 1), psi))
                 A["drive_gear"].user_matrix = W @ S.T((30, -5, 0)) @ S.T(R=S.rot((1, 0, 0), 90)) @ S.T(R=S.rot((0, 0, 1), -psi / 2))
                 A["servo_wheel"].user_matrix = W @ S.T((30, 12, 0)) @ S.T(R=S.rot((1, 0, 0), 90))
                 A["ear"].user_matrix = Cg
                 # crank pin (wheel frame, +X at psi = 0 rotated) -> carriage pin
                 phi = math.radians(-psi)
-                pin_w = (W @ S.T(R=S.rot((0, 1, 0), -psi)) @ np.array([G.CRANK_R, 2, 0, 1]))[:3]
+                pin_w = (W @ S.T(R=S.rot((0, 1, 0), -90 - psi)) @ np.array([G.CRANK_R, 2, 0, 1]))[:3]
                 pin_c = (Cg @ np.array([0, G.WHEEL_Y + 4, G.CARRIAGE_TOP - 2.5, 1]))[:3]
                 A["crank_rod"].user_matrix = self._link(pin_c, pin_w)
                 cam_top = (W @ np.array([-G.WHEEL_R + 5, 2, -3 - 6 * (1 - st["th"] / G.HOOK_OPEN_DEG), 1]))[:3]
-                lever = (Cg @ S.about((0, 1, 0), st["th"], (px, 0, pz)) @ np.array([px - 2, G.WHEEL_Y + 6, pz + 6, 1]))[:3]
+                lever = (Cg @ S.about((0, 1, 0), -st["th"], (px, 0, pz)) @ np.array([px - 2, G.WHEEL_Y + 6, pz + 6, 1]))[:3]
                 A["cam_rod"].user_matrix = self._link(lever, cam_top, r=0.7)
         else:
             d = st["grip"]
@@ -483,6 +489,7 @@ class Renderer:
             A["sleeve8"].user_matrix = Tf @ S.T((0, (d - 16.4), 0))
         if self.kind == "alt_a":
             A["pin"].user_matrix = S.T((st["pin"], G.PIN_Y, G.PIN_Z))
+
         hold = st.get("hold", False)
         for n in ("Servo MG996R (+X)", "Servo MG996R (-X)"):
             A[n].prop.color = COL["hold"] if hold else COL["servo"]
@@ -509,8 +516,44 @@ class Renderer:
         M[:3, 3] = a
         return M
 
-    def shot(self):
-        return self.p.screenshot(return_img=True)
+    def shot(self, focus, overview=True):
+        """Close-up that follows the tool (main) with the whole cell as an inset."""
+        f = np.asarray(focus, float)
+        if self.focus is None:
+            self.focus = f
+        self.focus = 0.75 * self.focus + 0.25 * f
+        c = self.focus
+        u = min(max((c[0] - 40.0) / 80.0, 0.0), 1.0)
+        side = SIDE_OFFSET if self.kind != "s2" else np.array([300.0, -320.0, 250.0])
+        off = (1 - u) * side + u * FRONT_OFFSET
+        self.p.camera_position = [tuple(c + off), tuple(c), (0, 0, 1)]
+        at_doser = c[0] < 60
+        self.actors["fixture"].prop.opacity = 0.25 if at_doser else 1.0
+        for k in ("rack", "new_auger0", "new_cap0", "new_auger2", "new_cap2"):
+            self.actors[k].prop.opacity = 0.3 if at_doser else 1.0
+        self.p.camera.view_angle = 30
+        self.p.render()
+        main = self.p.screenshot(return_img=True)
+        if not overview:
+            return main
+        self.p.camera_position = [(950, -760, 980), (40, 250, 120), (0, 0, 1)]
+        self.p.camera.view_angle = 30
+        for k in ("fixture", "rack", "new_auger0", "new_cap0", "new_auger2", "new_cap2"):
+            self.actors[k].prop.opacity = 1.0
+        self.p.render()
+        ov = self.p.screenshot(return_img=True)
+        from PIL import Image
+        im = Image.fromarray(main)
+        small = Image.fromarray(ov).resize((246, 160))
+        im.paste((150, 150, 150), (im.width - 252, 38, im.width - 2, 202))
+        im.paste(small, (im.width - 250, 40))
+        return np.asarray(im)
+
+
+def focus_of(seq: Seq, st) -> np.ndarray:
+    """Point the close-up follows: the held tube / jaws, nudged towards the doser."""
+    h = seq.holder(st)[:3, 3]
+    return np.array([h[0], h[1] - 10.0, h[2] + 5.0])
 
 
 def caption(img, title, cap, k, n):
@@ -524,41 +567,56 @@ def caption(img, title, cap, k, n):
     d.text((12, 7), title, fill=(20, 20, 20), font=fb)
     d.rectangle([0, im.height - 36, im.width, im.height], fill=(30, 30, 30))
     d.text((12, im.height - 28), cap, fill=(255, 255, 255), font=f)
-    d.text((im.width - 250, 40), "medium fidelity · issue #42 · not to scale of lab layout", fill=(120, 120, 120), font=fs)
+    d.text((12, 40), "medium fidelity · issue #42 · lab layout assumed", fill=(120, 120, 120), font=fs)
     w = int((im.width - 24) * k / max(n - 1, 1))
     d.rectangle([12, im.height - 40, 12 + w, im.height - 37], fill=(230, 120, 30))
     return im
 
 
-def render(kind: str, still: int | None = None, scale: float = 1.0):
+def render(kind: str, still: str | None = None, scale: float = 0.8):
     seq = build(kind)
     r = Renderer(kind)
-    frames = seq.frames if still is None else [seq.frames[still]]
+    if still is not None:
+        for i in [int(v) for v in still.split(",")]:
+            r.focus = None
+            st = seq.frames[i]
+            ep, er = r.pose(st, seq)
+            im = caption(r.shot(focus_of(seq, st)), TITLES[kind], st["cap"], i, len(seq.frames))
+            OUT.mkdir(exist_ok=True)
+            im.save(OUT / f"{kind}_still_{i}.png")
+            print("->", OUT / f"{kind}_still_{i}.png", f"IK miss {ep:.2f} mm")
+        return
+    frames = seq.frames
     imgs, worst = [], 0.0
     for k, st in enumerate(frames):
         ep, er = r.pose(st, seq)
         worst = max(worst, ep)
         if ep > 0.5:
             print(f"  frame {k}: IK misses by {ep:.1f} mm / {math.degrees(er):.1f}°  ({st['cap']})")
-        img = r.shot()
-        imgs.append(caption(img, TITLES[kind], st["cap"], k if still is None else still, len(seq.frames)))
+        img = r.shot(focus_of(seq, st))
+        imgs.append(caption(img, TITLES[kind], st["cap"], k, len(seq.frames)))
     OUT.mkdir(exist_ok=True)
-    if still is not None:
-        p = OUT / f"{kind}_still_{still}.png"
-        imgs[0].save(p)
-        print("->", p)
-        return
-    pal = [im.convert("RGB").resize((int(im.width * scale), int(im.height * scale))).quantize(colors=96, method=2) for im in imgs]
+    every = 2                                   # keep GIFs a few MB: every 2nd frame, a bit faster
+    pal = [im.convert("RGB").resize((int(im.width * scale), int(im.height * scale))).quantize(colors=64, method=2)
+           for im in imgs[::every]]
     p = OUT / f"{kind}.gif"
-    pal[0].save(p, save_all=True, append_images=pal[1:], duration=int(1000 / FPS), loop=0, optimize=True)
+    pal[0].save(p, save_all=True, append_images=pal[1:], duration=int(1000 / FPS * every * 0.7), loop=0, optimize=True)
     print(f"-> {p} ({len(imgs)} frames, worst IK miss {worst:.2f} mm, {p.stat().st_size / 1e6:.1f} MB)")
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("kinds", nargs="+", choices=list(TITLES))
-    ap.add_argument("--still", type=int)
-    ap.add_argument("--scale", type=float, default=1.0)
+    ap.add_argument("--still", type=str, help="comma-separated frame indices to save as PNG")
+    ap.add_argument("--scale", type=float, default=0.8)
+    ap.add_argument("--list", action="store_true", help="print the frame index of every step")
     a = ap.parse_args()
     for k in a.kinds:
+        if a.list:
+            last = None
+            for i, st in enumerate(build(k).frames):
+                if st["cap"] != last:
+                    print(k, i, st["cap"])
+                    last = st["cap"]
+            continue
         render(k, a.still, a.scale)

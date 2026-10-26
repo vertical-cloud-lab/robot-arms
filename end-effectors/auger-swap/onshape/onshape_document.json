@@ -1,0 +1,57 @@
+{
+ "documentId": "a2afbff32210cfef4035e3a7",
+ "workspaceId": "656f6668acfca73fa886bbb8",
+ "owner": "Vertical Cloud Lab",
+ "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8",
+ "partStudios": {
+  "doser_compliant_clips.step": {
+   "elementId": "84da4bd471ae162bb09fd705",
+   "sha256": "ebae33a6127278f547ab24007a3843d3545ebd71485e6899327431186cb09db0",
+   "tab": "Doser + compliant clips + finger fixture",
+   "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/84da4bd471ae162bb09fd705"
+  },
+  "s1_two_servo_tool.step": {
+   "elementId": "dde328d002bdd126c1aa604f",
+   "sha256": "6d50781636dfc6869bb7cf98b5200fb41833310f478b3cafa42ee5b576f48cb1",
+   "tab": "S1 two-servo tool",
+   "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/dde328d002bdd126c1aa604f"
+  },
+  "s2_one_servo_wheel_tool.step": {
+   "elementId": "62b0ce943acc1c2d5951923b",
+   "sha256": "89014db46335efeaed3bfe383c83459219cea45582c6c71383d07017b31b8b03",
+   "tab": "S2 one-servo wheel tool",
+   "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/62b0ce943acc1c2d5951923b"
+  },
+  "alt_a_sleeves_pin.step": {
+   "elementId": "0cddbb996c8dc474b02a109d",
+   "sha256": "f78d2b738f1bf5758b8f9f3edb7d90d2fa000a73c0055d8565764fbffcc7fb6e",
+   "tab": "Alt A sleeves + tilt-lock pin",
+   "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/0cddbb996c8dc474b02a109d"
+  },
+  "alt_b_sleeves.step": {
+   "elementId": "c35cc3f6cc387f21bf7cd736",
+   "sha256": "0af881a1c8063d2b11960883c10eb5df1a529edca557c7ae7d178de330ef8be1",
+   "tab": "Alt B sleeves",
+   "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/c35cc3f6cc387f21bf7cd736"
+  }
+ },
+ "assemblies": {
+  "Strategy 1": {
+   "elementId": "4b0e2b44f7762a4ba874dfba",
+   "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/4b0e2b44f7762a4ba874dfba"
+  },
+  "Strategy 2": {
+   "elementId": "4c0d62fbf6e4fb0beda072f9",
+   "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/4c0d62fbf6e4fb0beda072f9"
+  },
+  "Alternative A": {
+   "elementId": "c32900085919816e940d424b",
+   "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/c32900085919816e940d424b"
+  },
+  "Alternative B": {
+   "elementId": "55472b6c00b0741d6cf2e8af",
+   "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/55472b6c00b0741d6cf2e8af"
+  }
+ },
+ "folder": "vcl-shared > 6DOF Robot Arm"
+}

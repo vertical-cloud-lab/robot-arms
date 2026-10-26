@@ -227,3 +227,6 @@ my_secrets.py
 # a clone onto another machine, and this repo is public.
 .claude/settings.local.json
 .claude/settings.local.json.*
+
+# auger-swap: the full doser STEP is 29 MB and export_step.py regenerates it
+end-effectors/auger-swap/cad/doser_compliant_clips.step
