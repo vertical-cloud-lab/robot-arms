@@ -81,7 +81,7 @@ The workflow then posts the approval link in the thread.
 
 | File | What |
 |---|---|
-| `parts/*.stl` | The five parts, byte for byte as exported: `pod` and `bracket` from `piper-camera-mount/exports/` at `27db133`; `head-clamp`, `clamp-cap` and `head-cradle` from `robot-arm/enclosure/cameras/models/` at `5b3d6b1` |
+| `stl/*.stl` | The five parts, byte for byte as exported: `pod` and `bracket` from `piper-camera-mount/exports/` at `27db133`; `head-clamp`, `clamp-cap` and `head-cradle` from `robot-arm/enclosure/cameras/models/` at `5b3d6b1` |
 | [`slice_a1mini.py`](slice_a1mini.py) | Places and slices the plate with the Bambu Studio 02.08.02.61 CLI (PR #10's `slice_a1mini.py`, adapted). Writes the 3MF and `report.json` |
 | [`plate_view.py`](plate_view.py) | Draws `plate.png` and `plate_build.gif` from the plate's own G-code, and writes `per_object.json` |
 | [`what_changed.py`](what_changed.py) | The printed-vs-latest check above |

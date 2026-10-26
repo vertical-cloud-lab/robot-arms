@@ -5,7 +5,7 @@
     python slice_a1mini.py --bambu ~/bambu/squashfs-root --skip bracket   # -> ..._no-bracket.3mf
 
 The plate: the wrist-camera pod and bracket that clear the HQ Camera housing (#4), and three of
-the fixed-camera head (clamp, cap and cradle, PR #9). The STLs in parts/ are byte-for-byte the
+the fixed-camera head (clamp, cap and cradle, PR #9). The STLs in stl/ are byte-for-byte the
 exports of the commits in SOURCES, each in the print orientation it was exported in.
 
 It is PR #10's piper-camera-mount/slice/slice_a1mini.py with its settings: Bambu's system presets
@@ -35,7 +35,7 @@ from pathlib import Path
 import numpy as np
 
 HERE = Path(__file__).resolve().parent
-PARTS = HERE / "parts"
+PARTS = HERE / "stl"
 OUT_3MF = HERE / "issue45_A1mini_PLA.3mf"
 BED = 180.0
 PRESETS = {
@@ -57,7 +57,7 @@ SOURCES = {
     "head-cradle": ("claude/issue-229-20261001-2322", "5b3d6b1", "robot-arm/enclosure/cameras/models/head-cradle.stl"),
 }
 
-# (object name, STL in parts/, turn about z in degrees, centre of its footprint on the bed).
+# (object name, STL in stl/, turn about z in degrees, centre of its footprint on the bed).
 # Front row: the clamps and caps, head by head; middle row: the cradles, each under its clamp and
 # cap; back row: the bracket and pod. 5 mm or more between footprints, 2.5 mm from the edges.
 LAYOUT = [
