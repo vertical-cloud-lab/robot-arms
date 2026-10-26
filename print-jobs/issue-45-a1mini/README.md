@@ -52,6 +52,13 @@ without it.
 
 ## Before sending
 
+- **The A1 mini was busy at 22:28 UTC on 26 October.** Another job had just started (layer 0 of
+  210, about 30 min left by the printer's estimate) on A3's black PLA, with no error or HMS alert.
+  This plate can only start once that job is done and its parts are off the plate. The AMS held:
+  A1 blue PLA Basic, A2 empty, A3 black PLA Basic, A4 white PETG Basic. A3 reads 100 % remaining,
+  as it did on 13 October before an 86 g print, so its level probably isn't tracked; 123 g is
+  needed. This was read over LAN through the arm Pi with [`a1mini_status.py`](a1mini_status.py),
+  which only reads.
 - **Bambu flags the three caps.** Its support check says each cap "has floating cantilever". The
   overhang is the top of the pipe bore: a Ø27.2 mm half-round lying on its split face, steeper than
   45° for its top 4 mm. The head clamp has the same bore and isn't flagged. PR #9 specifies both
@@ -60,8 +67,7 @@ without it.
   supports under the caps only, which would mark the same surface.
 - **PR #9 asked for the heads in PETG.** This plate is all PLA, so it can be one job. Putting PETG
   heads and PLA mount parts on one plate would mean a filament change on every layer. If the heads
-  should be PETG, they need a plate of their own (the last status read, on 13 October, showed
-  white PETG Basic in slot A4).
+  should be PETG, they need a plate of their own, in the white PETG Basic in A4.
 - **Studio may reset three settings on opening** a CLI-sliced project (walls 3 → 2, infill 25 →
   15 %, circle compensation off). This 3MF names them in `different_settings_to_system`, which should
   stop that, but it hasn't been tried in the GUI. If they change, set them back and re-slice. The
@@ -75,7 +81,10 @@ through `@claude-print` and its approval (see CLAUDE.md). Comment on #45:
 > @claude-print print `print-jobs/issue-45-a1mini/issue45_A1mini_PLA.3mf` from branch
 > `claude/issue-45-20261026-2208` on the A1 mini, in the black PLA Basic (A3), as the next job
 
-The workflow then posts the approval link in the thread.
+The workflow then posts the approval link in the thread, and a member of `bambu-print-approvers`
+approves the run. The printer has no queue, so "next" means the print run sends it once the
+printer is idle. The run first posts a camera frame of the plate and sends only if the plate is
+empty. It also waits at least 5 minutes, so anyone can stop it.
 
 ## Files
 
@@ -85,6 +94,7 @@ The workflow then posts the approval link in the thread.
 | [`slice_a1mini.py`](slice_a1mini.py) | Places and slices the plate with the Bambu Studio 02.08.02.61 CLI (PR #10's `slice_a1mini.py`, adapted). Writes the 3MF and `report.json` |
 | [`plate_view.py`](plate_view.py) | Draws `plate.png` and `plate_build.gif` from the plate's own G-code, and writes `per_object.json` |
 | [`what_changed.py`](what_changed.py) | The printed-vs-latest check above |
+| [`a1mini_status.py`](a1mini_status.py) | Read-only printer status over LAN, run on the arm Pi |
 | `glxshim.c` | PR #10's OpenGL shim, for headless thumbnails |
 
 To regenerate, with Bambu Studio's AppImage extracted to `~/bambu/squashfs-root` (PR #10's slice
