@@ -370,6 +370,7 @@ class Renderer:
         self.p.set_background("white")
         self.p.enable_anti_aliasing("fxaa")
         self.actors = {}
+        self.fade = []
         self.arm = S.Piper(ARM_BASE)
         self.q = np.radians([0, 90, -80, 0, 60, 0])
         self.focus = None
@@ -431,6 +432,8 @@ class Renderer:
                     key = f"s1_{grp}_{i}"
                     self.add(key, S.cached_mesh(f"s1_{h}_{grp}_{i}", lambda wp=wp: wp, 0.1), rgb)
                     self.s1keys[grp].append(key)
+                    if any(w in name for w in ("Camera", "lens", "pod", "Pi 5", "Pi standoffs")):
+                        self.fade.append(key)      # see-through in the close-up so the jaw shows
         elif self.custom:
             self.add("adapter", S.part_mesh("flange_adapter"), COL["metal"])
             self.add("frame", S.part_mesh("frame_s2"), COL["frame"], opacity=0.5)
@@ -598,8 +601,12 @@ class Renderer:
         for k in ("rack", "new_auger0", "new_cap0", "new_auger2", "new_cap2"):
             self.actors[k].prop.opacity = 0.3 if at_doser else 1.0
         self.p.camera.view_angle = 30
+        for k in self.fade:
+            self.actors[k].prop.opacity = 0.3
         self.p.render()
         main = self.p.screenshot(return_img=True)
+        for k in self.fade:
+            self.actors[k].prop.opacity = 1.0
         if not overview:
             return main
         self.p.camera_position = [(950, -760, 980), (40, 250, 120), (0, 0, 1)]
