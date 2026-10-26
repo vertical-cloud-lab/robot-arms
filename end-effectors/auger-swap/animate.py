@@ -233,7 +233,7 @@ def build(kind: str) -> Seq:
     binx = sum(G.BIN_X) / 2
     biny = sum(G.BIN_Y) / 2 + (gy - G.OUTLET_Y) - G.AUGER_LEN / 2   # auger centred over the bin
     bin_z = q.tool_z_for_axis(G.BIN_Z + (45 if custom else 15))
-    q.path("Carry the old auger to the bin", [(G.FIX_X, fy + strip, z_fix + 50), (binx, biny, bin_z)], 12)
+    q.path("Carry the old auger to the bin", [(G.FIX_X, fy + strip, z_fix + (50 if custom else 30)), (binx, biny, bin_z)], 12)
     if custom and kind == "s2":
         q.step("Wheel 360-180°: carriage lowers, cam opens the hook at the bottom", 14, psi=180.0)
         q.release()
