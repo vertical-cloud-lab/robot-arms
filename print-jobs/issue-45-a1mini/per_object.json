@@ -1,0 +1,17 @@
+{
+  "note": "grams of PLA per object: its share of the extrusion inside Bambu's object markers, scaled to the plate total (which includes the purge and prime lines)",
+  "plate_total_g": 123.15,
+  "objects_g": {
+    "head-clamp-1_1": 10.3,
+    "clamp-cap-1_1": 6.1,
+    "head-clamp-2_1": 10.3,
+    "clamp-cap-2_1": 6.1,
+    "head-clamp-3_1": 10.3,
+    "clamp-cap-3_1": 6.1,
+    "head-cradle-1_1": 8.3,
+    "head-cradle-2_1": 8.3,
+    "head-cradle-3_1": 8.3,
+    "bracket_1": 34.6,
+    "pod_1": 14.5
+  }
+}
