@@ -1,0 +1,178 @@
+{
+ "hfov_deg": 99.1,
+ "vfov_deg": 66.8,
+ "reach": {
+  "max_radius_from_J1_m": 0.766,
+  "max_height_above_plywood_m": 0.889,
+  "volume_m3": 1.138,
+  "plywood_reachable_pct": 94.8
+ },
+ "layouts": {
+  "edges": {
+   "cameras": {
+    "front": {
+     "kind": "post",
+     "tilt_deg": 30.0,
+     "lens_above_plywood_mm": 381,
+     "lens_xy_mm": [
+      0,
+      515
+     ],
+     "distance_to_J1_mm": 641,
+     "closest_fingertip_to_post_mm": -13,
+     "closest_fingertip_to_lens_mm": 10
+    },
+    "right": {
+     "kind": "post",
+     "tilt_deg": 30.0,
+     "lens_above_plywood_mm": 381,
+     "lens_xy_mm": [
+      -515,
+      0
+     ],
+     "distance_to_J1_mm": 641,
+     "closest_fingertip_to_post_mm": -12,
+     "closest_fingertip_to_lens_mm": 55
+    },
+    "top": {
+     "kind": "crossbar",
+     "tilt_deg": 0.0,
+     "lens_above_plywood_mm": 1206,
+     "lens_xy_mm": [
+      -2,
+      0
+     ],
+     "distance_to_J1_mm": 1206,
+     "closest_fingertip_to_lens_mm": 317
+    }
+   },
+   "coverage": {
+    "front": {
+     "reach_pct": 42.7,
+     "plywood_pct": 73.9
+    },
+    "right": {
+     "reach_pct": 44.2,
+     "plywood_pct": 74.5
+    },
+    "top": {
+     "reach_pct": 89.1,
+     "plywood_pct": 100.0
+    },
+    "any": {
+     "reach_pct": 91.8,
+     "plywood_pct": 100.0
+    },
+    "two_or_more": {
+     "reach_pct": 52.3,
+     "plywood_pct": 92.1
+    }
+   },
+   "coverage_work_zone": {
+    "front": {
+     "reach_pct": 70.2,
+     "plywood_pct": 73.9
+    },
+    "right": {
+     "reach_pct": 73.3,
+     "plywood_pct": 74.5
+    },
+    "top": {
+     "reach_pct": 97.7,
+     "plywood_pct": 100.0
+    },
+    "any": {
+     "reach_pct": 99.6,
+     "plywood_pct": 100.0
+    },
+    "two_or_more": {
+     "reach_pct": 86.5,
+     "plywood_pct": 92.1
+    }
+   }
+  },
+  "corners": {
+   "cameras": {
+    "front": {
+     "kind": "post",
+     "tilt_deg": 30.0,
+     "lens_above_plywood_mm": 381,
+     "lens_xy_mm": [
+      -535,
+      535
+     ],
+     "distance_to_J1_mm": 847,
+     "closest_fingertip_to_post_mm": 46,
+     "closest_fingertip_to_lens_mm": 34
+    },
+    "right": {
+     "kind": "post",
+     "tilt_deg": 30.0,
+     "lens_above_plywood_mm": 381,
+     "lens_xy_mm": [
+      -535,
+      -535
+     ],
+     "distance_to_J1_mm": 847,
+     "closest_fingertip_to_post_mm": 46,
+     "closest_fingertip_to_lens_mm": 36
+    },
+    "top": {
+     "kind": "rail",
+     "tilt_deg": 65.0,
+     "lens_above_plywood_mm": 1182,
+     "lens_xy_mm": [
+      596,
+      2
+     ],
+     "distance_to_J1_mm": 1324,
+     "closest_fingertip_to_lens_mm": 451
+    }
+   },
+   "coverage": {
+    "front": {
+     "reach_pct": 57.0,
+     "plywood_pct": 94.2
+    },
+    "right": {
+     "reach_pct": 57.0,
+     "plywood_pct": 94.2
+    },
+    "top": {
+     "reach_pct": 93.5,
+     "plywood_pct": 100.0
+    },
+    "any": {
+     "reach_pct": 93.5,
+     "plywood_pct": 100.0
+    },
+    "two_or_more": {
+     "reach_pct": 62.7,
+     "plywood_pct": 100.0
+    }
+   },
+   "coverage_work_zone": {
+    "front": {
+     "reach_pct": 91.8,
+     "plywood_pct": 94.2
+    },
+    "right": {
+     "reach_pct": 91.8,
+     "plywood_pct": 94.2
+    },
+    "top": {
+     "reach_pct": 100.0,
+     "plywood_pct": 100.0
+    },
+    "any": {
+     "reach_pct": 100.0,
+     "plywood_pct": 100.0
+    },
+    "two_or_more": {
+     "reach_pct": 98.4,
+     "plywood_pct": 100.0
+    }
+   }
+  }
+ }
+}
