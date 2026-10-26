@@ -52,8 +52,8 @@ def add_table(pl, parts, solid_enclosure=False):
 
 
 def side_labels(pl):
-    h, zt = B.H, B.Z_TOP + 0.07
-    pts = np.array([[h, 0, zt], [0, -h, zt], [0, h + 0.10, B.PLY_T], [-h - 0.10, 0, B.PLY_T]])
+    h, z = B.H + 0.10, B.PLY_T
+    pts = np.array([[h, 0, z], [0, -h, z], [0, h, z], [-h, 0, z]])
     pl.add_point_labels(pts, ["block wall (left)", "door (back)", "front (open)", "right side"], font_size=15,
                         text_color=MUTED, shape=None, show_points=False, always_visible=True)
 
@@ -65,9 +65,9 @@ def reach_meshes():
     g.point_data["o"] = occ.ravel(order="F")
     vol = g.contour([0.5], scalars="o").smooth(n_iter=60, relaxation_factor=0.1)
     vol = vol.clip_box([-2, 2, -2, 2, -1, B.PLY_T + 0.002], invert=True)
-    touch = z["occ"][:, :, :2].any(2)
+    touch, fs = z["touch"], float(z["touch_step"])
     nx, ny = touch.shape
-    f = pv.ImageData(dimensions=(nx + 1, ny + 1, 1), spacing=(vox, vox, 1), origin=(z["lo"][0], z["lo"][1], B.PLY_T + 0.0015))
+    f = pv.ImageData(dimensions=(nx + 1, ny + 1, 1), spacing=(fs, fs, 1), origin=(z["lo"][0], z["lo"][1], B.PLY_T + 0.0015))
     f.cell_data["t"] = touch.ravel(order="F").astype(float)
     foot = f.threshold(0.5, scalars="t").extract_surface(algorithm="dataset_surface").clip_box([-B.P2, B.P2, -B.P2, B.P2, -1, 2], invert=False)
     return vol, foot
@@ -130,7 +130,7 @@ def main_view(parts, extra=(), size=(1500, 1150), labels=True):
 
 def save_single(img, path, title, note):
     h, w = img.shape[:2]
-    note = textwrap.fill(note, 150)
+    note = textwrap.fill(note, 128)
     top = 0.45 + 0.2 * (note.count("\n") + 1)
     fig = plt.figure(figsize=(w / 150, h / 150 + top), dpi=150, facecolor=SURFACE)
     ax = fig.add_axes([0, 0, 1, h / (h + top * 150)])
@@ -145,7 +145,7 @@ def save_single(img, path, title, note):
 def save_with_povs(img, povs, path, title, note):
     h, w = img.shape[:2]
     ph = 3.1
-    note = textwrap.fill(note, 150)
+    note = textwrap.fill(note, 128)
     top = 0.45 + 0.2 * (note.count("\n") + 1)
     fig = plt.figure(figsize=(w / 150, h / 150 + ph + top), dpi=150, facecolor=SURFACE)
     H_ = h / 150 + ph + top
@@ -203,9 +203,9 @@ def fixtures_figure(cams):
     def head_meshes(c):
         out = [(B.mm_to_world(parts["clamp"], c["clamp_T"]), col), (B.mm_to_world(parts["cap"], c["clamp_T"]), (0.32, 0.32, 0.35)),
                (B.mm_to_world(parts["cradle"], c["cradle_T"]), col)]
-        Mb = c["cradle_T"] @ B.T(t=np.array([B.PLATE_AT + B.PLATE[0] + B.STANDOFF + 0.5, 0, B.LENS_UP]) / 1e3)
+        Mb = c["cradle_T"] @ B.T(t=np.array([B.PLATE_AT + B.PLATE[0] + B.STANDOFF + 0.5, B.PLATE_Y, B.LENS_UP]) / 1e3)
         out.append((B._box([-0.0005, -0.0125, -0.012], [0.0005, 0.0125, 0.012]).apply_transform(Mb), board))
-        Ml = c["cradle_T"] @ B.T(t=np.array([B.LENS_FWD - 3, 0, B.LENS_UP]) / 1e3)
+        Ml = c["cradle_T"] @ B.T(t=np.array([B.LENS_FWD - 3, B.PLATE_Y, B.LENS_UP]) / 1e3)
         out.append((B._cyl(0.0055, 0.006, "x").apply_transform(Ml), B.DARK))
         piv = c["cradle_T"][:3, 3]
         ax = c["cradle_T"][:3, 1]
@@ -216,20 +216,20 @@ def fixtures_figure(cams):
     # (a) ground camera in the front-right corner (corners layout)
     c = cams["corners"]["front"]
     x, y = c["spec"]["xy"]
-    ms = [(B._box([x - 0.12, y - 0.10, 0], [-B.P2 + 0.0 + 0.0 + 0.0 + (x + B.P2) + 0.0 + 0.0, y + 0.06, B.PLY_T]), ply)]
-    ms = [(B._box([-B.P2, y - 0.16, 0], [x + 0.14, B.P2, B.PLY_T]), ply)]
-    ms += [(B.along([-B.H, y - 0.16, B.Z_BOT], [-B.H, B.H, B.Z_BOT], B.R), pvc), (B.along([-B.H, B.H, B.Z_BOT], [x + 0.14, B.H, B.Z_BOT], B.R), pvc),
-           (B.along([-B.H, B.H, B.Z_BOT], [-B.H, B.H, B.Z_BOT + 0.55], B.R), pvc)]
+    ms = [(B._box([-B.P2, B.P2 - 0.40, 0], [-B.P2 + 0.40, B.P2, B.PLY_T]), ply)]
+    ms += [(B.along([-B.H, B.P2 - 0.40, B.Z_BOT], [-B.H, B.H, B.Z_BOT], B.R), pvc),
+           (B.along([-B.H, B.H, B.Z_BOT], [-B.P2 + 0.40, B.H, B.Z_BOT], B.R), pvc),
+           (B.along([-B.H, B.H, B.Z_BOT], [-B.H, B.H, B.Z_BOT + 0.56], B.R), pvc)]
     ms += [(B.mm_to_world(parts["foot"], B.T(t=[x, y, B.PLY_T])), col),
            (B.along([x, y, B.PLY_T + B.FOOT_T / 1e3], [x, y, B.POST_TOP], B.PIPE_OD / 2e3), pvc)]
     ms += head_meshes(c)
-    panels.append(("a  Ground camera, front-right corner", ms,
-                   [(x + 0.55, y + 0.62, 0.62), (x + 0.03, y - 0.03, 0.21), (0, 0, 1)], 30))
+    panels.append(("a  Ground camera in the front-right corner", ms,
+                   [(x + 0.86, y - 0.30, 0.56), (x + 0.07, y - 0.05, 0.22), (0, 0, 1)], 34))
     # (b) the head, close up
     ms = [(B.along([x, y, B.CLAMP_Z - 0.06], [x, y, B.POST_TOP], B.PIPE_OD / 2e3), pvc)] + head_meshes(c)
     p = c["lens"]
     panels.append(("b  Head: clamp, cap, cradle, Camera Module 3", ms,
-                   [tuple(p + [0.10, 0.20, 0.10]), tuple(p + [-0.035, 0.03, -0.012]), (0, 0, 1)], 30))
+                   [tuple(p + [0.19, 0.03, 0.09]), tuple(p + [-0.04, 0.035, -0.005]), (0, 0, 1)], 30))
     # (c) top camera on the wall-side top rail (corners layout)
     c = cams["corners"]["top"]
     ms = [(B.along([B.H, -0.15, B.Z_TOP], [B.H, 0.15, B.Z_TOP], B.R), pvc)] + head_meshes(c)
@@ -251,7 +251,7 @@ def fixtures_figure(cams):
     ms.append((B.mm_to_world(parts["cap"], Mc), (0.32, 0.32, 0.35)))
     q = np.array([B.H, 0, B.Z_TOP + 0.015])
     panels.append(("e  Cross clamp: crossbar on a top rail (layout 3)", ms,
-                   [tuple(q + [-0.20, 0.17, 0.10]), tuple(q), (0, 0, 1)], 30))
+                   [tuple(q + [-0.17, 0.22, 0.16]), tuple(q + [-0.01, 0, 0.005]), (0, 0, 1)], 30))
 
     imgs = []
     for title, ms, cam, va in panels:
@@ -264,11 +264,11 @@ def fixtures_figure(cams):
     fig = plt.figure(figsize=(15, 8.6), dpi=130, facecolor=SURFACE)
     fig.text(0.015, 0.975, "Camera fixtures: one printed head for all three cameras, on 3/4 in PVC", fontsize=15,
              weight="bold", color=INK, va="top")
-    fig.text(0.015, 0.94, "Ground cameras: square foot screwed flush to the plywood's edges, 400 mm post cut from the "
-             "enclosure's PVC off-cuts, head clamped at the top.  Top camera: the same head on a top rail, or under a "
-             "crossbar held by two cross clamps.", fontsize=9.5, color=MUTED, va="top")
-    pos = [(0.0, 0.47, 0.335, 0.44), (0.333, 0.47, 0.335, 0.44), (0.666, 0.47, 0.335, 0.44),
-           (0.0, 0.0, 0.335, 0.44), (0.333, 0.0, 0.335, 0.44)]
+    fig.text(0.015, 0.945, "Ground cameras: square foot screwed flush to the plywood's edges, 400 mm post cut from the "
+             "enclosure's PVC off-cuts, head clamped on top.\nTop camera: the same head on a top rail, or under a "
+             "crossbar held by two cross clamps.", fontsize=9.5, color=MUTED, va="top", linespacing=1.4)
+    pos = [(0.0, 0.45, 0.335, 0.42), (0.333, 0.45, 0.335, 0.42), (0.666, 0.45, 0.335, 0.42),
+           (0.0, 0.0, 0.335, 0.42), (0.333, 0.0, 0.335, 0.42)]
     for (title, im), p in zip(imgs, pos):
         a = fig.add_axes(p)
         a.imshow(im)
@@ -286,7 +286,7 @@ def fixtures_figure(cams):
         for j, (txt, xx) in enumerate(zip(row, (0.0, 0.62, 0.80))):
             a.text(xx, 0.95 - k * 0.085, txt, fontsize=10, color=INK if k else MUTED, weight="bold" if k == 0 else None,
                    transform=a.transAxes, va="top")
-    a.text(0.0, 0.95 - len(rows) * 0.085 - 0.02, "Head: 24 cm³, about 30 g.  Foot 22 cm³ (feet: layouts 3 and 4).\n"
+    a.text(0.0, 0.95 - len(rows) * 0.085 - 0.02, "Head: 24 cm³, about 30 g.  Foot: 26 cm³.\n"
            "Cross clamps only for the crossbar in layout 3.", fontsize=9, color=MUTED, transform=a.transAxes, va="top")
     fig.savefig(B.HERE / "fixtures.png", facecolor=SURFACE)
     plt.close(fig)
@@ -296,7 +296,7 @@ def parts_figure():
     """The five STLs as exported, in print orientation."""
     import trimesh as tm
     names = ["head-clamp", "clamp-cap", "head-cradle", "ground-foot", "cross-clamp"]
-    pl = plotter((1700, 520))
+    pl = plotter((1700, 560))
     x = 0.0
     for n in names:
         m = tm.load(B.HERE / f"models/{n}.stl")
@@ -306,7 +306,7 @@ def parts_figure():
                             show_points=False, always_visible=True)
         x += m.extents[0] + 30
     pl.add_mesh(pv.Plane(center=(x / 2 - 15, 0, -0.3), i_size=x + 40, j_size=150), color=(0.92, 0.92, 0.90))
-    pl.camera_position = [(x / 2, -330, 260), (x / 2 - 15, 0, 15), (0, 0, 1)]
+    pl.camera_position = [(x / 2 - 15, -215, 150), (x / 2 - 15, 0, 18), (0, 0, 1)]
     pl.camera.view_angle = 30
     img = shot(pl)
     save_single(img, B.HERE / "parts.png", "Printed parts, as exported (mm, print orientation)",

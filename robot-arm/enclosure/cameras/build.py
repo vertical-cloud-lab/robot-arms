@@ -83,6 +83,7 @@ DISC = 16.0                         # hinge disc radius
 INDEX_R, INDEX_STEP, INDEX_MAX = 12.0, 15, 45   # index holes for the tilt pin, every 15 deg
 PLATE = (3.0, 32.0, 34.0)           # camera plate: thickness, width, height
 PLATE_AT = 22.0                     # plate's back face, from the pivot
+PLATE_Y = 5.0 - 32.0 / 2            # plate's centre, flush with the hinge plate's outer face (prints flat)
 STANDOFF = 3.0
 LENS_FWD = PLATE_AT + PLATE[0] + STANDOFF + 1.0 + 6.0   # lens front from the pivot, along the view
 LENS_UP = 2.5                       # lens centre above the board centre
@@ -152,15 +153,15 @@ def head_cradle():
     disc = _cyl(DISC, TAB_T, "y", (0, TAB_T / 2, 0))
     arm = _box([0, 0, -8], [PLATE_AT + 0.5, TAB_T, 8])
     pt, pw, ph = PLATE
-    plate = _box([PLATE_AT, -pw / 2, LENS_UP - ph / 2], [PLATE_AT + pt, pw / 2, LENS_UP + ph / 2])
-    lens = np.array([0.0, LENS_UP])
+    plate = _box([PLATE_AT, PLATE_Y - pw / 2, LENS_UP - ph / 2], [PLATE_AT + pt, PLATE_Y + pw / 2, LENS_UP + ph / 2])
+    lens = np.array([PLATE_Y, LENS_UP])
     holes = [(s * 10.5, 7.5) for s in (-1, 1)] + [(s * 10.5, -5.0) for s in (-1, 1)]   # from the lens centre
     holes += [(-v, u) for u, v in holes]                                                  # portrait
     posts = [_cyl(2.6, STANDOFF, "x", (PLATE_AT + pt + STANDOFF / 2, lens[0] + u, lens[1] + v), 24) for u, v in holes]
     body = trimesh.boolean.union([disc, arm, plate] + posts)
     cuts = [_cyl(M4 / 2, 20, "y", (0, 0, 0), 32), _cyl(PIN / 2, 20, "y", (0, 0, INDEX_R), 20)]
     cuts += [_cyl(M2_TAP / 2, 2 * (pt + STANDOFF), "x", (PLATE_AT + pt, lens[0] + u, lens[1] + v), 16) for u, v in holes]
-    cuts.append(_box([PLATE_AT - 1, -9, LENS_UP - ph / 2 - 1], [PLATE_AT + pt + 1, 9, LENS_UP - ph / 2 + 4]))  # ribbon notch
+    cuts.append(_box([PLATE_AT - 1, PLATE_Y - 9, LENS_UP - ph / 2 - 1], [PLATE_AT + pt + 1, PLATE_Y + 9, LENS_UP - ph / 2 + 4]))  # ribbon notch
     return _cut(body, cuts)
 
 
@@ -210,7 +211,7 @@ def head_pose(axis_pt, a, r, tilt_deg=0.0):
     cradle_T = T(Rc @ Rt, piv)
     view = Rc @ Rt @ np.array([1.0, 0, 0])
     up = Rc @ Rt @ np.array([0, 0, 1.0])
-    lens = piv + Rc @ Rt @ np.array([LENS_FWD, 0, LENS_UP]) / 1e3
+    lens = piv + Rc @ Rt @ np.array([LENS_FWD, PLATE_Y, LENS_UP]) / 1e3
     return clamp_T, cradle_T, lens, view, up
 
 
@@ -438,9 +439,9 @@ def fixture_parts(cams_layout):
         out.append((f"{name}-clamp", mm_to_world(parts["clamp"], c["clamp_T"]), col))
         out.append((f"{name}-cap", mm_to_world(parts["cap"], c["clamp_T"]), col))
         out.append((f"{name}-cradle", mm_to_world(parts["cradle"], c["cradle_T"]), col))
-        Mb = c["cradle_T"] @ T(t=np.array([PLATE_AT + PLATE[0] + STANDOFF + 0.5, 0, LENS_UP]) / 1e3)
+        Mb = c["cradle_T"] @ T(t=np.array([PLATE_AT + PLATE[0] + STANDOFF + 0.5, PLATE_Y, LENS_UP]) / 1e3)
         out.append((f"{name}-board", _box([-0.0005, -0.0125, -0.012], [0.0005, 0.0125, 0.012]).apply_transform(Mb), (0.10, 0.45, 0.25)))
-        Ml = c["cradle_T"] @ T(t=np.array([LENS_FWD - 3, 0, LENS_UP]) / 1e3)
+        Ml = c["cradle_T"] @ T(t=np.array([LENS_FWD - 3, PLATE_Y, LENS_UP]) / 1e3)
         out.append((f"{name}-lens", _cyl(0.0055, 0.006, "x").apply_transform(Ml), DARK))
         spec = c["spec"]
         if spec["kind"] == "post":
@@ -480,18 +481,25 @@ def main():
         m = fn()
         assert m.is_watertight, f"{name} is not watertight"
         m = m.copy()
-        if name in ("head-clamp", "clamp-cap", "head-cradle"):       # print flat on the hinge or split face
-            if name == "head-cradle":
-                m.apply_transform(trimesh.transformations.rotation_matrix(-np.pi / 2, (1, 0, 0)))
-            elif name == "head-clamp":
-                m.apply_transform(trimesh.transformations.rotation_matrix(np.pi / 2, (1, 0, 0)))
+        rot = {"head-clamp": (-np.pi / 2, (0, 1, 0)),     # split face down, the hinge plate standing up
+               "clamp-cap": (np.pi / 2, (0, 1, 0)),       # split face down
+               "head-cradle": (-np.pi / 2, (1, 0, 0))}    # hinge plate's outer face down
+        if name in rot:
+            m.apply_transform(trimesh.transformations.rotation_matrix(*rot[name]))
         m.apply_translation(-m.bounds[0])
         m.export(HERE / f"models/{name}.stl")
         print(name, np.round(m.extents, 1), "mm,", round(m.volume / 1e3, 1), "cm3")
 
     piper = Piper()
     occ, lo, vox, tip = reach(piper)
-    np.savez_compressed(HERE / "reach.npz", occ=occ, lo=lo, voxel=vox)
+    low = tip[tip[:, 2] < 0.03]                       # fingertips within 30 mm of the plywood
+    fs = 0.01
+    fi = np.floor((low[:, :2] - lo[:2]) / fs).astype(int)
+    touch = np.zeros((int(round(1.44 / fs)),) * 2, bool)
+    fi = fi[(fi >= 0).all(1) & (fi < touch.shape[0]).all(1)]
+    touch[tuple(fi.T)] = True
+    touch = ndimage.binary_fill_holes(ndimage.binary_closing(np.pad(touch, 3), iterations=2))[3:-3, 3:-3]
+    np.savez_compressed(HERE / "reach.npz", occ=occ, lo=lo, voxel=vox, touch=touch, touch_step=fs)
     reach_pts = (np.argwhere(occ) + 0.5) * vox + lo + [0, 0, PLY_T]       # world
     ply = plywood_grid()
     tilts = pick_tilts(reach_pts)
@@ -505,9 +513,8 @@ def main():
         layouts={},
     )
     # how much of the plywood the fingertip can touch (within 30 mm of its surface)
-    touch = occ[:, :, :2].any(2)
-    gx = (np.floor((ply[:, 0] - lo[0]) / vox)).astype(int).clip(0, occ.shape[0] - 1)
-    gy = (np.floor((ply[:, 1] - lo[1]) / vox)).astype(int).clip(0, occ.shape[1] - 1)
+    gx = (np.floor((ply[:, 0] - lo[0]) / fs)).astype(int).clip(0, touch.shape[0] - 1)
+    gy = (np.floor((ply[:, 1] - lo[1]) / fs)).astype(int).clip(0, touch.shape[1] - 1)
     res["reach"]["plywood_reachable_pct"] = round(100 * float(touch[gx, gy].mean()), 1)
     for lname, lay in cams.items():
         res["layouts"][lname] = dict(

@@ -22,6 +22,11 @@ its top for #24's overhead camera: a 2020 bar from corner to corner on two print
 locate against the elbows. It also covers how to keep every camera's position repeatable (pin the
 sockets, wire-brace three walls) and still fit #24's side-camera posts.
 
+[`cameras/`](cameras/) renders the table as it stood on 23 Oct 2026 (wooden legs, A1 mini, power
+strip, magnetic switch), with the arm's reach and two layouts for the front, right and top cameras.
+It also has one printed head that clamps onto ¾ in PVC for all three cameras, plus a foot for the
+ground cameras' posts.
+
 A low shelf for the arm to pick from is in [`shelf/`](shelf/): where it sits relative to the arm,
 how to make item positions repeatable, how stiff it needs to be, a cut list, a 3D view and a
 dimensioned drawing. It also covers the changes needed on the raised deck.
