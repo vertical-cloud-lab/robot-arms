@@ -23,7 +23,9 @@ from OCP.gp import gp_Trsf
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
+import agilex as AGX  # noqa: E402
 import geometry as G  # noqa: E402
+import hifi as H  # noqa: E402
 import scene as S  # noqa: E402
 
 OUT = HERE / "cad"
@@ -152,7 +154,7 @@ def doser() -> Path:
         a.add(base, name=f"Compliant clip ({tag}) base", loc=loc(M), color=cq.Color(*WHITE))
         a.add(cp, name=f"Compliant clip ({tag}) arm +X", loc=loc(M), color=cq.Color(*WHITE))
         a.add(cn, name=f"Compliant clip ({tag}) arm -X", loc=loc(M), color=cq.Color(*WHITE))
-    a.add(solid(G.finger_fixture()), name="Finger fixture (tap-collar stripper)", color=cq.Color(0.40, 0.62, 0.86))
+    a.add(solid(H.finger_fixture_hifi()), name="Finger fixture (tap-collar nest, two forks)", color=cq.Color(0.40, 0.62, 0.86))
     a.add(solid(G.auger_rack()), name="Auger rack (fresh augers)", color=cq.Color(0.55, 0.45, 0.35))
     a.add(solid(G.disposal_bin()), name="Disposal bin", color=cq.Color(0.80, 0.80, 0.82))
     # the three fresh augers share one sub-assembly, so the STEP stores the threaded auger once
@@ -227,12 +229,117 @@ def stock_gripper(with_pin: bool) -> Path:
     return save(a, "alt_b_sleeves.step")
 
 
+# ------------------------------------------------- high fidelity: stock gripper with sleeves / custom fingers
+BLUE, GREEN2, ORANGE2, BRASS, DARK = ((0.20, 0.45, 0.95), (0.20, 0.70, 0.30), (0.95, 0.55, 0.10),
+                                      (0.85, 0.75, 0.30), (0.20, 0.20, 0.22))
+
+
+def gripper_world(axis_base_z: float, at=(0.0, None, None)) -> np.ndarray:
+    """gripper_base (= link6) in W with its cradles on the doser's tube at STOCK_GRIP_Y."""
+    return T((at[0], G.STOCK_GRIP_Y if at[1] is None else at[1], (G.AXIS_Z if at[2] is None else at[2]) + axis_base_z),
+             S.R_TOOL_G)
+
+
+def _pin(a: cq.Assembly) -> None:
+    a.add(solid(H.pin_housing_hifi()), name="Tilt-lock pin housing (printed)", color=cq.Color(*RED))
+    P = T((H.PIN_X_IN, H.PIN_Y, H.PIN_Z))
+    a.add(solid(H.pin_rod()), name="Tilt-lock pin, Ø8 h6 steel x 96 (pushed in)", loc=loc(P), color=cq.Color(*STEEL))
+    a.add(solid(H.pin_handle()), name="Pin handle + Ø25 grab bar (printed)", loc=loc(P), color=cq.Color(0.85, 0.30, 0.25))
+
+
+def hifi_stock(kind: str) -> Path:
+    """alt_a: two-shell sleeves on the stock fingers; alt_a_cf: custom fingers. Only our parts go
+    in the committed STEP; agilex_reference() writes AgileX's gripper at the same pose."""
+    sleeves = kind != "alt_a_cf"
+    zb = H.sleeve_axis_base_z() if sleeves else H.custom_axis_base_z()
+    D = H.sleeve_opening() if sleeves else H.custom_opening()
+    B = gripper_world(zb) @ AGX.step_to_base()
+    dz = AGX.finger_shift(D)
+    up, lo = B @ T((0, 0, dz)), B @ AGX.lower_of() @ T((0, 0, dz))
+    title = {"alt_a": "Alt A two-shell sleeves + tilt-lock pin", "alt_a_cf": "Alt A custom fingers + tilt-lock pin",
+             "alt_b": "Alt B two-shell sleeves (doser servos hold)"}[kind]
+    a = cq.Assembly(name=title)
+    if sleeves:
+        blue, green = solid(H.sleeve_main_shell()), solid(H.sleeve_fixing_shell())
+        hw = H.sleeve_hardware()
+        for tag, M in (("finger +", up), ("finger -", lo)):
+            a.add(blue, name=f"Sleeve main shell ({tag})", loc=loc(M), color=cq.Color(*BLUE))
+            a.add(green, name=f"Sleeve fixing shell ({tag})", loc=loc(M), color=cq.Color(*GREEN2))
+            for i, (n, h) in enumerate(hw):
+                a.add(solid(h), name=f"{n} {tag} #{i // 2 + 1}", loc=loc(M), color=cq.Color(*BRASS))
+    else:
+        cf = solid(H.custom_finger())
+        hw = H.custom_finger_hardware()
+        for tag, M in (("+", up), ("-", lo)):
+            a.add(cf, name=f"Custom finger ({tag})", loc=loc(M), color=cq.Color(*ORANGE2))
+            for i, (n, h) in enumerate(hw):
+                a.add(solid(h), name=f"{n} {tag} #{i + 1}", loc=loc(M), color=cq.Color(*BRASS))
+    if kind != "alt_b":
+        _pin(a)
+    return save(a, {"alt_a": "alt_a_sleeves_pin.step", "alt_a_cf": "alt_a_custom_fingers_pin.step",
+                    "alt_b": "alt_b_sleeves.step"}[kind])
+
+
+def agilex_reference(kind: str) -> Path:
+    """AgileX's gripper at the pose hifi_stock(kind) uses (not committed: no licence on it)."""
+    sleeves = kind == "alt_a"
+    zb = H.sleeve_axis_base_z() if sleeves else H.custom_axis_base_z()
+    D = H.sleeve_opening() if sleeves else H.custom_opening()
+    B = gripper_world(zb) @ AGX.step_to_base()
+    dz = AGX.finger_shift(D)
+    sol = AGX.solids()
+    a = cq.Assembly(name="AgileX PiPER gripper (reference, AgileX's STEP)")
+    names = {0: "motor housing", 1: "linear rail", 2: "finger plate", 3: "back cover", 4: "flange"}
+    for i, n in names.items():
+        a.add(sol[i], name=f"AgileX {n}", loc=loc(B), color=cq.Color(*DARK))
+    keep = {5: "carriage +", 8: "spacer +", 9: "carriage -", 12: "spacer -"}
+    if sleeves:
+        keep.update({6: "pad +", 7: "finger +", 10: "pad -", 11: "finger -"})
+    for i, n in keep.items():
+        sgn = 1 if n.endswith("+") else -1
+        a.add(sol[i], name=f"AgileX {n}", loc=loc(B @ T((0, 0, sgn * dz))), color=cq.Color(*(STEEL if "carriage" in n or "spacer" in n else DARK)))
+    return save(a, f"agilex_gripper_ref_{kind}.step")
+
+
+PRINTED = {   # STL name -> builder (each in its own print-friendly frame as built)
+    "finger_fixture": lambda: H.finger_fixture_hifi(),
+    "sleeve_main_shell_x2": lambda: H.sleeve_main_shell(),
+    "sleeve_fixing_shell_x2": lambda: H.sleeve_fixing_shell(),
+    "custom_finger_x2": lambda: H.custom_finger(),
+    "pin_housing": lambda: H.pin_housing_hifi(),
+    "pin_handle": lambda: H.pin_handle(),
+}
+
+
+def stls() -> None:
+    d = OUT / "stl"
+    d.mkdir(parents=True, exist_ok=True)
+    for n, b in PRINTED.items():
+        p = d / f"{n}.stl"
+        cq.exporters.export(b(), str(p), tolerance=0.05, angularTolerance=0.15)
+        print(f"{p.name}: {p.stat().st_size / 1e6:.2f} MB")
+
+
 def main() -> None:
-    doser()
-    custom_tool("s1")
-    custom_tool("s2")
-    stock_gripper(True)
-    stock_gripper(False)
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("what", nargs="*", default=["doser", "s1", "s2", "alt_a", "alt_a_cf", "alt_b", "stl"])
+    w = set(ap.parse_args().what)
+    if "doser" in w:
+        doser()
+    if "s1" in w:
+        import s1_tool
+        s1_tool.export_step(OUT / "s1_two_servo_tool.step")
+    if "s2" in w:
+        custom_tool("s2")
+    for k in ("alt_a", "alt_a_cf"):
+        if k in w:
+            hifi_stock(k)
+            agilex_reference(k)
+    if "alt_b" in w:
+        hifi_stock("alt_b")
+    if "stl" in w:
+        stls()
 
 
 if __name__ == "__main__":

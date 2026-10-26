@@ -44,13 +44,22 @@ STUDIOS = {   # STEP file -> tab name
     "s2_one_servo_wheel_tool.step": "S2 one-servo wheel tool",
     "alt_a_sleeves_pin.step": "Alt A sleeves + tilt-lock pin",
     "alt_b_sleeves.step": "Alt B sleeves",
+    "alt_a_custom_fingers_pin.step": "Alt A custom fingers + tilt-lock pin",
+    "agilex_gripper_ref_alt_a.step": "AgileX gripper (reference), Alt A pose",
+    "agilex_gripper_ref_alt_a_cf.step": "AgileX gripper (reference), custom-finger pose",
 }
-ASSEMBLIES = {   # tab name -> (strategy STEP, close-up target (doser frame, mm), view direction, m/px)
-    "Strategy 1": ("s1_two_servo_tool.step", (0.0, 149.0, 75.0), (1.0, -0.6, 1.25), 0.00017),
+ASSEMBLIES = {   # tab name -> (strategy STEP(s), close-up target (doser frame, mm), view direction, m/px)
+    "Strategy 1": ("s1_two_servo_tool.step", (0.0, 149.0, 95.0), (1.0, -0.6, 1.25), 0.00022),
     "Strategy 2": ("s2_one_servo_wheel_tool.step", (0.0, 140.0, 80.0), (1.0, -0.6, 1.25), 0.00017),
-    "Alternative A": ("alt_a_sleeves_pin.step", (25.0, 205.0, 75.0), (0.55, 1.0, 0.75), 0.00020),
-    "Alternative B": ("alt_b_sleeves.step", (0.0, 210.0, 75.0), (0.45, 1.0, 0.7), 0.00018),
+    "Alternative A": (("alt_a_sleeves_pin.step", "agilex_gripper_ref_alt_a.step"), (30.0, 200.0, 90.0), (0.55, 1.0, 0.75), 0.00026),
+    "Alternative B": (("alt_b_sleeves.step", "agilex_gripper_ref_alt_a.step"), (0.0, 210.0, 90.0), (0.45, 1.0, 0.7), 0.00024),
+    "Alternative A (custom fingers)": (("alt_a_custom_fingers_pin.step", "agilex_gripper_ref_alt_a_cf.step"),
+                                       (30.0, 200.0, 80.0), (0.55, 1.0, 0.75), 0.00024),
 }
+
+
+def _files(f):
+    return (f,) if isinstance(f, str) else tuple(f)
 
 
 class Onshape:
@@ -221,7 +230,7 @@ def sync(c: Onshape, rebuild: bool = False) -> dict:
     asms = rec.setdefault("assemblies", {})
     for name, (fname, *_) in ASSEMBLIES.items():
         a = asms.get(name)
-        if a and not rebuild and not (changed & {"doser_compliant_clips.step", fname}):
+        if a and not rebuild and not (changed & {"doser_compliant_clips.step", *_files(fname)}):
             continue
         if a:
             aid = a["elementId"]
@@ -236,7 +245,7 @@ def sync(c: Onshape, rebuild: bool = False) -> dict:
             if aid is None:
                 aid = c.post(f"/assemblies/d/{did}/w/{wid}", json={"name": name})["id"]
             rename_element(c, did, wid, aid, name)
-        fill_assembly(c, did, wid, aid, [studios[f]["elementId"] for f in ("doser_compliant_clips.step", fname)])
+        fill_assembly(c, did, wid, aid, [studios[f]["elementId"] for f in ("doser_compliant_clips.step", *_files(fname))])
         asms[name] = {"elementId": aid, "url": url(rec, aid)}
         save_rec(rec)
         print("assembly", name, asms[name]["url"], flush=True)

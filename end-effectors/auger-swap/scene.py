@@ -230,3 +230,23 @@ R_TOOL_G = np.array([[0, 1, 0], [1, 0, 0], [0, 0, -1]], float)    # stock grippe
 def flange_for_E(E: np.ndarray) -> np.ndarray:
     """link6 pose for a custom-tool frame E (E is world-aligned when the tool points down)."""
     return E @ T(R=R_TOOL_E)
+
+
+# ----------------------------------------------------------------------------- high-fidelity parts
+def _hifi_hash() -> str:
+    import hashlib
+    h = hashlib.sha1()
+    for f in ("hifi.py", "agilex.py", "geometry.py"):
+        h.update((HERE / f).read_bytes())
+    return h.hexdigest()[:8]
+
+
+def hifi_mesh(name: str, build, tol: float = 0.08) -> trimesh.Trimesh:
+    """A part from hifi.py (or anything built from it), cached by the source files' hash."""
+    return cached_mesh(f"hifi_{name}_{_hifi_hash()}", build, tol)
+
+
+def agilex_mesh(idx: int, tol: float = 0.1) -> trimesh.Trimesh:
+    """One solid of AgileX's gripper STEP, in the STEP frame (see agilex.py)."""
+    import agilex as A
+    return cached_mesh(f"agilex_{A.SHA256[:10]}_{idx}", lambda: A.solids()[idx], tol)

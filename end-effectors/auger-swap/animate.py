@@ -16,11 +16,14 @@ import math
 import sys
 from pathlib import Path
 
+import cadquery as cq
 import numpy as np
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
+import agilex as AGX  # noqa: E402
 import geometry as G  # noqa: E402
+import hifi as H  # noqa: E402
 import scene as S  # noqa: E402
 
 FPS = 10
@@ -35,9 +38,20 @@ PLACE = L.placements()
 TITLES = {
     "s1": "Strategy 1: custom tool, two servos (lift + hook)",
     "s2": "Strategy 2: custom tool, one servo (wheel: crank + cam)",
-    "alt_a": "Alternative A: stock gripper + sleeves, tilt-lock pin",
+    "alt_a": "Alternative A: stock fingers + two-shell sleeves, tilt-lock pin",
+    "alt_a_cf": "Alternative A: custom fingers on the PiPER gripper, tilt-lock pin",
     "alt_b": "Alternative B: stock gripper + sleeves, doser servos hold",
 }
+HIFI = {"s1", "alt_a", "alt_a_cf", "alt_b"}
+HIFI_TITLES = {TITLES[k] for k in HIFI}
+# stock gripper: tube axis from the J6 face, and the gripper opening (its pad-to-pad command)
+# that closes the cradles on a Ø25 tube / opens them clear of it
+AXIS_BASE_Z = {"alt_a": H.sleeve_axis_base_z(), "alt_b": H.sleeve_axis_base_z(), "alt_a_cf": H.custom_axis_base_z()}
+GRIP_CLOSED = {"alt_a": H.sleeve_opening(), "alt_b": H.sleeve_opening(), "alt_a_cf": H.custom_opening()}
+GRIP_OPEN = {"alt_a": 70.0, "alt_b": 70.0, "alt_a_cf": 60.0}
+# the sleeves hold the tube 135 mm from the J6 face, so the arm runs out of height sooner:
+# scale the clearance moves for them (the collar still clears the fixture's forks)
+HEADROOM = {"alt_a": 0.65, "alt_b": 0.65}
 COL = {
     "doser": (0.72, 0.74, 0.77), "plate": (0.62, 0.64, 0.68), "board": (0.86, 0.80, 0.70),
     "base": (0.93, 0.70, 0.20), "auger": (0.80, 0.80, 0.82), "new": (0.70, 0.86, 0.98),
@@ -46,7 +60,8 @@ COL = {
     "arm": (0.90, 0.90, 0.92), "frame": (0.85, 0.22, 0.20), "jaw": (0.10, 0.62, 0.35),
     "servo": (0.15, 0.30, 0.75), "metal": (0.55, 0.57, 0.60), "wheel": (0.95, 0.60, 0.10),
     "sleeve": (0.10, 0.62, 0.35), "pin": (0.85, 0.22, 0.20), "wire": (0.85, 0.10, 0.10),
-    "hold": (1.00, 0.35, 0.10),
+    "hold": (1.00, 0.35, 0.10), "gripper": (0.20, 0.20, 0.22), "finger": (0.11, 0.11, 0.12),
+    "blue": (0.20, 0.45, 0.95), "green": (0.20, 0.70, 0.30), "cfinger": (0.95, 0.55, 0.10), "screw": (0.85, 0.75, 0.30),
 }
 
 
@@ -84,10 +99,10 @@ class Seq:
         rack_mid = S.T((G.RACK_X[1], G.RACK_OUTLET_Y - G.OUTLET_Y, G.RACK_AXIS_Z - G.AXIS_Z))
         self.st = dict(
             pos=np.array([0.0, G.GRIP_Y if self.custom else G.STOCK_GRIP_Y, 0.0]),
-            s=0.0, th=G.HOOK_OPEN_DEG, psi=0.0, grip=31.0,
+            s=0.0, th=G.HOOK_OPEN_DEG, psi=0.0, grip=GRIP_OPEN.get(kind, 0.0),
             old=np.eye(4), new=rack_mid, held=None, rel=None, collar="old",
             pin=G.PIN_X_OUT, hold=False, cap="", drop=None)
-        self.st["pos"][2] = self.tool_z_for_axis(G.AXIS_Z + 90)
+        self.st["pos"][2] = self.tool_z_for_axis(G.AXIS_Z + 90 * HEADROOM.get(kind, 1.0))
 
     # tool frame helpers --------------------------------------------------------------------
     def tool(self, st) -> np.ndarray:
@@ -100,14 +115,14 @@ class Seq:
         """Frame that carries a held auger: hook centre (custom) or the sleeves' bore."""
         if self.custom:
             return self.tool(st) @ S.T((0, 0, G.HOOK_Z + G.STROKE - st["s"]))
-        return self.tool(st) @ S.T((0, 0, G.SLEEVE_TUBE_Z))
+        return self.tool(st) @ S.T((0, 0, AXIS_BASE_Z[self.kind]))
 
     def tool_z_for_axis(self, axis_z: float, s: float | None = None) -> float:
         """Tool origin height that puts the hook centre / sleeve bore at axis_z."""
         if self.custom:
             s = self.st["s"] if s is None else s
             return axis_z - (G.HOOK_Z + G.STROKE - s)
-        return axis_z + G.SLEEVE_TUBE_Z
+        return axis_z + AXIS_BASE_Z[self.kind]
 
     # steps ---------------------------------------------------------------------------------
     def _emit(self, st):
@@ -178,18 +193,24 @@ def build(kind: str) -> Seq:
     strip = 80.0
     rack_gy = G.RACK_OUTLET_Y + (gy - G.OUTLET_Y)
     z_seat = q.tool_z_for_axis(G.AXIS_Z, s=G.STROKE) if custom else q.tool_z_for_axis(G.AXIS_Z)
-    up = 60.0
+    hr = HEADROOM.get(kind, 1.0)
+    up = 60.0 * hr
+    GO, GC = GRIP_OPEN.get(kind, 0.0), GRIP_CLOSED.get(kind, 0.0)
+    pin = kind in ("alt_a", "alt_a_cf")
+    what = "fingers" if kind == "alt_a_cf" else "sleeves"
 
-    if kind == "alt_a":
-        # lock the plate first: grip the pin's knob and slide it in over the floor edge
-        kz = 170.0
-        kx = G.PIN_X_OUT + G.PIN_KNOB
-        q.step("Open gripper over the tilt-lock pin's knob", 12, pos=np.array([kx, G.PIN_Y, kz + 40]))
-        q.step("Grip the knob", 10, pos=np.array([kx, G.PIN_Y, kz]))
-        q.step("Grip the knob", 6, grip=19.4)
+    if pin:
+        # lock the plate first: grip the pin's Ø25 grab bar like a tube and slide it in over the floor edge
+        kz = q.tool_z_for_axis(H.BAR_Z)
+        kx = G.PIN_X_OUT + H.HANDLE_X
+        q.step("Open over the tilt-lock pin's grab bar (same Ø25 as the tube)", 12, pos=np.array([kx, G.PIN_Y, kz + 40]))
+        q.step("Lower round the grab bar", 10, pos=np.array([kx, G.PIN_Y, kz]))
+        q.step(f"Close: the {what}' cradles wrap the bar", 6, grip=GC)
         q.step("Slide the pin in over the mounting-plate floor: plate can't tip up", 12,
                pos=np.array([kx - (G.PIN_X_OUT - G.PIN_X_IN), G.PIN_Y, kz]), pin=G.PIN_X_IN)
-        q.step("Release the knob", 6, grip=31.0)
+        q.step("Open and lift off the bar (ball detent holds the pin)", 6, grip=GO)
+        q.step("Open and lift off the bar (ball detent holds the pin)", 8,
+               pos=np.array([kx - (G.PIN_X_OUT - G.PIN_X_IN), G.PIN_Y, kz + 40]))
 
     # ---- remove
     if custom:
@@ -209,18 +230,18 @@ def build(kind: str) -> Seq:
             q.step("Wheel 210-360°: crank lifts 28 mm, clips spring open", 16, psi=360.0)
     else:
         q.step("Open gripper over the free tube behind the rear clip", 12,
-               pos=np.array([0.0, gy, z_seat + up]), grip=31.0)
-        q.step("Lower until the sleeves straddle the tube", 10, pos=np.array([0.0, gy, z_seat]))
-        q.step("Close: the sleeves wrap the tube", 8, grip=16.4)
+               pos=np.array([0.0, gy, z_seat + up]), grip=GO)
+        q.step(f"Lower until the {what} straddle the tube", 10, pos=np.array([0.0, gy, z_seat]))
+        q.step(f"Close: the {what}' cradles wrap 180° of the tube each", 8, grip=GC)
         q.grasp("old")
-        hold_txt = ("the pin stops the plate tipping" if kind == "alt_a"
+        hold_txt = ("the pin stops the plate tipping" if pin
                     else "doser tilt servos hold the plate")
         st["hold"] = kind == "alt_b"
         q.step(f"Arm pulls 28 mm against the clips; {hold_txt}", 16, pos=np.array([0.0, gy, z_seat + 28]))
         st["hold"] = False
 
     # ---- to the finger fixture
-    lift_z = st["pos"][2] + 62
+    lift_z = st["pos"][2] + 62 * hr
     q.path("Short move (collar wires): carry to the finger fixture", [
         (0.0, gy, lift_z), (G.FIX_X, fy, lift_z)], 10)
     z_fix = q.tool_z_for_axis(G.FIX_AXIS_Z)
@@ -244,7 +265,7 @@ def build(kind: str) -> Seq:
         q.release()
         q.drop("Old auger drops into the bin", "old", 3 + 23)
     else:
-        q.step("Open the gripper", 6, grip=31.0)
+        q.step("Open the gripper", 6, grip=GO)
         q.release()
         q.drop("Old auger drops into the bin", "old", 3 + 23)
 
@@ -270,7 +291,7 @@ def build(kind: str) -> Seq:
         z_rack = q.tool_z_for_axis(G.RACK_AXIS_Z)
         q.path("Fetch a fresh auger from the rack", [(binx, biny, z_rack + 25), (rx, rack_gy, z_rack + 25)], 12)
         q.step("Lower around the new tube", 10, pos=np.array([rx, rack_gy, z_rack]))
-        q.step("Close the sleeves", 8, grip=16.4)
+        q.step(f"Close the {what}", 8, grip=GC)
         q.grasp("new")
     z_now = st["pos"][2]
     q.step("Lift clear of the rack", 8, pos=np.array([rx, rack_gy, z_now + (40 if custom else 25)]))
@@ -283,7 +304,7 @@ def build(kind: str) -> Seq:
     q.step("Push the new auger through the fork and the collar", 18, pos=np.array([G.FIX_X, fy, z_fix]))
     st["collar"] = "new"
     q.frames[-1]["collar"] = "new"
-    q.step("Lift straight up: the collar comes along", 12, pos=np.array([G.FIX_X, fy, z_fix + 60]))
+    q.step("Lift straight up: the collar comes along", 12, pos=np.array([G.FIX_X, fy, z_fix + 60 * hr]))
 
     # ---- re-seat
     if custom:
@@ -301,22 +322,23 @@ def build(kind: str) -> Seq:
         q.step("Done: arm lifts away", 10, pos=np.array([0.0, gy, z_hover + 60]))
     else:
         z_hover = q.tool_z_for_axis(G.AXIS_Z + 28)
-        q.path("Carry back over the doser", [(0.0, gy, z_hover + 50), (0.0, gy, z_hover)], 12)
+        q.path("Carry back over the doser", [(0.0, gy, z_hover + 50 * hr), (0.0, gy, z_hover)], 12)
         st["hold"] = kind == "alt_b"
         q.step("Arm pushes the tube down the funnels; clips snap shut", 16, pos=np.array([0.0, gy, z_seat]))
         st["hold"] = False
-        q.step("Open the gripper", 6, grip=31.0)
+        q.step("Open the gripper", 6, grip=GO)
         q.release()
-        q.step("Lift away", 10, pos=np.array([0.0, gy, z_seat + 60]))
-        if kind == "alt_a":
-            kz = 170.0
-            kx = G.PIN_X_IN + G.PIN_KNOB
-            q.step("Back to the pin: grip the knob", 12, pos=np.array([kx, G.PIN_Y, kz + 40]))
-            q.step("Back to the pin: grip the knob", 8, pos=np.array([kx, G.PIN_Y, kz]))
-            q.step("Back to the pin: grip the knob", 6, grip=19.4)
+        q.step("Lift away", 10, pos=np.array([0.0, gy, z_seat + 60 * hr]))
+        if pin:
+            kz = q.tool_z_for_axis(H.BAR_Z)
+            kx = G.PIN_X_IN + H.HANDLE_X
+            q.step("Back to the pin: over the grab bar", 12, pos=np.array([kx, G.PIN_Y, kz + 40]))
+            q.step("Back to the pin: over the grab bar", 8, pos=np.array([kx, G.PIN_Y, kz]))
+            q.step("Back to the pin: grip the grab bar", 6, grip=GC)
             q.step("Slide the pin out: plate free to tilt for dosing again", 12,
                    pos=np.array([kx + (G.PIN_X_OUT - G.PIN_X_IN), G.PIN_Y, kz]), pin=G.PIN_X_OUT)
-            q.step("Done", 8, grip=31.0, pos=np.array([kx + 22, G.PIN_Y, kz + 50]))
+            q.step("Done", 8, grip=GO)
+            q.step("Done", 8, pos=np.array([kx + (G.PIN_X_OUT - G.PIN_X_IN), G.PIN_Y, kz + 50]))
     q.hold(q.st["cap"], 6)
     return q
 
@@ -373,11 +395,11 @@ class Renderer:
             self.add(name, S.step_mesh(rel), col, M)
         for i, y in enumerate(G.CLIP_ROWS_Y):
             self.add(f"clipbase{i}", S.part_mesh("clip_base"), COL["clip"], S.T((0, y, G.AXIS_Z)))
-        self.add("fixture", S.part_mesh("finger_fixture"), COL["fixture"])
+        self.add("fixture", S.hifi_mesh("fixture", H.finger_fixture_hifi), COL["fixture"])
         self.add("rack", S.part_mesh("auger_rack"), COL["rack"])
         self.add("bin", S.part_mesh("disposal_bin"), COL["bin"], opacity=0.35)
-        if self.kind == "alt_a":
-            self.add("pin_housing", S.part_mesh("pin_housing"), COL["pin"])
+        if self.kind in ("alt_a", "alt_a_cf"):
+            self.add("pin_housing", S.hifi_mesh("pin_housing", H.pin_housing_hifi), COL["pin"])
 
     def _dynamic(self):
         for i in range(2):
@@ -392,8 +414,7 @@ class Renderer:
         self.add("collar", S.step_mesh(PLACE["Tap collar"][0]), COL["collar"])
         self.add("solenoid", S.step_mesh(PLACE["Solenoid (Adafruit 412)"][0]), COL["solenoid"])
         meshes = self.arm.meshes()
-        links = S.Piper.LINKS[:7] if self.custom else S.Piper.LINKS
-        for n in links:
+        for n in S.Piper.LINKS[:7]:
             self.add("arm_" + n, meshes[n], COL["arm"])
         if self.custom:
             self.add("adapter", S.part_mesh("flange_adapter"), COL["metal"])
@@ -414,10 +435,30 @@ class Renderer:
                 self.add("crank_rod", S.part_mesh("rod"), COL["metal"])
                 self.add("cam_rod", S.part_mesh("rod"), COL["wheel"])
         else:
-            self.add("sleeve7", S.part_mesh("sleeve_pos"), COL["sleeve"])
-            self.add("sleeve8", S.part_mesh("sleeve_neg"), COL["sleeve"])
-        if self.kind == "alt_a":
-            self.add("pin", S.part_mesh("pin"), COL["pin"])
+            # AgileX's own gripper (STEP, fetched at run time) instead of the URDF's meshes
+            for i in AGX.BODY:
+                self.add(f"agx{i}", S.agilex_mesh(i), COL["gripper"])
+            for nm, idx in (("carr_u", 5), ("carr_l", 9), ("sp_u", 8), ("sp_l", 12)):
+                self.add(nm, S.agilex_mesh(idx), COL["metal"])
+            if self.kind == "alt_a_cf":
+                cf = S.hifi_mesh("custom_finger", H.custom_finger)
+                hw = S.hifi_mesh("custom_finger_hw", lambda: cq.Workplane().add([h.val() for _, h in H.custom_finger_hardware()]))
+                for sfx in ("u", "l"):
+                    self.add("cf_" + sfx, cf, COL["cfinger"])
+                    self.add("hw_" + sfx, hw, COL["screw"])
+            else:
+                for nm, idx in (("fin_u", 7), ("pad_u", 6), ("fin_l", 11), ("pad_l", 10)):
+                    self.add(nm, S.agilex_mesh(idx), COL["finger"])
+                blue = S.hifi_mesh("sleeve_main", H.sleeve_main_shell)
+                green = S.hifi_mesh("sleeve_fix", H.sleeve_fixing_shell)
+                hw = S.hifi_mesh("sleeve_hw", lambda: cq.Workplane().add([h.val() for _, h in H.sleeve_hardware()]))
+                for sfx in ("u", "l"):
+                    self.add("blue_" + sfx, blue, COL["blue"])
+                    self.add("green_" + sfx, green, COL["green"])
+                    self.add("hw_" + sfx, hw, COL["screw"])
+        if self.kind in ("alt_a", "alt_a_cf"):
+            self.add("pin_rod", S.hifi_mesh("pin_rod", H.pin_rod), COL["metal"])
+            self.add("pin_handle", S.hifi_mesh("pin_handle", H.pin_handle), COL["pin"])
 
     # ------------------------------------------------------------------------------------
     def pose(self, st, seq: Seq):
@@ -444,10 +485,8 @@ class Renderer:
         tool = seq.tool(st)
         flange = S.flange_for_E(tool) if self.custom else tool
         self.q, ep, er = self.arm.ik(flange, self.q)
-        poses = self.arm.poses(self.q, grip_mm=0.0 if self.custom else st["grip"])
-        for n in (S.Piper.LINKS[:7] if self.custom else S.Piper.LINKS):
-            if n in ("link7", "link8"):
-                continue
+        poses = self.arm.poses(self.q)
+        for n in S.Piper.LINKS[:7]:
             A["arm_" + n].user_matrix = poses[n]
         Tf = poses["link6"]
         if self.custom:
@@ -481,14 +520,28 @@ class Renderer:
                 lever = (Cg @ S.about((0, 1, 0), -st["th"], (px, 0, pz)) @ np.array([px - 2, G.WHEEL_Y + 6, pz + 6, 1]))[:3]
                 A["cam_rod"].user_matrix = self._link(lever, cam_top, r=0.7)
         else:
-            d = st["grip"]
-            # sleeves ride on the finger inner faces; their bore is centred when d = 16.4
-            A["arm_link7"].user_matrix = poses["link7"]
-            A["arm_link8"].user_matrix = poses["link8"]
-            A["sleeve7"].user_matrix = Tf @ S.T((0, -(d - 16.4), 0))
-            A["sleeve8"].user_matrix = Tf @ S.T((0, (d - 16.4), 0))
-        if self.kind == "alt_a":
-            A["pin"].user_matrix = S.T((st["pin"], G.PIN_Y, G.PIN_Z))
+            dz = AGX.finger_shift(st["grip"])             # opening = the gripper's pad-to-pad command
+            B = Tf @ AGX.step_to_base()
+            U, Lw = B @ S.T((0, 0, dz)), B @ AGX.lower_of() @ S.T((0, 0, dz))
+            for i in AGX.BODY:
+                A[f"agx{i}"].user_matrix = B
+            for k in ("carr_u", "sp_u"):
+                A[k].user_matrix = U
+            for k in ("carr_l", "sp_l"):
+                A[k].user_matrix = B @ S.T((0, 0, -dz))
+            if self.kind == "alt_a_cf":
+                A["cf_u"].user_matrix = A["hw_u"].user_matrix = U
+                A["cf_l"].user_matrix = A["hw_l"].user_matrix = Lw
+            else:
+                for k in ("fin_u", "pad_u"):
+                    A[k].user_matrix = U
+                for k in ("fin_l", "pad_l"):
+                    A[k].user_matrix = B @ S.T((0, 0, -dz))
+                for k in ("blue", "green", "hw"):
+                    A[k + "_u"].user_matrix = U
+                    A[k + "_l"].user_matrix = Lw
+        if self.kind in ("alt_a", "alt_a_cf"):
+            A["pin_rod"].user_matrix = A["pin_handle"].user_matrix = S.T((st["pin"], G.PIN_Y, G.PIN_Z))
 
         hold = st.get("hold", False)
         for n in ("Servo MG996R (+X)", "Servo MG996R (-X)"):
@@ -567,7 +620,8 @@ def caption(img, title, cap, k, n):
     d.text((12, 7), title, fill=(20, 20, 20), font=fb)
     d.rectangle([0, im.height - 36, im.width, im.height], fill=(30, 30, 30))
     d.text((12, im.height - 28), cap, fill=(255, 255, 255), font=f)
-    d.text((12, 40), "medium fidelity · issue #42 · lab layout assumed", fill=(120, 120, 120), font=fs)
+    d.text((12, 40), f"{'high' if title in HIFI_TITLES else 'medium'} fidelity · issue #42 · lab layout assumed",
+           fill=(120, 120, 120), font=fs)
     w = int((im.width - 24) * k / max(n - 1, 1))
     d.rectangle([12, im.height - 40, 12 + w, im.height - 37], fill=(230, 120, 30))
     return im

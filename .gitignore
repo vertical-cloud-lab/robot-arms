@@ -230,3 +230,6 @@ my_secrets.py
 
 # auger-swap: the full doser STEP is 29 MB and export_step.py regenerates it
 end-effectors/auger-swap/cad/doser_compliant_clips.step
+# auger-swap: AgileX's gripper STEP has no licence, so it is fetched at run time and its
+# placed copies (for the Onshape assemblies) stay local, as in piper-camera-mount
+end-effectors/auger-swap/cad/agilex_gripper_ref_*.step
