@@ -298,7 +298,7 @@ def build(kind: str) -> Seq:
 
     # ---- re-thread through the collar held in the fixture
     z_fix = q.tool_z_for_axis(G.FIX_AXIS_Z)
-    hop = 45 if custom else 22
+    hop = 45 if custom else 22 * hr
     q.path("Line up on the fixture axis, outlet end first", [
         (G.FIX_X, fy + strip + 5, z_fix + hop), (G.FIX_X, fy + strip + 5, z_fix)], 10)
     q.step("Push the new auger through the fork and the collar", 18, pos=np.array([G.FIX_X, fy, z_fix]))
@@ -338,7 +338,7 @@ def build(kind: str) -> Seq:
             q.step("Slide the pin out: plate free to tilt for dosing again", 12,
                    pos=np.array([kx + (G.PIN_X_OUT - G.PIN_X_IN), G.PIN_Y, kz]), pin=G.PIN_X_OUT)
             q.step("Done", 8, grip=GO)
-            q.step("Done", 8, pos=np.array([kx + (G.PIN_X_OUT - G.PIN_X_IN), G.PIN_Y, kz + 50]))
+            q.step("Done", 8, pos=np.array([kx + (G.PIN_X_OUT - G.PIN_X_IN), G.PIN_Y, kz + 50 * hr]))
     q.hold(q.st["cap"], 6)
     return q
 
@@ -416,17 +416,27 @@ class Renderer:
         meshes = self.arm.meshes()
         for n in S.Piper.LINKS[:7]:
             self.add("arm_" + n, meshes[n], COL["arm"])
-        if self.custom:
+        if self.kind == "s1":
+            # high-fidelity tool from s1_tool.py: groups move with the flange, the carriage,
+            # the hook (about its pivot) and the pinion
+            import hashlib
+            import s1_tool as S1
+            h = hashlib.sha1((HERE / "s1_tool.py").read_bytes() + (HERE / "geometry.py").read_bytes()).hexdigest()[:8]
+            self.s1 = S1
+            self.s1keys = {}
+            for grp, fn in (("fixed", S1.fixed_parts), ("carriage", S1.carriage_parts),
+                            ("hook", S1.hook_parts), ("pinion", S1.pinion_parts)):
+                self.s1keys[grp] = []
+                for i, (name, wp, rgb) in enumerate(fn()):
+                    key = f"s1_{grp}_{i}"
+                    self.add(key, S.cached_mesh(f"s1_{h}_{grp}_{i}", lambda wp=wp: wp, 0.1), rgb)
+                    self.s1keys[grp].append(key)
+        elif self.custom:
             self.add("adapter", S.part_mesh("flange_adapter"), COL["metal"])
-            self.add("frame", S.part_mesh("frame_s1" if self.kind == "s1" else "frame_s2"), COL["frame"], opacity=0.5)
+            self.add("frame", S.part_mesh("frame_s2"), COL["frame"], opacity=0.5)
             self.add("carriage", S.part_mesh("carriage"), (0.05, 0.40, 0.22))
             self.add("hook", S.part_mesh("hook"), COL["jaw"])
-            if self.kind == "s1":
-                self.add("servo_lift", S.part_mesh("servo_mg996r"), COL["servo"])
-                self.add("pinion", S.part_mesh("pinion"), COL["metal"])
-                self.add("rackbar", S.part_mesh("rack_bar"), COL["metal"])
-                self.add("servo_hook", S.part_mesh("servo_micro"), COL["servo"])
-            else:
+            if True:
                 self.add("servo_wheel", S.part_mesh("servo_mg996r"), COL["servo"])
                 self.add("drive_gear", S.part_mesh("drive_gear"), COL["metal"])
                 self.add("driven_gear", S.part_mesh("driven_gear"), COL["metal"])
@@ -489,7 +499,16 @@ class Renderer:
         for n in S.Piper.LINKS[:7]:
             A["arm_" + n].user_matrix = poses[n]
         Tf = poses["link6"]
-        if self.custom:
+        if self.kind == "s1":
+            E = Tf @ np.linalg.inv(S.T(R=S.R_TOOL_E))
+            Cg = E @ S.T((0, 0, G.HOOK_Z + G.STROKE - st["s"]))
+            px, pz = G.HOOK_PIVOT
+            Hk = Cg @ S.about((0, 1, 0), -st["th"], (px, 0, pz))
+            Pn = E @ self.s1.pinion_pose(st["s"])
+            for grp, M in (("fixed", E), ("carriage", Cg), ("hook", Hk), ("pinion", Pn)):
+                for k in self.s1keys[grp]:
+                    A[k].user_matrix = M
+        elif self.custom:
             E = Tf @ np.linalg.inv(S.T(R=S.R_TOOL_E))
             Cg = E @ S.T((0, 0, G.HOOK_Z + G.STROKE - st["s"]))
             for k in ("adapter", "frame"):
@@ -497,13 +516,7 @@ class Renderer:
             A["carriage"].user_matrix = Cg
             px, pz = G.HOOK_PIVOT
             A["hook"].user_matrix = Cg @ S.about((0, 1, 0), -st["th"], (px, 0, pz))
-            hz = G.HOOK_Z + G.STROKE              # hook centre (s = 0), E frame
-            if self.kind == "s1":
-                A["servo_lift"].user_matrix = E @ S.T((30, 0, -40)) @ S.T(R=S.rot((1, 0, 0), -90))
-                A["pinion"].user_matrix = E @ S.T((9 + 3, 8, -40)) @ S.T(R=S.rot((1, 0, 0), -90)) @ S.T(R=S.rot((0, 0, 1), -st["s"] / 9.0 * 57.3))
-                A["rackbar"].user_matrix = Cg @ S.T((0, 12, G.CARRIAGE_TOP - 2))
-                A["servo_hook"].user_matrix = Cg @ S.T((px, -16, pz)) @ S.T(R=S.rot((1, 0, 0), -90))
-            else:
+            if True:                              # Strategy 2's wheel, gears and links
                 psi = st["psi"]
                 W = E @ S.T((0, G.WHEEL_Y, G.WHEEL_Z))
                 A["wheel"].user_matrix = W @ S.T(R=S.rot((0, 1, 0), -90 - psi))

@@ -6,7 +6,7 @@
  "partStudios": {
   "doser_compliant_clips.step": {
    "elementId": "84da4bd471ae162bb09fd705",
-   "sha256": "ebae33a6127278f547ab24007a3843d3545ebd71485e6899327431186cb09db0",
+   "sha256": "bd15954c12bfb1e4989f271466e43b796141e6d5f4978243433490980a105c48",
    "tab": "Doser + compliant clips + finger fixture",
    "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/84da4bd471ae162bb09fd705"
   },
@@ -24,15 +24,33 @@
   },
   "alt_a_sleeves_pin.step": {
    "elementId": "0cddbb996c8dc474b02a109d",
-   "sha256": "f78d2b738f1bf5758b8f9f3edb7d90d2fa000a73c0055d8565764fbffcc7fb6e",
+   "sha256": "ac3732b3902b6e614a7a2f0221b2bea9afbc0f17cf60716fd9d7d2d2452acaa3",
    "tab": "Alt A sleeves + tilt-lock pin",
    "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/0cddbb996c8dc474b02a109d"
   },
   "alt_b_sleeves.step": {
    "elementId": "c35cc3f6cc387f21bf7cd736",
-   "sha256": "0af881a1c8063d2b11960883c10eb5df1a529edca557c7ae7d178de330ef8be1",
+   "sha256": "fadc60d9de4a6828192e5034a4cd04389ffe5f38f00a0a5a17bb7e1dcfa04203",
    "tab": "Alt B sleeves",
    "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/c35cc3f6cc387f21bf7cd736"
+  },
+  "alt_a_custom_fingers_pin.step": {
+   "elementId": "4d6e11d16ea5da425da28134",
+   "sha256": "8d91c46c3c65b072f28cc8488eb462360eb6b68d4429afcaa5328d6359139c8c",
+   "tab": "Alt A custom fingers + tilt-lock pin",
+   "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/4d6e11d16ea5da425da28134"
+  },
+  "agilex_gripper_ref_alt_a.step": {
+   "elementId": "4b031882d11b4ae954b45ec7",
+   "sha256": "838f17f45820f5dba704f16b08dc793c0a5250f5355b7d86509c9748ccd4366e",
+   "tab": "AgileX gripper (reference), Alt A pose",
+   "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/4b031882d11b4ae954b45ec7"
+  },
+  "agilex_gripper_ref_alt_a_cf.step": {
+   "elementId": "a66cfbff4e42ef06e9f2db39",
+   "sha256": "7cc392a0abef1ee7e954fdef4697037fcee93cef877e965f0997d110ec294c99",
+   "tab": "AgileX gripper (reference), custom-finger pose",
+   "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/a66cfbff4e42ef06e9f2db39"
   }
  },
  "assemblies": {
@@ -51,6 +69,10 @@
   "Alternative B": {
    "elementId": "55472b6c00b0741d6cf2e8af",
    "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/55472b6c00b0741d6cf2e8af"
+  },
+  "Alternative A custom fingers": {
+   "elementId": "5a5c127205394e863e2a013d",
+   "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/5a5c127205394e863e2a013d"
   }
  },
  "folder": "vcl-shared > 6DOF Robot Arm"

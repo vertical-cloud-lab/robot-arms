@@ -53,7 +53,7 @@ ASSEMBLIES = {   # tab name -> (strategy STEP(s), close-up target (doser frame, 
     "Strategy 2": ("s2_one_servo_wheel_tool.step", (0.0, 140.0, 80.0), (1.0, -0.6, 1.25), 0.00017),
     "Alternative A": (("alt_a_sleeves_pin.step", "agilex_gripper_ref_alt_a.step"), (30.0, 200.0, 90.0), (0.55, 1.0, 0.75), 0.00026),
     "Alternative B": (("alt_b_sleeves.step", "agilex_gripper_ref_alt_a.step"), (0.0, 210.0, 90.0), (0.45, 1.0, 0.7), 0.00024),
-    "Alternative A (custom fingers)": (("alt_a_custom_fingers_pin.step", "agilex_gripper_ref_alt_a_cf.step"),
+    "Alternative A custom fingers": (("alt_a_custom_fingers_pin.step", "agilex_gripper_ref_alt_a_cf.step"),
                                        (30.0, 200.0, 80.0), (0.55, 1.0, 0.75), 0.00024),
 }
 
