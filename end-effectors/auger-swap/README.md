@@ -68,7 +68,7 @@ Both grip the tube 180° on each side, so the pull-out bears on the cradle walls
 | Hardware per finger | 2 × M3 × 10 + 2 × M3 × 12 countersunk (ISO 10642), 4 × M3 × 5.7 heat-set inserts | 4 × M2 × 8 (the stock screws), 1 × M3 × 5.7 heat-set insert; the stock shoulder screw and spacer |
 
 The custom-finger GIF lands every frame on its IK target (0.00 mm). The sleeves hold the tube 46 mm further from J6, and from the assumed base position
-the arm runs out of reach on 40 transit frames near the bin and the rack, missing by up to 5.8 mm. Every contact move (pin, pull, strip, re-thread,
+the arm runs out of reach on 40 transit frames (near the bin and the rack, and two lining up on the fixture), missing by up to 5.8 mm. Every contact move (pin, pull, strip, re-thread,
 re-seat) is exact. The Strategy 1 GIF is exact on every frame.
 
 ### Two-shell sleeves (stock fingers)
