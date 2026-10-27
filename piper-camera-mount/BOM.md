@@ -171,7 +171,9 @@ PLA set went to the A1 mini on 8 October ([record](slice/print_2026-10-08/README
 the old O33 lens cradle, which the 6 mm lens's thumbscrews can hit. A second PLA set with the O43
 cradle went to the A1 mini on 13 October ([record](slice/print_2026-10-13/README.md)), but its pod
 has too little room for the HQ Camera's housing. Reprint the pod and the bracket
-([The HQ Camera in the pod](README.md#the-hq-camera-in-the-pod)).
+([The HQ Camera in the pod](README.md#the-hq-camera-in-the-pod)). Neither printed pod takes the
+Camera Module 3 Wide's square lens housing either
+([The Camera Module 3 Wide in the pod](README.md#the-camera-module-3-wide-in-the-pod)).
 
 ### Electronics
 

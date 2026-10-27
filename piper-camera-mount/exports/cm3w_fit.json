@@ -1,0 +1,237 @@
+{
+  "drawing": {
+    "board": [
+      25.0,
+      23.862,
+      1.12
+    ],
+    "holes": [
+      [
+        2.0,
+        2.0
+      ],
+      [
+        23.0,
+        2.0
+      ],
+      [
+        2.0,
+        14.5
+      ],
+      [
+        23.0,
+        14.5
+      ]
+    ],
+    "hole_d": 2.2,
+    "lens": [
+      12.5,
+      14.4
+    ],
+    "lens_d": 6.95,
+    "housing": [
+      10.8,
+      10.8,
+      4.07
+    ],
+    "lens_tip": 8.3,
+    "connector_edge": "top"
+  },
+  "old_ref": "70dc1db",
+  "camera_frame": "lens at the origin, connector toward -y, mm; the pod's screw holes in it",
+  "before": {
+    "cylinders by diameter": {
+      "O13.00": [
+        [
+          0.0,
+          4.938
+        ]
+      ],
+      "O2.40": [
+        [
+          -10.5,
+          -0.1
+        ],
+        [
+          -10.5,
+          12.4
+        ],
+        [
+          10.5,
+          -0.1
+        ],
+        [
+          10.5,
+          12.4
+        ]
+      ],
+      "O4.20": [
+        [
+          -10.5,
+          -0.1
+        ],
+        [
+          -10.5,
+          12.4
+        ],
+        [
+          10.5,
+          -0.1
+        ],
+        [
+          10.5,
+          12.4
+        ]
+      ],
+      "O4.50": [
+        [
+          -10.5,
+          -0.1
+        ],
+        [
+          -10.5,
+          12.4
+        ],
+        [
+          10.5,
+          -0.1
+        ],
+        [
+          10.5,
+          12.4
+        ]
+      ]
+    },
+    "hole walls round the lens": {},
+    "camera hole to its screw hole (mm)": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "housing overlap (mm3)": 79.58,
+    "lens overlap (mm3)": 43.93,
+    "board overlap (mm3)": 0.0,
+    "housing to the pod (mm)": 0.0,
+    "board to the bosses (mm)": 0.0
+  },
+  "now": {
+    "cylinders by diameter": {
+      "O2.40": [
+        [
+          -10.5,
+          -0.1
+        ],
+        [
+          -10.5,
+          12.4
+        ],
+        [
+          10.5,
+          -0.1
+        ],
+        [
+          10.5,
+          12.4
+        ]
+      ],
+      "O4.20": [
+        [
+          -10.5,
+          -0.1
+        ],
+        [
+          -10.5,
+          12.4
+        ],
+        [
+          10.5,
+          -0.1
+        ],
+        [
+          10.5,
+          12.4
+        ]
+      ],
+      "O4.50": [
+        [
+          -10.5,
+          -0.1
+        ],
+        [
+          -10.5,
+          12.4
+        ],
+        [
+          10.5,
+          -0.1
+        ],
+        [
+          10.5,
+          12.4
+        ]
+      ]
+    },
+    "hole walls round the lens": {
+      "y-": -5.7,
+      "x+": 5.7,
+      "x-": -5.7,
+      "y+": 5.7
+    },
+    "camera hole to its screw hole (mm)": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "housing overlap (mm3)": 0.0,
+    "lens overlap (mm3)": 0.0,
+    "board overlap (mm3)": 0.0,
+    "housing to the pod (mm)": 0.3,
+    "board to the bosses (mm)": 0.0,
+    "clearance per side (mm)": {
+      "y-": 0.3,
+      "x+": 0.3,
+      "x-": 0.3,
+      "y+": 0.3
+    }
+  },
+  "changed": {
+    "old minus new": {
+      "volume (mm3)": 349.7,
+      "solids": 1,
+      "camera-frame box (x, y, z)": [
+        [
+          -5.7,
+          -5.7,
+          -8.5
+        ],
+        [
+          5.7,
+          1.814,
+          -2.5
+        ]
+      ]
+    },
+    "new minus old": {
+      "volume (mm3)": 366.33,
+      "solids": 1,
+      "camera-frame box (x, y, z)": [
+        [
+          -6.5,
+          1.814,
+          -8.5
+        ],
+        [
+          6.5,
+          11.438,
+          -2.5
+        ]
+      ]
+    }
+  },
+  "pod volume (mm3)": {
+    "before": 18224.39,
+    "now": 18241.02
+  }
+}

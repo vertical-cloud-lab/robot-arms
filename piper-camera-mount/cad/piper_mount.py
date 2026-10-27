@@ -43,7 +43,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 
 import cadquery as cq
@@ -140,16 +140,21 @@ class Params:
                                              # (round the axis from the camera's +X); any angle clears
 
     # --- Camera Module 3 Wide, official drawing; connector faces +Z --------------------
+    # (camera-module-3-wide-mechanical-drawing.pdf, drawn 1:1 with the connector edge at the top)
     cm_gap: float = 10.5            # its board's lower edge above the HQ board's upper edge: keeps the
                                     # HQ lens out of the bottom of the Wide's picture
     cm_standoff: float = 2.5
     cm_w: float = 25.0
     cm_h: float = 23.862
-    cm_lens_from_top: float = 9.462     # lens centre from the edge away from the connector
+    cm_lens_from_top: float = 14.4      # lens centre from the edge away from the connector, which the
+                                        # holes are 2.0 and 14.5 from: 9.462 from the connector edge
     cm_pcb_t: float = 1.12
     cm_lens_h: float = 8.3              # lens tip above the PCB front face
+    cm_housing: float = 10.8            # the square lens housing, 4.07 mm deep off the PCB
     m2_clear_d: float = 2.4
-    cm_hole_d: float = 13.0             # through the plate, round the 8.5 mm lens module
+    cm_hole_c: float = 0.3              # the plate's square hole round the housing, per side
+    cm_bevel_lens_from_top: float = 9.462   # the Wide's lens as first modelled, which the bracket's
+                                            # bevel still follows (make_bracket)
 
     # --- carrier (+X) and Pi 5 ---------------------------------------------------------
     carrier_x0: float = 27.0        # inner face; 1.9 mm clear of the finger plate's edge
@@ -410,7 +415,8 @@ def make_cm_camera_local(p: Params) -> dict[str, cq.Workplane]:
     for x, y in cm_holes(p):
         pcb = pcb.cut(cyl_z(2.2, -1, 2, x, y))
     pcb = pcb.union(lbox(-10, 10, bot, bot + 5.71, p.cm_pcb_t, p.cm_pcb_t + 2.75))       # FPC connector
-    module = lbox(-4.25, 4.25, -4.25, 4.25, -4.07, 0).union(cyl_z(6.95, -p.cm_lens_h, -4.07))
+    h = p.cm_housing / 2
+    module = lbox(-h, h, -h, h, -4.07, 0).union(cyl_z(6.95, -p.cm_lens_h, -4.07))
     return {"cm_pcb": pcb, "cm_module": module}
 
 
@@ -428,8 +434,9 @@ def hq_station_cuts(p: Params) -> cq.Workplane:
 
 
 def cm_station_cuts(p: Params) -> cq.Workplane:
-    s = p.cm_standoff
-    cut = cyl_z(p.cm_hole_d, -80, -s + 0.5)
+    """Square hole for the lens housing (it stands 1.57 mm into the plate), screw holes."""
+    s, h = p.cm_standoff, p.cm_housing / 2 + p.cm_hole_c
+    cut = lbox(-h, h, -h, h, -80, -s + 0.5)
     for x, y in cm_holes(p):
         cut = cut.union(cyl_z(p.m2_clear_d, -80, 5, x, y))
         cut = cut.union(cyl_z(4.2, -80, -s - p.pod_t + 2.0, x, y))
@@ -517,8 +524,10 @@ def make_bracket(p: Params) -> cq.Workplane:
     part = part.cut(hq_place(p)(hq_keepout_local(p)))
     # Where it goes beyond the first version's web (outboard of it, or above it), the seat keeps out
     # of the Wide's picture: its top front corner is bevelled along the bottom of the Wide's view
-    # (the cut face leans 32 degrees from vertical as printed, so it needs no support).
-    o, d, up = optical_axes(p)["cm3w"]
+    # (the cut face leans 32 degrees from vertical as printed, so it needs no support). The bevel
+    # follows the view with the lens where it was first modelled, 4.94 mm nearer the HQ than
+    # Raspberry Pi's drawing puts it. The real view is that much higher and clears it by more.
+    o, d, up = optical_axes(replace(p, cm_lens_from_top=p.cm_bevel_lens_from_top))["cm3w"]
     new = box(-300, p.web_x0, -300, 300, -300, 300).union(
         box(-300, p.web_x1_rear, -300, 300, zc + p.web_z, 300))
     part = part.cut(view_pyramid(o, d, up, *CM3W_FOV, 250.0, aperture=1.5).intersect(new))

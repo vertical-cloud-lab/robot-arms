@@ -16,7 +16,9 @@ the starting point for the PiPER side. **The first PLA set went to the A1 mini o
 bracket has the old O33 lens cradle, which the 6 mm lens's thumbscrews can hit. **A second PLA set,
 with the O43 cradle, went to the A1 mini on 2026-10-13** ([record](slice/print_2026-10-13/README.md)),
 but its pod has too little room for the HQ Camera's housing. Reprint the pod and the bracket from
-this branch ([The HQ Camera in the pod](#the-hq-camera-in-the-pod)).
+this branch ([The HQ Camera in the pod](#the-hq-camera-in-the-pod)). Neither printed pod takes the
+Camera Module 3 Wide either: its square lens housing can't pass the pod's round hole
+([The Camera Module 3 Wide in the pod](#the-camera-module-3-wide-in-the-pod)).
 
 ![Assembly on AgileX's gripper model](renders/assembly.png)
 
@@ -189,6 +191,83 @@ their heads are placed from Raspberry Pi's photos of the camera.
   shoulder screws look to be what holds it to the housing. The housing stays on the board, held by the
   two hex lock keys on the back. Without the tripod mount, the shoulders and their screws are gone, so the printed pod
   needs only its top notch filed about 0.5 mm deeper for the lock block. This hasn't been tried.
+
+## The Camera Module 3 Wide in the pod
+
+**The printed pod didn't take the Wide** (reported on PR #10, 2026-10-27). Its square lens housing
+couldn't pass the pod's O13 round hole, so the board couldn't sit on its bosses or be screwed down.
+
+**Two things in the model were wrong:**
+
+- **The housing's size.** It was modelled as an 8.5 mm square, which is Camera Module 2's module.
+- **Where the lens sits relative to the four holes.** The lens was 9.462 mm from the edge away from
+  the connector, which is also Camera Module 2's layout.
+  - Raspberry Pi's drawing has the connector at the top edge, and the lens 9.462 mm from that edge.
+  - So the hole was centred 4.94 mm off the real housing.
+
+[`cad/cm3w_fit.py`](cad/cm3w_fit.py) builds the camera from Raspberry Pi's
+[Camera Module 3 Wide drawing](https://datasheets.raspberrypi.com/camera/camera-module-3-wide-mechanical-drawing.pdf)
+alone, with no numbers from `piper_mount.py`. It then sets the camera's four holes on the pod's four
+screw holes and measures both pods ([`exports/cm3w_fit.json`](exports/cm3w_fit.json)).
+
+![The Wide's housing in the printed pod and the new one](renders/cm3w_fit.png)
+
+| From the drawing (mm) | Value |
+|---|---|
+| Board | 25 × 23.862, 1.12 thick |
+| Mounting holes | O2.2 on 21 × 12.5: 2.0 in from the sides, 2.0 and 14.5 up from the edge away from the connector |
+| Lens centre | 12.5 from the side; 14.4 from the edge away from the connector, so 9.462 from the connector edge and 0.1 off the line of the two holes nearest it |
+| Square lens housing | 10.8 × 10.8, centred on the lens, 4.07 deep off the board's front face |
+| Lens | O6.95, tip 8.3 off the board's front face |
+| Connector | 5.71 × 2.75, behind the board at the top edge, the edge nearer the lens (side view) |
+
+The drawing is drawn 1:1, so I checked each label against its linework, and they agree to 0.001 mm.
+The one exception is the side view, which draws the lens 0.1 mm higher and shorter than its labels;
+the front view's labels are what's used.
+
+**What changed: the hole, and nothing else on the pod.**
+
+- **The hole is now an 11.4 mm square:** the 10.8 mm housing plus 0.3 mm a side (`cm_hole_c`).
+  - It's centred on the housing, 4.94 mm toward the top of the pod from the old hole's centre.
+  - It runs through the 6 mm plate. The housing reaches 1.57 mm into the plate, past the 2.5 mm bosses, and the lens tip
+    stops 0.2 mm short of the front face.
+- **The four screw holes didn't move.**
+  - The M2 clearance holes, their counterbores and the bosses all measure at (±10.5, −0.1) and
+    (±10.5, 12.4) mm from the lens, in both pods.
+  - Each of the camera's holes is 0.00 mm from the screw hole it sits on.
+- **The housing clears the hole by 0.30 mm on all four sides.**
+  - In the printed pod, the housing would be 79.6 mm³ inside the plate, and the lens 43.9 mm³.
+- **Nothing else changed.** Everything removed (350 mm³) and everything filled in (366 mm³) lies
+  within 6.5 mm of the lens axis across and from 5.7 mm above it to 11.4 mm below. That's inside
+  the four screw holes, whose bosses start 8.25 mm out.
+- **Mount the Wide with its ribbon connector toward the top of the pod,** away from the HQ, as
+  designed. The square hole only takes it that way round.
+
+**The camera model** in [`cad/piper_mount.py`](cad/piper_mount.py) now has the drawing's housing,
+and `cm_lens_from_top` is 14.4. That moves the lens 4.94 mm up the board, but not the board or its
+holes.
+
+- **The bracket's bevel isn't affected.** It keeps out of the Wide's picture by following the bottom
+  of its view, and it still follows the view with the lens where it was first modelled
+  (`cm_bevel_lens_from_top`). So the bracket is unchanged; its STL is byte-identical.
+- **The real view is 4.94 mm higher,** so it clears the bevel by more. It also takes in less of the
+  bracket's top ear ([Checks](#checks-exportschecksjson)).
+
+**Re-run for this:**
+
+- the checks (66 pairs, all 0 mm³);
+- the STEP and STL exports. Only the pod and the assembly changed; the bracket, carrier, spacers
+  and tag-wedge STLs are byte-identical;
+- the A1 mini plate and `overhangs.json`: 2 h 48 min and 85.5 g, 14 s and 0.02 g more.
+
+**Not re-run:**
+
+- the H2D plate and the per-part slices, which still have the round hole;
+- the renders, the simulated Wide views (`view_cm3w.png`, `fiducials.py`), the assembly GIF, the
+  fastener check, the FEA and Onshape. They have the Wide's lens 4.94 mm too low, and the 8.5 mm module.
+
+**If the housing is tight in the print,** raise `cm_hole_c`. Bambu's circle compensation only resizes
+round holes, so the square prints as drawn.
 
 ## Which HQ lens: the 6 mm wide-angle
 
@@ -952,8 +1031,12 @@ pass:
   14.2 mm from the finger plate.
 - **Clearance to the fingers:** the nearest part stays 15.6 mm away with the fingers closed and
   17.8 mm away fully open. The finger tag wedges stay 72 mm from the mount.
-- **Views:** no printed part is inside the HQ's view. The Wide's view takes in 2,890 mm³ of the
-  bracket (its top ear; 11 mm³ more than with the 1.0 mm split) and 134 mm³ of the carrier's edge.
+- **The Camera Module 3 Wide,** as Raspberry Pi's drawing has it: its 10.8 mm housing stays 0.3 mm
+  from the pod's square hole on every side, and its holes sit on the pod's screw holes
+  ([The Camera Module 3 Wide in the pod](#the-camera-module-3-wide-in-the-pod)).
+- **Views:** no printed part is inside the HQ's view. The Wide's view takes in 1,907 mm³ of the
+  bracket (its top ear) and 134 mm³ of the carrier's edge. With the Wide's lens 4.94 mm lower, as
+  first modelled, the bracket figure was 2,890 mm³.
 - **Split:** the collar halves are 0.6 mm apart (it was 1.0 mm). The clamp closes that at about
   130 N per screw, after squeezing the body (see [The split as a stop](#the-split-as-a-stop)). The
   bore is 0.15 mm over the body per side.
@@ -1022,6 +1105,7 @@ xvfb-run -a -s "-screen 0 1920x1080x24" python lens_compare.py      # 6 mm vs 16
 xvfb-run -a -s "-screen 0 1920x1080x24" python wrist_zoom.py        # renders/wrist_zoom.gif: the OT-2's zoom on the wrist (~2 min)
 python cradle_fit.py                                                 # renders/cradle_fit.gif: the lens's thumbscrews, old and new cradle
 xvfb-run -a -s "-screen 0 1920x1080x24" python hq_fit.py            # renders/hq_fit*.png: the HQ housing in the printed pod and the new one
+python cm3w_fit.py                                                   # renders/cm3w_fit.png: the Wide's housing in the printed pod and the new one
 python detail_compare.py                                             # renders/detail_compare.png: fine detail, wrist vs a fixed zoom
 python envelope.py                                                   # renders/tight_spaces.png
 python fastener_fit.py                                               # exports/fastener_fit.json: screw lengths, heads, tool room (about 15 min)

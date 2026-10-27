@@ -8,7 +8,7 @@
   "parts": {
     "bracket": {
       "stl": "bracket.stl",
-      "sha256": "bf9c1f853fe5",
+      "sha256": "aa11ca47658a",
       "bbox_mm": [
         -36.21,
         -44.0,
@@ -74,7 +74,7 @@
     },
     "pod": {
       "stl": "pod.stl",
-      "sha256": "dceffbdc6569",
+      "sha256": "06ab2c865bc4",
       "bbox_mm": [
         -32.5,
         -40.5,
@@ -83,8 +83,8 @@
         40.5,
         10.0
       ],
-      "overhang_area_mm2": 91.3,
-      "triangles": 2048,
+      "overhang_area_mm2": 91.1,
+      "triangles": 2056,
       "at_limit_mm2": 0.0,
       "patches": 12,
       "largest_patch": {
@@ -102,7 +102,7 @@
       },
       "next_largest_mm2": [
         13.5,
-        13.5
+        13.4
       ]
     },
     "spacers": {

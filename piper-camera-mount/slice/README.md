@@ -175,6 +175,15 @@ pocket was recut to clear them by 1.0 mm, and the bracket's seat now stays 1.5 m
 have the new pair. Alone, on the A1 mini, the pod is 37 min and 14.2 g and the bracket 1 h 19 min and
 36.2 g (`a1m_pla_04`, plates 3 and 2). Either set's carrier, spacers and tag wedges are still current.
 
+**The pod's hole for the Camera Module 3 Wide changed on 2026-10-27.** The Wide's square lens
+housing couldn't pass the round hole. The hole is now an 11.4 mm square, moved 4.94 mm to where
+Raspberry Pi's drawing puts the housing, and the pod is otherwise unchanged
+([The Camera Module 3 Wide in the pod](../README.md#the-camera-module-3-wide-in-the-pod)).
+- **Re-sliced for it:** the A1 mini plate, `report.json` and `overhangs.json` here. The plate is
+  2 h 48 min and 85.48 g, 14 s and 0.02 g more, and only the pod's STL changed.
+- **Not re-sliced:** the H2D plate and the per-part slices (`slice_configs.json`), which still have
+  the round hole.
+
 Before that, nothing of the mount had been printed. [`a1mini_history/`](a1mini_history/README.md)
 lists everything the A1 mini printed from July to the morning of 2026-10-08, from Bambu's cloud and
 the printer's own SD card, with the two read-only scripts that fetch it.
