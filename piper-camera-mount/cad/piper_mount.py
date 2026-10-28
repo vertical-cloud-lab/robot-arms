@@ -155,6 +155,16 @@ class Params:
     cm_hole_c: float = 0.3              # the plate's square hole round the housing, per side
     cm_bevel_lens_from_top: float = 9.462   # the Wide's lens as first modelled, which the bracket's
                                             # bevel still follows (make_bracket)
+    # The flex from the camera module to its board-to-board connector, below the housing: the drawing
+    # outlines it (8.9 x 4 at the board's edge, 7.0 wide for the 3.3 next to the housing) without a
+    # height. Raspberry Pi's STEP model (RP-008154-DS-1) has the same outline 0.169 mm toward -x, at
+    # most 2.05 mm off the PCB, which leaves it 0.45 mm short of the plate. Camera frame: x as drawn,
+    # y away from the connector, lens at the origin.
+    cm_flex: tuple = (-2.981, 5.919, 5.4, 12.7)     # x0, x1, y0 (the housing's edge), y1
+    cm_flex_step: tuple = (4.019, 8.7)              # the narrower part's right edge, and its end in y
+    cm_flex_h: float = 2.05
+    cm_flex_dx: float = -0.169                      # the STEP model's outline against the drawing's
+    cm_flex_c: float = 1.0                          # the plate's cut-out round both outlines, per side
 
     # --- carrier (+X) and Pi 5 ---------------------------------------------------------
     carrier_x0: float = 27.0        # inner face; 1.9 mm clear of the finger plate's edge
@@ -417,7 +427,10 @@ def make_cm_camera_local(p: Params) -> dict[str, cq.Workplane]:
     pcb = pcb.union(lbox(-10, 10, bot, bot + 5.71, p.cm_pcb_t, p.cm_pcb_t + 2.75))       # FPC connector
     h = p.cm_housing / 2
     module = lbox(-h, h, -h, h, -4.07, 0).union(cyl_z(6.95, -p.cm_lens_h, -4.07))
-    return {"cm_pcb": pcb, "cm_module": module}
+    x0, x1, y0, y1 = p.cm_flex
+    xs, ys = p.cm_flex_step
+    flex = lbox(x0, xs, y0, y1, -p.cm_flex_h, 0).union(lbox(x0, x1, ys, y1, -p.cm_flex_h, 0))
+    return {"cm_pcb": pcb, "cm_module": module.union(flex)}
 
 
 def hq_station_cuts(p: Params) -> cq.Workplane:
@@ -434,9 +447,12 @@ def hq_station_cuts(p: Params) -> cq.Workplane:
 
 
 def cm_station_cuts(p: Params) -> cq.Workplane:
-    """Square hole for the lens housing (it stands 1.57 mm into the plate), screw holes."""
+    """Square hole for the lens housing (it stands 1.57 mm into the plate), running on over the flex
+    below it, and screw holes. The whole opening goes right through the plate."""
     s, h = p.cm_standoff, p.cm_housing / 2 + p.cm_hole_c
     cut = lbox(-h, h, -h, h, -80, -s + 0.5)
+    (x0, x1, y0, y1), c, dx = p.cm_flex, p.cm_flex_c, p.cm_flex_dx
+    cut = cut.union(lbox(x0 + min(dx, 0) - c, x1 + max(dx, 0) + c, y0 - c, y1 + c, -80, -s + 0.5))
     for x, y in cm_holes(p):
         cut = cut.union(cyl_z(p.m2_clear_d, -80, 5, x, y))
         cut = cut.union(cyl_z(4.2, -80, -s - p.pod_t + 2.0, x, y))

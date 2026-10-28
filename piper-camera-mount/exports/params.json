@@ -103,6 +103,19 @@
   "m2_clear_d": 2.4,
   "cm_hole_c": 0.3,
   "cm_bevel_lens_from_top": 9.462,
+  "cm_flex": [
+    -2.981,
+    5.919,
+    5.4,
+    12.7
+  ],
+  "cm_flex_step": [
+    4.019,
+    8.7
+  ],
+  "cm_flex_h": 2.05,
+  "cm_flex_dx": -0.169,
+  "cm_flex_c": 1.0,
   "carrier_x0": 27.0,
   "carrier_t": 4.0,
   "carrier_y0": 8.0,
