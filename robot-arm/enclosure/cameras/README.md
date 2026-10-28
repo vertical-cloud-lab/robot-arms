@@ -10,7 +10,7 @@ see-through in every view.
 |---|---|
 | [`build.py`](build.py) | The table, the reach, the camera layouts, the printed parts and every number below |
 | [`render.py`](render.py) | All the figures |
-| [`models/*.stl`](models/) | The five printed parts, in mm, in their print orientation |
+| [`models/*.stl`](models/) | The six printed parts, in mm, in their print orientation |
 | [`cameras-edges.json`](cameras-edges.json), [`cameras-corners.json`](cameras-corners.json) | Nominal pose of each camera, in the format `piper_twin.py` reads (#24) |
 | [`results.json`](results.json) | Reach, camera positions, tilts and coverage |
 | `reach.npz` | The reach as a 20 mm voxel grid, and the plywood the fingertips can touch |
@@ -63,9 +63,9 @@ actually sees.
 |---|---|---|
 | Front camera | Post at the front edge's middle, 30° down | Post in the front-right corner, 30° down |
 | Right camera | Post at the right edge's middle, 30° down | Post in the back-right corner, 30° down |
-| Top camera | Under a crossbar at the centre, lens 1206 mm up, straight down | On the middle of the wall-side top rail, lens 1178 mm up, 65° down |
-| Work zone seen by front / right / top | 70 % / 73 % / 98 % | **92 % / 92 % / 100 %** |
-| Seen by 2 or more cameras | 87 % | **98 %** |
+| Top camera | Under a crossbar at the centre, lens 1204 mm up, straight down | On the middle of the wall-side top rail, lens 1175 mm up, 65° down |
+| Work zone seen by front / right / top | 70 % / 73 % / 97 % | **92 % / 92 % / 100 %** |
+| Seen by 2 or more cameras | 86 % | **98 %** |
 | Can the fingertips hit a post? | **Yes**, both: the posts are 582 mm from J1 | No, the posts are 46 mm out of reach |
 | Extra parts | 1290 mm crossbar and 2 cross clamps | None |
 
@@ -92,7 +92,9 @@ Before installing layout 4, two things need checking:
 
 ![Printed parts](parts.png)
 
-**All three cameras use the same printed head, and it clamps onto ¾ in PVC.**
+**All three cameras use the same printed clamp, and it clamps onto ¾ in PVC.** The cradle that holds
+the camera comes in two versions: a vertical one for the posts and a horizontal one for the top
+camera (see [The two cradles](#the-two-cradles)), each set for one board orientation.
 
 - **Ground cameras:** a post of ¾ in PVC stands in a small printed foot. Two 400 mm posts can come
   from the enclosure's off-cuts: each 10 ft stick left about 24 in over.
@@ -102,12 +104,12 @@ Before installing layout 4, two things need checking:
 
 The feet, posts and heads therefore move between layouts 3 and 4 unchanged.
 
-- **Head (3 parts, about 24 cm³, 30 g):**
+- **Head (3 parts, about 23 cm³, 29 g):**
   - **Clamp:** a half ring with a hinge plate on it.
   - **Cap:** the other half ring. Two M3 bolts close the cap on any part of a pipe, so nothing has to
     come apart.
-  - **Cradle:** carries the camera board on four standoffs, landscape or portrait. It pivots on an
-    M4 bolt.
+  - **Cradle:** carries the camera board on four standoffs, vertical or horizontal version. It pivots
+    on an M4 bolt.
 - **Locking the head (repeatability):**
   - Tilt is set by a 2 mm pin through one of seven index holes, every 15° from −45° to +45°, so it
     goes back to the same angle.
@@ -118,11 +120,45 @@ The feet, posts and heads therefore move between layouts 3 and 4 unchanged.
 - **Cross clamp (layout 3 only):** a half ring over the top rail, closed by a cap from below, with a
   sleeve above for the crossbar.
 
+### The two cradles
+
+![The two cradles](cradles.png)
+
+The first cradle had eight standoffs so one part could hold the board either way round. Printed, it
+didn't work: two of the extra standoffs land on the board's ribbon connector, and the 18 mm notch
+was too small for the 16 mm ribbon. Each cradle now has **four standoffs, set for one board
+orientation**:
+
+- **Vertical** ([`head-cradle-vertical.stl`](models/head-cradle-vertical.stl), print 2) for the
+  posts. The connector edge points down the post, so the image is wide across the post (landscape).
+- **Horizontal** ([`head-cradle-horizontal.stl`](models/head-cradle-horizontal.stl), print 1) for the
+  top rail or the crossbar. The connector edge is at the plate's free edge, the bottom when the head
+  hangs under a rail, so the image's long side runs along the pipe.
+
+**The ribbon slot is now the whole connector edge.** The plate stops 6.3 mm short of the board's
+connector edge, so there is nothing behind the connector and the ribbon bends straight back past the
+plate. The holes, standoffs (Ø5.2 × 3 mm), hinge disc, M4 hole and tilt pin hole are unchanged, so
+both cradles fit the clamps already printed.
+
+Checked in `build.py` against Raspberry Pi's model of the board:
+
+- The nearest standoff is 0.98 mm from the connector.
+- The only part of the connector over the plate is its 2.16 mm-high lower back, 0.84 mm clear of it.
+- Neither cradle hits the clamp, the cap or the pipe at any of the seven tilt holes, with the board,
+  lens and ribbon on.
+
+The lens axis sits 9.5 mm in from the connector edge, level with the near pair of holes. The first
+cradle had assumed it was 5 mm further in. With the corrected position and the new plates, the ground
+lenses come out 372 mm above the plywood instead of 381 mm. Every coverage figure moves by less than
+1 %.
+
 ### Parts
 
 | Item | Layout 3 | Layout 4 |
 |---|---|---|
-| [`head-clamp.stl`](models/head-clamp.stl), [`head-cradle.stl`](models/head-cradle.stl) | 3 each | 3 each |
+| [`head-clamp.stl`](models/head-clamp.stl) | 3 | 3 |
+| [`head-cradle-vertical.stl`](models/head-cradle-vertical.stl) (posts) | 2 | 2 |
+| [`head-cradle-horizontal.stl`](models/head-cradle-horizontal.stl) (top camera) | 1 | 1 |
 | [`clamp-cap.stl`](models/clamp-cap.stl) | 5 | 3 |
 | [`ground-foot.stl`](models/ground-foot.stl) | 2 | 2 |
 | [`cross-clamp.stl`](models/cross-clamp.stl) | 2 | none |
@@ -136,7 +172,7 @@ The feet, posts and heads therefore move between layouts 3 and 4 unchanged.
 | Camera Module 3 Wide | 3 | 3 |
 
 **Printing:** PETG, 0.2 mm layers, 4 walls, 40 % infill. No part is bigger than 76 mm, so all of
-them fit the A1 mini. The clamp and the cap print on their split faces and the cradle on its hinge
+them fit the A1 mini. The clamp and the cap print on their split faces and the cradles on their hinge
 plate, none of them with supports. Only the cross clamp needs support, inside its crossbar sleeve.
 
 ### Installing layout 4
@@ -146,8 +182,9 @@ plate, none of them with supports. Only the cross clamp needs support, inside it
 2. **Posts.** Push a 400 mm post into each socket, then pin it with a #6 screw through the socket's
    side hole.
 3. **Heads.**
-   - Screw each camera board to its cradle: landscape holes for the posts, portrait holes for the
-     top camera, so its image's long side runs along the rail.
+   - Plug the ribbon into the camera board first. Then screw the board to its cradle with the ribbon
+     connector at the plate's open edge: vertical cradles for the posts, the horizontal cradle for
+     the top camera. The ribbon bends straight back past that edge.
    - Bolt each cradle to its clamp with the M4.
    - Ground cameras: put the tilt pin in the hole two steps (30°) from the middle, on the side that
      tips the lens down.
@@ -176,7 +213,10 @@ plate, none of them with supports. Only the cross clamp needs support, inside it
 - **Tilts:**
   - Ground cameras: the 15° index step that sees most of the work zone.
   - Top rail camera: the 5° step that does.
-  - Both ground cameras' lenses are 381 mm above the plywood (400 mm post).
+  - Both ground cameras' lenses are 372 mm above the plywood (400 mm post).
+- **Camera board:** from Raspberry Pi's Camera Module 3 Wide drawing and STEP model: 25 × 23.9 mm,
+  M2 holes 21 × 12.5 mm apart, ribbon connector on the back along one 25 mm edge, lens axis 9.5 mm
+  in from that edge.
 - **Not covered:**
   - The gripper camera and the HQ camera (#39), which these renderings don't place. The HQ camera's
     38 mm board would need its own cradle.

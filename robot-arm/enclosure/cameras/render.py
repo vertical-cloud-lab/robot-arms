@@ -1,7 +1,7 @@
 """Renderings of the PiPER table and its fixed cameras (PR #9, #24, #38, #39).
 
     xvfb-run -a python render.py     # 1-table.png 2-reach.png 3-cameras-edges.png 4-cameras-corners.png
-                                     # fixtures.png parts.png
+                                     # fixtures.png cradles.png parts.png
 
 Needs `python build.py` first (reach.npz, results.json).
 """
@@ -196,17 +196,16 @@ def describe(lname, name, c):
 
 # ------------------------------------------------------------------ fixture close-ups
 def fixtures_figure(cams):
-    parts = dict(clamp=B.head_clamp(), cap=B.clamp_cap(), cradle=B.head_cradle(), foot=B.ground_foot(), cross=B.cross_clamp())
-    col, pvc, ply, board = (0.20, 0.20, 0.22), B.PVC, B.PLYC, (0.10, 0.45, 0.25)
+    parts = dict(clamp=B.head_clamp(), cap=B.clamp_cap(), foot=B.ground_foot(), cross=B.cross_clamp(),
+                 **{f"cradle-{v}": B.head_cradle(v) for v in B.CRADLES})
+    cam_parts = {v: B.camera_meshes(v) for v in B.CRADLES}
+    col, pvc, ply = (0.20, 0.20, 0.22), B.PVC, B.PLYC
     hw = (0.70, 0.71, 0.73)
 
     def head_meshes(c):
         out = [(B.mm_to_world(parts["clamp"], c["clamp_T"]), col), (B.mm_to_world(parts["cap"], c["clamp_T"]), (0.32, 0.32, 0.35)),
-               (B.mm_to_world(parts["cradle"], c["cradle_T"]), col)]
-        Mb = c["cradle_T"] @ B.T(t=np.array([B.PLATE_AT + B.PLATE[0] + B.STANDOFF + 0.5, B.PLATE_Y, B.LENS_UP]) / 1e3)
-        out.append((B._box([-0.0005, -0.0125, -0.012], [0.0005, 0.0125, 0.012]).apply_transform(Mb), board))
-        Ml = c["cradle_T"] @ B.T(t=np.array([B.LENS_FWD - 3, B.PLATE_Y, B.LENS_UP]) / 1e3)
-        out.append((B._cyl(0.0055, 0.006, "x").apply_transform(Ml), B.DARK))
+               (B.mm_to_world(parts[f"cradle-{c['version']}"], c["cradle_T"]), col)]
+        out += [(B.mm_to_world(m, c["cradle_T"]), B.CAM_COL[n]) for n, m in cam_parts[c["version"]]]
         piv = c["cradle_T"][:3, 3]
         ax = c["cradle_T"][:3, 1]
         out.append((B.along(piv - ax * 0.008, piv + ax * 0.012, 0.002, 16), hw))          # M4 pivot bolt
@@ -228,13 +227,13 @@ def fixtures_figure(cams):
     # (b) the head, close up
     ms = [(B.along([x, y, B.CLAMP_Z - 0.06], [x, y, B.POST_TOP], B.PIPE_OD / 2e3), pvc)] + head_meshes(c)
     p = c["lens"]
-    panels.append(("b  Head: clamp, cap, cradle, Camera Module 3", ms,
+    panels.append(("b  Head: clamp, cap, vertical cradle, Camera Module 3", ms,
                    [tuple(p + [0.19, 0.03, 0.09]), tuple(p + [-0.04, 0.035, -0.005]), (0, 0, 1)], 30))
     # (c) top camera on the wall-side top rail (corners layout)
     c = cams["corners"]["top"]
     ms = [(B.along([B.H, -0.15, B.Z_TOP], [B.H, 0.15, B.Z_TOP], B.R), pvc)] + head_meshes(c)
     p = c["lens"]
-    panels.append(("c  Top camera on the top rail (layout 4)", ms,
+    panels.append(("c  Top camera on the top rail, horizontal cradle (layout 4)", ms,
                    [tuple(p + [-0.20, 0.17, 0.12]), tuple(p + [0.03, 0, 0.01]), (0, 0, 1)], 30))
     # (d) top camera at the middle of the crossbar, and one cross clamp (layout 3)
     c = cams["edges"]["top"]
@@ -262,11 +261,12 @@ def fixtures_figure(cams):
         pl.camera.view_angle = va
         imgs.append((title, shot(pl)))
     fig = plt.figure(figsize=(15, 8.6), dpi=130, facecolor=SURFACE)
-    fig.text(0.015, 0.975, "Camera fixtures: one printed head for all three cameras, on 3/4 in PVC", fontsize=15,
+    fig.text(0.015, 0.975, "Camera fixtures: the same clamp for all three cameras, on 3/4 in PVC", fontsize=15,
              weight="bold", color=INK, va="top")
     fig.text(0.015, 0.945, "Ground cameras: square foot screwed flush to the plywood's edges, 400 mm post cut from the "
-             "enclosure's PVC off-cuts, head clamped on top.\nTop camera: the same head on a top rail, or under a "
-             "crossbar held by two cross clamps.", fontsize=9.5, color=MUTED, va="top", linespacing=1.4)
+             "enclosure's PVC off-cuts, head with the vertical cradle clamped on top.\nTop camera: the same clamp with the "
+             "horizontal cradle, on a top rail or under a crossbar held by two cross clamps.", fontsize=9.5, color=MUTED,
+             va="top", linespacing=1.4)
     pos = [(0.0, 0.45, 0.335, 0.42), (0.333, 0.45, 0.335, 0.42), (0.666, 0.45, 0.335, 0.42),
            (0.0, 0.0, 0.335, 0.42), (0.333, 0.0, 0.335, 0.42)]
     for (title, im), p in zip(imgs, pos):
@@ -277,32 +277,107 @@ def fixtures_figure(cams):
     a = fig.add_axes([0.68, 0.02, 0.31, 0.40])
     a.axis("off")
     rows = [("Part (PETG)", "Qty", "cm³")]
-    for n, q in (("head-clamp", 3), ("clamp-cap", 3), ("head-cradle", 3), ("ground-foot", 2), ("cross-clamp", 2),
-                 ("clamp-cap (cross)", 2)):
-        m = parts[{"head-clamp": "clamp", "clamp-cap": "cap", "head-cradle": "cradle", "ground-foot": "foot",
+    for n, q in (("head-clamp", 3), ("clamp-cap", 3), ("head-cradle-vertical", 2), ("head-cradle-horizontal", 1),
+                 ("ground-foot", 2), ("cross-clamp", 2), ("clamp-cap (cross)", 2)):
+        m = parts[{"head-clamp": "clamp", "clamp-cap": "cap", "head-cradle-vertical": "cradle-vertical",
+                   "head-cradle-horizontal": "cradle-horizontal", "ground-foot": "foot",
                    "cross-clamp": "cross", "clamp-cap (cross)": "cap"}[n]]
         rows.append((n, str(q), f"{m.volume / 1e3:.1f}"))
     for k, row in enumerate(rows):
         for j, (txt, xx) in enumerate(zip(row, (0.0, 0.62, 0.80))):
-            a.text(xx, 0.95 - k * 0.085, txt, fontsize=10, color=INK if k else MUTED, weight="bold" if k == 0 else None,
+            a.text(xx, 0.95 - k * 0.075, txt, fontsize=10, color=INK if k else MUTED, weight="bold" if k == 0 else None,
                    transform=a.transAxes, va="top")
-    a.text(0.0, 0.95 - len(rows) * 0.085 - 0.02, "Head: 24 cm³, about 30 g.  Foot: 26 cm³.\n"
-           "Cross clamps only for the crossbar in layout 3.", fontsize=9, color=MUTED, transform=a.transAxes, va="top")
+    a.text(0.0, 0.95 - len(rows) * 0.075 - 0.02, "Vertical cradle on the posts, horizontal cradle on a top rail\n"
+           "or the crossbar. Cross clamps only for layout 3.", fontsize=9, color=MUTED, transform=a.transAxes, va="top")
     fig.savefig(B.HERE / "fixtures.png", facecolor=SURFACE)
     plt.close(fig)
 
 
+
+# ------------------------------------------------------------------ the two cradles, close up
+def cradle_figure():
+    """Both cradles on a short piece of pipe, with the camera board and its ribbon, plus each cradle bare."""
+    clamp, cap = B.head_clamp(), B.clamp_cap()
+    col, cap_c, pvc, hw = (0.20, 0.20, 0.22), (0.32, 0.32, 0.35), B.PVC, (0.70, 0.71, 0.73)
+    cradle_c = (0.42, 0.42, 0.46)                    # lighter than the clamp, so the standoffs read
+    M = B.T(t=[B.PIVOT_AT, 0, 0])                    # cradle frame -> clamp frame, tilt 0
+
+    def head(v, mode):
+        ms = [(B.along([0, 0, -45], [0, 0, 45], B.PIPE_OD / 2, 48), pvc, 1.0), (clamp, col, 1.0), (cap, cap_c, 1.0),
+              (B.head_cradle(v).copy().apply_transform(M), cradle_c, 1.0),
+              (B.along([B.PIVOT_AT, -9, 0], [B.PIVOT_AT, 12, 0], 2.0, 16), hw, 1.0)]
+        for n, m in B.camera_meshes(v):
+            if mode == "ghost" and n in ("module", "lens", "board"):
+                continue
+            ms.append((m.copy().apply_transform(M), B.CAM_COL[n], 1.0))
+        return ms
+
+    def at(v, s, t, h=0.0):
+        return B.on_board(v, s, t, h) + [B.PIVOT_AT, 0, 0]
+
+    def views(v):
+        _, es, et = B.board_frame(v)
+        ex = np.array([1.0, 0, 0])
+        side = -1 if v == "vertical" else 1                    # look at the side away from the clamp's ears
+        return [("front", "full", 150 * ex - 120 * side * es + 70 * et * (1 if v == "vertical" else -1) + 0 * ex,
+                 at(v, 0, 11), et),
+                ("side on: ribbon bends back past the open edge", "full",
+                 side * 120 * es - 25 * ex + 15 * et, at(v, 0, 6, -10), et),
+                ("straight on, board outlined: four standoffs", "ghost",
+                 105 * ex + 10 * es + 8 * et, at(v, 0, 10, -2), et)]
+
+    imgs, titles = {}, {}
+    for v in B.CRADLES:
+        titles[v] = []
+        for title, mode, off, tgt, up in views(v):
+            pl = plotter((760, 640))
+            for m, c, op in head(v, mode):
+                add(pl, m, c, op)
+            if mode == "ghost":
+                w, hb = B.BOARD[0] / 2, B.BOARD[1]
+                rim = np.array([at(v, a, b, 1.0) for a, b in ((-w, 0), (w, 0), (w, hb), (-w, hb), (-w, 0))])
+                pl.add_mesh(pv.lines_from_points(rim), color=B.CAM_COL["board"], line_width=5)
+                pl.add_point_labels(np.array([at(v, 4, 2.0, 1.0), at(v, 9, B.CUT_T, -3)]),
+                                    ["connector", "open edge"], font_size=15, text_color=INK, shape_color="white",
+                                    shape_opacity=0.85, show_points=True, point_size=9, point_color=INK, always_visible=True)
+            tgt = np.asarray(tgt, float)
+            pl.camera_position = [tuple(tgt + off), tuple(tgt), tuple(up)]
+            pl.camera.view_angle = 30
+            imgs[(v, title)] = shot(pl)
+            titles[v].append(title)
+    fig = plt.figure(figsize=(15, 9.6), dpi=130, facecolor=SURFACE)
+    fig.text(0.015, 0.982, "Camera cradles: a vertical one for the posts and a horizontal one for the top rail", fontsize=15,
+             weight="bold", color=INK, va="top")
+    fig.text(0.015, 0.952, "Four standoffs each, set for one board orientation. The plate stops short of the ribbon connector, so the "
+             "connector has nothing behind it and the ribbon bends straight back past the plate's open edge.\n"
+             "Vertical: connector edge down the post, image wide across it.  Horizontal: connector edge at the plate's free "
+             "edge (the bottom when it hangs under a rail), image wide along the pipe.", fontsize=9.5, color=MUTED, va="top",
+             linespacing=1.4)
+    rows = [("vertical", "Vertical cradle (2): ground cameras on the posts"),
+            ("horizontal", "Horizontal cradle (1): top camera on a top rail or the crossbar")]
+    for r, (v, label) in enumerate(rows):
+        y0 = 0.47 - r * 0.465
+        fig.text(0.015, y0 + 0.425, label, fontsize=12, weight="bold", color=INK, va="bottom")
+        for k, title in enumerate(titles[v]):
+            a = fig.add_axes([0.005 + k * 0.333, y0, 0.325, 0.41])
+            a.imshow(imgs[(v, title)])
+            a.axis("off")
+            a.set_title(title, fontsize=9.5, color=MUTED, loc="left", pad=2)
+    fig.savefig(B.HERE / "cradles.png", facecolor=SURFACE)
+    plt.close(fig)
+
+
 def parts_figure():
-    """The five STLs as exported, in print orientation."""
+    """The six STLs as exported, in print orientation."""
     import trimesh as tm
-    names = ["head-clamp", "clamp-cap", "head-cradle", "ground-foot", "cross-clamp"]
-    pl = plotter((1700, 560))
+    names = ["head-clamp", "clamp-cap", "head-cradle-vertical", "head-cradle-horizontal", "ground-foot", "cross-clamp"]
+    pl = plotter((1900, 560))
     x = 0.0
     for n in names:
         m = tm.load(B.HERE / f"models/{n}.stl")
         m.apply_translation([x - m.bounds[0][0], -m.bounds[0][1] - m.extents[1] / 2, 0])
         pl.add_mesh(pv.wrap(m), color=(0.25, 0.25, 0.28), specular=0.3, ambient=0.2)
-        pl.add_point_labels(np.array([[x + m.extents[0] / 2, -45, 0]]), [n], font_size=16, text_color=INK, shape=None,
+        pl.add_point_labels(np.array([[x + m.extents[0] / 2, -45, 0]]), [n], font_size=14, text_color=INK, shape=None,
                             show_points=False, always_visible=True)
         x += m.extents[0] + 30
     pl.add_mesh(pv.Plane(center=(x / 2 - 15, 0, -0.3), i_size=x + 40, j_size=150), color=(0.92, 0.92, 0.90))
@@ -357,6 +432,7 @@ def main():
         save_with_povs(img, povs, B.HERE / f"{k}-cameras-{lname}.png", title, note)
 
     fixtures_figure(cams)
+    cradle_figure()
     parts_figure()
 
 

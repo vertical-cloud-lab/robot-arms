@@ -18,8 +18,9 @@ Two layouts:
            middle of a crossbar across the top, looking straight down
   corners  the same posts in the front-right and back-right corners, the top camera on the
            middle of the left (wall) top rail, looking down and in
-Every camera uses the same printed head, which clamps onto 3/4 in PVC: a post for the ground
-cameras, the crossbar or a top rail for the top camera.
+Every camera uses the same printed clamp on 3/4 in PVC: a post for the ground cameras, the crossbar
+or a top rail for the top camera. The cradle that carries the camera comes in two versions, each
+with four standoffs for one board orientation: vertical for the posts, horizontal for the top camera.
 """
 
 import importlib.util
@@ -64,6 +65,8 @@ WOOD, PLYC, PVC = (0.85, 0.72, 0.52), (0.89, 0.82, 0.68), (0.96, 0.96, 0.94)
 CLOTH = (0.93, 0.90, 0.82)
 DARK, GREY, WHITE = (0.12, 0.12, 0.13), (0.45, 0.46, 0.48), (0.93, 0.93, 0.92)
 PART = (0.20, 0.20, 0.22)           # printed fixtures, black PETG
+CAM_COL = {"board": (0.10, 0.45, 0.25), "connector": (0.36, 0.25, 0.14), "module": DARK, "lens": (0.05, 0.05, 0.06),
+           "ribbon": (0.92, 0.90, 0.80)}
 
 # ------------------------------------------------------------------ camera (Camera Module 3 Wide)
 CAM_W, CAM_H, CAM_F = CB.CAM_W, CB.CAM_H, CB.CAM_F        # 4608 x 2592 px, f = 1964 px
@@ -81,12 +84,17 @@ TAB_T = 5.0                         # hinge plates
 PIVOT_AT = RO + 16.0                # pivot from the pipe's axis
 DISC = 16.0                         # hinge disc radius
 INDEX_R, INDEX_STEP, INDEX_MAX = 12.0, 15, 45   # index holes for the tilt pin, every 15 deg
-PLATE = (3.0, 32.0, 34.0)           # camera plate: thickness, width, height
-PLATE_AT = 22.0                     # plate's back face, from the pivot
-PLATE_Y = 5.0 - 32.0 / 2            # plate's centre, flush with the hinge plate's outer face (prints flat)
+PLATE_AT, PLATE_T = 22.0, 3.0       # camera plate: back face from the pivot, thickness
 STANDOFF = 3.0
-LENS_FWD = PLATE_AT + PLATE[0] + STANDOFF + 1.0 + 6.0   # lens front from the pivot, along the view
-LENS_UP = 2.5                       # lens centre above the board centre
+# Camera Module 3 Wide, from Raspberry Pi's drawing and STEP model. Board coordinates: s along the
+# edge with the ribbon connector (25 mm, image width), t in from that edge (23.862 mm, image height).
+BOARD = (25.0, 23.862, 1.0)         # s, t, thickness
+HOLE_S, HOLE_T = 10.5, (9.36, 21.86)  # M2 holes: either side of the middle, and in from the connector edge
+LENS_T, LENS_PROUD = 9.46, 8.3      # lens axis in from the connector edge (level with the near holes); lens front off the board
+FPC = (22.92, 6.91, 2.75)           # 15-way ribbon connector on the back, along that edge: width, depth in, height
+CUT_T = 6.3                         # the plate stops this far in from the connector edge, so nothing is behind the connector
+PLATE_S, PLATE_T1 = 14.2, 25.6      # plate's half-width (s), and its far edge (t)
+RIBBON = (16.0, 0.3, 2.0)           # ribbon width, thickness, and how far past the board's edge its stiffener sticks out
 FOOT, FOOT_T, SOCKET_H = 56.0, 5.0, 32.0
 POST_LEN = 400.0                    # 3/4 in PVC posts, from the enclosure's off-cuts
 CROSS_Z = PIPE_OD + 4.0             # crossbar axis above the rail's axis in the cross clamp
@@ -147,22 +155,98 @@ def head_clamp():
     return _cut(body, cuts)
 
 
-def head_cradle():
+CRADLES = ("vertical", "horizontal")
+
+
+def board_frame(version):
+    """Where the camera board sits on a cradle, in the cradle frame (mm): the middle of its connector
+    edge on the board's back face, and unit vectors along that edge (s) and in from it (t).
+    vertical:   for a post. Connector edge down (-z, along the pipe), so the image is wide across the post.
+    horizontal: for a top rail or the crossbar. Connector edge at the plate's free edge (-y, away from
+                the hinge), so the image is wide along the pipe.
+    Both plates are centred on the arm and flush with the hinge plate's outer face (y = TAB_T)."""
+    x = PLATE_AT + PLATE_T + STANDOFF
+    if version == "vertical":
+        return np.array([x, TAB_T - PLATE_S, -(CUT_T + PLATE_T1) / 2]), np.array([0, 1.0, 0]), np.array([0, 0, 1.0])
+    return np.array([x, TAB_T - PLATE_T1, 0.0]), np.array([0, 0, 1.0]), np.array([0, 1.0, 0])
+
+
+def on_board(version, s, t, h=0.0):
+    """Cradle-frame point (mm) at s along the connector edge, t in from it, h in front of the board's back."""
+    o, es, et = board_frame(version)
+    return o + s * es + t * et + h * np.array([1.0, 0, 0])
+
+
+def head_cradle(version="vertical"):
     """Hinge plate (y in [0, TAB_T]) and the camera plate, local origin on the pivot, view along +x.
-    The board screws to standoffs on the plate's front, landscape or portrait (8 holes)."""
+    The board screws to four standoffs on the plate's front. The plate stops CUT_T short of the board's
+    connector edge, so the connector has nothing behind it and the ribbon leaves freely."""
     disc = _cyl(DISC, TAB_T, "y", (0, TAB_T / 2, 0))
     arm = _box([0, 0, -8], [PLATE_AT + 0.5, TAB_T, 8])
-    pt, pw, ph = PLATE
-    plate = _box([PLATE_AT, PLATE_Y - pw / 2, LENS_UP - ph / 2], [PLATE_AT + pt, PLATE_Y + pw / 2, LENS_UP + ph / 2])
-    lens = np.array([PLATE_Y, LENS_UP])
-    holes = [(s * 10.5, 7.5) for s in (-1, 1)] + [(s * 10.5, -5.0) for s in (-1, 1)]   # from the lens centre
-    holes += [(-v, u) for u, v in holes]                                                  # portrait
-    posts = [_cyl(2.6, STANDOFF, "x", (PLATE_AT + pt + STANDOFF / 2, lens[0] + u, lens[1] + v), 24) for u, v in holes]
+    c = np.array([on_board(version, s, t, h) for s in (-PLATE_S, PLATE_S) for t in (CUT_T, PLATE_T1)
+                  for h in (-STANDOFF - PLATE_T, -STANDOFF)])
+    plate = _box(c.min(0), c.max(0))
+    holes = [(s * HOLE_S, t) for s in (-1, 1) for t in HOLE_T]
+    posts = [_cyl(2.6, STANDOFF, "x", on_board(version, s, t, -STANDOFF / 2), 24) for s, t in holes]
     body = trimesh.boolean.union([disc, arm, plate] + posts)
     cuts = [_cyl(M4 / 2, 20, "y", (0, 0, 0), 32), _cyl(PIN / 2, 20, "y", (0, 0, INDEX_R), 20)]
-    cuts += [_cyl(M2_TAP / 2, 2 * (pt + STANDOFF), "x", (PLATE_AT + pt, lens[0] + u, lens[1] + v), 16) for u, v in holes]
-    cuts.append(_box([PLATE_AT - 1, PLATE_Y - 9, LENS_UP - ph / 2 - 1], [PLATE_AT + pt + 1, PLATE_Y + 9, LENS_UP - ph / 2 + 4]))  # ribbon notch
+    cuts += [_cyl(M2_TAP / 2, 2 * (PLATE_T + STANDOFF), "x", on_board(version, s, t, -STANDOFF), 16) for s, t in holes]
     return _cut(body, cuts)
+
+
+def lens_local(version):
+    """Lens front and the image's up direction (away from the connector), cradle frame (mm)."""
+    return on_board(version, 0.0, LENS_T, BOARD[2] + LENS_PROUD), board_frame(version)[2]
+
+
+def camera_meshes(version):
+    """Camera Module 3 Wide on a cradle, cradle frame (mm): [(name, mesh)]. The ribbon's stiffener sticks
+    out RIBBON[2] past the board's edge, then the ribbon bends back past the plate's open edge."""
+    o, es, et = board_frame(version)
+    ex = np.array([1.0, 0, 0])
+
+    def blk(s0, s1, t0, t1, h0, h1):
+        c = np.array([on_board(version, s, t, h) for s in (s0, s1) for t in (t0, t1) for h in (h0, h1)])
+        return _box(c.min(0), c.max(0))
+
+    w, hb, tb = BOARD
+    out = [("board", blk(-w / 2, w / 2, 0, hb, 0, tb)),
+           ("connector", blk(-FPC[0] / 2, FPC[0] / 2, 0.37, 5.78, -FPC[2], 0)),     # body, full height
+           ("connector", blk(-7.3, 7.3, 5.78, FPC[1], -2.16, 0)),                  # its lower back, middle only (STEP)
+           ("module", blk(-5.4, 5.4, LENS_T - 5.4, LENS_T + 5.4, tb, tb + 4.07)),
+           ("lens", _cyl(4.25, LENS_PROUD - 4.07, "x", on_board(version, 0, LENS_T, tb + (LENS_PROUD + 4.07) / 2), 32))]
+    rw, rt, stub = RIBBON
+    hr, rb = -1.3, 2.5                                             # ribbon's height behind the board, bend radius
+    path = [(3.0, hr), (-stub, hr)]
+    path += [(-stub - rb * np.sin(a), hr - rb + rb * np.cos(a)) for a in np.radians(np.arange(15, 91, 15))]
+    path.append((path[-1][0], hr - rb - 14.0))
+    for (t0, h0), (t1, h1) in zip(path[:-1], path[1:]):
+        out.append(("ribbon", beam(o + t0 * et + h0 * ex, o + t1 * et + h1 * ex, rt, rw, up=es)))
+    return out
+
+
+def check_cradles():
+    """For each cradle: what the camera board clears, and whether the board, connector, lens, ribbon or
+    camera plate hits the clamp, its cap or the pipe at any index tilt."""
+    out = {}
+    clamp = trimesh.boolean.union([head_clamp(), clamp_cap(), _cyl(PIPE_OD / 2, 300)])
+    for v in CRADLES:
+        cam = camera_meshes(v)
+        cradle = head_cradle(v)
+        conn = trimesh.boolean.union([m for n, m in cam if n == "connector"])
+        rects = [(FPC[0] / 2, 0.37, 5.78), (7.3, 5.78, FPC[1])]          # connector footprint: half-width, t from, t to
+        gap = min(np.hypot(max(HOLE_S - hw, 0), max(t - t1, t0 - t, 0)) - 2.6 for hw, t0, t1 in rects for t in HOLE_T)
+        moving = trimesh.boolean.union([m for _, m in cam] + [cradle.intersection(_box([PLATE_AT - 1, -60, -60], [60, 60, 60]))])
+        hits = {}
+        for a in range(-INDEX_MAX, INDEX_MAX + 1, INDEX_STEP):
+            M = T(trimesh.transformations.rotation_matrix(np.radians(a), (0, 1, 0))[:3, :3], [PIVOT_AT, 0, 0])
+            hits[a] = round(float(moving.copy().apply_transform(M).intersection(clamp).volume), 3)
+        out[v] = dict(connector_overlaps_cradle_mm3=round(float(conn.intersection(cradle).volume), 3),
+                      standoff_to_connector_mm=round(gap, 2),
+                      connector_to_plate_mm=round(STANDOFF - 2.16, 2),
+                      plate_starts_in_from_connector_edge_mm=CUT_T,
+                      hits_clamp_or_pipe_mm3_by_tilt=hits)
+    return out
 
 
 def ground_foot():
@@ -197,7 +281,7 @@ def cross_clamp():
 
 
 # ------------------------------------------------------------------ placing a head
-def head_pose(axis_pt, a, r, tilt_deg=0.0):
+def head_pose(axis_pt, a, r, tilt_deg=0.0, version="vertical"):
     """World transforms (metres) for a head whose clamp sits on a pipe through axis_pt along a,
     with the hinge plate pointing along r, and the cradle tilted tilt_deg about the hinge (positive
     tips the view toward -a, i.e. down on a vertical post). Returns (clamp_T, cradle_T, lens, view, up)."""
@@ -210,8 +294,9 @@ def head_pose(axis_pt, a, r, tilt_deg=0.0):
     piv = np.asarray(axis_pt) + r * PIVOT_AT / 1e3
     cradle_T = T(Rc @ Rt, piv)
     view = Rc @ Rt @ np.array([1.0, 0, 0])
-    up = Rc @ Rt @ np.array([0, 0, 1.0])
-    lens = piv + Rc @ Rt @ np.array([LENS_FWD, PLATE_Y, LENS_UP]) / 1e3
+    lens_mm, up_local = lens_local(version)
+    up = Rc @ Rt @ up_local
+    lens = piv + Rc @ Rt @ lens_mm / 1e3
     return clamp_T, cradle_T, lens, view, up
 
 
@@ -241,21 +326,25 @@ def layouts():
     }
 
 
+def cradle_version(cam):
+    """Vertical cradle on the posts, horizontal cradle on a top rail or the crossbar."""
+    return "vertical" if cam["kind"] == "post" else "horizontal"
+
+
 def place(cam, tilt):
     """Head transforms for one camera at a given tilt (deg)."""
     if cam["kind"] == "post":
         x, y = cam["xy"]
         look = np.r_[cam["look"], 0.0]
-        return head_pose([x, y, CLAMP_Z], [0, 0, 1], look, tilt)
+        return head_pose([x, y, CLAMP_Z], [0, 0, 1], look, tilt, "vertical")
     if cam["kind"] == "crossbar":                 # crossbar on x, resting on the left and right top rails
         p = np.array([0.0, 0.0, Z_TOP + CROSS_Z / 1e3])
-        return head_pose(p, [-1, 0, 0], [0, 0, -1], 0.0)
-    # on the wall-side top rail (along y), hinge plate pointing in and down by `tilt` below horizontal
+        return head_pose(p, [-1, 0, 0], [0, 0, -1], 0.0, "horizontal")
+    # on the wall-side top rail (along y), hinge plate pointing in and down by `tilt` below horizontal;
+    # the horizontal cradle puts the image's long side along the rail
     t = np.radians(tilt)
     r = np.array([np.cos(t) * cam["look"][0], 0.0, -np.sin(t)])
-    clamp_T, cradle_T, lens, view, up = head_pose([cam["xy"][0], cam["xy"][1], Z_TOP], [0, 1, 0], r, 0.0)
-    up = cradle_T[:3, :3] @ np.array([0, 1.0, 0])      # board on the portrait holes: long side along the rail
-    return clamp_T, cradle_T, lens, view, up
+    return head_pose([cam["xy"][0], cam["xy"][1], Z_TOP], [0, 1, 0], r, 0.0, "horizontal")
 
 
 # ------------------------------------------------------------------ reach
@@ -340,7 +429,8 @@ def cameras(tilts):
         for cname, cam in lay.items():
             clamp_T, cradle_T, lens, view, up = place(cam, tilts[lname][cname])
             out[lname][cname] = dict(kind=cam["kind"], clamp_T=clamp_T, cradle_T=cradle_T, lens=lens,
-                                     view=view, up=up, tilt=tilts[lname][cname], spec=cam)
+                                     view=view, up=up, tilt=tilts[lname][cname], spec=cam,
+                                     version=cradle_version(cam))
     return out
 
 
@@ -432,17 +522,17 @@ def cloth():
 
 def fixture_parts(cams_layout):
     """Every printed part and pipe for one layout, in the world: [(name, mesh, rgb)]."""
-    parts = dict(clamp=head_clamp(), cap=clamp_cap(), cradle=head_cradle(), foot=ground_foot(), cross=cross_clamp())
+    parts = dict(clamp=head_clamp(), cap=clamp_cap(), foot=ground_foot(), cross=cross_clamp(),
+                 **{f"cradle-{v}": head_cradle(v) for v in CRADLES})
+    cam_parts = {v: camera_meshes(v) for v in CRADLES}
     out = []
     for name, c in cams_layout.items():
         col = PRINT_C[name]
         out.append((f"{name}-clamp", mm_to_world(parts["clamp"], c["clamp_T"]), col))
         out.append((f"{name}-cap", mm_to_world(parts["cap"], c["clamp_T"]), col))
-        out.append((f"{name}-cradle", mm_to_world(parts["cradle"], c["cradle_T"]), col))
-        Mb = c["cradle_T"] @ T(t=np.array([PLATE_AT + PLATE[0] + STANDOFF + 0.5, PLATE_Y, LENS_UP]) / 1e3)
-        out.append((f"{name}-board", _box([-0.0005, -0.0125, -0.012], [0.0005, 0.0125, 0.012]).apply_transform(Mb), (0.10, 0.45, 0.25)))
-        Ml = c["cradle_T"] @ T(t=np.array([LENS_FWD - 3, PLATE_Y, LENS_UP]) / 1e3)
-        out.append((f"{name}-lens", _cyl(0.0055, 0.006, "x").apply_transform(Ml), DARK))
+        out.append((f"{name}-cradle", mm_to_world(parts[f"cradle-{c['version']}"], c["cradle_T"]), col))
+        for part, m in cam_parts[c["version"]]:
+            out.append((f"{name}-{part}", mm_to_world(m, c["cradle_T"]), CAM_COL[part]))
         spec = c["spec"]
         if spec["kind"] == "post":
             x, y = spec["xy"]
@@ -476,19 +566,24 @@ def table_parts(piper, q=np.zeros(6)):
 
 def main():
     (HERE / "models").mkdir(exist_ok=True)
-    for name, fn in (("head-clamp", head_clamp), ("clamp-cap", clamp_cap), ("head-cradle", head_cradle),
+    for name, fn in (("head-clamp", head_clamp), ("clamp-cap", clamp_cap),
+                     ("head-cradle-vertical", lambda: head_cradle("vertical")),
+                     ("head-cradle-horizontal", lambda: head_cradle("horizontal")),
                      ("ground-foot", ground_foot), ("cross-clamp", cross_clamp)):
         m = fn()
         assert m.is_watertight, f"{name} is not watertight"
         m = m.copy()
         rot = {"head-clamp": (-np.pi / 2, (0, 1, 0)),     # split face down, the hinge plate standing up
                "clamp-cap": (np.pi / 2, (0, 1, 0)),       # split face down
-               "head-cradle": (-np.pi / 2, (1, 0, 0))}    # hinge plate's outer face down
+               "head-cradle-vertical": (-np.pi / 2, (1, 0, 0)),     # hinge plate's outer face down
+               "head-cradle-horizontal": (-np.pi / 2, (1, 0, 0))}
         if name in rot:
             m.apply_transform(trimesh.transformations.rotation_matrix(*rot[name]))
         m.apply_translation(-m.bounds[0])
         m.export(HERE / f"models/{name}.stl")
         print(name, np.round(m.extents, 1), "mm,", round(m.volume / 1e3, 1), "cm3")
+    cradle_check = check_cradles()
+    print(json.dumps(cradle_check, indent=1))
 
     piper = Piper()
     occ, lo, vox, tip = reach(piper)
@@ -511,6 +606,7 @@ def main():
                    volume_m3=round(float(occ.sum() * vox ** 3), 3),
                    plywood_reachable_pct=None),
         layouts={},
+        cradles=cradle_check,
     )
     # how much of the plywood the fingertip can touch (within 30 mm of its surface)
     gx = (np.floor((ply[:, 0] - lo[0]) / fs)).astype(int).clip(0, touch.shape[0] - 1)
