@@ -1,0 +1,197 @@
+{
+  "bambu_studio": "02.08.02.61",
+  "presets": {
+    "machine": "Bambu Lab A1 mini 0.4 nozzle",
+    "process": "0.20mm Standard @BBL A1M",
+    "filament": "Bambu PLA Basic @BBL A1M"
+  },
+  "overrides": {
+    "wall_loops": "3",
+    "sparse_infill_density": "25%",
+    "curr_bed_type": "Textured PEI Plate",
+    "enable_circle_compensation": "1",
+    "enable_support": "0"
+  },
+  "head_overrides": {
+    "wall_loops": "4",
+    "sparse_infill_density": "40%"
+  },
+  "marked_in_different_settings_to_system": [
+    "enable_circle_compensation",
+    "sparse_infill_density",
+    "wall_loops"
+  ],
+  "filament_colour": "#000000",
+  "sources": {
+    "pod": {
+      "branch": "claude/issue-239-20260926-2347",
+      "commit": "ba6f819",
+      "path": "piper-camera-mount/exports/pod.stl"
+    },
+    "head-cradle-horizontal": {
+      "branch": "claude/issue-229-20261001-2322",
+      "commit": "01e5a3e",
+      "path": "robot-arm/enclosure/cameras/models/head-cradle-horizontal.stl"
+    },
+    "head-cradle-vertical": {
+      "branch": "claude/issue-229-20261001-2322",
+      "commit": "01e5a3e",
+      "path": "robot-arm/enclosure/cameras/models/head-cradle-vertical.stl"
+    }
+  },
+  "return_code": 0,
+  "error_string": "Success.",
+  "support_necessity_checks_run": 4,
+  "support_necessity_flags": [],
+  "layout": [
+    {
+      "object": "head-cradle-vertical-1",
+      "part": "head-cradle-vertical",
+      "turn_deg": 0,
+      "sha256": "c75679687778",
+      "centre": [
+        32.0,
+        35.0
+      ],
+      "footprint": [
+        10.0,
+        19.0,
+        54.0,
+        51.0
+      ],
+      "height": 28.4,
+      "print_params": {
+        "wall_loops": "4",
+        "sparse_infill_density": "40%"
+      }
+    },
+    {
+      "object": "head-cradle-vertical-2",
+      "part": "head-cradle-vertical",
+      "turn_deg": 0,
+      "sha256": "c75679687778",
+      "centre": [
+        90.0,
+        35.0
+      ],
+      "footprint": [
+        68.0,
+        19.0,
+        112.0,
+        51.0
+      ],
+      "height": 28.4,
+      "print_params": {
+        "wall_loops": "4",
+        "sparse_infill_density": "40%"
+      }
+    },
+    {
+      "object": "head-cradle-horizontal",
+      "part": "head-cradle-horizontal",
+      "turn_deg": 0,
+      "sha256": "02d79cb75fe4",
+      "centre": [
+        148.0,
+        35.0
+      ],
+      "footprint": [
+        126.0,
+        19.0,
+        170.0,
+        51.0
+      ],
+      "height": 19.3,
+      "print_params": {
+        "wall_loops": "4",
+        "sparse_infill_density": "40%"
+      }
+    },
+    {
+      "object": "pod",
+      "part": "pod",
+      "turn_deg": 0,
+      "sha256": "0e6347aa64e9",
+      "centre": [
+        90.0,
+        120.0
+      ],
+      "footprint": [
+        57.5,
+        79.5,
+        122.5,
+        160.5
+      ],
+      "height": 10.0,
+      "print_params": {}
+    }
+  ],
+  "layout_warnings": [],
+  "object_settings_in_3mf": {
+    "head-cradle-vertical-1_1": {
+      "sparse_infill_density": "40%",
+      "wall_loops": "4"
+    },
+    "pod_1": {},
+    "head-cradle-horizontal_1": {
+      "sparse_infill_density": "40%",
+      "wall_loops": "4"
+    },
+    "head-cradle-vertical-2_1": {
+      "sparse_infill_density": "40%",
+      "wall_loops": "4"
+    }
+  },
+  "thumbnails_embedded": [],
+  "plate": {
+    "objects": [
+      "head-cradle-vertical-1_1",
+      "head-cradle-vertical-2_1",
+      "head-cradle-horizontal_1",
+      "pod_1"
+    ],
+    "print_time_s": 4798,
+    "filament_g": 32.24,
+    "filament_m": 10.64,
+    "layers": 142,
+    "max_z_mm": 28.4,
+    "bed_type": "Textured PEI Plate",
+    "bed_temp_c": [
+      65,
+      65,
+      0
+    ],
+    "nozzle_temp_c": "220",
+    "brim_type": "auto_brim",
+    "toolpath_outside_bed": false,
+    "support_used": false,
+    "slicer_warnings": [],
+    "gcode_warnings": [
+      {
+        "msg": "not_support_traditional_timelapse",
+        "level": 2,
+        "code": "10018003"
+      },
+      {
+        "msg": "not_support_traditional_timelapse",
+        "level": 3,
+        "code": "1000C003"
+      }
+    ],
+    "feature_time_s": {
+      "Bottom surface": 216,
+      "Bridge": 205,
+      "Custom": 349,
+      "Flush": 28,
+      "Gap infill": 187,
+      "Inner wall": 1058,
+      "Internal solid infill": 502,
+      "Outer wall": 652,
+      "Overhang wall": 41,
+      "Sparse infill": 587,
+      "Top surface": 178,
+      "Travel": 815,
+      "Undefined": 797
+    }
+  }
+}
