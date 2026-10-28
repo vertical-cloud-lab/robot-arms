@@ -1,0 +1,14 @@
+{
+ "turn_deg": -45.0,
+ "centre_m": [
+  0.238,
+  0.284
+ ],
+ "nearest_to_J1": {
+  "item": "AMS lite",
+  "mm": 184
+ },
+ "printer_to_J1_mm": 194,
+ "ams_lite_to_J1_mm": 184,
+ "footprint_m2": 0.234
+}
