@@ -196,7 +196,7 @@
   },
   "api_calls_used": 38,
   "checked_after": {
-    "note": "Re-read after the run (11 more calls): the run kept parts_in_onshape as a dict keyed by name, which kept one of the 4 spacers, so the list above is from this re-read. update_doc.py now keeps a list.",
+    "note": "Re-read after the run (11 calls), plus the STL export (4 calls): the run kept parts_in_onshape as a dict keyed by name, which kept one of the 4 spacers, so the list above is from this re-read. update_doc.py now keeps a list.",
     "document": {
       "name": "PiPER wrist camera mount (e082c8b)",
       "public": false,
@@ -301,6 +301,32 @@
         "e7a49a23794ebb202d18f725",
         "2026-10-28T20:48:02.703+00:00"
       ]
-    ]
+    ],
+    "onshape_stl_export": {
+      "file": "the Print plate tab as one binary STL, from Onshape's STL export (resolution fine, millimetres)",
+      "triangles": 24270,
+      "bbox_diff_mm": 0.0,
+      "volume_mm3": 122807.1,
+      "exact_volume_mm3": 122704.4,
+      "volume_diff_pct": 0.084,
+      "max_sagitta_mm_by_diameter": {
+        "2.0": 0.001,
+        "2.4": 0.0011,
+        "2.8": 0.0013,
+        "3.4": 0.0016,
+        "4.2": 0.002,
+        "4.5": 0.0021,
+        "5.0": 0.0024,
+        "5.5": 0.0321,
+        "6.0": 0.0029,
+        "6.5": 0.0031,
+        "7.0": 0.0033,
+        "8.0": 0.0608,
+        "37.0": 0.0167,
+        "57.3": 0.0269,
+        "67.3": 0.0289
+      },
+      "note": "python onshape/print_plate.py --check-stl FILE. Sagitta: how far the facets cut inside each vertical round face. The 8.0 mm faces are the plates' 4 mm corner rounds; the committed STLs give 0.059 mm there and 0.032 mm at 5.5 mm too, and at most 0.0095 mm on the holes and bores."
+    }
   }
 }

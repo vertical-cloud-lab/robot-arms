@@ -1142,6 +1142,10 @@ print orientation and where the A1 mini plate puts it. Select the parts you want
 export them as STL or 3MF for Bambu Studio, then slice with the settings in
 [slice/README.md](slice/README.md) (3 walls, 25 % infill, circle compensation on, no supports). The
 committed [A1 mini plate](slice/piper_camera_mount_A1mini_PLA.3mf) is the same parts already sliced.
+Exported from Onshape as STL at Fine resolution, the whole tab has the plate's exact bounding box,
+and its round holes come out at most 0.03 mm small (0.01 mm in the committed STLs), far less than
+a printer can show ([`print_plate.py --check-stl`](onshape/print_plate.py), numbers in the
+[record](onshape/run_2026-10-28_update.json)).
 Of the set printed on 13 October, only the pod and the bracket have changed since; the carrier,
 spacers and tag wedges are the same.
 
@@ -1159,7 +1163,7 @@ spacers and tag wedges are the same.
 **Versions** (the clock icon, Versions and history): `4be6e17 (before e082c8b)` is the document as it
 stood before the update, and [`e082c8b`](https://cad.onshape.com/documents/93ef145982c24192bfd160be/v/e7a49a23794ebb202d18f725)
 is the update itself, a fixed copy to link to.
-[`onshape/update_doc.py`](onshape/update_doc.py) made the update in 38 API calls, plus 11 to check it
+[`onshape/update_doc.py`](onshape/update_doc.py) made the update in 38 API calls, plus 15 to check it
 afterwards ([record](onshape/run_2026-10-28_update.json)):
 
 1. Save the document as it stood as a version.
