@@ -68,7 +68,7 @@
     {
       "part": "pod",
       "stl": "pod.stl",
-      "sha256": "ec813c995743",
+      "sha256": "0e6347aa64e9",
       "centre": [
         220.0,
         201.0
@@ -150,9 +150,9 @@
         "tag_wedge_1",
         "tag_wedge_1"
       ],
-      "print_time_s": 13498,
-      "filament_g": 70.35,
-      "filament_m": 27.59,
+      "print_time_s": 13514,
+      "filament_g": 70.2,
+      "filament_m": 27.53,
       "filament_type": "PA-CF",
       "nozzles_used": [
         {
@@ -180,22 +180,22 @@
       "slicer_warnings": [],
       "gcode_warnings": [],
       "feature_time_s": {
-        "Bottom surface": 313,
-        "Bridge": 392,
+        "Bottom surface": 310,
+        "Bridge": 387,
         "Custom": 1038,
         "Flush": 26,
-        "Gap infill": 156,
-        "Inner wall": 2969,
-        "Internal solid infill": 1609,
-        "Outer wall": 1823,
+        "Gap infill": 160,
+        "Inner wall": 2989,
+        "Internal solid infill": 1597,
+        "Outer wall": 1835,
         "Overhang wall": 62,
-        "Sparse infill": 3340,
-        "Top surface": 257,
-        "Travel": 1523,
-        "Undefined": 1515
+        "Sparse infill": 3327,
+        "Top surface": 255,
+        "Travel": 1537,
+        "Undefined": 1529
       }
     }
   ],
-  "total_print_time_s": 13498,
-  "total_filament_g": 70.35
+  "total_print_time_s": 13514,
+  "total_filament_g": 70.2
 }

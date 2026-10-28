@@ -184,6 +184,14 @@ Raspberry Pi's drawing puts the housing, and the pod is otherwise unchanged
 - **Not re-sliced:** the H2D plate and the per-part slices (`slice_configs.json`), which still have
   the round hole.
 
+**On 2026-10-28 the hole ran on over the flex below the Wide's housing,** 1.0 mm clear of it on
+every side and through the plate ([The flex below the housing](../README.md#the-flex-below-the-housing)).
+Only the pod's STL changed.
+- **Re-sliced for it:** the A1 mini plate (2 h 48 min, 85.27 g), `report.json` and `overhangs.json`;
+  and the H2D PAHT-CF plate (3 h 45 min, 70.20 g, the left 0.4 mm nozzle) and `report_h2d.json`,
+  which had still carried the round hole.
+- **Not re-sliced:** the per-part slices (`slice_configs.json`).
+
 Before that, nothing of the mount had been printed. [`a1mini_history/`](a1mini_history/README.md)
 lists everything the A1 mini printed from July to the morning of 2026-10-08, from Bambu's cloud and
 the printer's own SD card, with the two read-only scripts that fetch it.

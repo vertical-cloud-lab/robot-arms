@@ -17,7 +17,8 @@ bracket has the old O33 lens cradle, which the 6 mm lens's thumbscrews can hit. 
 with the O43 cradle, went to the A1 mini on 2026-10-13** ([record](slice/print_2026-10-13/README.md)),
 but its pod has too little room for the HQ Camera's housing. Reprint the pod and the bracket from
 this branch ([The HQ Camera in the pod](#the-hq-camera-in-the-pod)). Neither printed pod takes the
-Camera Module 3 Wide either: its square lens housing can't pass the pod's round hole
+Camera Module 3 Wide either: its square lens housing can't pass the pod's round hole. This branch's
+pod has a square hole for it that runs on over the flex below it
 ([The Camera Module 3 Wide in the pod](#the-camera-module-3-wide-in-the-pod)).
 
 ![Assembly on AgileX's gripper model](renders/assembly.png)
@@ -208,9 +209,10 @@ couldn't pass the pod's O13 round hole, so the board couldn't sit on its bosses 
 [`cad/cm3w_fit.py`](cad/cm3w_fit.py) builds the camera from Raspberry Pi's
 [Camera Module 3 Wide drawing](https://datasheets.raspberrypi.com/camera/camera-module-3-wide-mechanical-drawing.pdf)
 alone, with no numbers from `piper_mount.py`. It then sets the camera's four holes on the pod's four
-screw holes and measures both pods ([`exports/cm3w_fit.json`](exports/cm3w_fit.json)).
-
-![The Wide's housing in the printed pod and the new one](renders/cm3w_fit.png)
+screw holes and measures both pods ([`exports/cm3w_fit.json`](exports/cm3w_fit.json)). Its first
+picture, the housing in the printed pod and in the square hole, is
+[at a4f85b5](https://github.com/vertical-cloud-lab/robot-arms/blob/a4f85b5/piper-camera-mount/renders/cm3w_fit.png);
+it now draws the flex below the housing too ([The flex below the housing](#the-flex-below-the-housing)).
 
 | From the drawing (mm) | Value |
 |---|---|
@@ -262,12 +264,85 @@ holes.
 
 **Not re-run:**
 
-- the H2D plate and the per-part slices, which still have the round hole;
+- the H2D plate (since re-sliced, with the flex cut-out: [The flex below the housing](#the-flex-below-the-housing))
+  and the per-part slices, which still have the round hole;
 - the renders, the simulated Wide views (`view_cm3w.png`, `fiducials.py`), the assembly GIF, the
   fastener check, the FEA and Onshape. They have the Wide's lens 4.94 mm too low, and the 8.5 mm module.
 
 **If the housing is tight in the print,** raise `cm_hole_c`. Bambu's circle compensation only resizes
 round holes, so the square prints as drawn.
+
+### The flex below the housing
+
+**jss265 asked for room for the part just below the housing as well** (PR #10, 2026-10-28, with a
+photo). It's the flex that runs from the camera module to its board-to-board connector. It shows as a
+black strip printed `TNBA2004`, then a QR label and a gold stiffener over the connector. The first
+fit (above) left it out.
+
+**Its numbers come from Raspberry Pi, not from the photo:**
+
+- **Outline: the drawing.** Its front view outlines the flex under the housing. It is 8.9 wide and 4
+  tall at the board's edge, then 7.0 wide for the 3.3 up to the housing, 7.3 in all. It runs from
+  9.519 to 18.419 across, so it sits to the right of the lens (12.5). The inside corners are R0.8
+  and R0.5. Labels and linework agree to 0.001 mm, as for the rest of the drawing.
+- **Height: Raspberry Pi's STEP model of the Wide.** No view of the drawing gives one.
+  - The model is `Camera_module_3_wide_model_simple.stp` in
+    [`RP-008154-DS-1-camera-module-3-step.zip`](https://pip.raspberrypi.com/categories/1207-design-files)
+    on pip.raspberrypi.com. `cm3w_fit.py` fetches it into `cad/.cache/` and checks its SHA-256; it
+    isn't committed.
+  - The flex's top is 1.41 mm off the board's front face. It rises to 2.05 mm only where it climbs
+    into the module at the housing's edge.
+  - Under it are its plug and the board's Hirose DF37NC-30DS-0.4V receptacle (0.98 mm tall).
+- **The model's outline matches the drawing's, 0.169 mm to the left** (9.35 to 18.25). That's within
+  the drawing's ±0.2 mm, and the cut-out clears both.
+- **Elsewhere the model agrees with the drawing:**
+  - its four O2.2 holes are where the drawing has them (0.00 mm);
+  - its module's base is the drawing's 10.8 mm square, in the same place.
+- **It differs from the drawing in three places:**
+  - its board is 0.76 mm thick with its solder masks, against the drawing's 1.12;
+  - its lens tip is 8.06 mm off the board, against 8.3;
+  - corner tabs on top of the module reach 4.86 mm, against the housing's 4.07. They're inside the
+    square hole, which runs through the plate.
+  - Every height here is measured from the board's front face, which is what sits on the bosses.
+
+![The flex below the Wide's housing, in the pod before and now](renders/cm3w_fit.png)
+
+**The flex never touched the plate.** The bosses hold the board 2.5 mm off the plate, and the flex
+stands at most 2.05 mm off the board. So it was 0.45 mm short of the plastic, but right under it.
+
+**The hole now runs on over the flex, with generous room** (`cm_flex` and `cm_flex_c` in
+[`piper_mount.py`](cad/piper_mount.py)):
+
+- **The added cut-out** is 11.07 mm across (from 4.15 left of the lens axis to 6.92 right of it) and
+  runs from the square hole to 13.7 mm below the lens axis. It goes through the 6 mm plate, as the
+  square does, so the opening is 19.4 mm tall in all.
+- **It's 1.0 mm from the flex on every side,** counting both outlines: 1.0 from the drawing's right
+  edge, 1.0 from the model's left edge and 1.0 below the bottom. The nearest plastic is now 1.10 mm
+  from the flex.
+- **The square round the housing keeps its 0.3 mm** a side (`cm_hole_c`), the snug fit asked for
+  on 2026-10-27.
+- **The four screw holes didn't move.**
+  - The clearance holes, counterbores and bosses are still at (±10.5, −0.1) and (±10.5, 12.4).
+  - The camera's holes, by the drawing and by the model, are 0.00 mm from them.
+  - The nearest boss is 1.33 mm from the new cut-out, and its counterbore 1.48 mm.
+- **Nothing else changed.**
+  - 540.8 mm³ came out, all inside the new cut-out's box, and nothing was added. The pod is now
+    17.70 cm³.
+  - The seat contact stays 845 mm², and the bracket and the other parts are byte-identical.
+- **Printing:** the cut-out is a straight drop through a plate printed face down, so it needs no
+  support. `overhangs.json` only changes the pod's hash.
+
+**Re-run for this:**
+
+- the checks: 66 pairs, all 0 mm³. The camera model in `piper_mount.py` now carries the flex, so
+  `pod vs cm_module` includes it;
+- the STEP and STL exports (only the pod and the assembly changed) and `cm3w_fit.py`;
+- the A1 mini plate and `overhangs.json`: 2 h 48 min and 85.27 g, 0.21 g less than before;
+- the H2D PAHT-CF plate: 3 h 45 min and 70.20 g, the filament still on the left 0.4 mm nozzle. It
+  had still carried the pod's round hole.
+
+**Not re-run:** the per-part slices (`slice_configs.json`), the renders, the simulated views, the
+assembly GIF, the fastener check, the FEA and Onshape.
 
 ## Which HQ lens: the 6 mm wide-angle
 
@@ -1033,7 +1108,9 @@ pass:
   17.8 mm away fully open. The finger tag wedges stay 72 mm from the mount.
 - **The Camera Module 3 Wide,** as Raspberry Pi's drawing has it: its 10.8 mm housing stays 0.3 mm
   from the pod's square hole on every side, and its holes sit on the pod's screw holes
-  ([The Camera Module 3 Wide in the pod](#the-camera-module-3-wide-in-the-pod)).
+  ([The Camera Module 3 Wide in the pod](#the-camera-module-3-wide-in-the-pod)). The flex below
+  the housing is 2.05 mm tall by Raspberry Pi's STEP model, and the opening clears it by 1.0 mm on
+  every side ([The flex below the housing](#the-flex-below-the-housing)).
 - **Views:** no printed part is inside the HQ's view. The Wide's view takes in 1,907 mm³ of the
   bracket (its top ear) and 134 mm³ of the carrier's edge. With the Wide's lens 4.94 mm lower, as
   first modelled, the bracket figure was 2,890 mm³.
@@ -1105,7 +1182,7 @@ xvfb-run -a -s "-screen 0 1920x1080x24" python lens_compare.py      # 6 mm vs 16
 xvfb-run -a -s "-screen 0 1920x1080x24" python wrist_zoom.py        # renders/wrist_zoom.gif: the OT-2's zoom on the wrist (~2 min)
 python cradle_fit.py                                                 # renders/cradle_fit.gif: the lens's thumbscrews, old and new cradle
 xvfb-run -a -s "-screen 0 1920x1080x24" python hq_fit.py            # renders/hq_fit*.png: the HQ housing in the printed pod and the new one
-python cm3w_fit.py                                                   # renders/cm3w_fit.png: the Wide's housing in the printed pod and the new one
+python cm3w_fit.py                                                   # renders/cm3w_fit.png: the Wide's housing and flex in the pod (fetches Raspberry Pi's STEP; ~2 min)
 python detail_compare.py                                             # renders/detail_compare.png: fine detail, wrist vs a fixed zoom
 python envelope.py                                                   # renders/tight_spaces.png
 python fastener_fit.py                                               # exports/fastener_fit.json: screw lengths, heads, tool room (about 15 min)
