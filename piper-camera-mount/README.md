@@ -283,8 +283,9 @@ fit (above) left it out.
 
 - **Outline: the drawing.** Its front view outlines the flex under the housing. It is 8.9 wide and 4
   tall at the board's edge, then 7.0 wide for the 3.3 up to the housing, 7.3 in all. It runs from
-  9.519 to 18.419 across, so it sits to the right of the lens (12.5). The inside corners are R0.8
-  and R0.5. Labels and linework agree to 0.001 mm, as for the rest of the drawing.
+  9.519 to 18.419 across, so it's off-centre: 2.98 to the left of the lens (12.5) and 5.92 to its
+  right, with the connector up. The inside corners are R0.8 and R0.5. Labels and linework agree to
+  0.001 mm, as for the rest of the drawing.
 - **Height: Raspberry Pi's STEP model of the Wide.** No view of the drawing gives one.
   - The model is `Camera_module_3_wide_model_simple.stp` in
     [`RP-008154-DS-1-camera-module-3-step.zip`](https://pip.raspberrypi.com/categories/1207-design-files)
