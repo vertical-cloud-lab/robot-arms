@@ -3,9 +3,9 @@
 
     xvfb-run -a python plate_view.py            # -> plate.png, plate_build.gif, per_object.json
 
-PR #10's piper-camera-mount/slice/plate_view.py, for the A1 mini's 180 x 180 mm bed. Every
-extrusion move (G1, and G2/G3 arcs split into short chords) in Metadata/plate_1.gcode becomes a
-line, coloured by what Bambu labels it: walls, sparse infill, or solid fill (top, bottom, internal
+#45's plate_view.py (PR #10's piper-camera-mount/slice/plate_view.py), for the A1 mini's 180 x 180
+mm bed. Every extrusion move (G1, and G2/G3 arcs split into short chords) in Metadata/plate_1.gcode
+becomes a line, coloured by what Bambu labels it: walls, sparse infill, or solid fill (top, bottom, internal
 solid, bridges). Travel, wipes, retractions and the start G-code's purge lines are left out. Times
 are Bambu's own, from its M73 R (minutes left) lines. Each part's filament is the extrusion between
 Bambu's "start/stop printing object" markers, scaled so the parts add up to Bambu's plate total.
@@ -177,10 +177,10 @@ def still(mesh: pv.PolyData, rep: dict, out: Path) -> None:
                       fontsize=11, color=INK, loc="left")
     axes[1].set_title(f"From above: the whole {BED[0]:g} x {BED[1]:g} mm Textured PEI plate",
                       fontsize=11, color=INK, loc="left")
-    fig.suptitle(f"A1 mini, one plate in black PLA Basic: the wrist-camera pod and bracket (#4), and three "
-                 f"camera heads (PR #9)\n{h} h {m:02d} min and {p['filament_g']:.1f} g by Bambu Studio "
-                 f"{rep['bambu_studio']}; 0.20 mm layers, no supports; pod and bracket 3 walls, 25 % infill; "
-                 f"head parts 4 walls, 40 % infill", fontsize=12, color=INK, x=0.02, ha="left", y=0.995)
+    fig.suptitle(f"A1 mini, one plate in black PLA Basic: the wrist-camera pod (PR #10), and one horizontal "
+                 f"and two vertical camera cradles (PR #9)\n{h} h {m:02d} min and {p['filament_g']:.1f} g by Bambu "
+                 f"Studio {rep['bambu_studio']}; 0.20 mm layers, no supports; pod 3 walls, 25 % infill; "
+                 f"cradles 4 walls, 40 % infill", fontsize=12, color=INK, x=0.02, ha="left", y=0.995)
     fig.legend(handles=[Patch(color=c, label=n) for c, n in zip(COLOURS, NAMES)], loc="lower center", ncol=3,
                frameon=False, fontsize=10, bbox_to_anchor=(0.5, -0.005))
     fig.subplots_adjust(left=0.005, right=0.995, top=0.88, bottom=0.06)
