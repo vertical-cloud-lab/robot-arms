@@ -1,0 +1,306 @@
+{
+  "date": "2026-10-28",
+  "commit": "e082c8b",
+  "document": "https://cad.onshape.com/documents/93ef145982c24192bfd160be/w/e3d08fcb2dcad7c92e183721",
+  "tabs_before": {
+    "AgileX gripper (reference, do not share)": "PARTSTUDIO",
+    "Mount parts (exports/assembly.step)": "PARTSTUDIO",
+    "Part Studio 1": "PARTSTUDIO",
+    "Mount on gripper": "ASSEMBLY",
+    "BOM : Mount on gripper": "BILLOFMATERIALS"
+  },
+  "version_before": {
+    "name": "4be6e17 (before e082c8b)",
+    "url": "https://cad.onshape.com/documents/93ef145982c24192bfd160be/v/8bea0a6f2b49ca4b417e9cd8"
+  },
+  "imports": {
+    "assembly.step": "d4d378010056dd8729cbcbd4",
+    "print_plate.step": "b3515ee207cc6e16af1c7e8c"
+  },
+  "assembly": "Mount on gripper: deleted the old mount's 15 part instances, inserted the new mount whole",
+  "deleted": {
+    "old mount Part Studio": "refused (HTTP 403 Access denied)",
+    "Part Studio 1 (empty default)": "refused (HTTP 403 Access denied)"
+  },
+  "name": {
+    "before": "PiPER wrist camera mount (4be6e17)",
+    "after": "PiPER wrist camera mount (e082c8b)"
+  },
+  "print_plate": {
+    "parts_in_onshape": [
+      [
+        "bracket",
+        51742.2
+      ],
+      [
+        "carrier",
+        52570.7
+      ],
+      [
+        "pod",
+        17700.5
+      ],
+      [
+        "spacers",
+        110.6
+      ],
+      [
+        "spacers",
+        110.6
+      ],
+      [
+        "spacers",
+        110.6
+      ],
+      [
+        "spacers",
+        110.6
+      ],
+      [
+        "tag_wedge_1",
+        124.0
+      ],
+      [
+        "tag_wedge_2",
+        124.0
+      ]
+    ],
+    "check_against_stl": {
+      "bracket": {
+        "volume_mm3": 51742.1,
+        "stl_volume_mm3": 51757.4,
+        "volume_diff_pct": -0.03,
+        "bbox_diff_mm": 0.0,
+        "solids": 1,
+        "ok": true
+      },
+      "pod": {
+        "volume_mm3": 17700.2,
+        "stl_volume_mm3": 17701.7,
+        "volume_diff_pct": -0.008,
+        "bbox_diff_mm": 0.0,
+        "solids": 1,
+        "ok": true
+      },
+      "carrier": {
+        "volume_mm3": 52571.8,
+        "stl_volume_mm3": 52588.6,
+        "volume_diff_pct": -0.032,
+        "bbox_diff_mm": 0.0,
+        "solids": 1,
+        "ok": true
+      },
+      "spacers": {
+        "volume_mm3": 442.3,
+        "stl_volume_mm3": 442.2,
+        "volume_diff_pct": 0.041,
+        "bbox_diff_mm": 0.0009,
+        "solids": 4,
+        "ok": true
+      },
+      "tag_wedge": {
+        "volume_mm3": 124.0,
+        "stl_volume_mm3": 124.0,
+        "volume_diff_pct": -0.0,
+        "bbox_diff_mm": 0.0,
+        "solids": 1,
+        "ok": true
+      }
+    },
+    "layout": {
+      "bracket": {
+        "footprint_centre_mm": [
+          43,
+          55
+        ],
+        "size_mm": [
+          72.43,
+          88.0,
+          42.68
+        ]
+      },
+      "carrier": {
+        "footprint_centre_mm": [
+          50,
+          146
+        ],
+        "size_mm": [
+          88.0,
+          55.5,
+          38.61
+        ]
+      },
+      "pod": {
+        "footprint_centre_mm": [
+          135,
+          131
+        ],
+        "size_mm": [
+          65.0,
+          81.0,
+          10.0
+        ]
+      },
+      "spacers": {
+        "footprint_centre_mm": [
+          130,
+          28
+        ],
+        "size_mm": [
+          36.0,
+          6.0,
+          5.0
+        ]
+      },
+      "tag_wedge#1": {
+        "footprint_centre_mm": [
+          112,
+          60
+        ],
+        "size_mm": [
+          5.94,
+          7.25,
+          4.96
+        ]
+      },
+      "tag_wedge#2": {
+        "footprint_centre_mm": [
+          128,
+          60
+        ],
+        "size_mm": [
+          5.94,
+          7.25,
+          4.96
+        ]
+      }
+    }
+  },
+  "shaded_views": [
+    "onshape_print_plate.png",
+    "onshape_assembly.png",
+    "onshape_on_gripper.png"
+  ],
+  "tabs_after": {
+    "Print plate (printed parts, A1 mini layout)": "PARTSTUDIO",
+    "Mount parts (exports/assembly.step)": "PARTSTUDIO",
+    "AgileX gripper (reference, do not share)": "PARTSTUDIO",
+    "OLD 4be6e17, superseded: do not print": "PARTSTUDIO",
+    "Part Studio 1": "PARTSTUDIO",
+    "Mount on gripper": "ASSEMBLY",
+    "BOM : Mount on gripper": "BILLOFMATERIALS"
+  },
+  "version_after": {
+    "name": "e082c8b",
+    "url": "https://cad.onshape.com/documents/93ef145982c24192bfd160be/v/e7a49a23794ebb202d18f725"
+  },
+  "api_calls_used": 38,
+  "checked_after": {
+    "note": "Re-read after the run (11 more calls): the run kept parts_in_onshape as a dict keyed by name, which kept one of the 4 spacers, so the list above is from this re-read. update_doc.py now keeps a list.",
+    "document": {
+      "name": "PiPER wrist camera mount (e082c8b)",
+      "public": false,
+      "owner": "Vertical Cloud Lab",
+      "parentId": "9a78d7989a97567e68bc153a"
+    },
+    "mount_parts_in_onshape": [
+      [
+        "bracket",
+        51742.2
+      ],
+      [
+        "pod",
+        17700.5
+      ],
+      [
+        "carrier",
+        52570.7
+      ],
+      [
+        "pi_spacers",
+        110.6
+      ],
+      [
+        "pi_spacers",
+        110.6
+      ],
+      [
+        "pi_spacers",
+        110.6
+      ],
+      [
+        "pi_spacers",
+        110.6
+      ],
+      [
+        "hq_pcb",
+        2306.4
+      ],
+      [
+        "hq_mount",
+        17373.4
+      ],
+      [
+        "hq_tripod_screws",
+        36.3
+      ],
+      [
+        "hq_tripod_screws",
+        36.3
+      ],
+      [
+        "hq_lens",
+        21374.1
+      ],
+      [
+        "hq_lens_screws",
+        42.4
+      ],
+      [
+        "hq_lens_screws",
+        41.0
+      ],
+      [
+        "cm_pcb",
+        965.2
+      ],
+      [
+        "cm_module",
+        755.5
+      ],
+      [
+        "pi5",
+        42427.2
+      ],
+      [
+        "tag_wedges",
+        124.0
+      ],
+      [
+        "tag_wedges",
+        124.0
+      ]
+    ],
+    "assembly_instances": {
+      "gripper": 13,
+      "new mount": 19
+    },
+    "versions": [
+      [
+        "Start",
+        "b01480d32cebbe8a894ded32",
+        "2026-09-27T00:08:49.113+00:00"
+      ],
+      [
+        "4be6e17 (before e082c8b)",
+        "8bea0a6f2b49ca4b417e9cd8",
+        "2026-10-28T20:47:37.624+00:00"
+      ],
+      [
+        "e082c8b",
+        "e7a49a23794ebb202d18f725",
+        "2026-10-28T20:48:02.703+00:00"
+      ]
+    ]
+  }
+}

@@ -186,8 +186,8 @@ their heads are placed from Raspberry Pi's photos of the camera.
   flags nothing.
 - **Not re-run:** the joint FEA, the CalculiX runs and the sliced FEA. The seat lost 56 mm² of its
   901 mm² next to the foot, so expect the pod joint a little softer than [The pod seat](#the-pod-seat)
-  says. The assembly GIF, the fastener check and the Onshape copy still show the housing as first
-  modelled.
+  says. The assembly GIF and the fastener check still show the housing as first modelled. Onshape
+  was brought up to date on 28 October ([Onshape](#onshape)).
 - **Or take the tripod mount off.** Raspberry Pi's exploded drawing calls it optional, and the two
   shoulder screws look to be what holds it to the housing. The housing stays on the board, held by the
   two hex lock keys on the back. Without the tripod mount, the shoulders and their screws are gone, so the printed pod
@@ -267,7 +267,8 @@ holes.
 - the H2D plate (since re-sliced, with the flex cut-out: [The flex below the housing](#the-flex-below-the-housing))
   and the per-part slices, which still have the round hole;
 - the renders, the simulated Wide views (`view_cm3w.png`, `fiducials.py`), the assembly GIF, the
-  fastener check, the FEA and Onshape. They have the Wide's lens 4.94 mm too low, and the 8.5 mm module.
+  fastener check and the FEA. They have the Wide's lens 4.94 mm too low, and the 8.5 mm module.
+  Onshape was brought up to date on 28 October ([Onshape](#onshape)).
 
 **If the housing is tight in the print,** raise `cm_hole_c`. Bambu's circle compensation only resizes
 round holes, so the square prints as drawn.
@@ -343,7 +344,8 @@ stands at most 2.05 mm off the board. So it was 0.45 mm short of the plastic, bu
   had still carried the pod's round hole.
 
 **Not re-run:** the per-part slices (`slice_configs.json`), the renders, the simulated views, the
-assembly GIF, the fastener check, the FEA and Onshape.
+assembly GIF, the fastener check and the FEA. Onshape was updated afterwards, at `e082c8b`
+([Onshape](#onshape)).
 
 ## Which HQ lens: the 6 mm wide-angle
 
@@ -1129,18 +1131,47 @@ checks stricter.
 ## Onshape
 
 The design is in Onshape in the lab's **vcl-shared › 6DOF Robot Arm** folder:
-[PiPER wrist camera mount (4be6e17)](https://cad.onshape.com/documents/93ef145982c24192bfd160be/w/e3d08fcb2dcad7c92e183721).
-It's owned by Vertical Cloud Lab and it's private. It still has the 1.0 mm clamp split and the O33
-lens cradle; the 0.6 mm split and the O43 cradle came later, so re-import `exports/assembly.step` to
-bring it up to date. Open the **Mount on
-gripper** tab:
+[PiPER wrist camera mount (e082c8b)](https://cad.onshape.com/documents/93ef145982c24192bfd160be/w/e3d08fcb2dcad7c92e183721).
+It's owned by Vertical Cloud Lab and it's private. On 2026-10-28 it was brought up to date in place,
+so the link is the same as before. It now has this branch's parts, as exported at `7165e21`: the Ø43
+cradle, the pod and bracket that clear the HQ Camera's housing, and the Camera Module 3 Wide's square
+hole with the flex cut-out.
+
+**To print from it, open the Print plate tab.** It holds only the printed parts, each already in its
+print orientation and where the A1 mini plate puts it. Select the parts you want, right-click and
+export them as STL or 3MF for Bambu Studio, then slice with the settings in
+[slice/README.md](slice/README.md) (3 walls, 25 % infill, circle compensation on, no supports). The
+committed [A1 mini plate](slice/piper_camera_mount_A1mini_PLA.3mf) is the same parts already sliced.
+Of the set printed on 13 October, only the pod and the bracket have changed since; the carrier,
+spacers and tag wedges are the same.
 
 | Tab | What's in it |
 |---|---|
-| Mount on gripper | The assembly. Both Part Studios below are inserted whole, at the origin, so the mount sits on the gripper exactly as in the renders |
-| Mount parts (exports/assembly.step) | Our parts, plus envelopes of the Pi 5 and the cameras |
+| Print plate (printed parts, A1 mini layout) | The bracket, pod, carrier, 4 spacers and 2 tag wedges, from [`onshape/print_plate.py`](onshape/print_plate.py). The bed's corner is at the origin and +Z is up. Each part's volume in Onshape matches its STL in `exports/`, which the slices are made from, to within 0.1 % |
+| Mount parts (exports/assembly.step) | Our parts on the gripper's frame, plus envelopes of the Pi 5 and the cameras |
 | AgileX gripper (reference, do not share) | AgileX's gripper STEP, 13 parts. Onshape shows AgileX's Chinese part names garbled; they read 电机加底座 (motor and base), 法兰 (flange), 夹爪 (jaw) and 推力轴承 (thrust bearing), and MGN7 is the linear rail and its carriages |
-| Part Studio 1 | Empty. Onshape's default tab, which the API key can't delete (HTTP 403), so delete it in the web app |
+| Mount on gripper | The assembly. The two Part Studios above are inserted whole, at the origin, so the mount sits on the gripper exactly as in the renders |
+| OLD 4be6e17, superseded: do not print | The parts from 27 September. The API key can't delete tabs (HTTP 403), so delete it in the web app |
+| Part Studio 1 | Empty. Onshape's default tab, which the API key can't delete either |
+
+![Onshape's Print plate tab: the printed parts in print orientation](onshape/onshape_print_plate.png)
+
+**Versions** (the clock icon, Versions and history): `4be6e17 (before e082c8b)` is the document as it
+stood before the update, and [`e082c8b`](https://cad.onshape.com/documents/93ef145982c24192bfd160be/v/e7a49a23794ebb202d18f725)
+is the update itself, a fixed copy to link to.
+[`onshape/update_doc.py`](onshape/update_doc.py) made the update in 38 API calls, plus 11 to check it
+afterwards ([record](onshape/run_2026-10-28_update.json)):
+
+1. Save the document as it stood as a version.
+2. Import `exports/assembly.step`, and the print plate that `print_plate.py` builds from the
+   committed STEPs. It turns each part into its print orientation the way the STLs are exported
+   and checks it against its STL before uploading.
+3. In the assembly, delete the old mount's 15 part instances and insert the new mount whole. Try to
+   delete the old tabs, which the key still can't do, so rename the old mount's tab instead.
+4. Rename the document, read back each printed part's volume, save the pictures, and save a second
+   version.
+
+To bring it up to date again after the next export, run `update_doc.py` again.
 
 AgileX's gripper went in on 2026-09-27 with
 [`onshape/add_gripper.py`](onshape/add_gripper.py) (about 15 API calls,
@@ -1151,8 +1182,8 @@ refuses to import into a public one).
 
 ![The Onshape assembly: the mount on AgileX's gripper](onshape/onshape_on_gripper.png)
 
-[`onshape/onshape_import.py`](onshape/onshape_import.py) made the document over the REST API in
-**7 calls**, plus 3 to check the copy and fetch the shaded view below (the plan allows 2,500 a
+[`onshape/onshape_import.py`](onshape/onshape_import.py) made the document on 2026-09-27 over the
+REST API in **7 calls**, plus 3 to check the copy and fetch a shaded view (the plan allows 2,500 a
 year):
 
 1. Create a document.
@@ -1166,7 +1197,7 @@ deleted from there. The run record is in
 version, [PiPER wrist camera mount (9f691e6)](https://cad.onshape.com/documents/e22711217c260359b417d4ab/w/a89539f5f5ee3273f944af9c)
 ([record](onshape/run_2026-09-26.json)), is in the same folder and can be deleted.
 
-![Onshape shaded view of the mount's Part Studio](onshape/onshape_assembly.png)
+![Onshape shaded view of the Mount parts tab](onshape/onshape_assembly.png)
 
 The parts are imported solids, not native sketch-and-extrude features. For editable geometry,
 rebuild from `Params`, the way #234's `onshape_api.py` does for the lid mount's base.
@@ -1199,6 +1230,7 @@ python ../sim/sliced_plots.py                                        # renders/s
 python ../power/voltage_drop.py                                      # power/README.md's table
 python ../compute/ram_footprint.py prep && python ../compute/ram_footprint.py all   # compute/README.md's memory table
 python ../onshape/add_gripper.py --doc 93ef145982c24192bfd160be --ws e3d08fcb2dcad7c92e183721   # done once
+python ../onshape/update_doc.py --doc 93ef145982c24192bfd160be --ws e3d08fcb2dcad7c92e183721    # Onshape up to date, with the print plate
 ```
 
 - **AgileX's STEP isn't committed.** AgileX publishes it with no licence, so

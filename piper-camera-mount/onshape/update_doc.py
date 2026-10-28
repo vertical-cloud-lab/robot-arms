@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bring the lab's Onshape document up to date in place, ready to print from, in about 50 calls.
+"""Bring the lab's Onshape document up to date in place, ready to print from, in about 40 calls.
 
 onshape_import.py made a new document for each import. This updates the existing one instead,
 so its link keeps working:
@@ -9,10 +9,11 @@ so its link keeps working:
     2. import exports/assembly.step (our parts on the gripper's frame) and print_plate.py's
        plate (the printed parts in print orientation, laid out as on the A1 mini plate) as two
        new Part Studios,
-    3. swap the old mount for the new one in the "Mount on gripper" assembly, then delete the
-       old mount's Part Studio and the empty default one. The lab's API key could not delete
-       tabs in September (HTTP 403); if it still can't, the old tabs are renamed instead and
-       the assembly is rebuilt in a new tab,
+    3. swap the old mount for the new one in the "Mount on gripper" assembly (the key may delete
+       assembly instances; if that is ever refused, the assembly is rebuilt in a new tab), then
+       try to delete the old mount's Part Studio and the empty default one. The lab's API key
+       still can't delete tabs (HTTP 403 on 28 October, as in September), so the old mount's
+       tab is renamed "OLD <commit>, superseded: do not print" for someone to delete in the web app,
     4. rename the document for this commit, check each printed part's volume in Onshape
        against the STEP, save shaded views, and save the result as a second version.
 
@@ -22,13 +23,16 @@ The document stays private (AgileX's gripper STEP is in it; see add_gripper.py).
 """
 from __future__ import annotations
 
+import sys
+
+sys.dont_write_bytecode = True  # importing print_plate.py and ../cad leaves no __pycache__
+
 import argparse
 import base64
 import json
 import os
 import re
 import subprocess
-import sys
 import tempfile
 import time
 from pathlib import Path
@@ -109,6 +113,7 @@ def update(api: Api, did: str, wid: str, sha: str, rec: dict) -> None:
     els = {e["name"]: e for e in api.call("GET", f"/documents/d/{did}/w/{wid}/elements")}
     rec["tabs_before"] = {n: e["elementType"] for n, e in els.items()}
     old_mount, asm, empty = els[MOUNT]["id"], els[ASM]["id"], els.get("Part Studio 1", {}).get("id")
+    old_plate = els.get(PLATE, {}).get("id")      # from an earlier update_doc.py run
 
     # 1. The document as it stands, kept as a version.
     v = api.call("POST", f"/documents/d/{did}/versions",
@@ -148,13 +153,15 @@ def update(api: Api, did: str, wid: str, sha: str, rec: dict) -> None:
     rename(api, did, wid, new_mount, MOUNT)
     rename(api, did, wid, plate, PLATE)
     rec["deleted"] = {}
-    for label, eid in (("old mount Part Studio", old_mount), ("Part Studio 1 (empty default)", empty)):
+    for label, eid, old_label in (("old mount Part Studio", old_mount, f"OLD {old_sha}, superseded: do not print"),
+                                  ("old print plate", old_plate, f"OLD {old_sha} print plate, superseded: do not print"),
+                                  ("Part Studio 1 (empty default)", empty, None)):
         if eid is None:
             continue
         refusal = api.refused("DELETE", f"/elements/d/{did}/w/{wid}/e/{eid}")
         rec["deleted"][label] = "deleted" if refusal is None else f"refused ({refusal})"
-        if refusal is not None and eid == old_mount:
-            rename(api, did, wid, eid, f"OLD {old_sha}, superseded: do not print")
+        if refusal is not None and old_label:
+            rename(api, did, wid, eid, old_label)
 
     # 4. Name, check, pictures, version.
     name = f"PiPER wrist camera mount ({sha})"
@@ -162,8 +169,8 @@ def update(api: Api, did: str, wid: str, sha: str, rec: dict) -> None:
     rec["name"] = {"before": old_name, "after": name}
     parts = api.call("GET", f"/parts/d/{did}/w/{wid}/e/{plate}")
     mp = api.call("GET", f"/partstudios/d/{did}/w/{wid}/e/{plate}/massproperties", params={"massAsGroup": "false"})
-    vols = {p["name"]: round(((mp.get("bodies") or {}).get(p["partId"]) or {}).get("volume", [0])[0] * 1e9, 1)
-            for p in parts}
+    vols = [[p["name"], round(((mp.get("bodies") or {}).get(p["partId"]) or {}).get("volume", [0])[0] * 1e9, 1)]
+            for p in parts]      # a list: the 4 spacers come in as 4 parts with one name
     rec["print_plate"] = {"parts_in_onshape": vols, "check_against_stl": {n: check[n] for n in print_plate.PRINTED},
                           "layout": check["placed"]}
     rec["shaded_views"] = [shaded(api, "partstudios", did, wid, plate, VIEW_PLATE, HERE / "onshape_print_plate.png"),
