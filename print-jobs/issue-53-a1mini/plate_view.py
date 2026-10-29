@@ -29,9 +29,10 @@ BED = (180.0, 180.0)
 GROUPS = {"Outer wall": 0, "Inner wall": 0, "Overhang wall": 0, "Gap infill": 0,
           "Sparse infill": 1,
           "Internal solid infill": 2, "Top surface": 2, "Bottom surface": 2, "Bridge": 2,
-          "Floating vertical shell": 2}
-NAMES = ["Walls", "Sparse infill", "Solid fill: top, bottom, bridges"]
-COLOURS = ["#2a78d6", "#eb6834", "#1baf7a"]
+          "Floating vertical shell": 2,
+          "Support": 3, "Support interface": 3, "Support transition": 3}
+NAMES = ["Walls", "Sparse infill", "Solid fill: top, bottom, bridges", "Supports"]
+COLOURS = ["#2a78d6", "#eb6834", "#1baf7a", "#a3a29c"]
 INK, MUTED, PLATE = "#1f1f1e", "#6b6a64", "#dcdbd6"
 OBLIQUE = [(-64, -244, 266), (90, 90, 5), (0, 0, 1)]  # from the front left, over the middle of the plate
 LABELS = {"finger_fixture": "finger fixture", "pin_slider": "slider (bar + knob)", "pin_guide": "slider guide",
@@ -181,9 +182,12 @@ def still(mesh: pv.PolyData, rep: dict, out: Path) -> None:
     axes[1].set_title(f"From above: the whole {BED[0]:g} x {BED[1]:g} mm Textured PEI plate",
                       fontsize=11, color=INK, loc="left")
     o, so = rep["overrides"], rep["sleeve_overrides"]
+    supported = [LABELS.get(k.rsplit("_", 1)[0], k) for k, v in rep["object_settings_in_3mf"].items()
+                 if v.get("enable_support") == "1"]
+    supports = f"tree supports under the {', '.join(supported)} only" if supported else "no supports"
     fig.suptitle(f"A1 mini, one plate in black PLA Basic: PR #44's tilt-lock slider and its guide, the finger "
                  f"fixture, and two stock-finger sleeves (main + fixing shell each)\n{h} h {m:02d} min and {p['filament_g']:.1f} g by Bambu "
-                 f"Studio {rep['bambu_studio']}; 0.20 mm layers, no supports; fixture and slider parts "
+                 f"Studio {rep['bambu_studio']}; 0.20 mm layers, {supports}; fixture and slider parts "
                  f"{o['wall_loops']} walls, {o['sparse_infill_density']} infill; sleeves {so['wall_loops']} walls, "
                  f"{so['sparse_infill_density']} infill", fontsize=12, color=INK, x=0.02, ha="left", y=0.995)
     fig.legend(handles=[Patch(color=c, label=n) for c, n in zip(COLOURS, NAMES)], loc="lower center", ncol=3,

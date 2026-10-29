@@ -6,6 +6,14 @@ finger fixture, and a compliant latch on the slider) had finished, "load the bui
 (A1 mini) with the slider parts, the finger fixture, and the two shell sleeves needed to equip the stock
 gripper fingers", in black PLA, and wait for the requester's approval before sending.
 
+**Not printed.** At 21:27 UTC the requester asked to wait for PR #44's next run instead
+([comment](https://github.com/vertical-cloud-lab/robot-arms/issues/53#issuecomment-6508723569)), which moves the slider
+bar to mid-knob, adds side supports and a 45° bevel to the fixture, and notches the sleeve cradles, and to print its
+files. That run outlasted this print run, so this plate (PR #44 round 3) was never sent. To print round 4: copy its
+five STLs into `stl/`, set `SOURCE["commit"]`, give the slider `{"enable_support": "1"}` in `PARTS` (its bar now
+sits off the bed) and check every part's orientation against its README, then re-run the two commands at the end.
+The print run's record is [`print-20261029/print.json`](print-20261029/print.json).
+
 ![The plate, from its own G-code](plate.png)
 
 ## The plate

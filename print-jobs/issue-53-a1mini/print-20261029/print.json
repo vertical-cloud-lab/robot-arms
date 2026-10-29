@@ -1,0 +1,52 @@
+{
+ "what": "PR #44's round-3 tilt-lock slider and guide, low finger fixture, and two stock-finger sleeves (main + fixing shell each), on one A1 mini plate in black PLA",
+ "result": "not sent. The plate was sliced and posted for approval, and the plate was cleared at about 21:12 UTC, but at 21:27 the requester asked to wait for another PR #44 run (round 4: slider bar at mid-knob, fixture side supports and a 45 deg bevel, and relief notches in the sleeve cradles) and print its new files instead. That run was still on its second step at 21:58, so it could not finish before this run's 180-min limit (about 22:32 UTC). Nothing was sent to the printer",
+ "printer": {
+  "model": "Bambu Lab A1 mini",
+  "name_in_studio": "Thumbelina, the A1 Mini",
+  "nozzle": "0.4 mm stainless steel, standard flow (Studio's Printer Parts, read from the printer at 19:40 UTC)",
+  "ams": "AMS lite: A1 blue PLA, A2 empty, A3 black PLA, A4 PETG",
+  "mode": "Bambu cloud",
+  "lan": "not reachable from this run (claude-print.yml has no Tailscale step and no A1_MINI_IP / A1_MINI_ACCESS_CODE), so the checks were done on Studio's Device page"
+ },
+ "route": "Bambu Studio 02.08.02.61 GUI on the GitHub Actions runner's Xvfb display, logged in to the lab's Bambu account (password plus a bambu-totp authenticator code, in an approved @claude-print run)",
+ "request": "https://github.com/vertical-cloud-lab/robot-arms/issues/53 (issue body, jss265, 2026-10-29T19:32Z): wait for the Claude run on PR #44 (comment 6506342698), then load the slider parts, the finger fixture and the two shell sleeves on Thumbelina, and wait for the requester's approval before sending, in black PLA",
+ "replies": [
+  {
+   "at": "2026-10-29T21:27:03Z",
+   "by": "jss265",
+   "url": "https://github.com/vertical-cloud-lab/robot-arms/issues/53#issuecomment-6508723569",
+   "text": "Once https://github.com/vertical-cloud-lab/robot-arms/pull/44#issuecomment-6508693702 is done, go ahead and check that the print bed is clear and start printing those new files. Still paste a snip of the printbed here for documentation, but I trust the updated parts will be print ready.",
+   "effect": "held the send: the posted plate (round 3) was not to be printed; the next PR #44 run's files were pre-approved"
+  }
+ ],
+ "plate_sliced": {
+  "file": "../issue53_A1mini_PLA.3mf",
+  "source": "PR #44 cad/stl at b9caa43 (unchanged at 59b1acd, where the round-3 run finished at 20:43 UTC)",
+  "estimate": "3 h 16 min (CLI), 3 h 13 min (GUI), 98.81 g, 242 layers to 48.4 mm",
+  "gui_check": "opened in Studio's GUI: 3 walls, 20 % infill and circle compensation kept (preset marked modified), sleeves kept 4 walls and 40 %; the GUI slice had the same 98.81 g, 242 layers, 48.40 mm top and start G-code, net extrusion within 0.39 mm of filament per layer"
+ },
+ "plate_check": {
+  "rule": "CLAUDE.md's plate rule of 2026-10-23 (90 s wait since #51): frame first, the run reads the plate, at least 90 s for objections, a fresh frame before Send",
+  "first_frame": "20261029T194010Z_a1mini_camera_studio.jpg (posted 19:40:37 UTC): the #52 bracket still on the plate, so no send",
+  "empty_plate_frame": "20261029T211242Z_a1mini_camera_studio.jpg (posted 21:13:17 UTC): the bracket taken off at about 21:12; plate empty apart from its texture and pale printed outline. The room above the plate is blurred in the committed copy because a person was at the counter behind the printer",
+  "watching": "a Device-page frame every 2-4 min from 19:49 to 22:00, compared with the first and the empty-plate frames; people worked beside the printer from about 21:29, and the plate stayed empty in every frame",
+  "hms": "no alerts at 19:41 UTC"
+ },
+ "timeline_utc": {
+  "request": "2026-10-29T19:32Z",
+  "job_started": "2026-10-29T19:33Z",
+  "studio_login": "2026-10-29T19:39:02Z (authenticator code; no e-mailed code asked for)",
+  "first_frame": "2026-10-29T19:40:10Z (posted 19:40:37)",
+  "pr44_round3_stls": "2026-10-29T20:21Z (b9caa43)",
+  "sliced": "2026-10-29T20:23Z (CLI), 20:25Z (GUI)",
+  "plate_posted_for_approval": "2026-10-29T20:29:05Z",
+  "pr44_round3_run_finished": "2026-10-29T20:43Z (59b1acd; STLs unchanged)",
+  "plate_cleared": "about 2026-10-29T21:12Z",
+  "empty_plate_frame": "2026-10-29T21:12:42Z (posted 21:13:17)",
+  "hold": "2026-10-29T21:27:03Z (jss265: wait for the next PR #44 run, print its files)",
+  "pr44_round4_run_started": "2026-10-29T21:25:48Z (run 40957680511)",
+  "pr44_round4_progress_at_cutoff": "21:57:54Z: step 2 of 7 (slider bar to mid-knob, with relief notches in the sleeve cradles)"
+ },
+ "recording": "the runner's screen was recorded (ffmpeg x11grab, 5 min segments) but not published: it shows the account e-mail during login, and print runs have no YouTube token. Deleted with the runner"
+}

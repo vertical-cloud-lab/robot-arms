@@ -224,12 +224,13 @@ def mark_overrides(path: Path, stock_process: dict) -> list[str]:
 
 
 def object_settings(z: zipfile.ZipFile) -> dict[str, dict[str, str]]:
-    """Per-object settings as stored in the project (the sleeves' walls and infill)."""
+    """Per-object settings as stored in the project (the sleeves' walls and infill, supports)."""
     root = ET.fromstring(z.read("Metadata/model_settings.config"))
     out = {}
     for obj in root.findall("object"):
         meta = {m.get("key"): m.get("value") for m in obj.findall("metadata")}
-        out[meta.get("name", obj.get("id"))] = {k: v for k, v in meta.items() if k in SLEEVE_SETTINGS}
+        out[meta.get("name", obj.get("id"))] = {k: v for k, v in meta.items()
+                                                if k and (k in SLEEVE_SETTINGS or "support" in k)}
     return out
 
 
