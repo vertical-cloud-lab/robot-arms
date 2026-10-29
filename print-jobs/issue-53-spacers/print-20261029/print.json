@@ -1,0 +1,53 @@
+{
+ "what": "4 ring spacers, 4 mm tall with a 2 mm wall (bore 4.2 mm, outside 8.2 mm), on one A1 mini plate in black PLA",
+ "result": "printed. Sent at 23:35:34 UTC, layer 1 at 23:42:05, finished (20/20, heaters off) at about 23:44:44, 9.2 min after Send against Studio's 9 min 9 s. No HMS alert or dialog. All four rings were on the plate at layer 20; about 23:45:00, as the bed came forward, someone in the lab took one off the plate (seen in the screen recording), so the final frame shows three",
+ "printer": {
+  "model": "Bambu Lab A1 mini",
+  "name_in_studio": "Thumbelina, the A1 Mini",
+  "nozzle": "0.4 mm stainless steel, standard flow (Studio's Printer Parts, read from the printer at 23:25:32 UTC)",
+  "ams": "AMS lite: A1 blue PLA, A2 empty, A3 black PLA, A4 PETG",
+  "mode": "Bambu cloud",
+  "lan": "not reachable from this run (claude-print.yml has no Tailscale step and no A1_MINI_IP / A1_MINI_ACCESS_CODE), so the checks and the watching were done on Studio's Device page"
+ },
+ "route": "Bambu Studio 02.08.02.61 GUI on the GitHub Actions runner's Xvfb display, logged in to the lab's Bambu account (password plus a bambu-totp authenticator code, in an approved @claude-print run)",
+ "request": "https://github.com/vertical-cloud-lab/robot-arms/issues/53#issuecomment-6510791024 (jss265, 2026-10-29T23:17:52Z): \"please make and print 4 4mm tall spacers of thickness 2mm on A1 mini\"",
+ "interpretation": "rings 4 mm tall with a 2 mm radial wall. The request gave no bore; 4.2 mm was chosen to slip over the stock AgileX M3 shoulder screw's 4 mm shoulder (the stock spacer there is 9 x 4 mm with a 4 mm bore, per PR #44's README), and it was posted in the thread for correction before Send",
+ "replies": [],
+ "sent_file": {
+  "file": "../spacers_x4_A1mini_PLA_sent.gcode.3mf",
+  "what": "the 3MF Studio uploaded at Send (from /tmp/bamboo_model), with 3D/3dmodel.model's DesignerUserId blanked",
+  "plate_1_gcode_md5": "c73296d976549f66761e68522cf39a46 (unchanged by the blanking; the same as Studio's slice)",
+  "source": "../spacers_x4.stl from ../make_spacers.py (4 rings on a 16 mm grid, one object)",
+  "settings": "0.20mm Standard @BBL A1M with wall loops 3 (was 2) and auto circle contour-hole compensation on; Bambu PLA Basic @BBL A1M, black, from AMS A3; Textured PEI Plate at 65 C, nozzle 220 C; auto brim (none added); no supports",
+  "slice": "20 layers to 4.00 mm, 0.78 g (0.26 m), 9 min 9 s total of which 2 min 58 s printing; features: outer wall, inner wall, gap infill, top surface (the 2 mm wall is all walls, no sparse infill)",
+  "send_dialog": "Thumbelina, the A1 Mini, 0.4 mm; plate PEI; PLA -> A3; timelapse off; auto bed levelling on; flow dynamics calibration on; job name spacers_x4"
+ },
+ "plate_check": {
+  "rule": "CLAUDE.md's plate rule of 2026-10-23 (90 s wait since #51): frame first, the run reads the plate, at least 90 s for objections, a fresh frame before Send",
+  "first_frame": "20261029T232514Z_a1mini_camera_studio.jpg (posted 23:26:39 UTC): plate empty apart from its texture and the pale outline of an earlier print; red box, tools and a wire on the counter beside the bed; two people standing behind. Mean luma 110/255",
+  "second_frame": "20261029T233055Z_a1mini_camera_studio.jpg (posted 23:32:43 UTC), taken as the pre-Send frame: plate still empty, but someone was working at the printer and a black slotted part now lay just left of the plate, so it was posted and the 90 s started again",
+  "pre_send_frame": "20261029T233437Z_a1mini_camera_studio.jpg: the same as 23:30:55 (plate empty, the black part beside it). The sent G-code moves the bed at most 5 mm past its parked position on that side (Y 185 against the Y 180 park)",
+  "go": "no replies in the thread from 23:18 to the last check at 23:35:33; the second 90 s window ended 23:34:13",
+  "hms": "no alerts at 23:25:48 UTC",
+  "blur": "the room above the plate is blurred in every committed frame because people were at the printer"
+ },
+ "timeline_utc": {
+  "request": "2026-10-29T23:17:52Z",
+  "job_started": "2026-10-29T23:18Z",
+  "studio_login": "2026-10-29T23:23:34Z (Log In 23:23:17, authenticator code typed 23:23:33; no e-mailed code asked for)",
+  "first_frame": "2026-10-29T23:25:14Z (posted 23:26:39)",
+  "sliced": "about 2026-10-29T23:30Z (Studio GUI)",
+  "second_frame": "2026-10-29T23:30:55Z (posted 23:32:43)",
+  "pre_send_frame": "2026-10-29T23:34:37Z",
+  "send": "2026-10-29T23:35:34Z (\"Successfully sent\")",
+  "heatbed_preheating": "2026-10-29T23:36:11Z",
+  "layer_1": "2026-10-29T23:42:05Z, after filament change, vibration compensation, nozzle cleaning, bed levelling and flow calibration",
+  "layer_20": "2026-10-29T23:44:34Z",
+  "finished": "about 2026-10-29T23:44:44Z (Printing label gone, heater targets 0); 100 % shown at 23:45:26",
+  "one_spacer_taken": "about 2026-10-29T23:45:00Z, by someone in the lab (screen recording)",
+  "signed_out": "2026-10-29T23:49:53Z; Studio then closed and its config (~/.config/BambuStudio, which holds the printers' LAN access codes), /tmp/bamboo_model and the recording deleted by 23:50:18"
+ },
+ "watching": "monitor.jsonl: watch_studio.py (byu-vcl bambu/studio, WATCH_LAYOUT=a1mini BED_TARGET=65) OCR of the Device page every 10 s from 23:37:39 to 23:46:20. Its last exit (20, bed 657 C) is an OCR misread of the cooling bed (69, 68 C just before), not a fault; the 'bed target 165' notes are the same misread of '/65'",
+ "recording": "the runner's screen was recorded (ffmpeg x11grab, 5 min segments) but not published: it shows the account e-mail during login and people in the lab, and print runs have no YouTube token. Deleted at 23:50 UTC",
+ "after": "Thumbelina idle, print finished, bed and nozzle cooling; three spacers on the plate (one already taken)"
+}
