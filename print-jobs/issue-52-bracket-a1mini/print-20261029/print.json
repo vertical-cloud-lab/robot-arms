@@ -1,0 +1,77 @@
+{
+ "what": "PR #10's wrist-camera bracket alone, with the lens cradle bored out to O43 the whole length of the lens (1b7acd5), on one A1 mini plate",
+ "result": "printing (in progress; updated as the run goes)",
+ "printer": {
+  "model": "Bambu Lab A1 mini",
+  "name_in_studio": "Thumbelina, the A1 Mini",
+  "nozzle": "0.4 mm stainless steel, standard flow (Studio's Printer Parts, read from the printer at 03:01 UTC)",
+  "ams": "AMS lite: A1 blue PLA, A2 empty, A3 black PLA (used), A4 PETG",
+  "mode": "Bambu cloud",
+  "lan": "not reachable from this run (claude-print.yml has no Tailscale step and no A1_MINI_IP / A1_MINI_ACCESS_CODE), so the checks and the watching were done on Studio's Device page"
+ },
+ "route": "Bambu Studio 02.08.02.61 GUI on the GitHub Actions runner's Xvfb display, logged in to the lab's Bambu account (password plus a bambu-totp authenticator code, in an approved @claude-print run), sent through Bambu's cloud",
+ "request_comment": "https://github.com/vertical-cloud-lab/robot-arms/issues/52#issuecomment-6486580560 (jss265, 2026-10-29T02:53:37Z)",
+ "approval": "jss265 approved the bambu-print deployment (their own request), with no note, by 02:54 UTC",
+ "source": {
+  "bracket": "piper-camera-mount/exports/bracket.stl at 1b7acd5 on claude/issue-239-20260926-2347 (PR #10); unchanged since 6579f3c, the commit that bored the cradle out",
+  "stl_sha256_12": "9cd30f700dce",
+  "stl_md5": "4a1147c6d41a0159c1459e3135d79b0f"
+ },
+ "presets": {
+  "machine": "Bambu Lab A1 mini 0.4 nozzle",
+  "process": "0.20mm Standard @BBL A1M with 3 walls, 25 % infill, circle compensation on, supports off (PR #10's settings)",
+  "filament": "Bambu PLA Basic @BBL A1M, black",
+  "plate": "Textured PEI Plate"
+ },
+ "slice_checks": {
+  "committed_plate": "../issue52_bracket_A1mini_PLA.3mf (CLI, 0228908): 35.29 g, 213 layers, top 42.60 mm, no supports, no brim, nothing outside the bed; Bambu's support check flagged nothing. PR #10's own per-part slice of the same STL: 35.29 g, 4680 s",
+  "gui": "opened in the GUI, the project kept 3 walls, 25 % infill and circle compensation (preset marked modified); the GUI's slice had the same 35.29 g, 213 layers and 42.60 mm top, the same start G-code (M620 S0A, M412 S1, M190 S65) and net extrusion within 0.065 mm of filament on every layer. Only Studio's stock acceleration limits differ (20000/20000/9000 against the CLI's 6000)",
+  "warnings": "slice_info.config stores only not_support_traditional_timelapse (timelapse was off)"
+ },
+ "send_options": {
+  "job_name": "issue52_bracket_A1mini_PLA_bracket (no spaces; not renamed)",
+  "plate_type": "Textured PEI",
+  "ams_mapping": "filament 1 (PLA) -> A3, black Bambu PLA Basic",
+  "timelapse": false,
+  "auto_bed_leveling": true,
+  "flow_dynamics_calibration": true,
+  "dialog": "20261029T030701Z_send_dialog.png"
+ },
+ "sent_file": {
+  "path": "sent_issue52_bracket_A1mini_PLA.gcode.3mf",
+  "provenance": "Studio's own upload copy, written to /tmp/bamboo_model/<session>/Metadata/.<pid>.0.3mf at the moment of Send; DesignerUserId (the lab's Bambu account ID) blanked in 3D/3dmodel.model, nothing else changed",
+  "plate_1_gcode_md5": "7ec93deac1213e1fc668315c34570495",
+  "same_gcode_as": [
+   "Studio's GUI slice in /tmp/bamboo_model (03:04 UTC), the one compared with the committed CLI plate"
+  ]
+ },
+ "estimates": {
+  "model_time": "1h 10m 43s (G-code header)",
+  "total_time": "1h 16m 42s",
+  "filament_g": 35.29,
+  "filament_m": 11.64,
+  "layers": 213,
+  "max_z_mm": 42.6
+ },
+ "go": {
+  "rule": "CLAUDE.md's plate rule of 2026-10-23 (90 s wait since #51): no 'plate clear' reply; the run reads the plate from a posted frame, waits at least 90 s for objections, and takes a fresh frame before Send",
+  "frame_shown": "20261029T030025Z_a1mini_camera_studio.jpg (posted in the thread comment at 03:01:56 UTC)",
+  "read": "bright (mean luma 118/255), lab lights on; gantry parked high; plate empty apart from its texture and the plate's own pale printed logo outline; the red printed box just past the plate's far side, as during the 28 Oct prints; no person in frame",
+  "hour": "posted at about 21:00 in Provo, outside the runbook's working hours; the comment said so and asked for a reply if the print should wait until morning. None came",
+  "wait_ended": "03:06:45 UTC, 289 s after posting, with no comments in the thread (polled every 15 s)",
+  "pre_send_frame": "20261029T030645Z_a1mini_camera_studio.jpg: the same empty plate (mean absolute difference on the plate 2.9/255)",
+  "replies": []
+ },
+ "timeline_utc": {
+  "request": "2026-10-29T02:53:37Z",
+  "job_started": "2026-10-29T02:53:40Z (approved at once)",
+  "studio_login": "2026-10-29T02:59:22Z (authenticator code; no e-mailed code asked for)",
+  "first_frame": "2026-10-29T03:00:25Z (posted 03:01:56)",
+  "sliced": "2026-10-29T03:03Z (CLI), 03:04Z (GUI)",
+  "pre_send_frame": "2026-10-29T03:06:45Z",
+  "send": "2026-10-29T03:07:13Z",
+  "heatbed_preheating": "2026-10-29T03:07:53Z, then filament change to A3"
+ },
+ "watching": "runbook's watch_studio.py (WATCH_LAYOUT=a1mini BED_TARGET=65) on Studio's Device page from 03:08 UTC: OCR every 10 s, a camera frame every 2 min (frames/)",
+ "recording": "the runner's screen was recorded but not published: it shows the account e-mail during login, and print runs have no YouTube token. It is deleted with the runner"
+}
