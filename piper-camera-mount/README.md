@@ -1,0 +1,1349 @@
+# AgileX PiPER wrist camera mount: Pi 5 + HQ Camera + Camera Module 3 Wide
+
+Issue [#239](https://github.com/vertical-cloud-lab/byu-vcl/issues/239). A printed mount that puts a
+**Raspberry Pi 5** and up to **two cameras** on the PiPER's two-finger gripper:
+
+- a **Raspberry Pi HQ Camera** with the official 6 mm CS-mount lens, for repeatable positioning
+  (the lens is bought separately; [why the 6 mm and not the 16 mm](#which-hq-lens-the-6-mm-wide-angle)), and
+- a **Camera Module 3 Wide** (optional) for streaming.
+
+It follows the OT-2 lid mount in [#234](https://github.com/vertical-cloud-lab/byu-vcl/pull/234)
+(`ot2-overhead-camera/lid-mount/`): a parametric CadQuery model built around the maker's own CAD,
+with interference checks, exports and renders from one script. The design notes gathered in
+[borysgroup/aurora-cloud-infra#5](https://github.com/borysgroup/aurora-cloud-infra/issues/5) are
+the starting point for the PiPER side. **The first PLA set went to the A1 mini on 2026-10-08**
+([record](slice/print_2026-10-08/README.md)). Nothing has been fitted to the gripper yet. That set's
+bracket has the old O33 lens cradle, which the 6 mm lens's thumbscrews can hit. **A second PLA set,
+with the O43 cradle, went to the A1 mini on 2026-10-13** ([record](slice/print_2026-10-13/README.md)),
+but its pod has too little room for the HQ Camera's housing. Reprint the pod and the bracket from
+this branch ([The HQ Camera in the pod](#the-hq-camera-in-the-pod)). Neither printed pod takes the
+Camera Module 3 Wide either: its square lens housing can't pass the pod's round hole. This branch's
+pod has a square hole for it that runs on over the flex below it
+([The Camera Module 3 Wide in the pod](#the-camera-module-3-wide-in-the-pod)). **On the first fit,
+on 2026-10-28, the lens's aperture thumbscrew caught the bracket** where its lens cradle narrowed to
+O33 for the lens's last 11 mm. Every bracket printed so far has that strip. This branch's bracket is
+bored out to O43 the whole length of the lens
+([Boring the cradle out to O43](#boring-the-cradle-out-to-o43-2026-10-29)).
+
+![Assembly on AgileX's gripper model](renders/assembly.png)
+
+| Looking back from the fingertips (fully open) | Pi 5 side |
+|---|---|
+| ![](renders/front.png) | ![](renders/assembly_pi_side.png) |
+
+![Assembly, step by step](renders/assembly_steps.gif)
+
+## How it attaches
+
+AgileX's gripper STEP (fetched at run time, see below) and AgileX's own manuals and setup videos
+show two features to hold on to:
+
+1. **The finger plate's side tab**, which AgileX calls the *reserved camera mounting platform*. It
+   has **two M3 brass inserts**, 12 mm apart and 6.5 mm deep, opening toward the arm (at x = -45.91,
+   z = 7.92 and -4.08 in the STEP's frame, 38 mm off the axis). AgileX's own D435 wrist bracket
+   bolts to it, and the gold inserts show in AgileX's 1080p setup video. Two M3 screws through the
+   bracket's pad go into them (M3 x 10 from the Prototyping Lab drawer, 4 mm into each insert). They locate the mount and stop it turning, without touching the
+   screws that hold the gripper to its flange.
+2. **A plain O57 mm body** from the back of the finger plate to the J6 flange (motor housing, back
+   cover and flange, y = 14.5 to 65). A two-piece collar clamps round the first 31 mm of it with
+   four M3 screws across the split.
+
+The cameras hang on the tab side (-X) and the Pi 5 on the other side (+X), so the load on J6 roughly
+balances. The collar joins the two halves, and the tab screws lock the whole ring against rotation.
+
+**Nothing goes behind the J6 flange face.** The rearmost point is 64.98 mm, the end of the HQ
+Camera's tripod foot, which Raspberry Pi's drawing runs back to the board's back face. That is level
+with the flange face at 64.98, and 60 mm off the J6 axis. Of the printed parts and the Pi, the
+rearmost is the Pi 5's USB-C socket, at 64.5 mm. So the mount can't reach the J6 housing or link 5
+at any J5 or J6 angle. From AgileX's full-arm STEP, everything behind the flange stays within about 33 mm of the J6
+axis for the next 125 mm.
+
+## The parts
+
+| Part | What it is | Print |
+|---|---|---|
+| `bracket` | The pad on the tab, half the collar, and the **pod seat** (below) | Pad face down; the seat's outer face is at 45 degrees, the collar stands up |
+| `pod` | The camera plate, turned 17 degrees toward the gripper axis: HQ Camera on four M2.5 bosses, Camera Module 3 Wide on four M2 bosses above it | Plate face down |
+| `carrier` | The other half of the collar and a 4 mm plate for the Pi 5, with M2.5 nut traps | Pi plate face down; 45 degree gussets under the clamp ears |
+| `spacers` | 4 x Pi 5 standoffs, 5 mm | Flat |
+| `tag_wedge` | 2 x 35 degree wedges that turn a 5 mm AprilTag on each finger toward the HQ Camera | Base down |
+
+None of them needs supports (see [Printing](#printing)).
+
+![Exploded view](renders/exploded.png)
+
+## The pod seat
+
+The pod carries both cameras about 60 mm out from the gripper axis, so how it sits on the bracket
+decides how still the cameras are. In the first version of the turned-in pod it touched the bracket
+only on an 11 x 40 mm strip along its inner edge (**325 mm²**, 2 x M3), with the cameras
+cantilevered about 50 mm beyond it.
+
+Now the bracket widens outward at 45 degrees from its pad until it meets the pod's front face. The
+pod sits on it from its inner edge out to the HQ lens axis, and along its top and bottom edges
+either side of the lens:
+
+- **845 mm² of contact** (2.6 times as much), measured by `piper_mount.py` (`pod_joint` in
+  `checks.json`). It was 987 mm² until the cradle was widened for the lens's thumbscrews (below), and
+  901 mm² until the seat made room for the HQ Camera's tripod mount
+  ([The HQ Camera in the pod](#the-hq-camera-in-the-pod)).
+- **4 x M3** (16 to 20 mm long; the drawer's M3 x 18), 38 mm apart vertically and 9 mm across, into
+  nuts dropped into slots in the seat's top and bottom faces. The heads are on the pod's back, clear of the HQ ribbon.
+- The lens and its mount sit in a cradle cut through the seat with 1.5 mm to spare, so the pod goes
+  on and off straight down its lens axis with the lens fitted. The 6 mm lens has two locking
+  thumbscrews about 5 mm proud of its barrel, and focusing turns the aperture ring, so its screw can
+  end up pointing anywhere. The cradle is therefore **O43 the whole length of the lens**, from the
+  pod to 1.5 mm past the lens's front. With the plain O33 cradle the screws would have hit the seat
+  over a third to a half of their circles (their sweep overlaps it by 970 mm³).
+- **Until 2026-10-29 the O43 stopped 20.4 mm in front of the CS seat,** just past where
+  [`cad/lenses.py`](cad/lenses.py) puts the aperture screw, and the cradle was O33 round the lens's
+  last 11 mm. The real screw sits further forward, and it caught that strip on the first fit
+  ([below](#boring-the-cradle-out-to-o43-2026-10-29)).
+- **Neither camera sees it.** The HQ sees no printed part at all. The seat's top corner is bevelled
+  along the bottom of the Wide's view, so the Wide sees no more of the bracket than it did before
+  (the collar's top ear and the old web's front edge, at the bottom-left of its picture).
+- The seat adds 15.5 cm³ to the bracket (36.3 to 51.8 cm³ solid; 50.1 cm³ since the cradle was
+  bored out).
+
+![The pod seat](renders/pod_seat.png)
+
+**The thumbscrews in the old and new cradles.** [`cad/cradle_fit.py`](cad/cradle_fit.py) turns
+each screw once round the lens and cuts both brackets through it
+([`exports/cradle_fit.json`](exports/cradle_fit.json)):
+
+![The 6 mm lens's thumbscrews in the O33 and O43 cradles](renders/cradle_fit.gif)
+
+- **In the O33 cradle** the aperture screw hits the seat at 13 of 36 angles and the focus screw at
+  17, each cutting up to 25 mm³. They hit whenever they point toward the gripper. The PLA set
+  printed on 2026-10-08 has this cradle.
+- **In the O43 cradle** neither screw touches at any angle. The tips clear the bracket by 1.5 mm.
+- **Only the bracket changed.** The pod, carrier, spacers and tag wedges are the same parts as before,
+  so fixing the PLA set means reprinting the bracket alone: 36.2 g and 1 h 19 min on the A1 mini
+  ([Printing](#printing)). Until then, the old bracket only works if both screws end up pointing
+  away from the gripper. (Since then, the 13 October set needs a new pod and bracket for the HQ
+  Camera's tripod mount: see [The HQ Camera in the pod](#the-hq-camera-in-the-pod).)
+- **This GIF has the screws where `lenses.py` puts them,** and the aperture screw turned out to be
+  further forward. The O43 cradle in it is the one printed on 2026-10-13, which the screw still
+  caught. [Boring the cradle out to O43](#boring-the-cradle-out-to-o43-2026-10-29), below, fixes that.
+
+**How much stiffer, simulated.** [`sim/joint_fea.py`](sim/joint_fea.py) meshes bracket and pod
+as one bonded body (quadratic tets, gmsh + scikit-fem), fixes the collar bore and the pad round the
+tab screws, and loads the HQ bosses with the camera and lens (83 g) at 1 g, one direction at a time
+([`sim/joint_fea.json`](sim/joint_fea.json)):
+
+| 83 g at 1 g along | HQ moves, old → new (µm) | optical axis tilts, old → new (arcmin) | picture shifts, old → new (px) |
+|---|---|---|---|
+| Y (gripper pointing down) | 12.1 → 1.22 | 1.77 → 0.20 | 2.0 → 0.23 |
+| Z (finger travel) | 4.2 → 1.21 | 0.16 → 0.003 | 0.18 → 0.003 |
+| X | 0.64 → 0.51 | 0.018 → 0.030 | 0.02 → 0.03 |
+
+- The worst case, along Y, is **about 9 times stiffer in tilt and 10 times in displacement**. The
+  first natural frequency goes from about 110 Hz to 320 Hz (a Rayleigh-Ritz upper bound).
+- Widening the lens cradle for the 6 mm lens's thumbscrews (901 mm² of seat instead of 987) cost
+  about a fifth of that. Before it, the worst case was 11 and 13 times stiffer, at 360 Hz. Either way
+  the picture moves less than a quarter of a pixel at 1 g.
+- **These flatter the old joint.** Bonding says the joint never slips or opens, and solid PLA at
+  2.4 GPa is stiffer than a 25 % infill print. The old joint's real weakness was the strip itself: a
+  pod pivoting on an edge 5 mm from its two screws, where any creep in the plastic lets it rock.
+  Read the table as a comparison, not as the printed part's numbers.
+- **Also left out:** the camera and lens's centre of mass sits about 2 cm in front of the bosses, and
+  the load is applied at the bosses, so tilt under sideways loads is understated for both designs.
+
+![Old vs new under 1 g along Y](renders/joint_fea.png)
+
+### Boring the cradle out to O43 (2026-10-29)
+
+On the first fit, on 2026-10-28, the 6 mm lens's aperture screw caught the O33 strip at the front of
+the cradle. The cradle is now O43 from the pod to 1.5 mm past the lens's front. Only the bracket
+changed: 1.6 cm³ came off it (51.7 to 50.1 cm³ solid). The pod, carrier, spacers and tag wedges
+haven't changed.
+
+![The lens cradle as printed and bored out to O43](renders/cradle_bore.png)
+
+- **The screws now clear wherever they sit along the lens.** [`cad/cradle_bore.py`](cad/cradle_bore.py)
+  slides a thumbscrew head (O3, its tip 20 mm from the axis) along the lens at any angle
+  ([`exports/cradle_bore.json`](exports/cradle_bore.json)):
+  - in the cradle as printed, a screw centred 19 mm or more in front of the CS seat cuts into the
+    bracket, by up to 344 mm³;
+  - in the bored-out cradle, nothing does anywhere along the lens. The tips clear the bracket by
+    1.0 mm.
+- **The two tab screws are right behind that strip.** Near the lens's front the O43 passes 0.14 mm
+  from their holes in the pad, so the bore leaves 1 mm of wall round each (`tab_wall`, orange
+  above):
+  - At the lens's front face the walls come 0.5 mm inside the O43. From 2 mm behind it they don't
+    reach into it at all. That is where the 1.0 mm above is measured.
+  - Above the pad the cradle opens into the two hex-key channels. The screw heads still seat on the
+    pad, all round.
+- **The plastic in front of the lens stays.** Boring on through the bracket's front face would take
+  127 mm³ more. All of it is the pad's face on the gripper's tab, next to those two screws: within
+  7 mm of them, that face would go from 255 to 184 mm². The lens's screws can't reach past its
+  front, so that plastic can't touch them. The pad's face stays at 1170 mm².
+- **Reprint the bracket.** Alone, on the A1 mini in PLA with the same settings, it is
+  **1 h 18 min and 35.3 g** ([Printing](#printing)).
+- **Not redone for it:** the stiffness and stress analyses (the joint FEA above, CalculiX and the
+  sliced FEA further down), the assembly GIF and renders, the fastener check, the tight-spaces
+  envelope and `cradle_fit.gif`. The same goes for the 16 mm lens comparison, whose bracket is cut
+  the same way, and the OT-2 zoom's, which now cuts less than its 1099 mm³ into the bracket. Taking
+  plastic off the bracket can't create an overlap, so their fit results stand.
+
+## The HQ Camera in the pod
+
+**The pod printed on 2026-10-13 didn't take the HQ Camera.** Its housing hit the pod in three places
+(reported in #4). The pod had been cut for the housing as first modelled: a round body with a plain
+13.97 mm tripod foot. The real housing has more to it.
+[Raspberry Pi's mechanical drawing](https://pip-assets.raspberrypi.com/categories/659-raspberry-pi-high-quality-camera/documents/RP-008200-DS-1-hq-camera-cs-mechanical-drawing.pdf)
+(RP-008200) is vector, so [`cad/piper_mount.py`](cad/piper_mount.py) now takes the outline straight
+off its linework, scaled by the 38 mm board. The drawing only shows the holes for the two screws, so
+their heads are placed from Raspberry Pi's photos of the camera.
+[`cad/hq_fit.py`](cad/hq_fit.py) measures both pods against it
+([`exports/hq_fit.json`](exports/hq_fit.json)):
+
+![The HQ housing in the printed pod and in the new one](renders/hq_fit.png)
+
+| | The housing, per the drawing | Pod printed 13 October | Pod now |
+|---|---|---|---|
+| **Tripod mount's shoulders** | Flare out to ±12.07 mm, 16.65 mm below the axis, just under the focus ring | Notch only ±8.0 mm wide: hits them (225 mm³, with the foot) | Pocket follows the outline, 1.0 mm clear |
+| **The screws in the shoulders** | One per shoulder, under the board's edge, square to the shoulder's underside; M2 socket heads, about 25.9 mm across the outside | Hits both (73 mm³) | 1.0 mm clear |
+| **Top to bottom** | 51.9 mm: the focus-lock block's top is 21.55 mm above the axis (2.55 mm above the board), the foot's end 30.35 mm below | 52.7 mm of notch, but the top notch stopped 0.05 mm short of the lock block | 53.9 mm, 1.0 mm clear at each end |
+
+- **The bracket changes too, slightly.** The tripod mount's front face stands 0.35 mm proud of the pod
+  into the seat, which the printed bracket hit (3.8 mm³). The bracket now keeps 1.5 mm clear of the
+  housing's shoulders, foot and screws, as it does of the rest of the camera, which takes 62 mm³ out of
+  the seat next to the foot. Reprint the pod and the bracket; the carrier, spacers and tag wedges
+  haven't changed.
+- **The pocket trims the two lower bosses.** The shoulders pass 0.6 mm from the bosses round the
+  lower M2.5 holes, so with 1 mm clearance the pocket shaves a 0.4 mm sliver off the side of each boss
+  facing a shoulder. Each hole keeps a wall of about 1 mm, and the screw heads still sit fully on their
+  counterbore floors.
+- **Where the drawing disagrees with itself:** its side view adds up to 21.5 mm overall, but it is
+  dimensioned 18.58 mm. The pocket goes right through the plate, so this doesn't change the fit. The
+  lens seat stays where 18.58 puts it, 14.43 mm in front of the board, which is also where a CS lens's
+  12.53 mm flange distance puts it.
+- **Please measure before printing:**
+  - across the shoulders (24.1 mm on the drawing);
+  - across the screw heads, outside to outside (about 25.9 mm);
+  - from the top of the lock block to the end of the foot (51.9 mm).
+
+  If any of these is more than about 0.5 mm bigger than that, `hq_pocket_c` in `cad/piper_mount.py`
+  widens the pocket all round.
+- **Re-run for this:** the checks, the STEP/STL exports, the renders, and both one-plate slices plus
+  the per-part slices (A1 mini PLA: 2 h 48 min and 85.5 g for the set; H2D PAHT-CF: 3 h 45 min and
+  70.4 g). The slices raise no warnings beyond Bambu's usual timelapse note, and the support check
+  flags nothing.
+- **Not re-run:** the joint FEA, the CalculiX runs and the sliced FEA. The seat lost 56 mm² of its
+  901 mm² next to the foot, so expect the pod joint a little softer than [The pod seat](#the-pod-seat)
+  says. The assembly GIF and the fastener check still show the housing as first modelled. Onshape
+  was brought up to date on 28 October ([Onshape](#onshape)).
+- **Or take the tripod mount off.** Raspberry Pi's exploded drawing calls it optional, and the two
+  shoulder screws look to be what holds it to the housing. The housing stays on the board, held by the
+  two hex lock keys on the back. Without the tripod mount, the shoulders and their screws are gone, so the printed pod
+  needs only its top notch filed about 0.5 mm deeper for the lock block. This hasn't been tried.
+
+## The Camera Module 3 Wide in the pod
+
+**The printed pod didn't take the Wide** (reported on PR #10, 2026-10-27). Its square lens housing
+couldn't pass the pod's O13 round hole, so the board couldn't sit on its bosses or be screwed down.
+
+**Two things in the model were wrong:**
+
+- **The housing's size.** It was modelled as an 8.5 mm square, which is Camera Module 2's module.
+- **Where the lens sits relative to the four holes.** The lens was 9.462 mm from the edge away from
+  the connector, which is also Camera Module 2's layout.
+  - Raspberry Pi's drawing has the connector at the top edge, and the lens 9.462 mm from that edge.
+  - So the hole was centred 4.94 mm off the real housing.
+
+[`cad/cm3w_fit.py`](cad/cm3w_fit.py) builds the camera from Raspberry Pi's
+[Camera Module 3 Wide drawing](https://datasheets.raspberrypi.com/camera/camera-module-3-wide-mechanical-drawing.pdf)
+alone, with no numbers from `piper_mount.py`. It then sets the camera's four holes on the pod's four
+screw holes and measures both pods ([`exports/cm3w_fit.json`](exports/cm3w_fit.json)). Its first
+picture, the housing in the printed pod and in the square hole, is
+[at a4f85b5](https://github.com/vertical-cloud-lab/robot-arms/blob/a4f85b5/piper-camera-mount/renders/cm3w_fit.png);
+it now draws the flex below the housing too ([The flex below the housing](#the-flex-below-the-housing)).
+
+| From the drawing (mm) | Value |
+|---|---|
+| Board | 25 × 23.862, 1.12 thick |
+| Mounting holes | O2.2 on 21 × 12.5: 2.0 in from the sides, 2.0 and 14.5 up from the edge away from the connector |
+| Lens centre | 12.5 from the side; 14.4 from the edge away from the connector, so 9.462 from the connector edge and 0.1 off the line of the two holes nearest it |
+| Square lens housing | 10.8 × 10.8, centred on the lens, 4.07 deep off the board's front face |
+| Lens | O6.95, tip 8.3 off the board's front face |
+| Connector | 5.71 × 2.75, behind the board at the top edge, the edge nearer the lens (side view) |
+
+The drawing is drawn 1:1, so I checked each label against its linework, and they agree to 0.001 mm.
+The one exception is the side view, which draws the lens 0.1 mm higher and shorter than its labels;
+the front view's labels are what's used.
+
+**What changed: the hole, and nothing else on the pod.**
+
+- **The hole is now an 11.4 mm square:** the 10.8 mm housing plus 0.3 mm a side (`cm_hole_c`).
+  - It's centred on the housing, 4.94 mm toward the top of the pod from the old hole's centre.
+  - It runs through the 6 mm plate. The housing reaches 1.57 mm into the plate, past the 2.5 mm bosses, and the lens tip
+    stops 0.2 mm short of the front face.
+- **The four screw holes didn't move.**
+  - The M2 clearance holes, their counterbores and the bosses all measure at (±10.5, −0.1) and
+    (±10.5, 12.4) mm from the lens, in both pods.
+  - Each of the camera's holes is 0.00 mm from the screw hole it sits on.
+- **The housing clears the hole by 0.30 mm on all four sides.**
+  - In the printed pod, the housing would be 79.6 mm³ inside the plate, and the lens 43.9 mm³.
+- **Nothing else changed.** Everything removed (350 mm³) and everything filled in (366 mm³) lies
+  within 6.5 mm of the lens axis across and from 5.7 mm above it to 11.4 mm below. That's inside
+  the four screw holes, whose bosses start 8.25 mm out.
+- **Mount the Wide with its ribbon connector toward the top of the pod,** away from the HQ, as
+  designed. The square hole only takes it that way round.
+
+**The camera model** in [`cad/piper_mount.py`](cad/piper_mount.py) now has the drawing's housing,
+and `cm_lens_from_top` is 14.4. That moves the lens 4.94 mm up the board, but not the board or its
+holes.
+
+- **The bracket's bevel isn't affected.** It keeps out of the Wide's picture by following the bottom
+  of its view, and it still follows the view with the lens where it was first modelled
+  (`cm_bevel_lens_from_top`). So the bracket is unchanged; its STL is byte-identical.
+- **The real view is 4.94 mm higher,** so it clears the bevel by more. It also takes in less of the
+  bracket's top ear ([Checks](#checks-exportschecksjson)).
+
+**Re-run for this:**
+
+- the checks (66 pairs, all 0 mm³);
+- the STEP and STL exports. Only the pod and the assembly changed; the bracket, carrier, spacers
+  and tag-wedge STLs are byte-identical;
+- the A1 mini plate and `overhangs.json`: 2 h 48 min and 85.5 g, 14 s and 0.02 g more.
+
+**Not re-run:**
+
+- the H2D plate (since re-sliced, with the flex cut-out: [The flex below the housing](#the-flex-below-the-housing))
+  and the per-part slices, which still have the round hole;
+- the renders, the simulated Wide views (`view_cm3w.png`, `fiducials.py`), the assembly GIF, the
+  fastener check and the FEA. They have the Wide's lens 4.94 mm too low, and the 8.5 mm module.
+  Onshape was brought up to date on 28 October ([Onshape](#onshape)).
+
+**If the housing is tight in the print,** raise `cm_hole_c`. Bambu's circle compensation only resizes
+round holes, so the square prints as drawn.
+
+### The flex below the housing
+
+**jss265 asked for room for the part just below the housing as well** (PR #10, 2026-10-28, with a
+photo). It's the flex that runs from the camera module to its board-to-board connector. It shows as a
+black strip printed `TNBA2004`, then a QR label and a gold stiffener over the connector. The first
+fit (above) left it out.
+
+**Its numbers come from Raspberry Pi, not from the photo:**
+
+- **Outline: the drawing.** Its front view outlines the flex under the housing. It is 8.9 wide and 4
+  tall at the board's edge, then 7.0 wide for the 3.3 up to the housing, 7.3 in all. It runs from
+  9.519 to 18.419 across, so it's off-centre: 2.98 to the left of the lens (12.5) and 5.92 to its
+  right, with the connector up. The inside corners are R0.8 and R0.5. Labels and linework agree to
+  0.001 mm, as for the rest of the drawing.
+- **Height: Raspberry Pi's STEP model of the Wide.** No view of the drawing gives one.
+  - The model is `Camera_module_3_wide_model_simple.stp` in
+    [`RP-008154-DS-1-camera-module-3-step.zip`](https://pip.raspberrypi.com/categories/1207-design-files)
+    on pip.raspberrypi.com. `cm3w_fit.py` fetches it into `cad/.cache/` and checks its SHA-256; it
+    isn't committed.
+  - The flex's top is 1.41 mm off the board's front face. It rises to 2.05 mm only where it climbs
+    into the module at the housing's edge.
+  - Under it are its plug and the board's Hirose DF37NC-30DS-0.4V receptacle (0.98 mm tall).
+- **The model's outline matches the drawing's, 0.169 mm to the left** (9.35 to 18.25). That's within
+  the drawing's ±0.2 mm, and the cut-out clears both.
+- **Elsewhere the model agrees with the drawing:**
+  - its four O2.2 holes are where the drawing has them (0.00 mm);
+  - its module's base is the drawing's 10.8 mm square, in the same place.
+- **It differs from the drawing in three places:**
+  - its board is 0.76 mm thick with its solder masks, against the drawing's 1.12;
+  - its lens tip is 8.06 mm off the board, against 8.3;
+  - corner tabs on top of the module reach 4.86 mm, against the housing's 4.07. They're inside the
+    square hole, which runs through the plate.
+  - Every height here is measured from the board's front face, which is what sits on the bosses.
+
+![The flex below the Wide's housing, in the pod before and now](renders/cm3w_fit.png)
+
+**The flex never touched the plate.** The bosses hold the board 2.5 mm off the plate, and the flex
+stands at most 2.05 mm off the board. So it was 0.45 mm short of the plastic, but right under it.
+
+**The hole now runs on over the flex, with generous room** (`cm_flex` and `cm_flex_c` in
+[`piper_mount.py`](cad/piper_mount.py)):
+
+- **The added cut-out** is 11.07 mm across (from 4.15 left of the lens axis to 6.92 right of it) and
+  runs from the square hole to 13.7 mm below the lens axis. It goes through the 6 mm plate, as the
+  square does, so the opening is 19.4 mm tall in all.
+- **It's 1.0 mm from the flex on every side,** counting both outlines: 1.0 from the drawing's right
+  edge, 1.0 from the model's left edge and 1.0 below the bottom. The nearest plastic is now 1.10 mm
+  from the flex.
+- **The square round the housing keeps its 0.3 mm** a side (`cm_hole_c`), the snug fit asked for
+  on 2026-10-27.
+- **The four screw holes didn't move.**
+  - The clearance holes, counterbores and bosses are still at (±10.5, −0.1) and (±10.5, 12.4).
+  - The camera's holes, by the drawing and by the model, are 0.00 mm from them.
+  - The nearest boss is 1.33 mm from the new cut-out, and its counterbore 1.48 mm.
+- **Nothing else changed.**
+  - 540.8 mm³ came out, all inside the new cut-out's box, and nothing was added. The pod is now
+    17.70 cm³.
+  - The seat contact stays 845 mm², and the bracket and the other parts are byte-identical.
+- **Printing:** the cut-out is a straight drop through a plate printed face down, so it needs no
+  support. `overhangs.json` only changes the pod's hash.
+
+**Re-run for this:**
+
+- the checks: 66 pairs, all 0 mm³. The camera model in `piper_mount.py` now carries the flex, so
+  `pod vs cm_module` includes it;
+- the STEP and STL exports (only the pod and the assembly changed) and `cm3w_fit.py`;
+- the A1 mini plate and `overhangs.json`: 2 h 48 min and 85.27 g, 0.21 g less than before;
+- the H2D PAHT-CF plate: 3 h 45 min and 70.20 g, the filament still on the left 0.4 mm nozzle. It
+  had still carried the pod's round hole.
+
+**Not re-run:** the per-part slices (`slice_configs.json`), the renders, the simulated views, the
+assembly GIF, the fastener check and the FEA. Onshape was updated afterwards, at `e082c8b`
+([Onshape](#onshape)).
+
+## Which HQ lens: the 6 mm wide-angle
+
+The HQ Camera comes without a lens. Raspberry Pi sells two for it: the **6 mm wide-angle** (CS
+mount) and the **16 mm telephoto** (C mount). **Buy the 6 mm.** The mount is built round it, and
+[`cad/lens_compare.py`](cad/lens_compare.py) puts both on the same camera, in the same place on the
+pod, to show why ([`exports/lens_compare.json`](exports/lens_compare.json)):
+
+![6 mm vs 16 mm on the pod and through the HQ](renders/lens_compare.png)
+
+The specs are Raspberry Pi's, from the
+[camera documentation](https://www.raspberrypi.com/documentation/accessories/camera.html) and its
+[6 mm](https://datasheets.raspberrypi.com/hq-camera/cs-mount-lens-guide.pdf) and
+[16 mm](https://datasheets.raspberrypi.com/hq-camera/c-mount-lens-guide.pdf) lens guides. The
+masses are retailers' figures. Distances are measured along the camera's axis from the lens front;
+pixels are in the 2028 x 1520 mode that `fiducials.py` renders.
+
+| | 6 mm wide-angle | 16 mm telephoto |
+|---|---|---|
+| Mount | CS: screws straight in | C: on the C-CS adapter that comes with the HQ |
+| Size, mass | O30 x 34 mm, 53 g | O39 x 50 mm plus the 5 mm adapter, 134 g |
+| Field of view on the HQ | 55 x 45 degrees (71 diagonal) | 22 x 17 degrees (28 diagonal) |
+| Finger tags | in view from 0 to 60 mm open, 82 mm away, about 105 px across | never in view |
+| Picture size at a target 60 mm past the tips | 168 x 126 mm, 12 px/mm | 55 x 41 mm, 37 px/mm |
+| A 20 mm target tag, 60 / 120 mm past the tips | 241 / 178 px across | 740 / 524 px across |
+| A finger tag and the target detected in one picture, with depth-of-field blur | 11 of 18 poses | 0 of 18 |
+| Sharpest it can get the finger tags and a target 60 mm out at once | f/8, focused 108 mm out: 6 px of blur at each end | f/16: 31 px |
+| Rated resolution | 3 MP | 10 MP |
+| On this mount | fits; the cradle clears its thumbscrews at any angle | doesn't fit (below) |
+| Moment about the pod's face | 1030 g mm | 4000 g mm (3.9 times) |
+| Price at launch (US retail now varies, and runs higher) | $25 | $50 |
+
+**Why the 6 mm:**
+
+- **It sees the gripper and the target together, which the 16 mm can't.** The camera sits 60 mm
+  out from the gripper axis and 89.5 mm behind the fingertips. From there the 16 mm sees a patch 24 x
+  18 mm at the depth of the finger tags, and no finger tag falls in it at any opening. Of the three
+  target distances it gets a whole 20 mm target in the picture only at 120 mm past the tips, and
+  never together with a finger tag.
+- **Depth of field.** The work spans 82 mm (finger tags) to 161 mm (a target 60 mm out) or more.
+  - **6 mm:** focused about 108 mm out at f/8, it blurs each end by about 6 px. That is about half a
+    cell of a finger tag, and the detector still finds them (see below). Stopping down further
+    doesn't help, because past f/8 diffraction blurs more than the extra depth of field saves.
+  - **16 mm:** defocus grows with the square of the focal length, so it has about seven times as
+    much over the same span. At best, at f/16, its smallest aperture, that is 31 px of blur.
+  - **So the 16 mm would need refocusing by hand** between near and far, which a wrist camera can't
+    do.
+- **The 6 mm has enough pixels.** A 20 mm target tag is 178 to 294 px across from 30 to 120 mm past
+  the tips, and AprilTag decodes from about 30 px. The 16 mm's three times the pixels per mm only pay
+  off on targets much further away or on small detail. That is a job for a fixed camera, such as the
+  OT-2's overhead camera, not a wrist camera.
+- **The 16 mm doesn't fit this mount.**
+  - With its adapter it is 21 mm longer and 9 mm wider.
+  - It cuts into the seat (1663 mm³) and the finger plate (176 mm³).
+  - Its front would sit 3.6 mm in front of the finger plate's front face, and it fills the bottom of
+    the Wide's picture (5986 mm³ of the Wide's view, against 0.6 mm³ of a corner for the 6 mm).
+  - It is 81 g heavier, with its centre of mass 10 mm further out, so the moment on the pod joint
+    is 3.9 times larger.
+
+**Using the 6 mm:**
+
+- **Take the C-CS adapter off first.** The HQ ships with it, and the 6 mm won't focus with it on
+  (Raspberry Pi's guide). Screw the HQ's back-focus ring fully in and lock it.
+- **Focus about 108 mm in front of the lens, about 20 mm past the fingertips**, with the camera
+  running. Following the guide, lock the inner NEAR/FAR ring with its thumbscrew, then turn the
+  outer two rings together until the picture is sharp. The guide says that takes four or five whole
+  turns, and it is what leaves the aperture thumbscrew pointing anywhere.
+  - **Close focus:** focusing on the finger tags needs the lens 0.47 mm out from infinity, and its
+    0.2 m minimum object distance only covers 0.19 mm. The guide also says the lens can focus at
+    very short distances, for macro work, so it should reach. If it doesn't, back the HQ's
+    back-focus ring out by about 0.3 mm.
+- **Stop down to about f/8.** The aperture ring is marked only OPEN and CLOSE, so close it until a
+  finger tag and a target 60 mm out are both crisp, then lock its thumbscrew. f/8 lets in an eighth
+  of the light f/2.8 does, so expect longer exposures or add a small light.
+- **Calibrate for distortion.** Raspberry Pi's 71 degree diagonal against 66 for a distortion-free
+  6 mm lens means noticeable barrel distortion toward the corners. Calibrate the intrinsics and
+  distortion once, for example with a ChArUco board and OpenCV, before trusting `solvePnP`. The
+  pictures here have no distortion.
+- **The thumbscrews** stand about 5 mm proud (estimated from product photos; Raspberry Pi publishes
+  no drawing). The cradle clears them wherever they end up, both in place and while the pod slides
+  on (see [The pod seat](#the-pod-seat)).
+
+### Depth of field, simulated
+
+`lens_compare.py` also re-renders each picture as the lens would take it. It blurs every pixel by
+the defocus at its own distance (thin lens), then the whole picture by diffraction. Then it runs
+the same detector on 18 poses: fingers 0 to 100 mm open, with the target 30, 60 or 120 mm past the
+tips.
+
+- **6 mm at f/8, focused 108 mm out:** it detects exactly what it does in the ideal pictures.
+  - Both finger tags from 0 to 60 mm open.
+  - The target in 17 of 18 poses, and with a finger tag in 11.
+  - The worst error in the target's position, measured from a finger tag, goes from 0.61 to 0.71 mm.
+- **16 mm at f/16, focused 85 mm out:** it detects the target in 6 of 18 poses, and never a finger
+  tag.
+
+Apart from the blur these are still ideal pictures, with no noise, distortion or motion blur.
+
+
+## What the cameras see
+
+| HQ Camera + 6 mm lens (55 x 43 degrees), 20 mm target 60 mm past the tips | Camera Module 3 Wide (102 x 67 degrees) |
+|---|---|
+| ![](renders/view_hq.png) | ![](renders/view_cm3w.png) |
+
+Both views are rendered in pyvista from the modelled camera positions (`fiducials.py`), with the
+fingers 40 mm apart.
+
+- **HQ Camera:** the lens front sits 89.5 mm behind the fingertips, 16.5 mm behind the finger
+  plate's front face and 60 mm out from the gripper axis. Turned 17 degrees in, it has the gripper
+  axis in view from the fingertips on, the fingertips at every opening up to 80 mm, and both finger
+  tags from 0 to 60 mm. The fingers are at the bottom of the picture, and the finger travel runs
+  along its long side.
+- **Camera Module 3 Wide:** it sees the fingertips and the scene around them, which is what a
+  stream needs.
+
+**Is the 17 degree turn worth it?** For locating a fiducial on the gripper and one on the object in
+the same picture, yes: it is what puts both in view. With the pod set back and not turned, the
+gripper axis only comes into the HQ's view 64 mm past the fingertips, and neither the fingertips
+nor the finger tags are in view at any opening. The
+costs are the seat above (the pod needs real support), 10 mm more width on the camera side (below),
+and a target straight ahead is seen 17 degrees off square, which the pose solve handles. A wider lens
+at 0 degrees would also get the fingers in view, but with fewer pixels on the target and more
+distortion.
+
+### Fiducials
+
+`fiducials.py` puts AprilTag 36h11 tags in the rendered HQ picture and runs OpenCV's detector and
+`solvePnP` (IPPE_SQUARE) on it, from 0 to 100 mm of opening:
+
+- **Finger tags** (#1 and #2, 5 mm) on the printed wedges, 17.5 mm behind each fingertip: detected
+  from 0 to 60 mm of opening, seen 33 to 39 degrees off square (stuck flat on the finger it would be
+  66 to 68), about 100 px across.
+- **Target tag** (#10, 20 mm) 60 or 120 mm past the fingertips: detected at every opening. At
+  30 mm past the tips, from 20 mm of opening up.
+- Worst errors against the true poses: 0.76 mm and 0.98 degrees for any tag, and 1.04 mm for the
+  target's position relative to a finger tag.
+
+The pictures are ideal (no blur, noise or distortion), so these show geometry, not a real camera's
+accuracy. [`exports/fiducials/tags.pdf`](exports/fiducials/tags.pdf) is the tags at exact size;
+print it at 100 %.
+
+### Why not the OT-2's 8-50 mm zoom?
+
+![The OT-2's zoom on the wrist, against the 6 mm](renders/wrist_zoom.gif)
+
+The OT-2's HQ has a Waveshare 8-50 mm C-mount zoom (O40 x 68.3 mm, 148 g, 0.2 m minimum object
+distance). [`cad/wrist_zoom.py`](cad/wrist_zoom.py) screws it into the same camera on the pod and
+turns it from 8 to 50 mm ([`exports/wrist_zoom.json`](exports/wrist_zoom.json)):
+
+- **The finger tags are never in its picture**, at any opening. With its adapter the lens front
+  sits 39 mm further forward, 52 mm behind the fingertips instead of 90, and at 8 mm it sees 43
+  degrees across, not 55.
+- **The target no longer fits past 12 mm.** From 32 mm the zoom can't focus on it at all: its own
+  focus stops at 0.2 m, and the HQ's back-focus ring only brings that in to about 126 mm at 32 mm
+  and 166 mm at 50 mm (thin lens). The target is 121 mm away.
+- **It doesn't fit.** It cuts 1099 mm³ into the bracket, even with the cradle widened for the 6 mm's
+  thumbscrews (1910 mm³ before), and 257 mm³ into the finger plate, and it is 2.8 times the 6 mm's
+  mass.
+- **Moving the arm gets the pixels instead.** Bringing the 6 mm from 400 to 108 mm from a label, its
+  sharpest distance, takes it from 5 to 18 px/mm. The 1 mm text becomes readable, and the finger
+  tags stay in view. Finer detail than the 6 mm's 0.1 mm at f/8 is a job for a fixed camera like
+  the OT-2's, with the arm bringing the object to it.
+
+The pictures use the thin-lens blur and f/8 of the 6 mm vs 16 mm comparison
+([Depth of field, simulated](#depth-of-field-simulated)). The zoom gets its best case: focused on
+the target whenever it can reach.
+
+**Where the zoom does pay off: a fixed camera.** [`cad/detail_compare.py`](cad/detail_compare.py)
+takes bars 0.2 to 0.0125 mm wide as each camera would at its best (diffraction and pixels only):
+
+![Fine detail: the wrist HQ against a fixed HQ with the zoom](renders/detail_compare.png)
+
+- **The wrist HQ resolves the 0.1 mm bars and nothing finer, in either mode.** At f/8 diffraction
+  limits it to 0.097 mm, so the 4056 x 3040 mode's smaller pixels don't add detail.
+- **The zoom at 50 mm, 250 mm away at f/4, resolves the 0.025 mm bars, and the 0.0125 mm ones
+  only just.** A pixel there covers 0.012 mm.
+- **Its depth of field is only about 1 mm**, which suits a camera that stays put while the arm
+  brings each object to the same spot, as on the OT-2.
+
+### Tight spaces
+
+![Tight spaces](renders/tight_spaces.png)
+
+From `envelope.py` (`exports/envelope.json`), fingers 40 mm apart:
+
+- **The mount adds no width for the first 85.5 mm behind the fingertips** (58 mm in the first
+  version, whose cameras sat on the tab). The finger tag wedges are the exception: 5.2 mm on the
+  camera side from 14 mm behind the tips.
+- **Behind that, the wrist is 157 mm across in X** (the bare gripper is 75 mm, the first version
+  147 mm): 96 mm out on the camera side and 62 mm on the Pi side. Along the finger travel it is no
+  bigger than the fingers themselves (82 mm).
+- For working inside a rack or a narrow gap, go in with the camera side facing the open side.
+
+## Hardware
+
+The whole bill of materials, with what the lab already has and what is still to buy, is in
+[`BOM.md`](BOM.md). How much RAM the Pi 5 should have (8 GB, if it will run Claude Code or PyTorch
+models on the wrist) is in [`compute/README.md`](compute/README.md).
+
+| Qty | Part | Where |
+|---|---|---|
+| 2 | M3 x 10 Phillips pan head | Bracket pad into the tab's brass inserts, down the O7 channels with a #1 Phillips (shaft 45 mm or more). Snug only |
+| 4 | M3 x 18 Phillips pan head + 4 M3 nuts | Collar clamp. Heads on the carrier side, nuts in the bracket's ears |
+| 4 | M3 x 18 Phillips pan head + 4 M3 nuts | Pod onto the seat. Nuts dropped into the seat's top and bottom slots |
+| 4 | M2 x 12 Phillips pan head + 4 M2 nuts | HQ Camera: heads in the counterbores on the pod's front, nuts on the camera's back. M2 through the camera's M2.5 holes; all four heads must sit below the face, because the seat covers two |
+| 4 | M2 x 12 Phillips pan head + 4 M2 nuts | Camera Module 3 Wide, the same way |
+| 4 | Nylon M2.5 x 12 pan head + 4 nylon nuts | Pi 5, through the spacers into the nut traps in the carrier |
+| 2 | Raspberry Pi Standard-Mini camera cable, 300 or 500 mm | Routes are about 206 mm (HQ) and 212 mm (Wide), so the 200 mm cable is too short. 500 mm works with the extra folded on the carrier; 300 mm leaves nothing to fold |
+| 1 | Pi 5 Active Cooler | Faces outward (+X) |
+| 1 | 24 V supply at the base, a 24 V to 5 V / 5 A USB-C buck converter on the carrier, and a magnetic breakaway | Along the arm; see below and [`power/`](power/README.md) |
+
+The steel screws and nuts are the stainless ones in the ME Prototyping Lab's drawer, and the M2.5s come
+from the lab's nylon kit, so none need ordering. [`cad/fastener_fit.py`](cad/fastener_fit.py) checks
+every length and head against the model; the numbers, and the screws not to use, are in
+[`BOM.md`](BOM.md#fasteners). The assembly GIF still draws the socket heads the CAD was first drawn
+with.
+
+**Power** ([`power/README.md`](power/README.md) has the numbers and a shopping list). The Pi 5 gets
+its own lead up the arm, with a service loop at each joint. It does not share the gripper's supply:
+
+- **Don't run 5 V up the arm, and don't use a USB-C extension.** The Pi 5 flags under-voltage below
+  4.63 V, and a USB-C cable may lawfully drop 0.75 V at its rated current. Over 3 m, even a 5 A
+  cable ends up at about 4.55 V under load. With an extension it's 4.4 V or less.
+- **Send 24 V (or 12 V) instead, and convert next to the Pi.** Use a small 24 V supply at the base,
+  a two-core high-flex lead up the arm, and a 5 V / 5 A buck converter with a USB-C output on the
+  carrier, plus a 10 to 15 cm lead to the Pi. The loss in the lead is under 1 %. Most of these
+  converters don't speak USB-PD; set `PSU_MAX_CURRENT=5000` in the Pi's EEPROM to tell it the supply
+  can do 5 A. Power over Ethernet is the alternative if the streams should be on a wire too.
+- **Or send 12 V over USB-C.** A PD step-down board on the carrier asks the supply for 12 V and makes
+  5 V next to the Pi, so the official supply and a USB-C extension, or any charger that offers 12 V
+  and a 10 ft cable, will reach. No 5 V supply, from any maker, was found that both reaches and
+  gives 3 A or more ([`power/shopping_2026-10-08.md`](power/shopping_2026-10-08.md)).
+- **The gripper's power/CAN lead is not for the Pi.** It is a short 4-wire jumper from a socket on
+  J6 into a notch in the gripper's back cover, right at the flange ring (y ≈ 48 to 54). The mount
+  only has to stay out of its way, and it does: the collar stops at y = 46.
+- The PiPER's XT30 at J6 gives 24 V / 2 A that the gripper shares, and
+  [ac-dev-lab#328](https://github.com/AccelerationConsortium/ac-dev-lab/issues/328) came to the same
+  conclusion for the UR3e: power the Pi separately.
+- **Make sure a yank can't reach the Pi's socket**, which is how a lab Pi 5 lost its USB-C port
+  ([#234](https://github.com/vertical-cloud-lab/byu-vcl/pull/234#issuecomment-5841723129)). Clamp
+  the lead to the carrier 20 to 30 mm from the plug, and put a magnetic breakaway on the arm's side
+  of the clamp so a snag pulls it apart (the quick-disconnect idea from ac-dev-lab#328). On a USB-C
+  lead, Adafruit's [Magnetic Right Angle USB Type C Adapter](https://www.adafruit.com/product/5521)
+  (product 5521, 120 W) also turns the lead 90 degrees to run back along the arm. On the 24 V lead, a
+  two-pin magnetic DC connector does the same job and only has to carry about 0.6 A.
+- **Check that the Pi 5 sees a 5 A supply.** If the USB-PD offer doesn't get through, the Pi 5
+  treats the supply as 3 A and limits its USB ports to 600 mA. That's fine for two CSI cameras,
+  which don't use USB, but the Pi will warn about it at boot.
+
+**Assembly order** (the GIF above):
+
+1. Nuts into the bracket: four in the clamp ears and four in the pod seat's slots.
+2. Bracket onto the gripper, pad against the tab; the two tab screws.
+3. Pi nuts into the carrier, then close the collar with it: the four clamp screws, evenly, until
+   the 0.6 mm split just closes at the ears' outer edge (about 130 N per screw, under 0.1 N m), then
+   stop. Past that point the faces take most of any extra torque (see
+   [The split as a stop](#the-split-as-a-stop)).
+4. Cameras onto the pod, the lens into the CS mount, both ribbons plugged in.
+5. Pod down its lens axis onto the seat; its four screws.
+6. Pi 5 on its spacers, then the ribbons, then the tag wedges on the fingers.
+
+The pod comes off without disturbing the collar or the tab screws. To take the gripper off its
+flange, take the mount off first: it covers two of the four countersunk M3 screws in the flange
+ring that hold the gripper on.
+
+**Payload:** printed parts 86 g in PLA (Bambu's figure for the whole plate), the Pi 5 with cooler
+about 66 g, the HQ Camera and 6 mm lens 83 g, the Wide 4 g, and screws and cables about 27 g. That's
+roughly **0.27 kg**. The PiPER carries 1.5 kg and the gripper takes 0.5 kg of that, which leaves
+about 0.7 kg for what it picks up.
+
+## Printing
+
+[`slice/`](slice/README.md) slices everything for a Bambu Lab A1 mini in PLA with the Bambu Studio
+CLI, the same way as #234 and #238, and writes
+[`slice/piper_camera_mount_A1mini_PLA.3mf`](slice/piper_camera_mount_A1mini_PLA.3mf) and
+[`slice/report.json`](slice/report.json):
+
+- **One plate:** all five part types, **2 h 48 min and 84.4 g** with 3 walls and 25 % infill on the
+  Textured PEI plate. The same parts on the H2D in PAHT-CF weigh 69.4 g (0.4 mm nozzle) or 80.4 g
+  (0.6 mm); see [As sliced](#as-sliced-paht-cf-and-pla-simsliced_feapy). The wider lens cradle took
+  1.6 g of PLA off the bracket, and boring it out to O43 (2026-10-29) another 0.9 g.
+- **The pod and the bracket,** to fix the PLA set printed on 2026-10-13 (its pod and bracket were
+  cut for the HQ housing as first modelled; see [The HQ Camera in the pod](#the-hq-camera-in-the-pod)):
+  the pod is **38 min and 14.0 g** and the bracket **1 h 18 min and 35.3 g** on the A1 mini, with the
+  same settings ([`slice/slice_configs.json`](slice/slice_configs.json), `a1m_pla_04`, plates 3 and 2).
+  Open the plate in Bambu Studio and delete everything but those two. The carrier, spacers and tag
+  wedges haven't changed. Every bracket printed so far also needs the bored-out cradle
+  ([Boring the cradle out to O43](#boring-the-cradle-out-to-o43-2026-10-29)).
+- **The whole set on the H2D in PAHT-CF, one plate:**
+  [`slice/piper_camera_mount_H2D_PAHT-CF.3mf`](slice/piper_camera_mount_H2D_PAHT-CF.3mf), **3 h 43 min
+  and 69.5 g**. It prints from the left nozzle, the 0.4 mm hardened-steel one, and is mapped there by
+  hand: left alone the slicer picks the right. [The H2D in PAHT-CF](slice/README.md#the-h2d-in-paht-cf-one-plate-slice_h2dpy)
+  has the details and what to check in Studio before sending it.
+- **No supports.** Supports are off, and Bambu's own support check flags none of the six objects.
+  There are no slicer warnings and no toolpaths off the bed.
+- **Overhangs** (`slice/overhangs.json`): the only faces steeper than 45 degrees are the roofs of
+  nut slots and counterbores, which print as short bridges. The largest is 34.5 mm² on the bracket.
+  The seat's outer face and the carrier's gussets are drawn at exactly 45 degrees.
+
+![Print layout](renders/print_layout.png)
+
+![The H2D plate, sliced](renders/h2d_plate.png)
+
+### Material: PAHT-CF on the H2D
+
+PLA is fine for a first fit check. For the mount that stays on the arm, print the bracket and
+carrier (and ideally the pod) in **Bambu PAHT-CF** on the H2D. The numbers are from Bambu's
+datasheets, dry specimens. "Along" means along the layers, "across" means across them:
+
+| | PLA Basic | PETG HF | PETG-CF | **PAHT-CF** | PET-CF | PPA-CF |
+|---|---|---|---|---|---|---|
+| Tensile strength along / across (MPa) | 35 / 31 | 34 / 23 | 35 / 29 | **88 / 64** | 74 / 35 | 168 / 57 |
+| Tensile modulus along / across (MPa) | 2580 / 2060 | 1810 / 1540 | 2460 / 1340 | 3860 / 2180 | 4730 / 2160 | 11800 / 4300 |
+| Heat deflection at 1.8 MPa (°C) | 54 | 62 | 68 | 170 | 182 (annealed) | 196 |
+| Water taken up, saturated | 0.43 % | 0.40 % | 0.30 % | 0.88 % | 0.37 % | 1.30 % |
+| US price per kg | $20 | n/a | $35 | $95 | $85 | $200 |
+
+Why PAHT-CF:
+
+- **It has the most strength across the layers**, 64 MPa, double PLA's. That's where the clamp loads
+  the carrier (see [Stress](#stress-calculix)).
+- **It holds screw preload.** It's a PA12-based nylon, and in
+  [CNC Kitchen's week-long bolted test](https://www.cnckitchen.com/blog/carbon-fiber-nylon-in-3d-printing-pa6-vs-pa12-tested)
+  a PA12-CF joint needed re-tightening once. A PA6-CF joint needed it almost daily.
+  [Dimitrellou et al. 2024](https://doi.org/10.1007/s11665-024-09144-9) rank PAHT-CF above PC and
+  PLA for creep.
+- **It doesn't mind warmth.** It deflects at 170 °C against PLA's 54 °C. PLA sits a few centimetres
+  from the Pi 5's heatsink here.
+- **The H2D already has what it needs.** Its status report, read over LAN MQTT through the CubXL Pi
+  on 2026-09-27, shows:
+  - a 0.4 mm hardened-steel hotend on the left. The right is a 0.6 mm TPU High-Flow hotend, so keep
+    carbon fibre off that one.
+  - an AMS HT, which dries at up to 85 °C. PAHT-CF wants 80 °C for 8 to 12 h, and printing and
+    storage below 20 % RH.
+  - a heated chamber that reaches 65 °C. PAHT-CF wants 45 to 60 °C.
+- **It costs about $7 for this mount.**
+
+The other options:
+
+- **PET-CF** is stiffer along the layers and takes up less water. But it's brittle across them:
+  35 MPa, with 2.4 % elongation at break. The carrier's collar is loaded across its layers.
+- **PPA-CF** is the stiffest by far. But it's brittle across the layers (0.9 % elongation) and wants
+  drying at 100 to 140 °C, which is beyond the AMS HT. It also costs $200/kg.
+- **PETG-CF isn't an upgrade.** It's no stiffer than PLA and deflects at 68 °C.
+- **Avoid PA6-CF and PA6-GF** in an unconditioned lab. They take up 2.4 to 2.6 % water, and damp
+  PA6 loses much of its stiffness.
+
+Notes for printing it:
+
+- **Check the fits first.** Print a coupon with the bore and an M3 nut slot, and measure it,
+  because the shrinkage differs from PLA's.
+- **Tighten until the split closes, then stop** (see [The split as a stop](#the-split-as-a-stop)).
+  The same holds for PLA.
+- **Carbon-fibre prints are static-dissipative, not conductive.** The one measured CF nylon was
+  about 10⁹ Ω. The Pi sits on its standoffs, clear of the plate, anyway.
+
+Source notes, with every value's datasheet link, are in
+[`sim/materials_2026-09-27.md`](sim/materials_2026-09-27.md).
+
+## Stress (CalculiX)
+
+[`sim/ccx_stress.py`](sim/ccx_stress.py) solves the printed parts in [CalculiX](http://www.calculix.de/)
+2.21 (`apt install calculix-ccx`). It uses `joint_fea.py`'s gmsh meshes, with a node added at each
+edge midpoint, so the elements are CalculiX's C3D10 quadratic tets: 98,817 nodes for bracket + pod.
+The results are in [`sim/ccx_stress.json`](sim/ccx_stress.json). The clamp has its own model,
+[`sim/ccx_split.py`](sim/ccx_split.py), with both halves together (see
+[The split as a stop](#the-split-as-a-stop)).
+
+**These, and the sliced FEA below, predate the wider lens cradle** (October 2026, for the 6 mm lens's
+thumbscrews; see [The pod seat](#the-pod-seat)). So does the cross-check against `joint_fea.py`
+below, which used that script's mesh at the time. That change took 5.3 cm³ off the seat next to the
+lens and nothing anywhere else, so the clamp, collar and cable-yank results stand. The pod-bump and
+camera-weight cases load the seat, and they have not been re-run.
+
+**CalculiX gives the same answer as scikit-fem.** Here are `joint_fea.py`'s three cases on the same
+mesh (the same node and tet counts) with the same supports:
+
+| 83 g at 1 g along | HQ moves (µm), ccx / scikit-fem | Optical axis tilts (arcmin), ccx / scikit-fem | Largest displacement (µm), ccx / scikit-fem |
+|---|---|---|---|
+| X | 0.4769 / 0.477 | 0.02944 / 0.0294 | 0.9320 / 0.932 |
+| Y | 0.9640 / 0.964 | 0.16157 / 0.1616 | 2.7802 / 2.780 |
+| Z | 0.9745 / 0.974 | 0.00957 / 0.0096 | 1.8600 / 1.860 |
+
+They agree to every digit `joint_fea.json` keeps, so the stiffness numbers in
+[The pod seat](#the-pod-seat) don't depend on the solver.
+
+**The stress cases.** The model is solid, isotropic PLA, but for a given load the stress hardly
+depends on the material. "Across layers" is the normal stress through the layers, using each
+part's print orientation from the Printing table. Bump and yank peaks are taken at least 2 mm from
+the supports, and clamp peaks at least 1.5 mm from the screw seats.
+
+| Case | Load | Peak von Mises | Peak max principal | Peak tension across layers | Where |
+|---|---|---|---|---|---|
+| Camera inertia | 83 g at 1 g, each direction | 0.1 MPa | | | |
+| Pod bumped | 10 N on the pod's outer edge, worst direction (+Y, toward the arm) | 3.0 MPa | 3.4 MPa | 1.5 MPa | Round the pod seat's top nut slot |
+| Cable yank | 10 N at the USB-C plug, worst direction (+X, off the board) | 3.6 MPa | 4.3 MPa | 3.5 MPa | Where the Pi plate meets the collar, at its rear end |
+| Clamp, snug | 200 N in each M3 (`ccx_split.py`) | 21.6 MPa | 19.8 MPa | 8.1 MPa | The bracket's ear roots, on the collar's outer face |
+| Clamp, about 0.3 N m | 500 N in each M3 (`ccx_split.py`) | 26.0 MPa | 21.4 MPa | 10.5 MPa | Same place |
+
+What it means, against Bambu's datasheet strengths (PLA Basic 35 MPa along the layers and 31 across;
+PAHT-CF 88 and 64):
+
+- **The camera's weight and ordinary bumps are no problem.** The pod takes about 100 N (10 kgf) on
+  its outer edge before solid PLA reaches its strength, and less with 25 % infill. The seat's nut
+  slots are where it would give first.
+- **A cable yank is fine once the lead is clamped to the carrier.** Solid PLA takes about 80 N
+  sideways before the plate-to-collar joint reaches its strength (about 180 N in PAHT-CF). As
+  printed, with walls, infill and layers judged across the layers, it is less: about 60 N in PLA and
+  120 N in PAHT-CF (see [As sliced](#as-sliced-paht-cf-and-pla-simsliced_feapy)).
+  - The Pi's socket gives up long before that. A straight pull unplugs a USB-C plug at 8 to 20 N (the
+    USB-C spec's range), and a sideways pull levers on the socket instead.
+  - So the clamp should carry the pull, and the breakaway should let go below what the socket takes.
+    See [`power/`](power/README.md).
+- **The clamp screws are the biggest load, and the 0.6 mm split now caps it.** 500 N per screw is
+  only about 0.3 N m on a dry M3, easy to reach with a hex key.
+  - With the 1.0 mm split, the bracket's ear roots reached 59.7 MPa at 500 N, above PLA's 35 MPa.
+  - With the 0.6 mm split they reach 21.4 MPa, because the halves meet at about 130 N and the faces
+    take most of the rest.
+  - In PLA, stop when the split closes, where the peak is about 17 MPa. Expect PLA to relax at that
+    stress over weeks. PAHT-CF (88 MPa along the layers) keeps a margin of about 4 even at 1000 N.
+
+![CalculiX: von Mises stress for the pod bump and the cable yank](renders/ccx_stress.png)
+
+How each case is set up:
+
+- **Pod bump:** bracket + pod bonded, collar bore and tab pad fixed, as in `joint_fea.py`.
+- **Cable yank:** the carrier alone with its bore fixed. The plug force is carried to the four
+  standoff seats as if through a rigid board.
+- **Clamp:** see [The split as a stop](#the-split-as-a-stop).
+
+Limits of the model:
+
+- **The model is solid and isotropic.** A print with 3 walls and 25 % infill is weaker, and
+  [As sliced](#as-sliced-paht-cf-and-pla-simsliced_feapy) models the printed parts from their G-code.
+- **The peaks sit at sharp inside corners** (the ear roots and nut slots), where the value depends
+  on the mesh. A fillet at the ear roots would lower them.
+
+### The split as a stop
+
+The collar's two halves used to be 1.0 mm apart. The split is now 0.6 mm, so the halves meet before
+the screws reach snug, and the meeting faces then take most of any extra torque. Here it is cut
+through the first pair of clamp screws:
+
+![The split, close up: 1.0 mm before, 0.6 mm now](renders/split_closeup.png)
+
+**The model.** [`sim/ccx_split.py`](sim/ccx_split.py) puts both half-collars into one CalculiX model.
+`ccx_stress.py` had solved each half alone, which only holds while the split is open: once it closes,
+the halves push on each other. The results are in [`sim/ccx_split.json`](sim/ccx_split.json).
+
+- **The body** is rigid, frictionless and 0.15 mm clear all round, as before.
+- **The split faces** are frictionless too. Stiff springs join each node of the bracket's face to
+  the carrier's face opposite it. A spring is on where the faces meet and off where they would pull
+  apart, and the springs and the body contact are iterated together until neither changes.
+- **The screws** are forces on the nut-pocket floors and head seats, from 50 to 1000 N in each.
+- **One mesh for both.** The 1.0 mm mesh is the 0.6 mm mesh with its split faces moved 0.2 mm apart.
+  The peaks sit at the ears' sharp roots, where the value depends on the mesh, and with separate
+  meshes they differed by about 20 %.
+
+![Tightening the clamp screws, 1.0 mm split against 0.6 mm](renders/split_overtighten.gif)
+
+| Force in each M3 | 1.0 mm split | Bracket's peak, 1.0 mm | 0.6 mm split | Bracket's peak, 0.6 mm |
+|---|---|---|---|---|
+| 100 N | 0.43 mm open | 14.6 MPa | 0.04 mm open | 13.6 MPa |
+| 200 N, snug (about 0.1 N m) | 0.31 mm open | 26.4 MPa | closed, faces pushing 112 N | 19.8 MPa |
+| 300 N | 0.20 mm open | 37.5 MPa | closed, 326 N | 21.0 MPa |
+| 500 N (about 0.3 N m) | closed (at about 480 N), 9 N | 59.7 MPa | closed, 835 N | 21.4 MPa |
+| 1000 N (about 0.6 N m) | closed, 1,061 N | 63.8 MPa | closed, 2,370 N | 21.3 MPa |
+
+The gap is the narrowest across the split, at the ears' outer edge. The faces push with the total
+force across the split, all four ears together. The peak is the largest principal stress in the
+bracket, at least 1.5 mm from the screw seats, and it is always at an ear root on the nut side.
+
+What it shows:
+
+- **The halves meet at the ears' outer edge first, and sooner than I'd estimated.** As each half
+  wraps round the body, its ears tip inward. So the faces close first along their outer edge, while
+  the inner edge, at the bore, is still about 0.25 mm apart. The 0.6 mm split closes at about
+  130 N per screw (about 0.08 N m), not the 200 N I'd estimated from the average closure. The 1.0 mm
+  split closes at about 480 N.
+- **Until then, both splits behave the same.** The bracket's peak climbs about 11 MPa per 100 N of
+  screw force.
+- **After that, it stops climbing.** With the 0.6 mm split it is 19.0 MPa at 150 N, 21.4 MPa at
+  400 N and 21.3 MPa at 1000 N. The extra force goes into the faces, which press together as in any
+  bolted joint: 2,370 N across them at 1000 N per screw.
+- **The 1.0 mm split was a stop too, but it came too late.** The ear roots passed PLA's 35 MPa at
+  about 280 N per screw (0.17 N m), and they were at about 58 MPa when the faces met.
+- **The squeeze on the body keeps rising after the faces meet, but more slowly.** When the split
+  closes, the bracket's half presses on the body with about 900 N, summed round the bore. That
+  rises to 1,200 N at 200 N per screw and 2,630 N at 1000 N. With the 1.0 mm split it was 1,440 N at
+  200 N. The tab screws stop the mount turning anyway.
+- **What gives next is the ears themselves, in compression.** At 1000 N per screw, the most stressed
+  plastic is in the ears, squeezed between the nuts or heads and the faces: 36 MPa von Mises,
+  compressive. That's nearly eight times the force at which the split closes.
+- **The absolute peaks depend on the mesh.** They sit at a sharp inside corner. On this mesh the
+  1.0 mm split reads 26.4 MPa at 200 N, where `ccx_stress.py`'s per-half meshes gave 17.4 MPa. So
+  read the comparison between the splits, which use one mesh, and treat the absolute values as
+  rough. A fillet at the ear roots would lower them.
+
+![Overtightening, at 200, 500 and 800 N per screw](renders/split_overtighten.png)
+
+Limits: the plastic is solid, isotropic and linear-elastic, so past PLA's 35 MPa the numbers say
+where it would start to give, not what it would do next. The faces are frictionless; friction would
+only hold the ears more. The screws are forces, not modelled bolts.
+
+## As sliced: PAHT-CF and PLA (`sim/sliced_fea.py`)
+
+The CalculiX models above treat each part as solid, isotropic PLA. A print is neither. It has three
+walls round the outside and 25 % grid infill inside, its beads are stiffer and stronger along their
+length than across, and its layers bond more weakly than either.
+[`sim/sliced_fea.py`](sim/sliced_fea.py) rebuilds each part from the G-code that would print it, in
+PAHT-CF on the H2D and in PLA on the A1 mini, and loads it as the CalculiX models do. The results are
+in [`sim/sliced_fea.json`](sim/sliced_fea.json).
+
+**The slices.** [`slice/slice_configs.py`](slice/slice_configs.py) slices each part alone on a plate
+with the Bambu Studio 02.08.02.61 CLI, using Bambu's system presets plus this README's 3 walls and
+25 % grid infill. It weighs each part from its own G-code
+([`slice/slice_configs.json`](slice/slice_configs.json)):
+
+| | Bracket | Pod | Carrier | Whole job | Job time |
+|---|---|---|---|---|---|
+| H2D, PAHT-CF, 0.6 mm hardened nozzle, 0.30 mm layers | 36.1 g | 13.1 g | 31.7 g | 81.6 g | 3 h 44 min |
+| H2D, PAHT-CF, 0.4 mm hardened nozzle, 0.20 mm layers | 29.8 g | 11.6 g | 28.3 g | 70.3 g | 3 h 45 min |
+| A1 mini, PLA Basic, 0.4 mm nozzle, 0.20 mm layers | 36.1 g | 14.1 g | 34.4 g | 85.4 g | 2 h 48 min |
+
+- **The models below were built from the slices before the lens cradle was widened,** when the
+  bracket was 1.3 to 1.6 g heavier (37.7, 31.1 and 37.8 g). The other parts haven't changed.
+- **PLA weighs more** mostly because it is denser: 1.26 g/cm³ in Bambu's preset, against 1.06 for
+  PAHT-CF.
+- **The 0.6 mm nozzle adds 11.3 g.** Its three walls are 3 × 0.62 mm thick, against 0.42 + 2 × 0.45 mm
+  with the 0.4 mm nozzle, so more of each part is solid.
+- **Bambu recommends the 0.6 mm nozzle for PAHT-CF,** because a wider nozzle clogs less: the
+  [H2D 0.6 mm hardened-steel hotend](https://us.store.bambulab.com/products/bambu-hotend-h2-p2s?id=775924445524066388)
+  is $17.99. A 0.5 kg spool ($49.99) is about six sets at 81.6 g.
+
+**From G-code to a model:**
+
+- **The raster.** [`sim/gcode_voxels.py`](sim/gcode_voxels.py) reads every extrusion on the part's
+  plate, with its feature (outer wall, sparse infill and so on), width and layer. It draws each one at
+  0.1 mm per pixel in the STL's print frame, and keeps the bead's direction.
+- **The voxels.** Each voxel then holds some fraction of bead, in some mix of directions. Its
+  stiffness is the bead's orthotropic stiffness, turned to each of those directions and averaged by
+  volume (iso-strain). Between infill lines there is nothing. Voxels under 15 % bead are dropped, about
+  1 % of the bead volume.
+- **The frame.** Each part is placed in the world by the transform its STL was exported with. So the
+  supports and loads are those of `ccx_stress.py` and `ccx_split.py`.
+
+![One layer of the bracket: the G-code, and the voxels made from it](renders/sliced_model.png)
+
+**Bead properties** ([`sim/bead_properties.json`](sim/bead_properties.json), sourced in
+[`sim/bead_properties_2026-10-03.md`](sim/bead_properties_2026-10-03.md)). They are back-calculated
+from Bambu's datasheets: a model of the datasheet's tensile bar, with its walls and ±45° infill,
+reproduces the datasheet's modulus and strength. Dry, room temperature:
+
+| MPa | Stiffness along the bead / across it / across the layers | Tensile strength, same three | Shear strength in a layer / across the layers |
+|---|---|---|---|
+| PAHT-CF | 7600 / 2700 / 2180 | 120 / 50 / 47 | 47 / 33 |
+| PLA Basic | 2800 / 2600 / 2060 | 48 / 33 / 31 | 19 / 18 |
+
+**Failure.** The strain in each voxel gives the stress in each bead direction it holds, in that bead's
+own axes. That stress goes into three Hashin-type criteria: along the bead, between beads in a layer,
+and between layers. Each is written so that it scales with the load. So a failure index of 1 is the
+first failure, and 1 / index is the factor on the load to reach it.
+
+**The clamp** (both halves, with the body and the split as in `ccx_split.py`). It is now solved at
+0.6 mm voxels, about 1.6 million unknowns, and at 0.8 and 1.0 mm to check the voxel size. A run
+takes 8 to 15 minutes, warm-started from the 1.0 mm solution (see "Solving at 0.6 mm" under
+Checks).
+
+| At 0.6 mm voxels | Faces pushing, 200 / 1000 N per M3 | Squeeze on the body, bracket's half, 200 / 1000 N | Collar and ears, bracket / carrier, 200 N | Same at 1000 N | Bracket at the ear root, 200 / 1000 N |
+|---|---|---|---|---|---|
+| PAHT-CF, 0.6 mm nozzle | 487 / 3,256 N | 420 / 1,059 N | 0.19 / 0.12 | 0.28 / 0.27 | 0.07 / 0.15 |
+| PAHT-CF, 0.4 mm nozzle | 498 / 3,334 N | 411 / 967 N | 0.18 / 0.13 | 0.37 / 0.33 | 0.10 / 0.18 |
+| PLA | 528 / 3,487 N | 384 / 761 N | 0.25 / 0.26 | 0.66 / 0.68 | 0.16 / 0.46 |
+| The same voxels, solid PLA (the check; max principal / 35 MPa) | 439 / 3,056 N | 525 / 1,383 N | 0.25 / 0.13 | 0.38 / 0.26 | 0.10 / 0.20 |
+| Solid PLA, CalculiX tets (`ccx_split.py`) | 112 / 2,370 N | 1,198 / 2,634 N | | | 0.57 / 0.61 (19.8 / 21.3 MPa) |
+
+- **"Collar and ears"** means everywhere except the zones under the nuts and heads and the split faces
+  (1.5 mm deep). **"Ear root"** is the peak within 2.5 mm of where CalculiX's solid PLA peaks:
+  the inside corner where the bracket's ear meets the collar's outer face, at (-16.9, 33.1, 34.3).
+- **The voxel size no longer matters much for the clamp as a whole.** In solid PLA, the faces push
+  439, 440 and 439 N at snug at 1.0, 0.8 and 0.6 mm, and the squeeze on the body is 565, 526 and
+  525 N. The ear root's peak settles too, at 3.1, 3.5 and 3.6 MPa. In the prints, the faces and the
+  squeeze move by under 5 % from 0.8 to 0.6 mm, and the ear root settles in PAHT-CF. PLA's ear root
+  at 1000 N doesn't: it jumps from 0.26 to 0.46, in a voxel a sixth full of wall (convergence plot
+  below).
+- **But the voxels still disagree with CalculiX, and refining didn't close the gap.** The voxel
+  collar closes its split before 50 N per screw, where CalculiX's needs about 140 N. So at snug the
+  voxels put four times CalculiX's force into the faces, squeeze the body half as hard, and bend the
+  ears less, which puts a fifth of CalculiX's stress at the ear root (3.6 against 19.8 MPa).
+  - **It isn't the voxels' stiffness.** On the pod case, solid-PLA voxels match CalculiX's tets to
+    within 9 % on how far the HQ moves at 1 g and 6 % on how far it tilts (see Checks).
+  - **So the two clamp models differ somewhere in their set-up.** On paper they match: the same
+    clearance, split, crowns, contact rules and screw seats, and the screw loads sum correctly in both.
+    I haven't found the difference in this run.
+- **The split faces' edges don't converge, so they are judged by hand.** The 1.0 mm table's peaks
+  in the collar and ears were mostly on the split faces, beside the screw holes and at the ends of the
+  ears. There they grow or jump about as the voxels shrink. PAHT-CF with the 0.6 mm nozzle, bracket,
+  at 1000 N: 0.64, 0.65, then 1.43. A flat, frictionless contact with a sharp edge has an infinite pressure at
+  that edge, so a finer model only finds a higher peak. On average the faces press at 6 to 7 MPa at
+  1000 N per screw (3,260 to 3,490 N over 480 to 560 mm² in contact). That is about a tenth of PLA's
+  or PAHT-CF's strength in compression. Real edges are rounded, and a few tenths of a millimetre of
+  crushing there spreads the load.
+- **The collar and ears** peak on the collar's outer face about 40 degrees from the crown, where the
+  ring bends round the body, and in partly filled voxels at the walls' edges. Those still drift with
+  the voxel size. For PLA at snug the peak is 0.17, 0.20, then 0.25.
+- **Is printed PLA near its limit at snug? It depends on which clamp model is right.**
+  - By the voxels: no. Printed PLA reaches 0.25 in the collar and ears at snug, and 0.16 at the
+    ear root. At 1000 N it reaches 0.68 and 0.46.
+  - By CalculiX: close. On the same voxels, printing raises the ear root's index 1.55 times over solid
+    PLA (0.159 against 3.6 / 35 = 0.103). Applied to CalculiX's 0.57, that gives about 0.9 at snug.
+  - PAHT-CF keeps a margin either way. With the 0.6 mm nozzle it reaches 0.07 at the ear root by
+    the voxels, and about 0.4 by CalculiX scaled the same way (0.71 times solid PLA). With the 0.4 mm
+    nozzle it reaches 0.10, and about 0.55 (0.95 times).
+  - So **print the clamp in PAHT-CF**. In PLA, stop at snug, when the split just closes.
+- **Under the heads and nuts, by hand.** The voxels can't resolve these: at 0.6 mm a nut bears on 26 to
+  28 nodes of the printed bracket and a head on 14 to 20 of the carrier, so the section below sets
+  them apart.
+  - A head bears on 14.7 mm² of the carrier's counterbore floor (0.068 MPa per N) and presses it across
+    the layers. PLA's 65 MPa there is reached at about 950 N per screw, and PAHT-CF's 75 MPa at about
+    1,100 N.
+  - A nut bears on 17.1 mm² of the bracket (0.058 MPa per N), within its layers: about 1,200 N in PLA
+    and 1,370 N in PAHT-CF.
+  - So **tighten to snug, not past it**, in either material.
+
+![The clamp, as sliced, at 0.6 mm voxels: peak failure index at snug and overtightened](renders/sliced_clamp.png)
+
+![The clamp against voxel size: faces, squeeze, ear root and the split faces' edges](renders/sliced_convergence.png)
+
+![The section through the first clamp screws at 1000 N per screw, as sliced](renders/sliced_section.png)
+
+**The cable yank** (the carrier alone at 0.6 mm voxels, 10 N at the USB-C plug):
+
+| | Worst direction | First failure, voxel model | Allowing for the voxels' corners (see Checks) | Where, and how |
+|---|---|---|---|---|
+| PAHT-CF, 0.6 mm nozzle | +X, off the board | 81 N | about 120 N | between beads in a layer, in the solid skin where the plate meets the collar |
+| PAHT-CF, 0.4 mm nozzle | +X | 85 N | about 125 N | between layers, in the outer wall at the same joint |
+| PLA | +X | 43 N | about 60 N | between layers, at the same joint |
+
+- **The joint is the one CalculiX found:** the rear end of the plate, where it meets the collar. As
+  printed, it gives between the layers.
+- **That is below the solid estimate,** which was about 80 N for PLA and 180 N for PAHT-CF. Two
+  things lower it. The printed walls and infill raise the peak tension across the layers by 13 % in
+  PLA, on the same voxels (5.73 against 5.06 MPa). And the joint is now judged by its strength across
+  the layers, with the shear there counted, rather than by PLA's strength along them.
+- **It is still well above what the socket takes.** A straight pull unplugs a USB-C plug at 8 to
+  20 N, and a sideways pull levers on the socket long before 60 N. So the strain-relief clamp and the
+  magnetic breakaway in [`power/`](power/README.md) still decide what breaks first.
+
+**The pod** (bracket and pod at 1.0 mm voxels, the pod tied to the seat as in `joint_fea.py`, the
+bore and tab pad fixed):
+
+| | HQ moves at 1 g along X / Y / Z | Optical axis tilts, X / Y / Z | Pod bump, 10 N on its outer edge: first failure |
+|---|---|---|---|
+| PAHT-CF, 0.6 mm nozzle | 0.41 / 0.91 / 0.83 µm | 0.025 / 0.139 / 0.011 arcmin | 204 N, along +Y (toward the arm) |
+| PAHT-CF, 0.4 mm nozzle | 0.50 / 1.08 / – µm | 0.031 / 0.165 / – arcmin | not solved: the Z case stalled, and the run stopped before writing |
+| PLA | 0.64 / 1.50 / 1.43 µm | 0.046 / 0.243 / 0.023 arcmin | 75 N, along +Y |
+| Solid PLA, CalculiX tets | 0.48 / 0.96 / 0.97 µm | 0.029 / 0.162 / 0.010 arcmin | about 100 N |
+
+- **The camera's weight still doesn't matter.** The printed PLA pod lets the HQ tilt at most 0.24
+  arcmin at 1 g, which is 0.27 px at the 6 mm lens. PAHT-CF, with its stiffer beads, tilts it 0.14 to
+  0.17 arcmin.
+- **A knock is where the material shows.** PLA gives at 75 N on the pod's outer edge, and PAHT-CF with
+  the 0.6 mm nozzle at about 200 N. Both give at the top end of the seat, where the bonded joint ends.
+  That end is a sharp edge in a bonded model, so read the exact values as rough, and the ratio between
+  the materials as the result.
+
+![Force at the first failure: cable yank and pod bump](renders/sliced_loads.png)
+
+**Checks:**
+
+- **The raster against the G-code.** The beads land on the STL: their extent matches its outline to
+  0.01 mm, and the carrier's top layer is at 38.60 mm against the STL's 38.61. The raster holds 4 %
+  more bead than the filament the G-code pushes (the carrier, 0.4 mm nozzle). That is expected:
+  Bambu meters a bead with rounded sides, and the raster fills its whole width by the layer height.
+  The bead properties are per gross area too, as the datasheet bars are, so the raster's area is the
+  right one to use. Bridges are the exception, at 34 % under: Bambu prints them as round beads one
+  nozzle wide, and the raster gives them one layer.
+- **The voxels against CalculiX.** The yank on the same 0.6 mm voxels, filled with solid PLA as in
+  `ccx_stress.py`, puts its peak at the same place: the plate-to-collar joint, (26.5, 45.7, -21.8)
+  against CalculiX's (26.0, 46.0, -21.1). The peak is 1.45 times CalculiX's across the layers (5.06
+  against 3.50 MPa) and 1.49 times in max principal (6.45 against 4.33 MPa). That is the voxels'
+  staircase at a sharp inside corner. In the other directions, where the peaks are small and spread
+  out, the two differ by up to 30 % either way. So at a sharp corner the voxel peak overstates the
+  stress by roughly that factor, which the yank table allows for.
+- **The voxels' stiffness against CalculiX's.** The pod case on 1.0 mm voxels filled with solid PLA
+  ([`sim/sliced_fea.json`](sim/sliced_fea.json), `h2d_pahtcf_04 / solid / 1.00 mm / pod`): at 1 g
+  along X / Y / Z the HQ moves 0.434 / 0.959 / 0.908 µm, against CalculiX's 0.477 / 0.964 / 0.974,
+  and tilts 0.0296 / 0.1630 / 0.0101 arcmin, against 0.0294 / 0.1616 / 0.0096. So the elements and
+  the material model agree with CalculiX's. The clamp's disagreement comes from somewhere else.
+- **The clamp against CalculiX:** see the clamp table. The solid-PLA voxel collar closes its split
+  before 50 N per screw. At 1.0 mm, from 50 to 150 N, the faces already push 63, 184 and 306 N,
+  while CalculiX's split is still 0.04 mm open at 100 N and closes at about 140 N. The faces' force
+  at snug is the same at every voxel size, so this is not resolution. Two more checks on the voxel
+  side (`--check`, 1.0 mm, solid PLA):
+  - **`crowns`.** Started as `ccx_split.py` starts, with the body within 30 degrees of each crown and
+    the split open, the voxels settle to the same answer: within 1 % on the faces and 3 % on the
+    squeeze.
+  - **`bonded`.** With no bore node allowed to leave the body, the split closes even sooner: the faces
+    push 105 N at 50 N per screw. So a bore held on too much wouldn't stiffen a collar the way
+    CalculiX's is stiffer.
+- **Voxel size.** The clamp at 1.0, 0.8 and 0.6 mm, in all four models, is in the convergence plot
+  above. The 0.8 mm yank and the PAHT-CF 0.4 mm pod's Z case, which stalled before, weren't re-run.
+  The PAHT-CF 0.4 mm pod's row therefore still has the camera's X and Y only, from the earlier
+  run's log, and no bump.
+- **Solving at 0.6 mm.** The clamp at 0.6 mm has 1.6 to 1.7 million unknowns. The solver is pyamg's
+  smoothed aggregation as CG's preconditioner, with each half's six rigid-body modes as its
+  near-null space.
+  - **AMG reuse.** The hierarchy is rebuilt when over 1 % of the contact rows change. Otherwise it is
+    reused until CG needs 25 iterations on it.
+  - **Warm start.** Each contact row starts in the state of the nearest row of the 1.0 mm solution,
+    and each node starts at the 1.0 mm displacements. The contact loop then settles in 4 to 7
+    iterations, against 12 to 16 from cold.
+  - **Run times.** 8 to 15 minutes and about 8 GB per model, on 4 cores.
+  - **Two things that didn't work.** A sparse Cholesky (MKL PARDISO, `--solver direct`) is three
+    times faster at 1.0 mm and gives the same answers (PLA's index 0.3449 against 0.3453 by AMG), but
+    at 0.6 mm its factor wants 14.5 GB. Six rigid-body modes shared by both halves would halve the
+    coarse grids, but CG then needs 1.5 to 3 times the iterations: the split holds the halves only
+    along its normal, so they slide past each other, which a rigid motion of both together can't
+    represent.
+- **Contact.** Every clamp solve settled. At the last iteration, at most 18 of the 9,000 to 24,000
+  contact rows (body and split) were still changing.
+
+**Limits:**
+
+- **Resolution.** The clamp uses 0.6 mm voxels (with 0.8 and 1.0 mm as checks), the yank 0.6 mm and
+  the pod 1.0 mm. The walls are 1.3 to 1.9 mm thick, so they are two or three voxels at 0.6 mm. The
+  clamp as a whole has converged: the faces, the squeeze and the ear root's peak barely move from
+  0.8 to 0.6 mm. Its peak indices still sit in partly filled voxels at the edges of walls, and they
+  drift by 10 to 25 % between voxel sizes, so read them to about that. The split faces' edges don't
+  converge at all, and are judged by hand.
+- **The clamp model disagrees with CalculiX's** on how easily the collar closes (see above), by
+  about a factor of four on the faces' force at snug. Until that is settled, PLA's margin at the
+  ear roots is somewhere between 0.16 and 0.9 at snug.
+- **Within a voxel, the beads share one strain** (iso-strain), which is an upper bound on its
+  stiffness.
+- **The bead properties are inferred from datasheets.** PAHT-CF's stiffness along the bead is the
+  least certain (4,600 to 9,500 MPa). A 0° and a ±45° coupon printed on the H2D with this profile would
+  pin it down.
+- **They are dry and short-term.** Damp PAHT-CF (saturated at 55 % RH) loses 8 to 20 % of its
+  strength by Bambu's figures. Nothing here covers creep, which matters more for PLA under the
+  clamp's load, or heat.
+- **Linear elastic to the first failure.** Past an index of 1, the numbers say where a part starts to
+  give, not what it does next.
+- **The pod is bonded to the seat,** as in `joint_fea.py`. The four M3s and the real contact at the seat
+  are not modelled.
+- **No printed part has been tested.** The PLA set went to the A1 mini on 2026-10-08.
+
+## Checks (`exports/checks.json`)
+
+`piper_mount.py` builds everything, runs the checks and exits non-zero if anything interferes. All
+pass:
+
+- **Overlap:** 0 mm³ for all 66 pairs. Each part is checked against the gripper body, against the
+  fingers both closed (0 mm) and fully open (100 mm), and against each other.
+- **The HQ Camera's housing,** as Raspberry Pi's drawing has it: the tripod mount's shoulders and
+  foot, the screws in the shoulders and the focus-lock block stay 1.0 mm from the pod and 1.5 mm
+  from the bracket. The focus ring keeps the 0.5 mm it always had in the pod's O37 hole
+  ([The HQ Camera in the pod](#the-hq-camera-in-the-pod)).
+- **The lens's thumbscrews at any angle, anywhere along the lens:** the circle their tips sweep,
+  the whole length of the lens, is checked against the bracket, the pod, the Wide and the gripper,
+  and comes out at 0 mm³. It stays 1.0 mm from the bracket (at the walls round the tab screws, at
+  the lens's front) and 3.1 mm from the finger plate. Until 2026-10-29 only each screw's own circle,
+  where `lenses.py` puts it, was checked; on the first fit the aperture screw was further forward.
+- **Clearance to the fingers:** the nearest part stays 15.6 mm away with the fingers closed and
+  17.8 mm away fully open. The finger tag wedges stay 72 mm from the mount.
+- **The Camera Module 3 Wide,** as Raspberry Pi's drawing has it: its 10.8 mm housing stays 0.3 mm
+  from the pod's square hole on every side, and its holes sit on the pod's screw holes
+  ([The Camera Module 3 Wide in the pod](#the-camera-module-3-wide-in-the-pod)). The flex below
+  the housing is 2.05 mm tall by Raspberry Pi's STEP model, and the opening clears it by 1.0 mm on
+  every side ([The flex below the housing](#the-flex-below-the-housing)).
+- **Views:** no printed part is inside the HQ's view. The Wide's view takes in 1,907 mm³ of the
+  bracket (its top ear) and 134 mm³ of the carrier's edge. With the Wide's lens 4.94 mm lower, as
+  first modelled, the bracket figure was 2,890 mm³.
+- **Split:** the collar halves are 0.6 mm apart (it was 1.0 mm). The clamp closes that at about
+  130 N per screw, after squeezing the body (see [The split as a stop](#the-split-as-a-stop)). The
+  bore is 0.15 mm over the body per side.
+- **Rear limit:** the rearmost point is 64.98 mm, the HQ Camera's tripod foot, level with the flange
+  face at 64.98. The printed parts stop at 63.5 mm and the Pi 5 at 64.5.
+
+**AgileX's flange solid is a special case.** OCC treats it as touching everything: the distance to
+the Pi 5, 15 mm away, comes out as 0. So the checks stand a plain O57 x 10.5 mm cylinder in its place
+(`reference.flange_proxy`). The cylinder is solid where the flange is hollow, which only makes the
+checks stricter.
+
+## Onshape
+
+The design is in Onshape in the lab's **vcl-shared › 6DOF Robot Arm** folder:
+[PiPER wrist camera mount (393c198)](https://cad.onshape.com/documents/93ef145982c24192bfd160be/w/e3d08fcb2dcad7c92e183721).
+It's owned by Vertical Cloud Lab and it's private. It is brought up to date in place, so the link
+stays the same; the last update was on 2026-10-29. It has this branch's parts as of `393c198`: the
+lens cradle bored out to Ø43 the whole length of the lens
+([Boring the cradle out to O43](#boring-the-cradle-out-to-o43-2026-10-29)), the pod and bracket that
+clear the HQ Camera's housing, and the Camera Module 3 Wide's square hole with the flex cut-out.
+
+**To print from it, open the Print plate tab.** It holds only the printed parts, each already in its
+print orientation and where the A1 mini plate puts it. Select the parts you want, right-click and
+export them as STL or 3MF for Bambu Studio, then slice with the settings in
+[slice/README.md](slice/README.md) (3 walls, 25 % infill, circle compensation on, no supports). The
+committed [A1 mini plate](slice/piper_camera_mount_A1mini_PLA.3mf) is the same parts already sliced.
+Exported from Onshape as STL at Fine resolution, the whole tab has the plate's exact bounding box,
+and its round holes come out at most 0.03 mm small (0.01 mm in the committed STLs), far less than
+a printer can show ([`print_plate.py --check-stl`](onshape/print_plate.py), numbers in the
+[record](onshape/run_2026-10-28_update.json)). That export was checked on 2026-10-28; the 29 October
+plate was only checked by its volumes in Onshape ([record](onshape/run_2026-10-29_update.json)).
+Of the set printed on 13 October, only the pod and the bracket have changed since; the carrier,
+spacers and tag wedges are the same.
+
+| Tab | What's in it |
+|---|---|
+| Print plate (printed parts, A1 mini layout) | The bracket, pod, carrier, 4 spacers and 2 tag wedges, from [`onshape/print_plate.py`](onshape/print_plate.py). The bed's corner is at the origin and +Z is up. Each part's volume in Onshape matches its STL in `exports/`, which the slices are made from, to within 0.1 % |
+| Mount parts (exports/assembly.step) | Our parts on the gripper's frame, plus envelopes of the Pi 5 and the cameras |
+| AgileX gripper (reference, do not share) | AgileX's gripper STEP, 13 parts. Onshape shows AgileX's Chinese part names garbled; they read 电机加底座 (motor and base), 法兰 (flange), 夹爪 (jaw) and 推力轴承 (thrust bearing), and MGN7 is the linear rail and its carriages |
+| Mount on gripper | The assembly. The two Part Studios above are inserted whole, at the origin, so the mount sits on the gripper exactly as in the renders |
+| OLD e082c8b print plate, superseded: do not print | The print plate of 28 October. **Its bracket still has the O33 strip** that caught the lens's aperture screw. The API key can't delete tabs (HTTP 403), so delete it in the web app |
+| OLD e082c8b, superseded: do not print | The parts of 28 October, on the gripper's frame. Delete it in the web app too |
+| OLD 4be6e17, superseded: do not print | The parts from 27 September. Delete it in the web app too |
+| Part Studio 1 | Empty. Onshape's default tab, which the API key can't delete either |
+
+![Onshape's Print plate tab: the printed parts in print orientation](onshape/onshape_print_plate.png)
+
+**Versions** (the clock icon, Versions and history): `4be6e17 (before e082c8b)` is the document as it
+stood before the 28 October update, and [`e082c8b`](https://cad.onshape.com/documents/93ef145982c24192bfd160be/v/e7a49a23794ebb202d18f725)
+is that update, a fixed copy to link to. The 29 October update is
+[`393c198`](https://cad.onshape.com/documents/93ef145982c24192bfd160be/v/b3d73f46329d8b169662934f),
+after `e082c8b (before 393c198)`, in 44 API calls ([record](onshape/run_2026-10-29_update.json)).
+[`onshape/update_doc.py`](onshape/update_doc.py) made the update in 38 API calls, plus 15 to check it
+afterwards ([record](onshape/run_2026-10-28_update.json)):
+
+1. Save the document as it stood as a version.
+2. Import `exports/assembly.step`, and the print plate that `print_plate.py` builds from the
+   committed STEPs. It turns each part into its print orientation the way the STLs are exported
+   and checks it against its STL before uploading.
+3. In the assembly, delete the old mount's 15 part instances and insert the new mount whole. Try to
+   delete the old tabs, which the key still can't do, so rename the old mount's tab instead.
+4. Rename the document, read back each printed part's volume, save the pictures, and save a second
+   version.
+
+To bring it up to date again after the next export, run `update_doc.py` again.
+
+AgileX's gripper went in on 2026-09-27 with
+[`onshape/add_gripper.py`](onshape/add_gripper.py) (about 15 API calls,
+[record](onshape/run_2026-09-27_gripper.json)). The mount was built in the frame of that STEP, so
+the two line up with no mates. AgileX publishes the STEP without a licence, so the repo downloads it
+at run time instead of committing it. For the same reason, **keep this document private** (the script
+refuses to import into a public one).
+
+![The Onshape assembly: the mount on AgileX's gripper](onshape/onshape_on_gripper.png)
+
+[`onshape/onshape_import.py`](onshape/onshape_import.py) made the document on 2026-09-27 over the
+REST API in **7 calls**, plus 3 to check the copy and fetch a shaded view (the plan allows 2,500 a
+year):
+
+1. Create a document.
+2. Import `exports/assembly.step`.
+3. Copy the workspace into the folder with the documented `copyWorkspace` call.
+
+API keys can't move a document between folders; the web app's endpoint for that returns 403, as
+found in #234. So the uncopied original is also left in the API key owner's account, and can be
+deleted from there. The run record is in
+[`onshape/run_2026-09-27.json`](onshape/run_2026-09-27.json). The earlier import of the first
+version, [PiPER wrist camera mount (9f691e6)](https://cad.onshape.com/documents/e22711217c260359b417d4ab/w/a89539f5f5ee3273f944af9c)
+([record](onshape/run_2026-09-26.json)), is in the same folder and can be deleted.
+
+![Onshape shaded view of the Mount parts tab](onshape/onshape_assembly.png)
+
+The parts are imported solids, not native sketch-and-extrude features. For editable geometry,
+rebuild from `Params`, the way #234's `onshape_api.py` does for the lid mount's base.
+
+## Running it
+
+```bash
+pip install -r cad/requirements.txt       # plus opencv-contrib-python, shapely, matplotlib, pillow for the extras
+cd cad
+python piper_mount.py                                                # checks + exports/*.step, *.stl
+xvfb-run -a -s "-screen 0 1920x1080x24" python render.py            # renders/*.png
+xvfb-run -a -s "-screen 0 1920x1080x24" python fiducials.py         # renders/view_*.png, exports/fiducials/
+xvfb-run -a -s "-screen 0 1920x1080x24" python lens_compare.py      # 6 mm vs 16 mm: renders/lens_compare.png (~5 min)
+xvfb-run -a -s "-screen 0 1920x1080x24" python wrist_zoom.py        # renders/wrist_zoom.gif: the OT-2's zoom on the wrist (~2 min)
+python cradle_fit.py                                                 # renders/cradle_fit.gif: the lens's thumbscrews, old and new cradle
+xvfb-run -a -s "-screen 0 1920x1080x24" python cradle_bore.py       # renders/cradle_bore.png: the cradle bored out to O43, against the one printed
+xvfb-run -a -s "-screen 0 1920x1080x24" python hq_fit.py            # renders/hq_fit*.png: the HQ housing in the printed pod and the new one
+python cm3w_fit.py                                                   # renders/cm3w_fit.png: the Wide's housing and flex in the pod (fetches Raspberry Pi's STEP; ~2 min)
+python detail_compare.py                                             # renders/detail_compare.png: fine detail, wrist vs a fixed zoom
+python envelope.py                                                   # renders/tight_spaces.png
+python fastener_fit.py                                               # exports/fastener_fit.json: screw lengths, heads, tool room (about 15 min)
+xvfb-run -a -s "-screen 0 1920x1080x24" python animate.py           # renders/assembly_steps.gif (gifsicle shrinks it)
+python ../slice/slice_a1mini.py --bambu ~/bambu/squashfs-root       # see slice/README.md
+python ../slice/slice_configs.py --bambu ~/bambu/squashfs-root      # each part alone, 3 printer/material setups
+python ../sim/joint_fea.py                                           # pod joint stiffness, scikit-fem
+xvfb-run -a -s "-screen 0 1920x1080x24" python ../sim/ccx_stress.py  # stresses in CalculiX (apt install calculix-ccx)
+xvfb-run -a -s "-screen 0 1920x1080x24" python ../sim/ccx_split.py   # the clamp's split, both halves (about 40 min)
+python ../sim/sliced_fea.py --cases yank                             # the parts as sliced (needs slice_configs.py's G-code)
+python ../sim/sliced_fea.py --cases clamp pod zones --h 1.0          # (about 15 min per setup)
+python ../sim/sliced_plots.py                                        # renders/sliced_*.png
+python ../power/voltage_drop.py                                      # power/README.md's table
+python ../compute/ram_footprint.py prep && python ../compute/ram_footprint.py all   # compute/README.md's memory table
+python ../onshape/add_gripper.py --doc 93ef145982c24192bfd160be --ws e3d08fcb2dcad7c92e183721   # done once
+python ../onshape/update_doc.py --doc 93ef145982c24192bfd160be --ws e3d08fcb2dcad7c92e183721    # Onshape up to date, with the print plate
+```
+
+- **AgileX's STEP isn't committed.** AgileX publishes it with no licence, so
+  [`cad/reference.py`](cad/reference.py) downloads it from AgileX's CDN into `cad/.cache/` (about
+  2.9 MB), the same way the lid mount handles Opentrons' OT-2 STEP. It also records the SHA-256 it was
+  checked against.
+- **The exports contain only our parts** (and simple envelopes of the Pi and cameras), not AgileX's
+  geometry.
+
+## Assumptions and what to check first
+
+- **Which gripper the lab has.** AgileX has made two. On the 0 to 100 mm gripper the tab's inserts
+  sit 38 mm off the axis, as in the STEP used here. On the older 0 to 70 mm gripper they sit at
+  36 mm, and the pad would need moving 2 mm. Tell them apart by the maximum opening, or by the
+  finger plate's width: about 164 mm against 145 mm.
+- **The tab screws go into brass inserts in the gripper's plastic.** Snug them; don't torque them.
+- **Estimated dimensions:**
+  - The 6 mm lens's O30 x 34 mm and 53 g are the maker's figures. Its thread length (4 mm), ring
+    layout and thumbscrews are estimates, measured off product photos
+    ([`cad/lenses.py`](cad/lenses.py)). Most of all, check how far the thumbscrews stand out: the
+    cradle allows for 5 mm plus 1.5 mm of clearance. Where they sit along the lens no longer
+    matters: the aperture screw is further forward than estimated, so the cradle allows for the
+    screws the whole length of the lens.
+  - The Pi 5's connector positions are read off Raspberry Pi's drawing, and its outline is a
+    simplified envelope, as in #234.
+- **The HQ Camera didn't fit the 2026-10-13 set.** The first PLA set went to the A1 mini on
+  2026-10-08 ([record](slice/print_2026-10-08/README.md)), with the old O33 lens cradle in its
+  bracket. A second set with the O43 cradle went to it on 2026-10-13
+  ([record](slice/print_2026-10-13/README.md)). Its pod had too little room for the HQ housing's
+  height, its shoulders and the screws in them (#4). The pod and bracket here fix that; see
+  [The HQ Camera in the pod](#the-hq-camera-in-the-pod).
+  - The clearances reuse the numbers from #234's A1 mini fit study (M3 nut slot 5.8 mm across
+    flats, 0.15 mm per side on the body).
+  - The collar grips by squeezing the body until the split closes. The solid model put that squeeze
+    at about 900 N for each half, summed round the bore, when the split closes. Printed with walls and
+    25 % infill, the collar is softer, and like for like the squeeze is about a fifth less at snug (see
+    [As sliced](#as-sliced-paht-cf-and-pla-simsliced_feapy)). Either way it is set by the geometry,
+    not the torque: the clearance takes 0.3 mm of the 0.6 mm split and the squeeze gets the rest. So a
+    bore printed 0.05 mm oversize per side leaves a third less squeeze, and one 0.15 mm oversize
+    leaves none. Check the bore on a coupon first. If it slips, a strip of 0.5 mm rubber inside it will
+    help.
+  - For the parts that stay on the arm, print in PAHT-CF rather than PLA (see
+    [Material](#material-paht-cf-on-the-h2d)), because PLA creeps under clamp load. The xArm mount
+    in [ac-dev-lab#527](https://github.com/AccelerationConsortium/ac-dev-lab/issues/527) was PETG.
+- **Relation to #238** (Pi 5 dual-camera mount): that design wasn't ready when this was made.
+  - The pod uses the same hole patterns: HQ M2.5 on a 30 mm square, Camera Module 3 M2 on
+    21 x 12.5 mm.
+  - If #238 settles on a camera module, a new pod can take its place on the same seat and four
+    screws, without touching the collar or the tab interface.
+- **HQ Camera alone:** it can stream as well as take snapshots, using the picamera2 main + lores +
+  `CircularOutput` approach tested in
+  [borysgroup/streamingLambda#10](https://github.com/borysgroup/streamingLambda/pull/10). In that
+  case, leave the Wide off; its station is just four holes.
+- **Side mounting:** the mount doesn't care which way up the arm is. If the arm is side-mounted as
+  discussed in [#229](https://github.com/vertical-cloud-lab/byu-vcl/issues/229#issuecomment-5826036827),
+  include the mount's ~0.27 kg in `set_payload()`.

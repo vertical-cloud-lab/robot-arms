@@ -1,0 +1,374 @@
+{
+  "drawing": {
+    "board": [
+      25.0,
+      23.862,
+      1.12
+    ],
+    "holes": [
+      [
+        2.0,
+        2.0
+      ],
+      [
+        23.0,
+        2.0
+      ],
+      [
+        2.0,
+        14.5
+      ],
+      [
+        23.0,
+        14.5
+      ]
+    ],
+    "hole_d": 2.2,
+    "lens": [
+      12.5,
+      14.4
+    ],
+    "lens_d": 6.95,
+    "housing": [
+      10.8,
+      10.8,
+      4.07
+    ],
+    "lens_tip": 8.3,
+    "connector_edge": "top",
+    "flex": [
+      [
+        9.519,
+        9.0
+      ],
+      [
+        9.519,
+        1.7
+      ],
+      [
+        18.419,
+        1.7
+      ],
+      [
+        18.419,
+        5.7
+      ],
+      [
+        16.519,
+        5.7
+      ],
+      [
+        16.519,
+        9.0
+      ]
+    ]
+  },
+  "step model": {
+    "file": "RP-008154-DS-1-camera-module-3-step.zip / Camera_module_3_wide_model_simple.stp, sha256 of the zip b2e2026ea5322bddf1ddcbae97c094822ee9e0ca92d7bc5c748f60a8b5ef6683",
+    "holes (drawing x, y)": [
+      [
+        2.0,
+        2.0
+      ],
+      [
+        2.0,
+        14.5
+      ],
+      [
+        23.0,
+        2.0
+      ],
+      [
+        23.0,
+        14.5
+      ]
+    ],
+    "board's dielectric, z in the model's frame (front face at -0.744)": [
+      -0.701,
+      -0.03
+    ],
+    "flex below the housing's hole, outline (drawing x0, x1, y0, y1)": [
+      9.346,
+      18.25,
+      1.7,
+      8.7
+    ],
+    "flex below the housing, off the board's front face (mm)": [
+      0.002,
+      2.051
+    ],
+    "flex, plug and receptacle, off the board's front face (mm)": {
+      "U4 2": [
+        0.986,
+        2.051
+      ],
+      "U4 0": [
+        0.251,
+        1.011
+      ],
+      "J2 0": [
+        0.002,
+        0.982
+      ]
+    },
+    "camera module, furthest off the board's front face (mm)": 8.061
+  },
+  "old_ref": "a4f85b5",
+  "camera_frame": "lens at the origin, connector toward -y, mm; the pod's screw holes in it",
+  "before": {
+    "cylinders by diameter": {
+      "O2.40": [
+        [
+          -10.5,
+          -0.1
+        ],
+        [
+          -10.5,
+          12.4
+        ],
+        [
+          10.5,
+          -0.1
+        ],
+        [
+          10.5,
+          12.4
+        ]
+      ],
+      "O4.20": [
+        [
+          -10.5,
+          -0.1
+        ],
+        [
+          -10.5,
+          12.4
+        ],
+        [
+          10.5,
+          -0.1
+        ],
+        [
+          10.5,
+          12.4
+        ]
+      ],
+      "O4.50": [
+        [
+          -10.5,
+          -0.1
+        ],
+        [
+          -10.5,
+          12.4
+        ],
+        [
+          10.5,
+          -0.1
+        ],
+        [
+          10.5,
+          12.4
+        ]
+      ]
+    },
+    "walls of the opening round the lens": [
+      {
+        "at": "x = -5.700",
+        "faces": "+x",
+        "spans": "y -5.700 to 5.700"
+      },
+      {
+        "at": "x = 5.700",
+        "faces": "-x",
+        "spans": "y -5.700 to 5.700"
+      },
+      {
+        "at": "y = -5.700",
+        "faces": "+y",
+        "spans": "x -5.700 to 5.700"
+      },
+      {
+        "at": "y = 5.700",
+        "faces": "-y",
+        "spans": "x -5.700 to 5.700"
+      }
+    ],
+    "camera hole to its screw hole (mm)": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "STEP model's hole to its screw hole (mm)": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "housing overlap (mm3)": 0.0,
+    "lens overlap (mm3)": 0.0,
+    "board overlap (mm3)": 0.0,
+    "flex overlap (mm3)": 0.0,
+    "housing to the pod (mm)": 0.3,
+    "board to the bosses (mm)": 0.0,
+    "flex to the pod (mm)": 0.449,
+    "room round the housing across the plate (mm)": 0.3,
+    "room round the flex across the plate, below the housing's hole (mm)": 0.0,
+    "plastic over the flex, its outline through the plate (mm3)": 339.6,
+    "STEP model: board and front-side parts overlap (mm3)": 0.0,
+    "STEP model: flex to the pod (mm)": 0.54,
+    "STEP model: room round the flex across the plate, below the housing's hole (mm)": 0.0
+  },
+  "now": {
+    "cylinders by diameter": {
+      "O2.40": [
+        [
+          -10.5,
+          -0.1
+        ],
+        [
+          -10.5,
+          12.4
+        ],
+        [
+          10.5,
+          -0.1
+        ],
+        [
+          10.5,
+          12.4
+        ]
+      ],
+      "O4.20": [
+        [
+          -10.5,
+          -0.1
+        ],
+        [
+          -10.5,
+          12.4
+        ],
+        [
+          10.5,
+          -0.1
+        ],
+        [
+          10.5,
+          12.4
+        ]
+      ],
+      "O4.50": [
+        [
+          -10.5,
+          -0.1
+        ],
+        [
+          -10.5,
+          12.4
+        ],
+        [
+          10.5,
+          -0.1
+        ],
+        [
+          10.5,
+          12.4
+        ]
+      ]
+    },
+    "walls of the opening round the lens": [
+      {
+        "at": "x = -4.150",
+        "faces": "+x",
+        "spans": "y 5.700 to 13.700"
+      },
+      {
+        "at": "x = -5.700",
+        "faces": "+x",
+        "spans": "y -5.700 to 5.700"
+      },
+      {
+        "at": "x = 5.700",
+        "faces": "-x",
+        "spans": "y -5.700 to 4.400"
+      },
+      {
+        "at": "x = 6.919",
+        "faces": "-x",
+        "spans": "y 4.400 to 13.700"
+      },
+      {
+        "at": "y = -5.700",
+        "faces": "+y",
+        "spans": "x -5.700 to 5.700"
+      },
+      {
+        "at": "y = 13.700",
+        "faces": "-y",
+        "spans": "x -4.150 to 6.919"
+      },
+      {
+        "at": "y = 4.400",
+        "faces": "+y",
+        "spans": "x 5.700 to 6.919"
+      },
+      {
+        "at": "y = 5.700",
+        "faces": "-y",
+        "spans": "x -5.700 to -4.150"
+      }
+    ],
+    "camera hole to its screw hole (mm)": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "STEP model's hole to its screw hole (mm)": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "housing overlap (mm3)": 0.0,
+    "lens overlap (mm3)": 0.0,
+    "board overlap (mm3)": 0.0,
+    "flex overlap (mm3)": 0.0,
+    "housing to the pod (mm)": 0.3,
+    "board to the bosses (mm)": 0.0,
+    "flex to the pod (mm)": 1.096,
+    "room round the housing across the plate (mm)": 0.3,
+    "room round the flex across the plate, below the housing's hole (mm)": 1.0,
+    "plastic over the flex, its outline through the plate (mm3)": 0.0,
+    "STEP model: board and front-side parts overlap (mm3)": 0.0,
+    "STEP model: flex to the pod (mm)": 1.136,
+    "STEP model: room round the flex across the plate, below the housing's hole (mm)": 0.996
+  },
+  "changed": {
+    "old minus new": {
+      "volume (mm3)": 540.82,
+      "solids": 1,
+      "camera-frame box (x, y, z)": [
+        [
+          -4.15,
+          4.4,
+          -8.5
+        ],
+        [
+          6.919,
+          13.7,
+          -2.5
+        ]
+      ]
+    },
+    "new minus old": {
+      "volume (mm3)": 0,
+      "solids": 0
+    }
+  },
+  "pod volume (mm3)": {
+    "before": 18241.02,
+    "now": 17700.2
+  }
+}
