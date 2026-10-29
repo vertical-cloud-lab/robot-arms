@@ -85,8 +85,11 @@ def fixture():
                    (tuple(c + (210, 150, 120)), tuple(c), (0, 0, 1))], OUT / "view_fixture.png",
            labels=["fixture with the collar and auger", "from the outlet end: F1 fork, collar", "gear side: F2 fork, 44T gear"])
     c2 = np.array([G.FIX_X, 88.0, 22.0])
-    render([(H.finger_fixture_hifi(), FIXTURE, 1.0)], [(tuple(c2 + (110, -110, 120)), tuple(c2), (0, 0, 1))],
-           OUT / "view_fixture_alone.png", labels=["ledges are the collar's underside"])
+    render([(H.finger_fixture_hifi(), FIXTURE, 1.0)], [(tuple(c2 + (110, -110, 120)), tuple(c2), (0, 0, 1)),
+                                                     (tuple(c2 + (0, -170, 0)), tuple(c2), (0, 0, 1)),
+                                                     (tuple(c2 + (170, 0, 0)), tuple(c2), (0, 0, 1))],
+           OUT / "view_fixture_alone.png", labels=["ledges are the collar's underside", "45° × 5 mm mouths",
+                                                   "side: web between the ledges, 45° tops"])
 
 
 def _gripper(opening, fingers=True):
@@ -159,9 +162,9 @@ def pin():
     cut = cq.Workplane("XY").box(200, 60, 100, centered=(True, False, True)).translate((60, H.PIN_Y - 60, 30))
     items = [(plate.cut(cut.val()), (0.62, 0.64, 0.68), 1.0), (guide.cut(cut), red, 1.0),
              (slider.translate((H.PIN_X_OUT, H.PIN_Y, 0)).cut(cut), dred, 1.0)]
-    c = np.array([62.0, H.PIN_Y, 24.0])
+    c = np.array([66.0, H.PIN_Y, 31.0])
     c2 = np.array([62.5, H.PIN_Y, 24.5])
-    render(items, [(tuple(c + (10, -150, 30)), tuple(c), (0, 0, 1)), (tuple(c2 + (0, -32, 2)), tuple(c2), (0, 0, 1))],
+    render(items, [(tuple(c + (10, -170, 30)), tuple(c), (0, 0, 1)), (tuple(c2 + (0, -32, 2)), tuple(c2), (0, 0, 1))],
            OUT / "view_pin_latch.png", labels=["pulled out: the latch holds it (section)", "bump in the roof window"])
 
 
@@ -188,10 +191,12 @@ def knob():
             for M in poses:
                 items.append((cq.Workplane().add(part.val().moved(loc(M))), col, 1.0))
         tiles.append(items)
-    c = np.array([at[0], at[1], 33.0])
-    cam = [(tuple(c + (25, -150, -15)), tuple(c), (0, 0, 1))]
-    render(tiles[0], cam, OUT / "view_knob_custom.png", size=(560, 520), labels=["custom fingers: notches round the post"])
-    render(tiles[1], cam, OUT / "view_knob_sleeves.png", size=(560, 520), labels=["sleeves: notches round the post"])
+    c = np.array([at[0], at[1], 34.0])
+    cam = [(tuple(c + (0, -150, 0)), tuple(c), (0, 0, 1)), (tuple(c + (35, -45, -140)), tuple(c + (0, 0, 8)), (0, 1, 0))]
+    render(tiles[0], cam, OUT / "view_knob_custom.png", size=(520, 480),
+           labels=["custom fingers on the knob, post between the jaws", "from below: the jaws' relief notches"])
+    render(tiles[1], cam, OUT / "view_knob_sleeves.png", size=(520, 480),
+           labels=["sleeves on the knob, post between the jaws", "from below: the jaws' relief notches"])
 
 
 if __name__ == "__main__":

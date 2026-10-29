@@ -67,9 +67,16 @@ def fetch() -> Path:
 
 
 @lru_cache(maxsize=None)
-def solids():
+def _solids():
     import cadquery as cq
     return tuple(cq.importers.importStep(str(fetch())).solids().vals())
+
+
+def solids():
+    """The STEP's solids, as fresh copies. OCCT's booleans can raise the tolerances of their
+    arguments, so with one shared set a part's cuts depended on what had been built before it:
+    built after the main shell, the fixing shell lost its finger clearance (3.9 cm3 overlap)."""
+    return tuple(s.copy() for s in _solids())
 
 
 def finger_solid(clearance: float = 0.0):

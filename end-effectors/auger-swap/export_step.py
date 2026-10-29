@@ -312,12 +312,18 @@ PRINTED = {   # STL name -> builder (each in its own print-friendly frame as bui
 
 
 def stls() -> None:
+    import trimesh
     d = OUT / "stl"
     d.mkdir(parents=True, exist_ok=True)
     for n, b in PRINTED.items():
         p = d / f"{n}.stl"
-        cq.exporters.export(b(), str(p), tolerance=0.05, angularTolerance=0.15)
-        print(f"{p.name}: {p.stat().st_size / 1e6:.2f} MB")
+        part = cq.Workplane().add(solid(b()).clean())
+        for tol, ang in ((0.05, 0.15), (0.02, 0.1), (0.01, 0.05)):   # finer until the mesh is closed
+            cq.exporters.export(part, str(p), tolerance=tol, angularTolerance=ang)
+            m = trimesh.load(str(p))
+            if m.is_watertight:
+                break
+        print(f"{p.name}: {p.stat().st_size / 1e6:.2f} MB, {m.volume / 1e3:.2f} cm3, watertight {m.is_watertight} (tolerance {tol})")
 
 
 def main() -> None:

@@ -40,9 +40,9 @@ DOSER_COLLAR = ["Tap collar", "Solenoid (Adafruit 412)"]
 def _fetch(url: str, dest: Path) -> Path:
     if not dest.exists():
         dest.parent.mkdir(parents=True, exist_ok=True)
-        tmp = dest.with_suffix(dest.suffix + ".part")
+        tmp = dest.with_suffix(dest.suffix + f".{os.getpid()}.part")    # per process: GIFs render in parallel
         urllib.request.urlretrieve(url, tmp)
-        tmp.rename(dest)
+        os.replace(tmp, dest)
     return dest
 
 
@@ -80,7 +80,9 @@ def cached_mesh(key: str, build, tol: float = 0.15) -> trimesh.Trimesh:
         return trimesh.Trimesh(d["v"], d["f"], process=False)
     m = tess(build(), tol)
     p.parent.mkdir(parents=True, exist_ok=True)
-    np.savez_compressed(p, v=m.vertices, f=m.faces)
+    tmp = p.with_name(f"{p.stem}.{os.getpid()}.tmp.npz")
+    np.savez_compressed(tmp, v=m.vertices, f=m.faces)
+    os.replace(tmp, p)
     return m
 
 
