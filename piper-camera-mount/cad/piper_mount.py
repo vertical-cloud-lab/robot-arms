@@ -98,6 +98,8 @@ class Params:
     seat_z1: float = 24.0           # station z; above this the Wide's view begins
     access_d: float = 7.0           # hex-key channels down to the two tab screws (through the pod too)
     tab_screw_len: float = 12.0
+    tab_wall: float = 1.0           # left round each tab screw's hole in the pad, where the lens cradle
+                                    # would otherwise break into it (make_bracket)
 
     # --- camera pod ------------------------------------------------------------------
     toe_deg: float = 17.0           # both cameras turned toward the gripper axis (about Z)
@@ -406,7 +408,8 @@ def make_hq_camera_local(p: Params) -> dict[str, cq.Workplane]:
 
 def hq_keepout_local(p: Params, c: float = 1.5) -> cq.Workplane:
     """The HQ Camera and lens grown by c: what the bracket's web must stay out of. That includes
-    the circles the lens's thumbscrews can sweep, back to the camera (lenses.lens_keepout_local)."""
+    the circle the lens's thumbscrews can sweep, the length of the lens and back to the camera
+    (lenses.lens_keepout_local)."""
     b, seat = p.hq_board, -p.hq_cs_seat
     k = lbox(-b / 2 - c, b / 2 + c, -b / 2 - c, b / 2 + c, -c, p.hq_pcb_t + 3.0)
     k = k.union(cyl_z(36.0 + 2 * c, seat - c, 0))
@@ -537,7 +540,13 @@ def make_bracket(p: Params) -> cq.Workplane:
     web = web.cut(to_world(p, box(-300, 300, -p.hq_standoff - p.pod_t, 300, -300, 300)))
     part = web.union(collar_half(p, -1))
     part = part.cut(cyl_y(2 * p.bore_r, y0 - 1, 80, p.ax_x, zc))
-    part = part.cut(hq_place(p)(hq_keepout_local(p)))
+    # The camera and the lens cradle. Near the front of the lens the cradle comes within 0.14 mm of
+    # the two tab screws' holes in the pad, so it leaves tab_wall round each (a thumbscrew there still
+    # clears it by 1.0 mm). Above the pad it opens into their hex-key channels.
+    cradle = hq_place(p)(hq_keepout_local(p))
+    for x, z in p.tab_holes:
+        cradle = cradle.cut(cyl_y(p.m3_clear_d + 2 * p.tab_wall, y0 - 1, y0 + p.pad_t, x, z))
+    part = part.cut(cradle)
     # Where it goes beyond the first version's web (outboard of it, or above it), the seat keeps out
     # of the Wide's picture: its top front corner is bevelled along the bottom of the Wide's view
     # (the cut face leans 32 degrees from vertical as printed, so it needs no support). The bevel
@@ -823,8 +832,9 @@ def axis_in_view_beyond_tips(p: Params) -> float:
 def run_checks(p: Params, parts: dict[str, cq.Workplane]) -> dict:
     solids = ("bracket", "pod", "carrier", "hq_pcb", "hq_mount", "hq_tripod_screws", "hq_lens", "hq_lens_screws",
               "cm_pcb", "cm_module", "pi5", "pi_spacers")
-    # Wherever the lens's thumbscrews end up pointing: focusing turns the aperture ring with it.
-    sweep = hq_place(p)(screw_sweep_local(p.lens_spec, -p.hq_cs_seat))
+    # Wherever the lens's thumbscrews end up pointing (focusing turns the aperture ring with it), and
+    # wherever along the lens they really sit: the aperture screw isn't where lenses.py has it.
+    sweep = hq_place(p)(screw_sweep_local(p.lens_spec, -p.hq_cs_seat, anywhere=True))
     res: dict = {"overlap_mm3": {}, "gap_mm": {}, "view": {}, "extent_mm": {}}
     for opening, tag in ((0.0, "closed"), (100.0, "fully open")):
         g = reference.gripper(opening)
@@ -833,7 +843,7 @@ def run_checks(p: Params, parts: dict[str, cq.Workplane]) -> dict:
         res["gap_mm"][f"mount to fingers ({tag})"] = min(
             gap(parts[n], g["fingers"]) for n in ("bracket", "pod", "carrier", "hq_lens", "hq_lens_screws",
                                                   "hq_mount", "cm_module"))
-        res["overlap_mm3"][f"HQ lens thumbscrews, at any angle, vs gripper fingers ({tag})"] = overlap(
+        res["overlap_mm3"][f"HQ lens thumbscrews, anywhere along the lens at any angle, vs gripper fingers ({tag})"] = overlap(
             sweep, g["fingers"])
         wedges = place_tag_wedges(p, opening)
         res["gap_mm"][f"finger tag wedges to the mount ({tag})"] = min(
@@ -842,8 +852,8 @@ def run_checks(p: Params, parts: dict[str, cq.Workplane]) -> dict:
     for name in solids:
         res["overlap_mm3"][f"{name} vs gripper body"] = overlap(parts[name], g["body"])
     for name in ("bracket", "pod", "cm_pcb", "cm_module"):
-        res["overlap_mm3"][f"HQ lens thumbscrews, at any angle, vs {name}"] = overlap(sweep, parts[name])
-    res["overlap_mm3"]["HQ lens thumbscrews, at any angle, vs gripper body"] = overlap(sweep, g["body"])
+        res["overlap_mm3"][f"HQ lens thumbscrews, anywhere along the lens at any angle, vs {name}"] = overlap(sweep, parts[name])
+    res["overlap_mm3"]["HQ lens thumbscrews, anywhere along the lens at any angle, vs gripper body"] = overlap(sweep, g["body"])
     pairs = [("bracket", "pod"), ("bracket", "carrier"), ("pod", "carrier"),
              ("bracket", "hq_pcb"), ("bracket", "hq_mount"), ("bracket", "hq_lens"),
              ("bracket", "hq_lens_screws"), ("pod", "hq_lens_screws"), ("bracket", "cm_pcb"),
@@ -862,8 +872,8 @@ def run_checks(p: Params, parts: dict[str, cq.Workplane]) -> dict:
     res["gap_mm"]["HQ housing and tripod mount to the bracket"] = gap(parts["hq_mount"], parts["bracket"])
     res["gap_mm"]["HQ lens to the bracket"] = gap(parts["hq_lens"], parts["bracket"])
     res["gap_mm"]["HQ lens to the finger plate"] = gap(parts["hq_lens"], g["body"])
-    res["gap_mm"]["HQ lens thumbscrews, at any angle, to the bracket"] = gap(sweep, parts["bracket"])
-    res["gap_mm"]["HQ lens thumbscrews, at any angle, to the finger plate"] = gap(sweep, g["body"])
+    res["gap_mm"]["HQ lens thumbscrews, anywhere along the lens at any angle, to the bracket"] = gap(sweep, parts["bracket"])
+    res["gap_mm"]["HQ lens thumbscrews, anywhere along the lens at any angle, to the finger plate"] = gap(sweep, g["body"])
     # What the HQ Camera sees.
     hf, vf = hq_fov(p)
     axes = optical_axes(p)

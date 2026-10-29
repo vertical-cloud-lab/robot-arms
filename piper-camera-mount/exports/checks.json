@@ -12,7 +12,7 @@
     "cm_module vs gripper fingers (closed)": 0.0,
     "pi5 vs gripper fingers (closed)": 0.0,
     "pi_spacers vs gripper fingers (closed)": 0.0,
-    "HQ lens thumbscrews, at any angle, vs gripper fingers (closed)": 0.0,
+    "HQ lens thumbscrews, anywhere along the lens at any angle, vs gripper fingers (closed)": 0.0,
     "bracket vs gripper fingers (fully open)": 0.0,
     "pod vs gripper fingers (fully open)": 0.0,
     "carrier vs gripper fingers (fully open)": 0.0,
@@ -25,7 +25,7 @@
     "cm_module vs gripper fingers (fully open)": 0.0,
     "pi5 vs gripper fingers (fully open)": 0.0,
     "pi_spacers vs gripper fingers (fully open)": 0.0,
-    "HQ lens thumbscrews, at any angle, vs gripper fingers (fully open)": 0.0,
+    "HQ lens thumbscrews, anywhere along the lens at any angle, vs gripper fingers (fully open)": 0.0,
     "bracket vs gripper body": 0.0,
     "pod vs gripper body": 0.0,
     "carrier vs gripper body": 0.0,
@@ -38,11 +38,11 @@
     "cm_module vs gripper body": 0.0,
     "pi5 vs gripper body": 0.0,
     "pi_spacers vs gripper body": 0.0,
-    "HQ lens thumbscrews, at any angle, vs bracket": 0.0,
-    "HQ lens thumbscrews, at any angle, vs pod": 0.0,
-    "HQ lens thumbscrews, at any angle, vs cm_pcb": 0.0,
-    "HQ lens thumbscrews, at any angle, vs cm_module": 0.0,
-    "HQ lens thumbscrews, at any angle, vs gripper body": 0.0,
+    "HQ lens thumbscrews, anywhere along the lens at any angle, vs bracket": 0.0,
+    "HQ lens thumbscrews, anywhere along the lens at any angle, vs pod": 0.0,
+    "HQ lens thumbscrews, anywhere along the lens at any angle, vs cm_pcb": 0.0,
+    "HQ lens thumbscrews, anywhere along the lens at any angle, vs cm_module": 0.0,
+    "HQ lens thumbscrews, anywhere along the lens at any angle, vs gripper body": 0.0,
     "bracket vs pod": 0.0,
     "bracket vs carrier": 0.0,
     "pod vs carrier": 0.0,
@@ -79,10 +79,10 @@
     "HQ housing and tripod mount to the pod": 0.4999999999999773,
     "HQ tripod mount screws to the pod": 0.9986786120333019,
     "HQ housing and tripod mount to the bracket": 1.4999999999999734,
-    "HQ lens to the bracket": 1.499999999999977,
+    "HQ lens to the bracket": 2.0614745177175506,
     "HQ lens to the finger plate": 4.449533705398304,
-    "HQ lens thumbscrews, at any angle, to the bracket": 1.4999999999999944,
-    "HQ lens thumbscrews, at any angle, to the finger plate": 14.161211213477218
+    "HQ lens thumbscrews, anywhere along the lens at any angle, to the bracket": 1.0070970930121255,
+    "HQ lens thumbscrews, anywhere along the lens at any angle, to the finger plate": 3.0612112134772174
   },
   "view": {
     "HQ field of view (deg, across x up the image)": [
@@ -171,7 +171,7 @@
     ]
   },
   "printed_volume_cm3": {
-    "bracket": 51.74,
+    "bracket": 50.13,
     "pod": 17.7,
     "carrier": 52.57,
     "spacers": 0.44,

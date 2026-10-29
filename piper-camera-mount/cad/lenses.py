@@ -54,7 +54,9 @@ LENSES = {
     # Front to back: a short front barrel and lip, the outer grip, the aperture ring (OPEN/CLOSE,
     # with its thumbscrew), the focus ring (NEAR/FAR, with its thumbscrew), then 4 mm of thread.
     # Focusing turns the outer two rings together (4-5 turns, by Raspberry Pi's guide), so the
-    # aperture thumbscrew can end up pointing anywhere round the lens.
+    # aperture thumbscrew can end up pointing anywhere round the lens. On the real lens that screw
+    # sits further forward than 17.4: on 2026-10-28 it caught the cradle's O33 front, which began
+    # 20.4 mm out, so the cradle now allows for the screws the whole length of the lens.
     "6mm": Lens(
         key="6mm", name="6 mm wide-angle (CS mount)", f=6.0, mount="CS", od=30.0, length=34.0, thread=4.0,
         mass_g=53.0, fov_hq_deg=(55.0, 45.0, 71.0), f_numbers=(1.2, 16.0), mod_m=0.2, rated_mp=3.0,
@@ -101,14 +103,18 @@ def lens_screws_local(lens: Lens, seat_z: float, angles: tuple) -> cq.Workplane:
 def lens_keepout_local(lens: Lens, seat_z: float, c: float) -> cq.Workplane:
     """What the printed parts must stay out of, grown by c: the lens, plus the circle each
     thumbscrew can sweep (it can point anywhere), all the way back to the camera, since the pod
-    goes onto its seat along the lens axis with the lens fitted."""
-    k = _cyl(lens.od + 2 * c, seat_z - lens.front_s - c, seat_z)
-    s_max = max(s for s, _ in lens.screws) + lens.screw_d / 2 + c
-    return k.union(_cyl(2 * (lens.screw_tip_r + c), seat_z - s_max, 0.0))
+    goes onto its seat along the lens axis with the lens fitted. The circle runs the whole length
+    of the lens, because where the screws sit along it is only estimated: on the first fit
+    (2026-10-28) the real 6 mm lens's aperture screw caught the cradle where it stopped allowing
+    for the screws, just past where `screws` puts it."""
+    return _cyl(max(lens.od, 2 * lens.screw_tip_r) + 2 * c, seat_z - lens.front_s - c, 0.0)
 
 
-def screw_sweep_local(lens: Lens, seat_z: float) -> cq.Workplane:
-    """Every place a thumbscrew can be once the lens is screwed in: one band per screw."""
+def screw_sweep_local(lens: Lens, seat_z: float, anywhere: bool = False) -> cq.Workplane:
+    """Every place a thumbscrew can be once the lens is screwed in: one band per screw, or with
+    `anywhere`, one band the length of the lens, wherever along it the screws really sit."""
+    if anywhere:
+        return _cyl(2 * lens.screw_tip_r, seat_z - lens.front_s, seat_z)
     out = None
     for s, _ in lens.screws:
         band = _cyl(2 * lens.screw_tip_r, seat_z - s - lens.screw_d / 2, seat_z - s + lens.screw_d / 2)
