@@ -30,7 +30,7 @@
   "rule": "CLAUDE.md's plate rule of 2026-10-23 (90 s wait since #51): frame first, the run reads the plate, at least 90 s for objections, a fresh frame before Send",
   "first_frame": "20261029T194010Z_a1mini_camera_studio.jpg (posted 19:40:37 UTC): the #52 bracket still on the plate, so no send",
   "empty_plate_frame": "20261029T211242Z_a1mini_camera_studio.jpg (posted 21:13:17 UTC): the bracket taken off at about 21:12; plate empty apart from its texture and pale printed outline. The room above the plate is blurred in the committed copy because a person was at the counter behind the printer",
-  "watching": "a Device-page frame every 2-4 min from 19:49 to 22:00, compared with the first and the empty-plate frames; people worked beside the printer from about 21:29, and the plate stayed empty in every frame",
+  "watching": "a Device-page frame every 2-4 min from 19:49 to 22:05, compared with the first and the empty-plate frames; people worked beside the printer from about 21:29 (at 22:04 someone was reaching in by the red box), and the plate itself stayed empty in every frame",
   "hms": "no alerts at 19:41 UTC"
  },
  "timeline_utc": {
@@ -46,7 +46,10 @@
   "empty_plate_frame": "2026-10-29T21:12:42Z (posted 21:13:17)",
   "hold": "2026-10-29T21:27:03Z (jss265: wait for the next PR #44 run, print its files)",
   "pr44_round4_run_started": "2026-10-29T21:25:48Z (run 40957680511)",
-  "pr44_round4_progress_at_cutoff": "21:57:54Z: step 2 of 7 (slider bar to mid-knob, with relief notches in the sleeve cradles)"
+  "pr44_round4_progress_at_cutoff": "21:57:54Z: step 2 of 7 (slider bar to mid-knob, with relief notches in the sleeve cradles)",
+  "last_thread_check": "2026-10-29T22:11:42Z (no new comments after 21:27)",
+  "signed_out": "2026-10-29T22:12:01Z; Studio then closed and its config (~/.config/BambuStudio, which holds the printers' LAN access codes) and /tmp/bamboo_model deleted"
  },
- "recording": "the runner's screen was recorded (ffmpeg x11grab, 5 min segments) but not published: it shows the account e-mail during login, and print runs have no YouTube token. Deleted with the runner"
+ "recording": "the runner's screen was recorded (ffmpeg x11grab, 5 min segments) but not published: it shows the account e-mail during login and people in the lab, and print runs have no YouTube token. Deleted at 22:12 UTC",
+ "after": "Thumbelina idle and untouched by this run, plate empty; nothing sent"
 }
