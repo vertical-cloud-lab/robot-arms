@@ -124,7 +124,32 @@ each screw once round the lens and cuts both brackets through it
   Camera's tripod mount: see [The HQ Camera in the pod](#the-hq-camera-in-the-pod).)
 - **This GIF has the screws where `lenses.py` puts them,** and the aperture screw turned out to be
   further forward. The O43 cradle in it is the one printed on 2026-10-13, which the screw still
-  caught. The next section bores it out.
+  caught. [Boring the cradle out to O43](#boring-the-cradle-out-to-o43-2026-10-29), below, fixes that.
+
+**How much stiffer, simulated.** [`sim/joint_fea.py`](sim/joint_fea.py) meshes bracket and pod
+as one bonded body (quadratic tets, gmsh + scikit-fem), fixes the collar bore and the pad round the
+tab screws, and loads the HQ bosses with the camera and lens (83 g) at 1 g, one direction at a time
+([`sim/joint_fea.json`](sim/joint_fea.json)):
+
+| 83 g at 1 g along | HQ moves, old → new (µm) | optical axis tilts, old → new (arcmin) | picture shifts, old → new (px) |
+|---|---|---|---|
+| Y (gripper pointing down) | 12.1 → 1.22 | 1.77 → 0.20 | 2.0 → 0.23 |
+| Z (finger travel) | 4.2 → 1.21 | 0.16 → 0.003 | 0.18 → 0.003 |
+| X | 0.64 → 0.51 | 0.018 → 0.030 | 0.02 → 0.03 |
+
+- The worst case, along Y, is **about 9 times stiffer in tilt and 10 times in displacement**. The
+  first natural frequency goes from about 110 Hz to 320 Hz (a Rayleigh-Ritz upper bound).
+- Widening the lens cradle for the 6 mm lens's thumbscrews (901 mm² of seat instead of 987) cost
+  about a fifth of that. Before it, the worst case was 11 and 13 times stiffer, at 360 Hz. Either way
+  the picture moves less than a quarter of a pixel at 1 g.
+- **These flatter the old joint.** Bonding says the joint never slips or opens, and solid PLA at
+  2.4 GPa is stiffer than a 25 % infill print. The old joint's real weakness was the strip itself: a
+  pod pivoting on an edge 5 mm from its two screws, where any creep in the plastic lets it rock.
+  Read the table as a comparison, not as the printed part's numbers.
+- **Also left out:** the camera and lens's centre of mass sits about 2 cm in front of the bosses, and
+  the load is applied at the bosses, so tilt under sideways loads is understated for both designs.
+
+![Old vs new under 1 g along Y](renders/joint_fea.png)
 
 ### Boring the cradle out to O43 (2026-10-29)
 
@@ -155,36 +180,11 @@ haven't changed.
   front, so that plastic can't touch them. The pad's face stays at 1170 mm².
 - **Reprint the bracket.** Alone, on the A1 mini in PLA with the same settings, it is
   **1 h 18 min and 35.3 g** ([Printing](#printing)).
-- **Not redone for it:** the stress and stiffness analyses below, the assembly GIF and renders,
-  the fastener check, the tight-spaces envelope and `cradle_fit.gif`. The same goes for the 16 mm
-  lens comparison, whose bracket is cut the same way, and the OT-2 zoom's, which now cuts less than
-  its 1099 mm³ into the bracket. Taking plastic off the bracket can't create an overlap, so their
-  fit results stand.
-
-**How much stiffer, simulated.** [`sim/joint_fea.py`](sim/joint_fea.py) meshes bracket and pod
-as one bonded body (quadratic tets, gmsh + scikit-fem), fixes the collar bore and the pad round the
-tab screws, and loads the HQ bosses with the camera and lens (83 g) at 1 g, one direction at a time
-([`sim/joint_fea.json`](sim/joint_fea.json)):
-
-| 83 g at 1 g along | HQ moves, old → new (µm) | optical axis tilts, old → new (arcmin) | picture shifts, old → new (px) |
-|---|---|---|---|
-| Y (gripper pointing down) | 12.1 → 1.22 | 1.77 → 0.20 | 2.0 → 0.23 |
-| Z (finger travel) | 4.2 → 1.21 | 0.16 → 0.003 | 0.18 → 0.003 |
-| X | 0.64 → 0.51 | 0.018 → 0.030 | 0.02 → 0.03 |
-
-- The worst case, along Y, is **about 9 times stiffer in tilt and 10 times in displacement**. The
-  first natural frequency goes from about 110 Hz to 320 Hz (a Rayleigh-Ritz upper bound).
-- Widening the lens cradle for the 6 mm lens's thumbscrews (901 mm² of seat instead of 987) cost
-  about a fifth of that. Before it, the worst case was 11 and 13 times stiffer, at 360 Hz. Either way
-  the picture moves less than a quarter of a pixel at 1 g.
-- **These flatter the old joint.** Bonding says the joint never slips or opens, and solid PLA at
-  2.4 GPa is stiffer than a 25 % infill print. The old joint's real weakness was the strip itself: a
-  pod pivoting on an edge 5 mm from its two screws, where any creep in the plastic lets it rock.
-  Read the table as a comparison, not as the printed part's numbers.
-- **Also left out:** the camera and lens's centre of mass sits about 2 cm in front of the bosses, and
-  the load is applied at the bosses, so tilt under sideways loads is understated for both designs.
-
-![Old vs new under 1 g along Y](renders/joint_fea.png)
+- **Not redone for it:** the stiffness and stress analyses (the joint FEA above, CalculiX and the
+  sliced FEA further down), the assembly GIF and renders, the fastener check, the tight-spaces
+  envelope and `cradle_fit.gif`. The same goes for the 16 mm lens comparison, whose bracket is cut
+  the same way, and the OT-2 zoom's, which now cuts less than its 1099 mm³ into the bracket. Taking
+  plastic off the bracket can't create an overlap, so their fit results stand.
 
 ## The HQ Camera in the pod
 
