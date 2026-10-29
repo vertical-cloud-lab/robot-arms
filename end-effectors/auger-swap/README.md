@@ -9,13 +9,14 @@ it back through the collar and presses it into the doser. The auger is held by
 |---|---|---|---|
 | **Strategy 1**: custom tool, two servos | hook + thin finger on a lift carriage | the tool: its legs push on the doser while the carriage lifts | **high** |
 | **Strategy 2**: custom tool, one servo | same; a wheel's crank pin lifts and a face cam closes the hook | the tool, the same way | medium |
-| **Alternative A**: stock gripper + two-shell sleeves + tilt-lock pin | printed cradles that wrap 180° of the tube on each finger | the arm; a pin on the board stops the mounting plate tipping | **high** |
-| **Alternative A, custom fingers**: minimal fingers on the gripper's own carriages + tilt-lock pin | the same cradle, built into the finger | the arm, with the same pin | **high** |
+| **Alternative A**: stock gripper + two-shell sleeves + tilt-lock slider | printed cradles that wrap 180° of the tube on each finger | the arm; a slider on the board stops the mounting plate tipping | **high** |
+| **Alternative A, custom fingers**: minimal fingers on the gripper's own carriages + tilt-lock slider | the same cradle, built into the finger | the arm, with the same slider | **high** |
 | **Alternative B**: stock gripper + the same sleeves | the same sleeves | the arm; the doser's tilt servos hold the plate | high (sleeves), medium (sequence) |
 
-The finger fixture, sleeves, custom fingers, pin and Strategy 1 tool are high fidelity (round 2, [PR #44](https://github.com/vertical-cloud-lab/robot-arms/pull/44)):
+The finger fixture, sleeves, custom fingers, tilt-lock slider and Strategy 1 tool are high fidelity (rounds 2 and 3, [PR #44](https://github.com/vertical-cloud-lab/robot-arms/pull/44)):
 real fasteners, fits and print orientations, and built against the real parts (AgileX's own gripper STEP, the doser's STEP files).
-Strategy 2 is unchanged from round 1.
+Round 3 made the fixture low and lean and replaced the steel pin with a printed slider that latches itself out (see below).
+Strategy 2 is unchanged from round 1, except that it now lowers its carriage at the fixture as Strategy 1 does.
 
 ## The PiPER gripper's finger interface
 
@@ -39,24 +40,47 @@ the hole pattern on the lab's unit before printing, as [#4](https://github.com/v
 
 ![fixture with the collar and auger](renders/view_fixture.png)
 
-The collar (17 mm long, with the solenoid on top, so top-heavy toward +X) sits in a nest between **two thin forks**:
+| | Round 2 | Round 3 |
+|---|---|---|
+| Height | 89 mm | **47 mm** |
+| Footprint | 80 × 49 mm | **40.5 × 31 mm** (1224 mm² on the board, against 3920) |
+| Printed volume (solid) | 155 cm³ | **24.8 cm³** |
+| Auger axis above the board | 75 mm | **35 mm** |
+| Screws | 4 × M4 countersunk wood screws in a flange | 2 × M4 countersunk wood screws, under where the collar sits |
 
-- **Gear-side fork F2, 8 mm.** It fits the **15.9 mm gap between the collar and the 44T gear** with 1 mm to the collar and 6.9 mm to the gear,
-  so the new auger can be pushed in until the collar is in its place on the tube. It strips the collar when the old auger is pulled out,
-  and has a 2 mm × 45° lead-in on its outer face for the new auger's tip.
-- **Outlet-side fork F1, 6 mm**, 1 mm from the collar's other face. With F2 it stops the collar tipping about the tube's cross axis.
-- **U-slots 25.5 mm wide** in both forks, open at the top with a 6 mm lead-in: the Ø25 tube passes through, the collar (R16.75 and up) can't.
-  The slot floors hold the tube 0.25 mm low, the same as the collar's bore when the collar rests in the nest, so the tube goes straight into the bore.
-- **The nest is the collar's own underside.** Its profile is the lowest point of the collar and solenoid at every x (from their STEP files),
-  offset 0.25 mm and open upward. The collar drops in and lifts out vertically, but can't roll, and a post under the solenoid platform takes its weight.
-- Base 80 × 49 mm with 4 × M4 countersunk wood screws. It prints base-down with no supports; 155 cm³ solid, so print it at 15–20 % infill.
+**Why it can be this low.** The 75 mm axis was only there for Strategy 1's leg B. With the carriage up, the leg hangs
+57 mm below the tube. Strategy 1 now lowers its carriage over the fixture before the tube goes in (and raises it again after the strip),
+so the leg ends 29.25 mm below the tube. Strategy 2 does the same with its wheel at 200°, where the cam still holds the hook shut,
+leaving its leg 30.4 mm below the tube. At a 35 mm axis, `fit_check.py` gives these clearances to the board, with 0 interferences with the fixture:
 
-The auger axis sits 75 mm above the board, as before, so Strategy 1's legs clear the board at the fixture.
+| Holding the tube in the fixture | Lowest point above the board |
+|---|---|
+| Strategy 1 (carriage down), in the fixture and after the 80 mm strip | 5.75 mm (leg B) |
+| Strategy 2 (round-1 frame, wheel at 200°) | 4.57 mm (leg B) |
+| Sleeves or custom fingers (jaws 17.1 mm below the tube) | 17.9 mm |
+
+The collar's ring hangs 16.75 mm below the tube and the 44T gear 23 mm, so the axis can't go much lower anyway.
+
+![fixture alone](renders/view_fixture_alone.png)
+
+- **Forks F1 (outlet side) and F2 (gear side), both 6 mm**, 1 mm from each face of the collar. F2 now leaves 8.9 mm to the 44T gear.
+  The tines are 7.5 mm wide beside **25.5 mm U-slots**: the Ø25 tube passes through, the collar (R16.75 and up) can't.
+  The slot floors hold the tube 0.25 mm low, the same as the collar's bore, so the tube goes straight in. The tops have a 3.5 mm lead-in, and both forks keep
+  the 2 mm conical lead-in on their +Y face for the new auger's tip.
+- **The nest is two 4.5 mm ledges**, one on each fork's inner face, under the collar's two ends. Their tops are the collar's own underside
+  (ring, the lug at +X and the tab at −X), from its STEP, offset 0.25 mm. That outline is the same at every y along the collar,
+  so two short ledges hold it as well as round 2's solid block did. The collar can't roll, because its +X lug sits on the ledge, and it lifts straight out.
+  `fit_check.py` measures 0.25 mm to the collar and to the tube, and 0 interferences.
+- **A 4 mm plate between the ledges** ties the forks together. The two screws go through it, 22 mm apart, where nothing covers them except the collar
+  during a swap.
+- **Strength.** If a jammed collar took the arm's full 40 N against F2, the fork's root would see 1.8 MPa and the tines about 5 MPa,
+  across the layers. PETG's interlayer strength is about 20 MPa. A free collar strips at a few newtons.
+- **Printing:** base-down, no supports. 15–20 % infill is plenty.
 
 ## Alternative A, two ways
 
 Both grip the tube 180° on each side, so the pull-out bears on the cradle walls. Neither depends on friction. The arm still supplies the
-12–40 N pull, which is Alternative A's weakness (see Answers below). They grip the tilt-lock pin's grab bar the same way.
+12–40 N pull, which is Alternative A's weakness (see Answers below). They grip the tilt-lock slider's Ø25 knob the same way.
 
 | | Two-shell sleeves on the stock fingers | Custom fingers |
 |---|---|---|
@@ -97,17 +121,47 @@ re-seat) is exact. The Strategy 1 GIF is exact on every frame.
 - Prints on its side face with no supports; the half-bore is a horizontal arch.
 - Make the gripper's lower limit 22 mm (two fingers meet below that) and use 24 mm to hold the tube.
 
-### Tilt-lock pin
+### Tilt-lock slider
 
-- A **Ø8 h6 steel shaft, 96 mm long**, slides in a Ø8.2 bore in a printed housing on the board. The housing has 2 × M4 countersunk wood screws.
-- Pushed in, its chamfered tip lies 0.5 mm above the mounting-plate floor's +X edge, over 16 mm of it, so the plate can't tip up while the arm pulls.
-  The pin carries up to ≈0.8 × the pull (10–33 N), because it sits further from the hinge than the clips.
-- An **M6 ball spring plunger** in the housing's top drops into two grooves on the shaft, at locked and free, so the pin stays where the arm leaves it.
-- The **handle** clamps on the shaft with an M3 × 16 pinch screw and nut. A post carries a **Ø25 × 34 mm grab bar** 75 mm above the board,
-  along the tube direction. The sleeves and custom fingers grip it in their cradles exactly as they grip the tube, and push or pull it along the finger travel.
-- Checked against the mounting plate, baseplate and +X servo and pinion with the pin in and out: no interference.
+![tilt-lock slider, pushed in](renders/view_pin.png)
+![latch, pulled out (section)](renders/view_pin_latch.png)
 
-![tilt-lock pin](renders/view_pin.png)
+Two PETG prints and two wood screws. They replace round 2's Ø8 steel pin, its housing, the M6 ball plunger and the clamp-on handle with its M3 pinch screw.
+
+| | Round 2 (pin) | Round 3 (slider) |
+|---|---|---|
+| Printed volume (solid) | housing 25.5 + handle 24.9 = 50.4 cm³ | guide 7.7 + slider 13.5 = **21.2 cm³** |
+| On the board | 36 × 48 mm flange | **380 mm²**: a 6 mm web, 31 mm long, with two screw tabs |
+| Bought parts | Ø8 h6 × 96 shaft, M6 ball plunger, M3 × 16 + nut, 2 × M4 screws | **2 × M4 countersunk wood screws** |
+| Holds itself out | ball detent (both ends) | **compliant latch** (out only) |
+| Knob | Ø25 bar 75 mm up, on a post *under* it | Ø25 cup 47 mm up, held from its end |
+
+- **Slider.** It is an 8 × 10 mm bar. Pushed in, its tip lies 0.5 mm over the mounting-plate floor's +X edge (x = 34) and overlaps it by 16 mm,
+  so the plate can't tip up while the arm pulls. Pulled out, the tip is 6 mm clear of the floor (6.3 mm measured).
+  The 22 mm stroke and positions are round 2's. The tip has a 30° chamfer underneath, in case the plate sits a little high.
+- **Knob: the same Ø25 as the auger tube**, so the sleeves and custom fingers wrap it exactly as they wrap the tube. It is a 3 mm-wall cup,
+  36 mm long, sticking out along +Y from a post on the bar's end. The cradles close on its free 26 mm, 2 mm past the post.
+  - **Round 2's grab bar had its post under the bar's middle**, inside the closed cradles: 286 mm³ of overlap per finger, in both positions.
+    The cradles can't close on a bar that has anything under it, so the knob is now held from its end.
+  - **Checked:** with the sleeves or custom fingers closed on the knob, in and out, `fit_check.py` gives 0 interferences with the slider, guide, doser and board.
+    The cradles are 0.10 mm from the knob and the jaws 29.9 mm above the board.
+  - **Height.** The knob is at 47 mm so that the custom-finger gripper's finger plate (19.5 mm above the knob) clears the rear clip's lips (z 59.7) by 6.8 mm.
+- **Guide.** A tunnel 0.25 mm a side over the bar, with a 3 mm roof, 3 mm walls and a 6 mm I-web underneath. Two tabs at the −X end take
+  2 × M4 countersunk wood screws, at that end because the floor's push lifts it. It prints base-down; the tunnel roof is an 8.5 mm bridge.
+- **Latch (holds the slider out against vibration).**
+  - **The spring.** A 20 × 8 × 2 mm cantilever is cut into the top of the bar by a 1.5 mm slot. Its root is toward the knob, and its free end carries a 1.3 mm bump.
+  - **Pulled out, it locks.** The bump springs up into a window in the guide's roof. Its −X face is a 40° ramp. Its +X face is undercut 15°, against a matching wall,
+    so pulling harder hooks it in deeper. It is also the out stop.
+  - **Pushing in (−X)** slides the ramp under the roof edge: the beam bends 1.05 mm, with 4.2 N on the bump and 0.8 % strain (PETG yields at about 4 %).
+    It takes **≈6.4 N** (μ 0.3), and the gripper pushes it through the knob. Shaking can't produce that: the whole slider is about 17 g.
+  - **Pushed in,** the bump rides under the roof with ≈1.3 N of friction. Nothing latches it there, as asked.
+    The beam stays bent only for the length of a swap.
+  - **The slot is also a stop.** Pressing the bump by hand bottoms the beam at 1.1 % strain. That is how to release it and take the slider out: press the bump through the window and pull.
+- **Strength.** If the floor pushes up with the full 33 N, the bar sees 3 MPa at the guide's mouth and 6.7 MPa at the slot, which is 8 × 6.5 mm.
+  Both are along the print layers, where PETG is good for about 45 MPa. The roof carries the ≈46 N reaction at about 5 MPa.
+- **Printing:** the slider lies on its −Y face (`cad/stl/pin_slider.stl` is already turned), so the bar, latch beam and post are in the layer plane
+  and the knob prints as an upright cup. The guide prints base-down. No supports.
+- In the Alt A STEP files the slider is pushed in, with its latch beam drawn bent 1.05 mm under the roof.
 
 ## Strategy 1, high fidelity: two-servo tool with a Pi 5 and two cameras
 
@@ -177,8 +231,9 @@ Dropping the HQ Camera and lens (keeping the CM3 Wide) saves 95 g.
 
 ## Files
 
-- `geometry.py`: round-1 CadQuery parts in the doser's layout frame: funnel clip, rack, bin, Strategy 2 tool, old sleeves and pin.
-- `hifi.py`: the high-fidelity parts: finger fixture, two-shell sleeves, custom finger, tilt-lock pin, and their fasteners.
+- `geometry.py`: round-1 CadQuery parts in the doser's layout frame: funnel clip, rack, bin, Strategy 2 tool, old sleeves and pin; also the layout numbers (fixture axis height, slider positions).
+- `hifi.py`: the high-fidelity parts: finger fixture, two-shell sleeves, custom finger, tilt-lock slider and guide (and `latch_numbers()`), and their fasteners.
+- `fit_check.py`: interference and clearance checks for the fixture (with the collar and every tool) and the slider (with the doser and both grippers on its knob), about 8 min.
 - `agilex.py`: fetches AgileX's gripper STEP and holds what was measured from it (carriage, pivot, frames).
 - `s1_tool.py`: the high-fidelity Strategy 1 tool (see above).
 - `scene.py`: fetches the doser STEP files and `layout.py` from
@@ -191,7 +246,7 @@ Dropping the HQ Camera and lens (keeping the CM3 Wide) saves 95 g.
   Run `xvfb-run -a python animate.py s1 alt_a alt_a_cf alt_b`.
 - `clip_force.py`: a rough curved-beam estimate of the clips' snap force.
 - `export_step.py`, `onshape_upload.py`, `cad/`, `onshape/`: STEP exports and the Onshape document (see `onshape/onshape_document.json`).
-  `cad/stl/` has the printable parts: the fixture, sleeve shells, custom finger, pin housing and handle (print `_x2` files twice).
+  `cad/stl/` has the printable parts, each in its print orientation: the fixture, sleeve shells, custom finger, slider and guide (print `_x2` files twice).
   `cad/doser_compliant_clips.step` (29 MB) and the AgileX reference copies are regenerated by `export_step.py` and are not committed.
 
 ## Assumptions
@@ -237,7 +292,7 @@ it in mesh. The funnel lowers the push-in force and makes placement forgiving, b
 |---|---|---|---|
 | **Strategy 1**: two servos | 3 | 1 (tie) | **1** |
 | **Strategy 2**: one servo, wheel | 4 | 1 (tie) | 2 |
-| **Alternative A**: custom fingers or sleeves, + pin | 2 | 3 (tie) | 3 |
+| **Alternative A**: custom fingers or sleeves, + slider | 2 | 3 (tie) | 3 |
 | **Alternative B**: sleeves, doser servos hold | 1 | 3 (tie) | 4 |
 
 1. **Strategy 1.** The legs push on the NEMA 11 plate and the floor while the carriage lifts, so the
@@ -252,7 +307,7 @@ it in mesh. The funnel lowers the push-in force and makes placement forgiving, b
    cycling the whole stroke, and it is harder to design and tune. Getting 360° of wheel from a 180° servo
    needs a 2:1 step-up, so the servo needs ≈0.8 N·m at the peak, which is more than an MG996R's margin.
    The bigger servo cancels the weight saving. Build it after Strategy 1 has proven the geometry.
-3. **Alternative A.** It is the least new hardware, and the pin keeps the doser safe. The 180° cradles
+3. **Alternative A.** It is the least new hardware, and the tilt-lock slider keeps the doser safe. The 180° cradles
    make the grip itself positive. But the arm still has to pull 12–40 N on top of a 0.5 kg gripper, 2–4×
    its rating. It only works if the clips measure under ≈5 N each, which fights the ≈10 N gear-mesh force,
    and it needs two extra moves per swap. Of its two versions, the custom fingers are the better one: the

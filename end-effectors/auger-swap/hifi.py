@@ -380,9 +380,9 @@ BAR_L = 61.0                      # tip to the far end of the post
 POST_U = (53.0, 61.0)             # post (bar -> knob), from the tip
 KNOB_U = sum(POST_U) / 2          # knob axis, from the tip
 BAR_Z = 47.0                      # Ø25 knob axis (W z): the custom fingers' finger plate clears the rear clip
-KNOB_Y = (-BAR_W / 2, 26.0)       # knob along +Y from the slider's -Y face (y from PIN_Y)
+KNOB_Y = (-BAR_W / 2, 32.0)       # knob along +Y from the slider's -Y face (y from PIN_Y)
 KNOB_WALL, KNOB_END = 3.0, 3.0    # cup: 3 mm wall, closed at the post end, open at the free end
-KNOB_FREE_Y = BAR_W / 2 + 2.0     # cradles go on the knob from here (2 mm past the post)
+KNOB_FREE_Y = BAR_W / 2 + 2.0     # cradles go on the knob from here (2 mm past the post): 26 mm free
 # latch: a beam cut into the bar's top, root toward the post, a bump on its free end
 LATCH_U = 21.5                    # bump's -X base, from the tip
 LATCH_L, LATCH_T, LATCH_SLOT = 20.0, 2.0, 1.5
@@ -405,10 +405,19 @@ def _bump_pts():
     return [(u0, z0), (u0 + run, z0 + h), (top1, z0 + h), (top1 - h * math.tan(math.radians(BUMP_HOOK)), z0)]
 
 
-def pin_slider() -> cq.Workplane:
+def knob_grip_y(sleeves: bool) -> float:
+    """Gripper centre (W y) on the knob: the lower finger is the upper one turned 180 deg, so
+    the pair reaches the same distance either way; both start 0.5 mm past KNOB_FREE_Y."""
+    xs = SL_X if sleeves else CF_X
+    return PIN_Y + KNOB_FREE_Y + 0.5 + max(A.AX_X - xs[0], xs[1] - A.AX_X)
+
+
+def pin_slider(deflect: float = 0.0) -> cq.Workplane:
     """One PETG print, laid on its -Y face (the bar, beam and post are in the layer plane,
     so the latch beam flexes along its layers and the knob prints as an upright cup).
-    Frame: tip at x = 0, y = 0 on the slider's centre plane (W y = PIN_Y), z = W z."""
+    Frame: tip at x = 0, y = 0 on the slider's centre plane (W y = PIN_Y), z = W z.
+    deflect > 0 draws the latch beam pressed down that far at the bump, as it is under the
+    guide's roof with the slider pushed in (turned about its root, which is close enough)."""
     hw = BAR_W / 2
     z0, z1 = BAR_Z0, BAR_Z1
     zk = BAR_Z - G.TUBE_R
@@ -424,6 +433,12 @@ def pin_slider() -> cq.Workplane:
     body = body.cut(slot).cut(root)
     bump = cq.Workplane("XZ").polyline(_bump_pts()).close().extrude(hw, both=True)
     body = body.union(bump)
+    if deflect:
+        zone = cq.Workplane("XY").box(ur - ub, BAR_W + 2, z1 + BUMP_H + 1 - zs1, centered=(False, True, False)).translate((ub, 0, zs1))
+        beam = body.intersect(zone)
+        top_u = _bump_pts()[2][0]                  # the bump top's far corner must drop by `deflect`
+        ang = math.degrees(math.atan2(deflect + 0.05, ur - top_u))
+        body = body.cut(zone).union(beam.rotate((ur, 0, (zs1 + z1) / 2), (ur, 1, (zs1 + z1) / 2), -ang))
     # knob: Ø25 cup along +Y on the post, the auger tube's size
     ku = KNOB_U
     knob = cq.Workplane("XZ").center(ku, BAR_Z).circle(G.TUBE_R).extrude(-(KNOB_Y[1] - KNOB_Y[0])).translate((0, KNOB_Y[0], 0))

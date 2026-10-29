@@ -7,9 +7,10 @@
   fixture, the auger rack (three fresh augers) and the disposal bin.
 * ``s1_two_servo_tool.step``, ``s2_one_servo_wheel_tool.step``: the custom tools seated on
   the doser, carriage down and hook closed around the tube (the moment before lift-out).
-* ``alt_a_sleeves_pin.step``, ``alt_b_sleeves.step``: a simplified stock PiPER gripper
-  (block body, finger blocks from the URDF's sizes) with the slip-on sleeves closed on the
-  tube behind the rear clip; A adds the tilt-lock pin, pushed in.
+* ``alt_a_sleeves_pin.step``, ``alt_a_custom_fingers_pin.step``, ``alt_b_sleeves.step``: the
+  two-shell sleeves or the custom fingers closed on the tube behind the rear clip (AgileX's
+  gripper itself goes to a separate reference STEP); the Alt A files add the tilt-lock
+  slider, pushed in, and its guide.
 """
 from __future__ import annotations
 
@@ -241,10 +242,9 @@ def gripper_world(axis_base_z: float, at=(0.0, None, None)) -> np.ndarray:
 
 
 def _pin(a: cq.Assembly) -> None:
-    a.add(solid(H.pin_housing_hifi()), name="Tilt-lock pin housing (printed)", color=cq.Color(*RED))
-    P = T((H.PIN_X_IN, H.PIN_Y, H.PIN_Z))
-    a.add(solid(H.pin_rod()), name="Tilt-lock pin, Ø8 h6 steel x 96 (pushed in)", loc=loc(P), color=cq.Color(*STEEL))
-    a.add(solid(H.pin_handle()), name="Pin handle + Ø25 grab bar (printed)", loc=loc(P), color=cq.Color(0.85, 0.30, 0.25))
+    a.add(solid(H.pin_guide()), name="Tilt-lock slider guide (printed)", color=cq.Color(*RED))
+    a.add(solid(H.pin_slider(deflect=H.latch_numbers()["deflection"])), name="Tilt-lock slider, Ø25 knob + latch (printed, pushed in)",
+          loc=loc(T((H.PIN_X_IN, H.PIN_Y, 0.0))), color=cq.Color(0.98, 0.45, 0.35))
 
 
 def hifi_stock(kind: str) -> Path:
@@ -306,8 +306,8 @@ PRINTED = {   # STL name -> builder (each in its own print-friendly frame as bui
     "sleeve_main_shell_x2": lambda: H.sleeve_main_shell(),
     "sleeve_fixing_shell_x2": lambda: H.sleeve_fixing_shell(),
     "custom_finger_x2": lambda: H.custom_finger(),
-    "pin_housing": lambda: H.pin_housing_hifi(),
-    "pin_handle": lambda: H.pin_handle(),
+    "pin_guide": lambda: H.pin_guide(),
+    "pin_slider": lambda: H.pin_slider().rotate((0, 0, 0), (1, 0, 0), 90).translate((0, 0, H.BAR_W / 2)),   # on its -Y face
 }
 
 
