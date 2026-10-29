@@ -165,7 +165,36 @@ def pin():
            OUT / "view_pin_latch.png", labels=["pulled out: the latch holds it (section)", "bump in the roof window"])
 
 
+def knob():
+    """Both cradle versions closed on the slider's knob (pushed in), looking along the knob:
+    the relief notches in the jaws straddle the post."""
+    from export_step import gripper_world
+    red, dred = (0.85, 0.22, 0.20), (0.98, 0.45, 0.35)
+    base = [(H.pin_guide(), red, 1.0), (H.pin_slider().translate((H.PIN_X_IN, H.PIN_Y, 0)), dred, 1.0)]
+    at = (H.PIN_X_IN + H.KNOB_U, H.knob_grip_y(), H.BAR_Z)
+    tiles = []
+    for sleeves in (False, True):
+        zb = H.sleeve_axis_base_z() if sleeves else H.custom_axis_base_z()
+        D = H.sleeve_opening() if sleeves else H.custom_opening()
+        B = gripper_world(zb, at) @ AGX.step_to_base()
+        dz = AGX.finger_shift(D)
+        poses = (B @ S.T((0, 0, dz)), B @ AGX.lower_of() @ S.T((0, 0, dz)))
+        parts = [(H.sleeve_main_shell(), BLUE), (H.sleeve_fixing_shell(), GREEN)] if sleeves else [(H.custom_finger(), ORANGE)]
+        if sleeves:
+            sol = AGX.solids()
+            parts += [(cq.Workplane().add(sol[i]), FIN) for i in (6, 7)]
+        items = list(base)
+        for part, col in parts:
+            for M in poses:
+                items.append((cq.Workplane().add(part.val().moved(loc(M))), col, 1.0))
+        tiles.append(items)
+    c = np.array([at[0], at[1], 33.0])
+    cam = [(tuple(c + (25, -150, -15)), tuple(c), (0, 0, 1))]
+    render(tiles[0], cam, OUT / "view_knob_custom.png", size=(560, 520), labels=["custom fingers: notches round the post"])
+    render(tiles[1], cam, OUT / "view_knob_sleeves.png", size=(560, 520), labels=["sleeves: notches round the post"])
+
+
 if __name__ == "__main__":
-    which = sys.argv[1:] or ["fixture", "sleeves", "custom_fingers", "pin"]
+    which = sys.argv[1:] or ["fixture", "sleeves", "custom_fingers", "pin", "knob"]
     for w in which:
         globals()[w]()

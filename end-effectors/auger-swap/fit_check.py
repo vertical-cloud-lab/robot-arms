@@ -3,12 +3,14 @@
     python fit_check.py          # about 3 min; prints interference volumes and gaps
 
 * the fixture against the tap collar, solenoid and auger lying in it, and the gear's gap;
+  the side webs' gap to the collar and solenoid;
 * each tool holding the tube in the fixture (Strategy 1 with its carriage down, Strategy 2's
   round-1 frame at wheel 200 deg, the sleeves, the custom fingers): the lowest point above
   the board, and any overlap with the fixture;
 * the slider, in and out, against the doser (plate, clips, baseplate) and the guide;
 * the gripper on the knob, in and out, with the sleeves or the custom fingers, against the
-  slider, the guide, the doser and the board.
+  slider (the cradles' relief notches straddle its post), the guide, the doser with its auger,
+  44T gear and stepper in place, and the board.
 
 The latch's bump overlaps the guide's roof by its 1.05 mm deflection when the slider is in;
 that is the beam bending, so it is reported but expected.
@@ -32,7 +34,7 @@ from s1_tool import _common_volume, _min_dist, posed_parts, solid_of  # noqa: E4
 
 FIX = S.T((G.FIX_X, 0.0, G.FIX_AXIS_Z - G.AXIS_Z))      # an auger lying in the fixture
 BOARD = cq.Solid.makeBox(900, 900, 20, pnt=cq.Vector(-400, -100, -20))
-KNOB_GRIP_Y = {"sleeves": H.knob_grip_y(True), "custom": H.knob_grip_y(False)}   # gripper centre on the knob
+KNOB_GRIP_Y = H.knob_grip_y()      # gripper centre on the knob: on the post
 
 
 def doser(names, M=np.eye(4)):
@@ -99,6 +101,9 @@ def main():
     print("[fixture] collar, solenoid, auger lying in it:", hits(fixture, lying, "fixture"), "interference(s)")
     for n, s in lying:
         print(f"    gap to {n}: {_min_dist(fixture[0][1], s):.2f} mm")
+    webs = solid_of(H.fixture_side_webs())
+    print("    side webs: gap to the collar {:.2f} mm, to the solenoid {:.2f} mm, to the auger {:.2f} mm".format(
+        *(_min_dist(webs, s) for n, s in lying[:3])))
 
     # Strategy 1 holding the tube in the fixture, carriage down (s = STROKE), hook closed
     for dy, tag in ((0.0, "in the fixture"), (80.0, "after the strip")):
@@ -122,20 +127,29 @@ def main():
     # slider in / out
     guide = [("guide", solid_of(H.pin_guide()))]
     plate = doser(["Mounting plate", "Baseplate", "Servo pinion (+X)", "Servo MG996R (+X)"]) + clips()
+    seated = doser(["Auger", "Auger cap", "Stepper (NEMA 11)", "Stepper pinion"])   # in place while the slider moves
+    top = max(s.BoundingBox().zmax for n, s in seated if n == "Auger")              # the 44T gear's top
     slider = solid_of(H.pin_slider())
+    post = solid_of(H.pin_slider().intersect(cq.Workplane("XY").box(20, 20, H.BAR_Z - G.TUBE_R - 0.5 - H.BAR_Z1, centered=(True, True, False))
+                                             .translate((H.KNOB_U, 0, H.BAR_Z1))))
     print("[guide] against the doser:", hits(guide, plate, "guide"), "interference(s)")
     for x, tag in ((H.PIN_X_IN, "in"), (H.PIN_X_OUT, "out (latched)")):
         sl = [("slider", slider.moved(loc(S.T((x, H.PIN_Y, 0.0)))))]
         print(f"[slider {tag}] doser:", hits(sl, plate, "slider"), "| guide:", hits(sl, guide, "slider"), "interference(s)")
         d = _min_dist(sl[0][1], plate[0][1])
         print(f"    gap to the mounting plate {d:.2f} mm")
+        ps = post.moved(loc(S.T((x, H.PIN_Y, 0.0))))
         for kind in ("sleeves", "custom"):
-            at = (x + H.KNOB_U, KNOB_GRIP_Y[kind], H.BAR_Z)
+            at = (x + H.KNOB_U, KNOB_GRIP_Y, H.BAR_Z)
             g = gripper(kind, at)
-            n = hits(g, sl + guide + plate + [("board", BOARD)], f"{kind} on the knob")
-            dk = min(_min_dist(p, sl[0][1]) for nm, p in g if "shell" in nm or "custom" in nm)
+            n = hits(g, sl + guide + plate + seated + [("board", BOARD)], f"{kind} on the knob")
+            cr = [p for nm, p in g if "shell" in nm or "custom" in nm]
+            dk = min(_min_dist(p, sl[0][1]) for p in cr)
+            dp = min(_min_dist(p, ps) for p in cr)
+            hb = min(p.BoundingBox().zmin for nm, p in g if "body" in nm) - top
             print(f"    {kind} on the knob (gripper y {at[1]:.1f}): {n} interference(s); "
-                  f"lowest point z = {lowest(g):.2f}; cradles to the slider {dk:.2f} mm")
+                  f"lowest point z = {lowest(g):.2f}; cradles to the slider {dk:.2f} mm, notches to the post {dp:.2f} mm; "
+                  f"gripper body {hb:.2f} mm over the 44T gear's top")
     print("latch:", {k: round(v, 4) for k, v in H.latch_numbers().items()})
 
 

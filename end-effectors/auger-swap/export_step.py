@@ -307,7 +307,7 @@ PRINTED = {   # STL name -> builder (each in its own print-friendly frame as bui
     "sleeve_fixing_shell_x2": lambda: H.sleeve_fixing_shell(),
     "custom_finger_x2": lambda: H.custom_finger(),
     "pin_guide": lambda: H.pin_guide(),
-    "pin_slider": lambda: H.pin_slider().rotate((0, 0, 0), (1, 0, 0), 90).translate((0, 0, H.BAR_W / 2)),   # on its -Y face
+    "pin_slider": lambda: H.pin_slider().rotate((0, 0, 0), (1, 0, 0), 90).translate((0, 0, H.KNOB_LEN / 2)),   # knob end down, bar on supports
 }
 
 

@@ -225,7 +225,7 @@ def build(kind: str) -> Seq:
         # lock the plate first: grip the slider's Ø25 knob like a tube and push it in over the floor edge
         kz = q.tool_z_for_axis(H.BAR_Z)
         kx = H.PIN_X_OUT + H.KNOB_U
-        ky = H.knob_grip_y(kind == "alt_a")
+        ky = H.knob_grip_y()
         q.step("Open over the tilt-lock slider's knob (same Ø25 as the tube)", 12, pos=np.array([kx, ky, kz + 40]))
         q.step("Lower round the knob", 10, pos=np.array([kx, ky, kz]))
         q.step(f"Close: the {what}' cradles wrap the knob", 6, grip=GC)
@@ -358,7 +358,7 @@ def build(kind: str) -> Seq:
         if pin:
             kz = q.tool_z_for_axis(H.BAR_Z)
             kx = H.PIN_X_IN + H.KNOB_U
-            ky = H.knob_grip_y(kind == "alt_a")
+            ky = H.knob_grip_y()
             q.step("Back to the slider: over the knob", 12, pos=np.array([kx, ky, kz + 40]))
             q.step("Back to the slider: over the knob", 8, pos=np.array([kx, ky, kz]))
             q.step("Back to the slider: grip the knob", 6, grip=GC)

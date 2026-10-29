@@ -15,7 +15,8 @@
   carriage (4 x M2 x 8) and takes the linkage arm's M3 shoulder screw (heat-set insert).
 * ``pin_*``: the tilt-lock slider for Alternative A: a printed bar in a printed guide, with
   a Ø25 knob the cradles grip like the auger tube and a compliant latch (a cantilever in the
-  bar) that clicks into a window in the guide's roof and holds the slider out.
+  bar) that clicks into a window in the guide's roof and holds the slider out. The bar's post
+  meets the knob at its middle; ``post_relief`` notches both cradle versions' jaws for it.
 
 Sleeves and fingers are built in the STEP frame of agilex.py, for the +Z ("upper")
 finger; agilex.lower_of() turns them into the other finger's. Fixture and pin are in the
@@ -124,7 +125,8 @@ def sleeve_screws() -> list[tuple[float, float, float]]:
 def sleeve_main_shell() -> cq.Workplane:
     """Blue: the cradle side. Its inner face is the pad's own surface (the R51.5 bend and the
     5.1 deg ramp), so it can't slide toward the tip, and a lip over the fingertip stops it
-    sliding the other way. Prints on its outer face's flat (the 5 mm web) with the cradle up."""
+    sliding the other way. The jaw has the slider-post relief notch in its middle. Prints on
+    its outer face's flat (the 5 mm web) with the cradle up."""
     yc, zc, zt = SL_YC, SL_ZC, SL_TIP_Z
     prof = [(SL_TOP_Y, SPLIT_Z), (SL_TOP_Y, SL_OUT_Z + 1.0), (SL_TOP_Y - 1.0, SL_OUT_Z),
             (-51.4, SL_OUT_Z), (-53.9, zt), (yc - CRADLE_R - 3.5, zt), (yc - CRADLE_R - 4.5, zt + 1.0),
@@ -133,6 +135,7 @@ def sleeve_main_shell() -> cq.Workplane:
     blue = _yz(prof, *SL_X)
     blue = blue.edges("|X").fillet(0.8) if False else blue
     blue = blue.cut(_cradle_cut(yc, zc, CRADLE_R, zt, *SL_X))
+    blue = blue.cut(post_relief(yc, zc, yc - CRADLE_R - 4.5))
     blue = blue.cut(cq.Workplane().add(_finger_clear(FIT, [(0, 0, -1), (1, 0, 0), (-1, 0, 0), (0, -1, 0)])))
     for x, y, z in sleeve_screws():
         blue = blue.cut(cs_hole(SPLIT_Z - z + 1).translate((x, y, z)))
@@ -202,8 +205,9 @@ def cf_zc() -> float:
 def custom_finger() -> cq.Workplane:
     """Minimal finger on the stock MGN7C carriage and linkage arm. Upper finger, as modelled
     (carriage centre z = 45.11). The cradle wraps 180 deg of the tube, so the pull-out force
-    bears on the cradle wall instead of relying on grip friction. Prints on its side (the
-    face at x = CF_X[0]) with no supports: the cradle is a horizontal arch of R12.6."""
+    bears on the cradle wall instead of relying on grip friction; the jaw has the slider-post
+    relief notch in its middle. Prints on its side (the face at x = CF_X[0]) with no supports:
+    the cradle is a horizontal arch of R12.6."""
     zc = cf_zc()
     zt = zc + 1.0
     z_top = A.CARR_Z[1] + 1.25                     # as the stock finger
@@ -215,6 +219,7 @@ def custom_finger() -> cq.Workplane:
     body = _yz(prof, *CF_X)
     body = body.edges("|Y").fillet(1.5)
     body = body.cut(_cradle_cut(CF_YC, zc, CRADLE_R, zt, *CF_X))
+    body = body.cut(post_relief(CF_YC, zc, yj))
     # 1 mm locating slot over the carriage's sides, as in the stock finger
     body = body.cut(cq.Workplane("XY").box(A.SLOT_X[1] - A.SLOT_X[0], 1.0 + 0.01, 80, centered=False)
                     .translate((A.SLOT_X[0], A.CARR_FACE_Y, z_top - 79)))
@@ -258,12 +263,15 @@ SLOT_W = 25.5                               # Ø25 tube passes, the collar (R16.
 TINE = 7.5                                  # fork material either side of the slot
 FIX_HALF_W = SLOT_W / 2 + TINE              # forks are x = FIX_X -/+ 20.25
 FORK_TOP = FIX_Z + 12.0                     # covers the collar's ring face up to where the slot clears it
-MOUTH = (3.5, 5.0)                          # lead-in: the slot opens 3.5 mm a side over the top 5 mm
+MOUTH = 5.0                                 # 45 deg lead-in: the slot opens 5 mm a side over the top 5 mm
+TINE_CHAMFER = 1.0                          # outer top corners of the tines (1.5 mm flat left on each tine)
+COLLAR_LEAD = 2.0                           # 45 deg chamfer on each fork's top edges on the collar side
 LEDGE = 4.5                                 # nest ledge on each fork's inner face, under the collar's ends
 NEST_WALL_TOP = FIX_Z - 5.0                 # ledge top beside the ring (where the collar's own outline is higher)
 NEST_CLEAR = 0.25
 BASE_T = 4.0                                # plate between the ledges, 2 x M4 countersunk wood screws
 FIX_SCREW_X = 11.0
+SIDE_WEB_T, SIDE_WEB_TOP = 2.4, 20.0        # thin webs in the two side windows, between the ledges
 
 
 def _collar_envelope(step: float = 0.5):
@@ -308,21 +316,44 @@ def fixture_nest_cavity() -> cq.Workplane:
     return cq.Workplane("XZ").polyline(pts).close().extrude(-(y1 - y0)).translate((0, y0, 0))
 
 
-def _fork(y0: float, t: float, lead_side: int) -> cq.Workplane:
-    """Fork plate y0..y0+t standing on the board: a U-slot the tube drops into, a 3.5 mm
+def _fork_top(drop: float = 0.0) -> list[tuple[float, float]]:
+    """The fork's top outline (x, z) from just outside one side to just outside the other:
+    tine corners, tine tops, the 45 deg mouth, straight across the slot; `drop` lowers it."""
+    w, half, m, k = FIX_HALF_W, SLOT_W / 2, MOUTH, TINE_CHAMFER
+    pts = [(-w - 1.0, FORK_TOP - k), (-w, FORK_TOP - k), (-w + k, FORK_TOP), (-half - m, FORK_TOP), (-half, FORK_TOP - m)]
+    pts += [(-x, z) for x, z in reversed(pts)]
+    return [(FIX_X + x, z - drop) for x, z in pts]
+
+
+def _collar_lead(y_face: float, into: int) -> cq.Workplane:
+    """45 deg chamfer along the fork's top outline on its collar-side face (y_face; the fork's
+    material is toward `into` = +1/-1 in y): a collar lowered up to 1 + COLLAR_LEAD mm off in y
+    rides it into the gap between the forks instead of landing on the fork."""
+    c, roof = COLLAR_LEAD, FORK_TOP + 5.0
+    wires = []
+    for y, drop in ((y_face - 0.01 * into, c), (y_face + c * into, 0.0)):
+        top = _fork_top(drop)
+        pts = top + [(top[-1][0], roof), (top[0][0], roof)]
+        wires.append(cq.Wire.makePolygon([cq.Vector(x, y, z) for x, z in pts], close=True))
+    return cq.Workplane().add(cq.Solid.makeLoft(wires, True))
+
+
+def _fork(y0: float, t: float, lead_side: int, collar_side: int) -> cq.Workplane:
+    """Fork plate y0..y0+t standing on the board: a U-slot the tube drops into, a 45 deg
     lead-in at the top and a tine either side. lead_side +1/-1 puts a 2 mm conical lead-in
-    on the +Y/-Y face of the slot for the new auger's tip."""
-    w, half = FIX_HALF_W, SLOT_W / 2
-    mx, mz = MOUTH
-    pts = [(FIX_X - w, 0.0), (FIX_X + w, 0.0), (FIX_X + w, FORK_TOP - 1.5), (FIX_X + w - 1.5, FORK_TOP),
-           (FIX_X - w + 1.5, FORK_TOP), (FIX_X - w, FORK_TOP - 1.5)]
+    on the +Y/-Y face of the slot for the new auger's tip; collar_side +1/-1 says which face
+    the collar sits against (it gets the 45 deg COLLAR_LEAD along its top)."""
+    w, half, m, k = FIX_HALF_W, SLOT_W / 2, MOUTH, TINE_CHAMFER
+    pts = [(FIX_X - w, 0.0), (FIX_X + w, 0.0), (FIX_X + w, FORK_TOP - k), (FIX_X + w - k, FORK_TOP),
+           (FIX_X - w + k, FORK_TOP), (FIX_X - w, FORK_TOP - k)]
     f = cq.Workplane("XZ").polyline(pts).close().extrude(-t).translate((0, y0, 0))
     slot = (cq.Workplane("XZ").center(FIX_X, FIX_Z).circle(half).extrude(-t - 2).translate((0, y0 - 1, 0))
             .union(cq.Workplane("XY").box(SLOT_W, t + 2, 40, centered=(True, False, False)).translate((FIX_X, y0 - 1, FIX_Z))))
-    mouth = cq.Workplane("XZ").polyline([(FIX_X - half, FORK_TOP - mz), (FIX_X - half - mx, FORK_TOP + 0.01),
-                                         (FIX_X + half + mx, FORK_TOP + 0.01), (FIX_X + half, FORK_TOP - mz)]) \
+    mouth = cq.Workplane("XZ").polyline([(FIX_X - half, FORK_TOP - m), (FIX_X - half - m - 0.01, FORK_TOP + 0.01),
+                                         (FIX_X + half + m + 0.01, FORK_TOP + 0.01), (FIX_X + half, FORK_TOP - m)]) \
         .close().extrude(-t - 2).translate((0, y0 - 1, 0))
     f = f.cut(slot).cut(mouth)
+    f = f.cut(_collar_lead(y0 + t if collar_side > 0 else y0, -collar_side))
     if lead_side:
         yf = y0 + t if lead_side > 0 else y0
         cone = cq.Solid.makeCone(half + 2.0, half, 2.0, pnt=cq.Vector(FIX_X, yf + (0.01 if lead_side > 0 else -0.01), FIX_Z),
@@ -340,21 +371,42 @@ def fixture_ys():
     return y_f1, y_f1 + F1_T, y_f2, y_f2 + F2_T
 
 
+def fixture_side_webs() -> cq.Workplane:
+    """The thin webs in the two side windows, between the ledges: flush with the fixture's
+    sides, from the board to SIDE_WEB_TOP (well under the collar's lug and tab), with 45 deg
+    on the inner top edge. They tie the two ledges, and so F1 and F2, together; the screws
+    between them stay reachable from above."""
+    _, y1i, y2i, _ = fixture_ys()
+    w, t, k = FIX_HALF_W, SIDE_WEB_T, 1.2
+    out = None
+    for sx in (-1, 1):
+        xo = FIX_X + sx * w
+        prof = [(xo, 0.0), (xo, SIDE_WEB_TOP), (xo - sx * (t - k), SIDE_WEB_TOP), (xo - sx * t, SIDE_WEB_TOP - k),
+                (xo - sx * t, 0.0)]
+        web = cq.Workplane("XZ").polyline(prof).close().extrude(-(y2i - y1i - 2 * LEDGE + 0.02)) \
+            .translate((0, y1i + LEDGE - 0.01, 0))
+        out = web if out is None else out.union(web)
+    return out
+
+
 def finger_fixture_hifi() -> cq.Workplane:
     """Two 6 mm forks, a 4.5 mm ledge on each fork's inner face that is the collar's own
-    underside (so the collar can't roll and its bore sits on the slots' axis), and a 4 mm
-    plate between the ledges with the two M4 screws, under where the collar sits. The old
-    auger drops in with the collar between the forks; pulling it toward the cap strips the
-    collar against F2. The new auger goes in outlet first through F2's lead-in, the collar
-    and F1, and lifts out with the collar on it. Prints base-down with no supports."""
+    underside (so the collar can't roll and its bore sits on the slots' axis), a 4 mm plate
+    between the ledges with the two M4 screws, under where the collar sits, and a thin web in
+    each side window that ties the two ledges (so the two forks) together. The old auger drops
+    in with the collar between the forks (45 deg lead-ins on the slots and on the forks' tops
+    take up arm error); pulling it toward the cap strips the collar against F2. The new auger
+    goes in outlet first through F2's lead-in, the collar and F1, and lifts out with the collar
+    on it. Prints base-down with no supports."""
     y1o, y1i, y2i, y2o = fixture_ys()
     w = FIX_HALF_W
-    body = _fork(y1o, F1_T, +1).union(_fork(y2i, F2_T, +1))
+    body = _fork(y1o, F1_T, +1, +1).union(_fork(y2i, F2_T, +1, -1))
     cav = fixture_nest_cavity()
     for ya, yb in ((y1i - 0.01, y1i + LEDGE), (y2i - LEDGE, y2i + 0.01)):
         ledge = (cq.Workplane("XY").box(2 * w, yb - ya, NEST_WALL_TOP, centered=False)
                  .translate((FIX_X - w, ya, 0.0)).cut(cav))
         body = body.union(ledge)
+    body = body.union(fixture_side_webs().cut(cav))
     plate = cq.Workplane("XY").box(2 * w, y2i - y1i - 2 * LEDGE + 0.02, BASE_T, centered=False) \
         .translate((FIX_X - w, y1i + LEDGE - 0.01, 0.0))
     for sx in (-1, 1):
@@ -373,18 +425,21 @@ def finger_fixture_hifi() -> cq.Workplane:
 # up while the arm pulls; pulled out, a compliant latch in the slider clicks into a window
 # in the guide's roof and holds it there against the doser's vibration. The gripper moves it
 # by a Ø25 knob, the auger tube's size, that its cradles wrap exactly as they wrap the tube.
+# The bar's post meets the knob at its middle (a T), so the gripper's push and pull act on
+# the bar's own centre plane; each cradle's jaw has a relief notch that straddles the post.
 PIN_Y = G.PIN_Y                   # slider centre plane (W y), over the rear of the floor
 PIN_X_OUT, PIN_X_IN = G.PIN_X_OUT, G.PIN_X_IN   # tip out (latched) / in (16 mm over the floor)
 STROKE_PIN = PIN_X_OUT - PIN_X_IN               # 22
 BAR_W, BAR_Z0 = 8.0, G.FLOOR_Z + 0.5            # bar 8 wide, its underside 0.5 mm over the floor top
 BAR_Z1 = BAR_Z0 + 10.0
-BAR_L = 61.0                      # tip to the far end of the post
-POST_U = (53.0, 61.0)             # post (bar -> knob), from the tip
-KNOB_U = sum(POST_U) / 2          # knob axis, from the tip
-BAR_Z = 47.0                      # Ø25 knob axis (W z): the custom fingers' finger plate clears the rear clip
-KNOB_Y = (-BAR_W / 2, 32.0)       # knob along +Y from the slider's -Y face (y from PIN_Y)
-KNOB_WALL, KNOB_END = 3.0, 3.0    # cup: 3 mm wall, closed at the post end, open at the free end
-KNOB_FREE_Y = BAR_W / 2 + 2.0     # cradles go on the knob from here (2 mm past the post): 26 mm free
+KNOB_U = 57.0                     # knob axis, from the tip
+POST_T, POST_W = 6.0, 6.0         # post (bar -> knob): along the bar, across it
+POST_U = (KNOB_U - POST_T / 2, KNOB_U + POST_T / 2)
+BAR_L = POST_U[1]                 # tip to the far end of the post
+BAR_Z = 50.0                      # Ø25 knob axis (W z): the custom fingers' finger plate clears the 44T gear by 3.2 mm
+KNOB_LEN, KNOB_WALL = 40.0, 3.0   # Ø25 tube centred on the bar, 3 mm wall
+KNOB_HUB = 8.0                    # solid section in the middle of the knob, where the post goes in
+RELIEF = (POST_W / 2 + 2.0, POST_T / 2 + 1.5)   # cradle notch: half-width along the tube, reach from the tube's centre plane
 # latch: a beam cut into the bar's top, root toward the post, a bump on its free end
 LATCH_U = 21.5                    # bump's -X base, from the tip
 LATCH_L, LATCH_T, LATCH_SLOT = 20.0, 2.0, 1.5
@@ -407,25 +462,37 @@ def _bump_pts():
     return [(u0, z0), (u0 + run, z0 + h), (top1, z0 + h), (top1 - h * math.tan(math.radians(BUMP_HOOK)), z0)]
 
 
-def knob_grip_y(sleeves: bool) -> float:
-    """Gripper centre (W y) on the knob: the lower finger is the upper one turned 180 deg, so
-    the pair reaches the same distance either way; both start 0.5 mm past KNOB_FREE_Y."""
-    xs = SL_X if sleeves else CF_X
-    return PIN_Y + KNOB_FREE_Y + 0.5 + max(A.AX_X - xs[0], xs[1] - A.AX_X)
+def knob_grip_y() -> float:
+    """Gripper centre (W y) on the knob: on the post, which is on the J6 axis's plane, so
+    both fingers' relief notches (the lower finger is the upper one turned 180 deg about that
+    axis) straddle it."""
+    return PIN_Y
+
+
+def post_relief(yc: float, zc: float, y_tip: float) -> cq.Workplane:
+    """Notch in a cradle's jaw for the slider's post, in the finger's STEP frame (cradle axis
+    along X at (yc, zc), jaw toward -Y down to y_tip, the tooth/jaw face at zc + 1). It is
+    centred on the J6 axis, so it lines up on both fingers, and it takes the jaw back to
+    RELIEF[1] from the tube's centre plane: the cradle still wraps 155 deg there (171 elsewhere)."""
+    hw, reach = RELIEF
+    return (cq.Workplane("XY").box(2 * hw, yc - 2.0 - (y_tip - 1.0), reach - 0.99, centered=False)
+            .translate((A.AX_X - hw, y_tip - 1.0, zc + 0.99)))
 
 
 def pin_slider(deflect: float = 0.0) -> cq.Workplane:
     """One PETG print, laid on its -Y face (the bar, beam and post are in the layer plane,
-    so the latch beam flexes along its layers and the knob prints as an upright cup).
+    so the latch beam flexes along its layers and the knob prints as an upright tube). The
+    bar sits at the knob's mid-length, 16 mm off the bed, so it prints on supports.
     Frame: tip at x = 0, y = 0 on the slider's centre plane (W y = PIN_Y), z = W z.
     deflect > 0 draws the latch beam pressed down that far at the bump, as it is under the
     guide's roof with the slider pushed in (turned about its root, which is close enough)."""
     hw = BAR_W / 2
     z0, z1 = BAR_Z0, BAR_Z1
     zk = BAR_Z - G.TUBE_R
-    prof = [(0.0, z0 + 1.5), (2.6, z0), (POST_U[1], z0), (POST_U[1], zk + 3.0), (POST_U[0], zk + 3.0),
-            (POST_U[0], z1), (1.0, z1), (0.0, z1 - 1.0)]
+    prof = [(0.0, z0 + 1.5), (2.6, z0), (BAR_L, z0), (BAR_L, z1), (1.0, z1), (0.0, z1 - 1.0)]
     body = cq.Workplane("XZ").polyline(prof).close().extrude(hw, both=True)
+    post = cq.Workplane("XY").box(POST_T, POST_W, zk + 3.0 - z1 + 0.01, centered=(True, True, False)).translate((KNOB_U, 0, z1 - 0.01))
+    body = body.union(post.edges("|Z").fillet(1.0))
     # latch beam: slot under the bar's top, slit at the bump end, rounded root
     ub, ur = LATCH_U, LATCH_U + LATCH_L
     zs0, zs1 = z1 - LATCH_T - LATCH_SLOT, z1 - LATCH_T
@@ -441,13 +508,14 @@ def pin_slider(deflect: float = 0.0) -> cq.Workplane:
         top_u = _bump_pts()[2][0]                  # the bump top's far corner must drop by `deflect`
         ang = math.degrees(math.atan2(deflect + 0.05, ur - top_u))
         body = body.cut(zone).union(beam.rotate((ur, 0, (zs1 + z1) / 2), (ur, 1, (zs1 + z1) / 2), -ang))
-    # knob: Ø25 cup along +Y on the post, the auger tube's size
-    ku = KNOB_U
-    knob = cq.Workplane("XZ").center(ku, BAR_Z).circle(G.TUBE_R).extrude(-(KNOB_Y[1] - KNOB_Y[0])).translate((0, KNOB_Y[0], 0))
-    knob = knob.faces(">Y").edges().chamfer(1.0)
-    cup = (cq.Workplane("XZ").center(ku, BAR_Z).circle(G.TUBE_R - KNOB_WALL)
-           .extrude(-(KNOB_Y[1] - KNOB_Y[0] - KNOB_END) - 1).translate((0, KNOB_Y[0] + KNOB_END, 0)))
-    return body.union(knob.cut(cup))
+    # knob: Ø25 tube along Y, the auger tube's size, centred on the post; open ends, solid hub
+    ku, h, hub = KNOB_U, KNOB_LEN / 2, KNOB_HUB / 2
+    knob = cq.Workplane("XZ").center(ku, BAR_Z).circle(G.TUBE_R).extrude(h, both=True)
+    knob = knob.faces(">Y").edges().chamfer(1.0).faces("<Y").edges().chamfer(1.0)
+    for s in (-1, 1):
+        bore = cq.Workplane("XZ").center(ku, BAR_Z).circle(G.TUBE_R - KNOB_WALL).extrude(-s * (h + 1 - hub))
+        knob = knob.cut(bore.translate((0, s * hub, 0)))
+    return body.union(knob)
 
 
 def pin_guide() -> cq.Workplane:
