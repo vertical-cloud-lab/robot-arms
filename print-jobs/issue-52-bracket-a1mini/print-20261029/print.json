@@ -1,6 +1,6 @@
 {
  "what": "PR #10's wrist-camera bracket alone, with the lens cradle bored out to O43 the whole length of the lens (1b7acd5), on one A1 mini plate",
- "result": "printing (in progress; updated as the run goes)",
+ "result": "finished: Studio's job panel showed 100 %, layer 213/213 and 'Finished' at 2026-10-29T04:21:50Z (75 min after Send; estimate 1h 16m 42s). No HMS alert before Send or after the finish, no error dialog and no stall in between. The final frame shows the bracket complete on the plate",
  "printer": {
   "model": "Bambu Lab A1 mini",
   "name_in_studio": "Thumbelina, the A1 Mini",
@@ -58,7 +58,7 @@
   "frame_shown": "20261029T030025Z_a1mini_camera_studio.jpg (posted in the thread comment at 03:01:56 UTC)",
   "read": "bright (mean luma 118/255), lab lights on; gantry parked high; plate empty apart from its texture and the plate's own pale printed logo outline; the red printed box just past the plate's far side, as during the 28 Oct prints; no person in frame",
   "hour": "posted at about 21:00 in Provo, outside the runbook's working hours; the comment said so and asked for a reply if the print should wait until morning. None came",
-  "wait_ended": "03:06:45 UTC, 289 s after posting, with no comments in the thread (polled every 15 s)",
+  "wait_ended": "03:06:45 UTC, 289 s after posting, with no comments in the thread (polled every 15 s from 03:02 to 04:22; none came during the print either)",
   "pre_send_frame": "20261029T030645Z_a1mini_camera_studio.jpg: the same empty plate (mean absolute difference on the plate 2.9/255)",
   "replies": []
  },
@@ -70,8 +70,18 @@
   "sliced": "2026-10-29T03:03Z (CLI), 03:04Z (GUI)",
   "pre_send_frame": "2026-10-29T03:06:45Z",
   "send": "2026-10-29T03:07:13Z",
-  "heatbed_preheating": "2026-10-29T03:07:53Z, then filament change to A3"
+  "heatbed_preheating": "2026-10-29T03:07:53Z, then filament change to A3, bed levelling and flow calibration",
+  "printing_layer_1": "2026-10-29T03:14:05Z",
+  "layer_69": "2026-10-29T03:35:19Z (37 %)",
+  "layer_129": "2026-10-29T03:55:14Z (64 %)",
+  "layer_213": "2026-10-29T04:21:06Z",
+  "finished": "2026-10-29T04:21:50Z (100 %, 'Finished'; heaters off)",
+  "final_frame": "2026-10-29T04:22:34Z",
+  "hms_checked_after": "2026-10-29T04:23Z: no alerts",
+  "signed_out": "2026-10-29T04:23:40Z; Studio then closed and its config (~/.config/BambuStudio, which holds the printers' LAN access codes) and /tmp/bamboo_model deleted"
  },
- "watching": "runbook's watch_studio.py (WATCH_LAYOUT=a1mini BED_TARGET=65) on Studio's Device page from 03:08 UTC: OCR every 10 s, a camera frame every 2 min (frames/)",
- "recording": "the runner's screen was recorded but not published: it shows the account e-mail during login, and print runs have no YouTube token. It is deleted with the runner"
+ "watching": "runbook's watch_studio.py (WATCH_LAYOUT=a1mini BED_TARGET=65) on Studio's Device page from 03:08:22 to 04:22:23 UTC: 405 samples, OCR every 10 s, a camera frame every 2 min (frames/ keeps a selection; watch.jsonl.gz is the OCR log). No new window or dialog, no stall. Highest nozzle reading while printing 221 C. It exited 20 at 04:22:23 on 'nozL=[641, 0]', an OCR misread of the cooling nozzle after the finish (the screen showed 156/0 C at 04:22:34); the 'bed target 165' notes are the known misread of '65'. Checked by eye at each frame posted in the thread",
+ "recording": "the runner's screen was recorded (ffmpeg x11grab, 5 min segments) from before Studio opened to the sign-out, but not published: it shows the account e-mail during login and the account name at sign-out, and print runs have no YouTube token. Deleted at 04:24 UTC",
+ "thread_comment": "https://github.com/vertical-cloud-lab/robot-arms/issues/52#issuecomment-6486591949",
+ "after": "the bracket is on the plate for someone to take off; Thumbelina idle, heaters off"
 }
