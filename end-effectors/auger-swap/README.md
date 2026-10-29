@@ -73,7 +73,7 @@ The collar's ring hangs 16.75 mm below the tube and the 44T gear 23 mm, so the a
   `fit_check.py` measures 0.25 mm to the collar and to the tube, and 0 interferences.
 - **A 4 mm plate between the ledges** ties the forks together. The two screws go through it, 22 mm apart, where nothing covers them except the collar
   during a swap.
-- **Strength.** If a jammed collar took the arm's full 40 N against F2, the fork's root would see 1.8 MPa and the tines about 5 MPa,
+- **Strength.** If a jammed collar took the arm's full 40 N against F2, the forks' root (fork plus ledge, 10.5 mm) would see about 2 MPa and the tines about 5 MPa,
   across the layers. PETG's interlayer strength is about 20 MPa. A free collar strips at a few newtons.
 - **Printing:** base-down, no supports. 15–20 % infill is plenty.
 
