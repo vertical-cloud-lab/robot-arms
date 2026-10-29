@@ -1,6 +1,6 @@
 {
  "what": "The PiPER wrist-camera pod (PR #10's latest, with the Camera Module 3 Wide's lens hole) and three fixed-camera head cradles (PR #9: one horizontal, two vertical) on one A1 mini plate",
- "result": "sent at 2026-10-28T23:47:55Z and printing when this run handed off; see the thread comment for the last state this run saw",
+ "result": "printing when this run handed off: layer 30 of 142 at 2026-10-29T00:49:03Z, nozzle 220 C, bed 65 C, no HMS alert or error dialog seen since Send; Studio's estimated finish 01:08 UTC. Whether it finished was not seen by this run",
  "printer": {
   "model": "Bambu Lab A1 mini",
   "name_in_studio": "Thumbelina, the A1 Mini",
@@ -82,6 +82,10 @@
   "empty_plate_frame": "2026-10-28T23:43:59Z (posted 23:45:43)",
   "pre_send_frame": "2026-10-28T23:47:16Z",
   "send": "2026-10-28T23:47:55Z",
-  "printing_layer_1": "about 2026-10-28T23:55Z, after filament change, nozzle cleaning and flow calibration"
- }
+  "printing_layer_1": "about 2026-10-28T23:55Z, after filament change, nozzle cleaning and flow calibration",
+  "last_seen": "2026-10-29T00:49:03Z, layer 30/142, about 19 min left",
+  "hand_off": "2026-10-29T00:50Z to jss265 (Bambu Handy on the lab account, or the printer's screen)"
+ },
+ "watching": "runbook's watch_studio.py (WATCH_LAYOUT=a1mini) on Studio's Device page from 23:49 to 00:49 UTC: OCR every 10 s, a camera frame every 2-3 min (frames/), no new dialog, no hard limit, no stall",
+ "recording": "the runner's screen was recorded but not published: it shows the account e-mail during login and the person who cleared the plate in the camera pane, and print runs have no YouTube token. It was deleted with the runner"
 }
