@@ -1,0 +1,87 @@
+{
+ "what": "The PiPER wrist-camera pod (PR #10's latest, with the Camera Module 3 Wide's lens hole) and three fixed-camera head cradles (PR #9: one horizontal, two vertical) on one A1 mini plate",
+ "result": "sent at 2026-10-28T23:47:55Z and printing when this run handed off; see the thread comment for the last state this run saw",
+ "printer": {
+  "model": "Bambu Lab A1 mini",
+  "name_in_studio": "Thumbelina, the A1 Mini",
+  "nozzle": "0.4 mm stainless steel, standard flow (Studio's Printer Parts, read from the printer at 22:11 UTC)",
+  "ams": "AMS lite: A1 blue PLA, A2 empty, A3 black PLA (used), A4 PETG",
+  "mode": "Bambu cloud",
+  "lan": "not reachable from this run: claude-print.yml has no Tailscale step and no A1_MINI_IP / A1_MINI_ACCESS_CODE, so the checks and the watching were done on Studio's Device page"
+ },
+ "route": "Bambu Studio 02.08.02.61 GUI on the GitHub Actions runner's Xvfb display, logged in to the lab's Bambu account (password plus a bambu-totp authenticator code, in an approved @claude-print run), sent through Bambu's cloud",
+ "approval": "jss265 approved the bambu-print deployment at about 22:04 UTC with the note 'black PLA filament preferred but not required'",
+ "source": {
+  "pod": "piper-camera-mount/exports/pod.stl at ba6f819 on claude/issue-239-20260926-2347 (PR #10)",
+  "head-cradle-horizontal": "robot-arm/enclosure/cameras/models/head-cradle-horizontal.stl at 01e5a3e on claude/issue-229-20261001-2322 (PR #9)",
+  "head-cradle-vertical": "robot-arm/enclosure/cameras/models/head-cradle-vertical.stl at 01e5a3e on claude/issue-229-20261001-2322 (PR #9)",
+  "stl_md5": {
+   "pod": "43a4558c15f6454cca29770ef27f5f43",
+   "head-cradle-horizontal": "0c2bc195d69821e6d0258d857e6c3b5b",
+   "head-cradle-vertical": "a672c8fc02da71674a24b08521532715"
+  }
+ },
+ "presets": {
+  "machine": "Bambu Lab A1 mini 0.4 nozzle",
+  "process": "0.20mm Standard @BBL A1M with 3 walls, 25 % infill, circle compensation on, supports off; the three cradles 4 walls and 40 % infill as per-object settings (PR #9)",
+  "filament": "Bambu PLA Basic @BBL A1M, black",
+  "plate": "Textured PEI Plate"
+ },
+ "slice_checks": {
+  "committed_plate": "../issue52_A1mini_PLA.3mf (CLI, 16f8697): 32.24 g, 142 layers, top 28.40 mm, no supports, no brim, nothing outside the bed; Bambu's support check flagged nothing",
+  "gui": "opened in the GUI, the project kept 3 walls, 25 % infill and circle compensation (preset marked modified); the GUI's slice had the same 32.24 g, 142 layers and 28.40 mm top, the same start G-code, net extrusion within 0.11 mm of filament on every layer, and the same extrusion per object. Only Studio's stock acceleration limits differ",
+  "warnings": "slice_info.config stores only not_support_traditional_timelapse (timelapse was off)"
+ },
+ "send_options": {
+  "job_name": "issue52_A1mini_PLA (renamed from 'issue52_A1mini_PLA_Issue 52' to drop the space)",
+  "plate_type": "Textured PEI",
+  "ams_mapping": "filament 1 (PLA) -> A3, black Bambu PLA Basic",
+  "timelapse": false,
+  "auto_bed_leveling": true,
+  "flow_dynamics_calibration": true
+ },
+ "sent_file": {
+  "path": "sent_issue52_A1mini_PLA.gcode.3mf",
+  "provenance": "Studio's own upload copy, written to /tmp/bamboo_model/<session>/Metadata/.<pid>.0.3mf at the moment of Send; DesignerUserId (the lab's Bambu account ID) blanked in 3D/3dmodel.model, nothing else changed",
+  "plate_1_gcode_md5": "4b522a782f39ab3bcf6be0ec2da436be",
+  "same_gcode_as": [
+   "Studio's GUI slice in /tmp/bamboo_model (22:15 UTC), the one compared with the committed CLI plate"
+  ]
+ },
+ "estimates": {
+  "model_time": "1h 12m 48s (G-code header)",
+  "total_time": "1h 18m 46s",
+  "filament_g": 32.24,
+  "filament_m": 10.64,
+  "layers": 142,
+  "max_z_mm": 28.4
+ },
+ "go": {
+  "rule": "CLAUDE.md's plate rule of 2026-10-23: no 'plate clear' reply; the run reads the plate from a posted frame, waits at least 90 s for objections, and takes a fresh frame before Send",
+  "frame_shown": "20261028T234359Z_a1mini_camera_studio.jpg (posted in the thread comment at 23:45:43 UTC)",
+  "read": "bright (mean luma 117/255); gantry parked high; plate empty apart from its texture and faint pale marks; a red printed box just past the plate's far side, judged beside the bed's path (the bed slid past it without moving it, and the previous job ran with it there); no person in frame",
+  "wait_ended": "23:47:16 UTC, 93 s after posting, with no comments in the thread",
+  "pre_send_frame": "20261028T234716Z_a1mini_camera_studio.jpg: the same empty plate (mean absolute difference on the plate 1.1/255)",
+  "replies": []
+ },
+ "earlier_frames": {
+  "20261028T221127Z": "Thumbelina printing another job (compact_stirrer_parts, layer 5/110, PETG at 245/70 C); its first layers on the plate, so not sent",
+  "20261028T231136Z": "that job finished at about 23:08 UTC; its two white parts still on the plate, so not sent. Someone took them off at about 23:42"
+ },
+ "hand_off": "jss265 takes over watching when this run ends (job cut-off 01:04 UTC; Studio's estimated finish 01:06 UTC), with Bambu Handy on the lab account or the printer's screen",
+ "request_comment": "https://github.com/vertical-cloud-lab/robot-arms/issues/52 (issue body, 2026-10-28T22:03Z)",
+ "thread_comment": "https://github.com/vertical-cloud-lab/robot-arms/issues/52#issuecomment-6481826962",
+ "timeline_utc": {
+  "request": "2026-10-28T22:03:22Z",
+  "job_started": "2026-10-28T22:04:10Z",
+  "studio_login": "2026-10-28T22:10:05Z (authenticator code; no e-mailed code asked for)",
+  "first_frame": "2026-10-28T22:11:27Z (posted 22:12:33)",
+  "sliced": "2026-10-28T22:14Z (CLI), 22:15Z (GUI)",
+  "previous_job_finished": "about 2026-10-28T23:08Z",
+  "plate_cleared": "about 2026-10-28T23:42Z, by a person at the printer",
+  "empty_plate_frame": "2026-10-28T23:43:59Z (posted 23:45:43)",
+  "pre_send_frame": "2026-10-28T23:47:16Z",
+  "send": "2026-10-28T23:47:55Z",
+  "printing_layer_1": "about 2026-10-28T23:55Z, after filament change, nozzle cleaning and flow calibration"
+ }
+}
