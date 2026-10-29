@@ -6,7 +6,7 @@
  "partStudios": {
   "doser_compliant_clips.step": {
    "elementId": "84da4bd471ae162bb09fd705",
-   "sha256": "bd15954c12bfb1e4989f271466e43b796141e6d5f4978243433490980a105c48",
+   "sha256": "e893c7f1eb18d6c690565da57566b010af19190b0c9aecd3e391da27e6108f92",
    "tab": "Doser + compliant clips + finger fixture",
    "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/84da4bd471ae162bb09fd705"
   },
@@ -24,8 +24,8 @@
   },
   "alt_a_sleeves_pin.step": {
    "elementId": "0cddbb996c8dc474b02a109d",
-   "sha256": "ac3732b3902b6e614a7a2f0221b2bea9afbc0f17cf60716fd9d7d2d2452acaa3",
-   "tab": "Alt A sleeves + tilt-lock pin",
+   "sha256": "8b49f57568ea9a572ec11904e7e7aa0744c4f3e8cd513d378b5293716493be5e",
+   "tab": "Alt A sleeves + tilt-lock slider",
    "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/0cddbb996c8dc474b02a109d"
   },
   "alt_b_sleeves.step": {
@@ -36,19 +36,19 @@
   },
   "alt_a_custom_fingers_pin.step": {
    "elementId": "4d6e11d16ea5da425da28134",
-   "sha256": "8d91c46c3c65b072f28cc8488eb462360eb6b68d4429afcaa5328d6359139c8c",
-   "tab": "Alt A custom fingers + tilt-lock pin",
+   "sha256": "92619f644dfdaf5cc6aa36d9210bf8cc7810292c649a174c4c50ff85661855aa",
+   "tab": "Alt A custom fingers + tilt-lock slider",
    "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/4d6e11d16ea5da425da28134"
   },
   "agilex_gripper_ref_alt_a.step": {
    "elementId": "4b031882d11b4ae954b45ec7",
-   "sha256": "838f17f45820f5dba704f16b08dc793c0a5250f5355b7d86509c9748ccd4366e",
+   "sha256": "c025fbc68b12d8e184111ea259dced542ee66343fbb30c428853dcd0ecd28044",
    "tab": "AgileX gripper (reference), Alt A pose",
    "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/4b031882d11b4ae954b45ec7"
   },
   "agilex_gripper_ref_alt_a_cf.step": {
    "elementId": "a66cfbff4e42ef06e9f2db39",
-   "sha256": "7cc392a0abef1ee7e954fdef4697037fcee93cef877e965f0997d110ec294c99",
+   "sha256": "2cf71785d891f1509d44f608f1c62b3700bf82725ca5d7889546e3dc4f4c2795",
    "tab": "AgileX gripper (reference), custom-finger pose",
    "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/a66cfbff4e42ef06e9f2db39"
   }
