@@ -149,7 +149,7 @@ def custom_fingers():
 def pin():
     plate = doser_part("Mounting plate")
     guide, slider = H.pin_guide(), H.pin_slider()
-    red, dred = (0.85, 0.22, 0.20), (0.60, 0.16, 0.14)
+    red, dred = (0.85, 0.22, 0.20), (0.98, 0.45, 0.35)      # guide, slider (as in the GIFs)
     items = [(plate, (0.62, 0.64, 0.68), 1.0), (guide, red, 1.0),
              (slider.translate((H.PIN_X_IN, H.PIN_Y, 0)), dred, 1.0)]
     c = np.array([55.0, H.PIN_Y, 25.0])

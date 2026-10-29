@@ -42,9 +42,9 @@ STUDIOS = {   # STEP file -> tab name
     "doser_compliant_clips.step": "Doser + compliant clips + finger fixture",
     "s1_two_servo_tool.step": "S1 two-servo tool",
     "s2_one_servo_wheel_tool.step": "S2 one-servo wheel tool",
-    "alt_a_sleeves_pin.step": "Alt A sleeves + tilt-lock pin",
+    "alt_a_sleeves_pin.step": "Alt A sleeves + tilt-lock slider",
     "alt_b_sleeves.step": "Alt B sleeves",
-    "alt_a_custom_fingers_pin.step": "Alt A custom fingers + tilt-lock pin",
+    "alt_a_custom_fingers_pin.step": "Alt A custom fingers + tilt-lock slider",
     "agilex_gripper_ref_alt_a.step": "AgileX gripper (reference), Alt A pose",
     "agilex_gripper_ref_alt_a_cf.step": "AgileX gripper (reference), custom-finger pose",
 }
@@ -213,6 +213,9 @@ def sync(c: Onshape, rebuild: bool = False) -> dict:
             try:
                 if update_in_place(c, did, wid, old["elementId"], p):
                     old["sha256"] = h
+                    if old.get("tab") != tab:
+                        rename_element(c, did, wid, old["elementId"], tab)
+                        old["tab"] = tab
                     changed.add(fname)
                     save_rec(rec)
                     print(f"updated {fname} in place ({time.time() - t0:.0f} s)", flush=True)

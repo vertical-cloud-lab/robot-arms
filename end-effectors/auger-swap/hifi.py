@@ -1,9 +1,10 @@
 """High-fidelity printed parts for the auger swap (issue #42, second round on PR #44).
 
-* ``fixture_*``: the finger fixture, rebuilt as a nest for the tap collar between two thin
-  forks. The forks sit on both faces of the collar, so the collar can't tip, and each has a
-  U-slot the Ø25 tube passes through. The nest under the collar is the collar's own lower
-  outline (taken from its STEP), so the collar sits coaxial with the slots and can't roll.
+* ``fixture_*``: the finger fixture: two thin forks on both faces of the tap collar, so the
+  collar can't tip, each with a U-slot the Ø25 tube passes through, and a ledge on each
+  fork that is the collar's own lower outline (taken from its STEP), so the collar sits
+  coaxial with the slots and can't roll. Round 3 dropped the axis from 75 to 35 mm above
+  the board (the custom tools lower their carriage first) and cut it to 25 cm3.
 * ``sleeve_*``: the stock-finger sleeve as two printed shells: a main shell (blue in the
   photo on PR #44) on the grip face with the tube cradle, and a fixturing shell (green)
   over the back. Four M3 countersunk screws, two at each arrow, pass beside the finger into
@@ -12,8 +13,9 @@
   curved back, and those lock them on.
 * ``custom_finger``: a minimal finger that replaces the stock one: it bolts to the MGN7C
   carriage (4 x M2 x 8) and takes the linkage arm's M3 shoulder screw (heat-set insert).
-* ``pin_*``: the tilt-lock pin for Alternative A: a Ø8 steel pin in a printed housing,
-  with a ball-plunger detent and a Ø25 grab bar the cradles grip like the auger tube.
+* ``pin_*``: the tilt-lock slider for Alternative A: a printed bar in a printed guide, with
+  a Ø25 knob the cradles grip like the auger tube and a compliant latch (a cantilever in the
+  bar) that clicks into a window in the guide's roof and holds the slider out.
 
 Sleeves and fingers are built in the STEP frame of agilex.py, for the +Z ("upper")
 finger; agilex.lower_of() turns them into the other finger's. Fixture and pin are in the

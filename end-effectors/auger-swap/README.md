@@ -91,9 +91,9 @@ Both grip the tube 180° on each side, so the pull-out bears on the cradle walls
 | Printed parts per finger | main shell 22.9 cm³ + fixing shell 6.7 cm³ | 15.7 cm³ |
 | Hardware per finger | 2 × M3 × 10 + 2 × M3 × 12 countersunk (ISO 10642), 4 × M3 × 5.7 heat-set inserts | 4 × M2 × 8 (the stock screws), 1 × M3 × 5.7 heat-set insert; the stock shoulder screw and spacer |
 
-The custom-finger GIF lands every frame on its IK target (0.00 mm). The sleeves hold the tube 46 mm further from J6, and from the assumed base position
-the arm runs out of reach on 40 transit frames (near the bin and the rack, and two lining up on the fixture), missing by up to 5.8 mm. Every contact move (pin, pull, strip, re-thread,
-re-seat) is exact. The Strategy 1 GIF is exact on every frame.
+The custom-finger GIF lands every frame on its IK target (0.00 mm). The sleeves hold the tube 46 mm further from J6, so from the assumed base position
+the arm runs out of reach on 20 frames, all around the bin, missing by up to 1.5 mm. With round 2's taller fixture it was 40 frames and 5.8 mm,
+two of them lining up on the fixture. Every move at the slider, the doser, the fixture and the rack is exact. The Strategy 1 and Strategy 2 GIFs are exact on every frame.
 
 ### Two-shell sleeves (stock fingers)
 
@@ -170,6 +170,11 @@ Two PETG prints and two wood screws. They replace round 2's Ø8 steel pin, its h
 ![Strategy 1 tool](renders/view_s1_tool.png)
 
 `s1_tool.py` builds it, checks it and exports `cad/s1_two_servo_tool.step` (56 solids). The motion, contact points and frames are round 1's, so it runs the same sequence.
+Over the finger fixture it now lowers its carriage before the tube goes in, so leg B ends 5.75 mm above the board with the fixture's axis at 35 mm,
+and it raises the carriage again after the strip and after the re-thread.
+
+**Fixed in round 3:** round 2's GIF landed the tool 28 mm too low on the doser, with the legs 28 mm into the NEMA 11 plate and the floor and the hook
+closing 28 mm under the tube. Strategy 2's GIF had the same error. Both now land the legs on their faces, lower the carriage, close the hook and lift.
 
 **Load path.** Leg A presses on the NEMA 11 plate and leg B on the mounting-plate floor. The frame carries that load to the guide rail and the lift pinion,
 and the rack and carriage take it down to the hook under the tube. The 12–40 N snap force closes inside the tool; the arm only carries the tool's weight.
