@@ -159,11 +159,11 @@ McMaster's own heads were checked too. They fit everywhere the drawer's do.
 
 | Qty | Part | PAHT-CF, H2D, 0.6 mm | PAHT-CF, H2D, 0.4 mm | PLA, A1 mini |
 |---|---|---|---|---|
-| 1 | `bracket` | 36.1 g | 29.8 g | 36.1 g |
-| 1 | `pod` | 13.1 g | 11.6 g | 14.1 g |
+| 1 | `bracket` | 35.1 g | 29.0 g | 35.2 g |
+| 1 | `pod` | 12.9 g | 11.5 g | 13.9 g |
 | 1 | `carrier` | 31.7 g | 28.3 g | 34.4 g |
 | 4 + 2 | `spacers`, `tag_wedge` | 0.5 g | 0.5 g | 0.6 g |
-| | One plate (3 walls, 25 % infill) | 81.6 g, 3 h 44 min | 70.3 g, 3 h 45 min | 85.4 g, 2 h 48 min |
+| | One plate (3 walls, 25 % infill) | 80.4 g, 3 h 41 min | 69.4 g, 3 h 43 min | 84.3 g, 2 h 48 min |
 
 The figures are from [`slice/slice_configs.json`](slice/slice_configs.json). PAHT-CF is recommended
 for the parts that stay on the arm (see [Material](README.md#material-paht-cf-on-the-h2d)). The first
@@ -174,7 +174,10 @@ has too little room for the HQ Camera's housing. Reprint the pod and the bracket
 ([The HQ Camera in the pod](README.md#the-hq-camera-in-the-pod)). Neither printed pod takes the
 Camera Module 3 Wide's square lens housing either. This branch's pod has a square hole for it, which
 runs on over the flex below the housing
-([The Camera Module 3 Wide in the pod](README.md#the-camera-module-3-wide-in-the-pod)).
+([The Camera Module 3 Wide in the pod](README.md#the-camera-module-3-wide-in-the-pod)). Every bracket
+printed so far narrows its lens cradle to O33 for the lens's last 11 mm, where the aperture
+thumbscrew caught it on the first fit. This branch's bracket is bored out to O43 the whole length
+([Boring the cradle out to O43](README.md#boring-the-cradle-out-to-o43-2026-10-29)).
 
 ### Electronics
 

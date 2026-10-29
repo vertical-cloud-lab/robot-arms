@@ -35,29 +35,29 @@
      "tag_wedge_1"
     ],
     "stl_sha256": {
-     "bracket": "aa11ca47658a",
+     "bracket": "9cd30f700dce",
      "carrier": "114363150caf",
-     "pod": "ec813c995743",
+     "pod": "0e6347aa64e9",
      "spacers": "48f37448dff6",
      "tag_wedge": "034f36e9ef5a"
     },
-    "print_time_s": 13495,
-    "slicer_filament_g": 70.35,
-    "slicer_filament_m": 27.59,
+    "print_time_s": 13377,
+    "slicer_filament_g": 69.45,
+    "slicer_filament_m": 27.24,
     "gcode_g_by_feature": {
      "Custom": 0.0,
-     "Outer wall": 11.037,
-     "Inner wall": 22.228,
-     "Gap infill": 0.398,
-     "Bottom surface": 1.362,
-     "Internal solid infill": 7.583,
-     "Sparse infill": 21.091,
-     "Bridge": 2.335,
-     "Floating vertical shell": 2.517,
-     "Top surface": 1.718,
+     "Outer wall": 11.084,
+     "Inner wall": 22.148,
+     "Gap infill": 0.407,
+     "Bottom surface": 1.34,
+     "Internal solid infill": 7.425,
+     "Sparse infill": 20.62,
+     "Bridge": 2.282,
+     "Floating vertical shell": 2.371,
+     "Top surface": 1.693,
      "Overhang wall": 0.053
     },
-    "part_g_from_gcode": 70.32
+    "part_g_from_gcode": 69.42
    },
    {
     "plate": 2,
@@ -66,25 +66,25 @@
      "bracket_1"
     ],
     "stl_sha256": {
-     "bracket": "aa11ca47658a"
+     "bracket": "9cd30f700dce"
     },
-    "print_time_s": 6438,
-    "slicer_filament_g": 29.79,
-    "slicer_filament_m": 11.68,
+    "print_time_s": 6304,
+    "slicer_filament_g": 29.05,
+    "slicer_filament_m": 11.39,
     "gcode_g_by_feature": {
      "Custom": 0.0,
-     "Inner wall": 12.083,
-     "Outer wall": 5.63,
-     "Gap infill": 0.075,
+     "Inner wall": 11.903,
+     "Outer wall": 5.625,
+     "Gap infill": 0.081,
      "Bottom surface": 0.144,
-     "Internal solid infill": 0.883,
-     "Sparse infill": 9.218,
-     "Floating vertical shell": 1.118,
-     "Bridge": 0.392,
-     "Top surface": 0.196,
+     "Internal solid infill": 0.832,
+     "Sparse infill": 8.878,
+     "Floating vertical shell": 0.973,
+     "Bridge": 0.37,
+     "Top surface": 0.189,
      "Overhang wall": 0.023
     },
-    "part_g_from_gcode": 29.76
+    "part_g_from_gcode": 29.02
    },
    {
     "plate": 3,
@@ -93,25 +93,25 @@
      "pod_1"
     ],
     "stl_sha256": {
-     "pod": "ec813c995743"
+     "pod": "0e6347aa64e9"
     },
-    "print_time_s": 3215,
-    "slicer_filament_g": 11.63,
-    "slicer_filament_m": 4.56,
+    "print_time_s": 3228,
+    "slicer_filament_g": 11.48,
+    "slicer_filament_m": 4.5,
     "gcode_g_by_feature": {
      "Custom": 0.0,
-     "Outer wall": 1.789,
-     "Inner wall": 3.213,
-     "Gap infill": 0.107,
-     "Bottom surface": 0.383,
-     "Internal solid infill": 2.195,
-     "Sparse infill": 2.635,
+     "Outer wall": 1.841,
+     "Inner wall": 3.314,
+     "Gap infill": 0.109,
+     "Bottom surface": 0.361,
+     "Internal solid infill": 2.088,
+     "Sparse infill": 2.505,
      "Overhang wall": 0.015,
      "Floating vertical shell": 0.094,
-     "Bridge": 0.623,
-     "Top surface": 0.547
+     "Bridge": 0.593,
+     "Top surface": 0.529
     },
-    "part_g_from_gcode": 11.6
+    "part_g_from_gcode": 11.45
    },
    {
     "plate": 4,
@@ -220,29 +220,29 @@
      "tag_wedge_1"
     ],
     "stl_sha256": {
-     "bracket": "aa11ca47658a",
+     "bracket": "9cd30f700dce",
      "carrier": "114363150caf",
-     "pod": "ec813c995743",
+     "pod": "0e6347aa64e9",
      "spacers": "48f37448dff6",
      "tag_wedge": "034f36e9ef5a"
     },
-    "print_time_s": 13427,
-    "slicer_filament_g": 81.62,
-    "slicer_filament_m": 32.01,
+    "print_time_s": 13251,
+    "slicer_filament_g": 80.45,
+    "slicer_filament_m": 31.56,
     "gcode_g_by_feature": {
      "Custom": 0.0,
-     "Outer wall": 16.2,
-     "Inner wall": 29.23,
-     "Gap infill": 0.483,
-     "Bottom surface": 1.925,
-     "Internal solid infill": 6.545,
-     "Sparse infill": 18.118,
-     "Floating vertical shell": 2.283,
-     "Top surface": 3.316,
+     "Outer wall": 16.26,
+     "Inner wall": 28.994,
+     "Gap infill": 0.487,
+     "Bottom surface": 1.892,
+     "Internal solid infill": 6.298,
+     "Sparse infill": 17.739,
+     "Top surface": 3.197,
+     "Floating vertical shell": 2.165,
      "Overhang wall": 0.073,
-     "Bridge": 3.417
+     "Bridge": 3.319
     },
-    "part_g_from_gcode": 81.59
+    "part_g_from_gcode": 80.42
    },
    {
     "plate": 2,
@@ -251,25 +251,25 @@
      "bracket_1"
     ],
     "stl_sha256": {
-     "bracket": "aa11ca47658a"
+     "bracket": "9cd30f700dce"
     },
-    "print_time_s": 6680,
-    "slicer_filament_g": 36.15,
-    "slicer_filament_m": 14.18,
+    "print_time_s": 6502,
+    "slicer_filament_g": 35.15,
+    "slicer_filament_m": 13.79,
     "gcode_g_by_feature": {
      "Custom": 0.0,
-     "Inner wall": 15.979,
-     "Outer wall": 8.285,
+     "Inner wall": 15.633,
+     "Outer wall": 8.267,
      "Gap infill": 0.199,
      "Bottom surface": 0.189,
-     "Internal solid infill": 0.709,
-     "Sparse infill": 7.851,
-     "Floating vertical shell": 1.015,
-     "Bridge": 0.793,
-     "Top surface": 1.068,
+     "Internal solid infill": 0.575,
+     "Top surface": 0.978,
+     "Sparse infill": 7.603,
+     "Floating vertical shell": 0.896,
+     "Bridge": 0.747,
      "Overhang wall": 0.037
     },
-    "part_g_from_gcode": 36.12
+    "part_g_from_gcode": 35.12
    },
    {
     "plate": 3,
@@ -278,25 +278,25 @@
      "pod_1"
     ],
     "stl_sha256": {
-     "pod": "ec813c995743"
+     "pod": "0e6347aa64e9"
     },
-    "print_time_s": 3121,
-    "slicer_filament_g": 13.13,
-    "slicer_filament_m": 5.15,
+    "print_time_s": 3120,
+    "slicer_filament_g": 12.96,
+    "slicer_filament_m": 5.08,
     "gcode_g_by_feature": {
      "Custom": 0.0,
-     "Outer wall": 2.605,
-     "Inner wall": 4.192,
-     "Gap infill": 0.08,
-     "Bottom surface": 0.518,
-     "Internal solid infill": 1.7,
-     "Sparse infill": 2.208,
-     "Floating vertical shell": 0.171,
+     "Outer wall": 2.683,
+     "Inner wall": 4.302,
+     "Gap infill": 0.084,
+     "Bottom surface": 0.484,
+     "Internal solid infill": 1.598,
+     "Sparse infill": 2.077,
+     "Floating vertical shell": 0.165,
      "Overhang wall": 0.016,
-     "Bridge": 0.833,
-     "Top surface": 0.775
+     "Bridge": 0.78,
+     "Top surface": 0.746
     },
-    "part_g_from_gcode": 13.1
+    "part_g_from_gcode": 12.93
    },
    {
     "plate": 4,
@@ -405,29 +405,29 @@
      "tag_wedge_1"
     ],
     "stl_sha256": {
-     "bracket": "aa11ca47658a",
+     "bracket": "9cd30f700dce",
      "carrier": "114363150caf",
-     "pod": "ec813c995743",
+     "pod": "0e6347aa64e9",
      "spacers": "48f37448dff6",
      "tag_wedge": "034f36e9ef5a"
     },
-    "print_time_s": 10084,
-    "slicer_filament_g": 85.46,
-    "slicer_filament_m": 28.2,
+    "print_time_s": 10071,
+    "slicer_filament_g": 84.36,
+    "slicer_filament_m": 27.84,
     "gcode_g_by_feature": {
      "Custom": 0.037,
-     "Outer wall": 13.414,
-     "Inner wall": 26.99,
-     "Gap infill": 0.492,
-     "Bottom surface": 1.7,
-     "Internal solid infill": 9.199,
-     "Sparse infill": 25.572,
-     "Bridge": 2.827,
-     "Floating vertical shell": 3.042,
-     "Top surface": 2.082,
+     "Outer wall": 13.471,
+     "Inner wall": 26.891,
+     "Gap infill": 0.502,
+     "Bottom surface": 1.673,
+     "Internal solid infill": 9.003,
+     "Sparse infill": 25.0,
+     "Bridge": 2.761,
+     "Floating vertical shell": 2.867,
+     "Top surface": 2.052,
      "Overhang wall": 0.065
     },
-    "part_g_from_gcode": 85.38
+    "part_g_from_gcode": 84.28
    },
    {
     "plate": 2,
@@ -436,25 +436,25 @@
      "bracket_1"
     ],
     "stl_sha256": {
-     "bracket": "aa11ca47658a"
+     "bracket": "9cd30f700dce"
     },
-    "print_time_s": 4753,
-    "slicer_filament_g": 36.19,
-    "slicer_filament_m": 11.94,
+    "print_time_s": 4680,
+    "slicer_filament_g": 35.29,
+    "slicer_filament_m": 11.64,
     "gcode_g_by_feature": {
      "Custom": 0.037,
-     "Inner wall": 14.666,
-     "Outer wall": 6.834,
-     "Gap infill": 0.091,
+     "Inner wall": 14.445,
+     "Outer wall": 6.827,
+     "Gap infill": 0.099,
      "Bottom surface": 0.185,
-     "Internal solid infill": 1.071,
-     "Sparse infill": 11.174,
-     "Floating vertical shell": 1.356,
-     "Bridge": 0.477,
-     "Top surface": 0.237,
+     "Internal solid infill": 1.009,
+     "Sparse infill": 10.761,
+     "Floating vertical shell": 1.181,
+     "Bridge": 0.449,
+     "Top surface": 0.229,
      "Overhang wall": 0.027
     },
-    "part_g_from_gcode": 36.12
+    "part_g_from_gcode": 35.21
    },
    {
     "plate": 3,
@@ -463,25 +463,25 @@
      "pod_1"
     ],
     "stl_sha256": {
-     "pod": "ec813c995743"
+     "pod": "0e6347aa64e9"
     },
-    "print_time_s": 2213,
-    "slicer_filament_g": 14.17,
-    "slicer_filament_m": 4.68,
+    "print_time_s": 2250,
+    "slicer_filament_g": 13.98,
+    "slicer_filament_m": 4.61,
     "gcode_g_by_feature": {
      "Custom": 0.037,
-     "Outer wall": 2.181,
-     "Inner wall": 3.907,
-     "Gap infill": 0.125,
-     "Bottom surface": 0.486,
-     "Internal solid infill": 2.659,
-     "Sparse infill": 3.192,
+     "Outer wall": 2.245,
+     "Inner wall": 4.03,
+     "Gap infill": 0.127,
+     "Bottom surface": 0.459,
+     "Internal solid infill": 2.526,
+     "Sparse infill": 3.032,
      "Overhang wall": 0.018,
-     "Floating vertical shell": 0.114,
-     "Bridge": 0.753,
-     "Top surface": 0.663
+     "Floating vertical shell": 0.113,
+     "Bridge": 0.716,
+     "Top surface": 0.64
     },
-    "part_g_from_gcode": 14.1
+    "part_g_from_gcode": 13.91
    },
    {
     "plate": 4,
@@ -492,7 +492,7 @@
     "stl_sha256": {
      "carrier": "114363150caf"
     },
-    "print_time_s": 4070,
+    "print_time_s": 4085,
     "slicer_filament_g": 34.46,
     "slicer_filament_m": 11.37,
     "gcode_g_by_feature": {
@@ -504,11 +504,11 @@
      "Internal solid infill": 5.395,
      "Sparse infill": 11.206,
      "Bridge": 1.599,
-     "Floating vertical shell": 1.572,
+     "Floating vertical shell": 1.573,
      "Top surface": 1.182,
      "Overhang wall": 0.019
     },
-    "part_g_from_gcode": 34.38
+    "part_g_from_gcode": 34.39
    },
    {
     "plate": 5,

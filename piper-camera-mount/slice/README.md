@@ -89,7 +89,7 @@ nozzle and temperatures.
 
 ![The H2D plate](../renders/h2d_plate.png)
 
-- **One plate, 3 h 45 min and 70.4 g** by Bambu's estimate: 213 layers to 42.6 mm, with no supports,
+- **One plate, 3 h 43 min and 69.5 g** by Bambu's estimate: 213 layers to 42.6 mm, with no supports,
   no slicer warnings, nothing flagged by Bambu's support check and no toolpath off the bed.
 - **Settings:** Bambu's system presets `Bambu Lab H2D 0.4 nozzle`, `0.20mm Standard @BBL H2D` and
   `Bambu PAHT-CF @BBL H2D`, with the A1 mini's overrides on top (3 walls, 25 % infill, circle
@@ -191,6 +191,17 @@ Only the pod's STL changed.
   and the H2D PAHT-CF plate (3 h 45 min, 70.20 g, the left 0.4 mm nozzle) and `report_h2d.json`,
   which had still carried the round hole.
 - **Not re-sliced:** the per-part slices (`slice_configs.json`).
+
+**On 2026-10-29 the bracket's lens cradle was bored out to O43 the whole length of the lens.** On
+the first fit the lens's aperture thumbscrew caught the O33 strip round the lens's last 11 mm, which
+every printed bracket has ([Boring the cradle out to O43](../README.md#boring-the-cradle-out-to-o43-2026-10-29)).
+Only the bracket's STL changed.
+- **Re-sliced for it:** the A1 mini plate (2 h 48 min, 84.36 g), `report.json` and `overhangs.json`;
+  the H2D PAHT-CF plate (3 h 43 min, 69.45 g, the left 0.4 mm nozzle) and `report_h2d.json`; and the
+  per-part slices (`slice_configs.json`), which also bring the pod's up to date. No slicer warnings,
+  no supports, and nothing flagged by Bambu's support check.
+- **Alone, on the A1 mini,** the bracket is now 1 h 18 min and 35.3 g, and the pod 38 min and
+  14.0 g (`a1m_pla_04`, plates 2 and 3).
 
 Before that, nothing of the mount had been printed. [`a1mini_history/`](a1mini_history/README.md)
 lists everything the A1 mini printed from July to the morning of 2026-10-08, from Bambu's cloud and

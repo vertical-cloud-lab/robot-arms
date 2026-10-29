@@ -19,7 +19,11 @@ but its pod has too little room for the HQ Camera's housing. Reprint the pod and
 this branch ([The HQ Camera in the pod](#the-hq-camera-in-the-pod)). Neither printed pod takes the
 Camera Module 3 Wide either: its square lens housing can't pass the pod's round hole. This branch's
 pod has a square hole for it that runs on over the flex below it
-([The Camera Module 3 Wide in the pod](#the-camera-module-3-wide-in-the-pod)).
+([The Camera Module 3 Wide in the pod](#the-camera-module-3-wide-in-the-pod)). **On the first fit,
+on 2026-10-28, the lens's aperture thumbscrew caught the bracket** where its lens cradle narrowed to
+O33 for the lens's last 11 mm. Every bracket printed so far has that strip. This branch's bracket is
+bored out to O43 the whole length of the lens
+([Boring the cradle out to O43](#boring-the-cradle-out-to-o43-2026-10-29)).
 
 ![Assembly on AgileX's gripper model](renders/assembly.png)
 
@@ -88,14 +92,18 @@ either side of the lens:
 - The lens and its mount sit in a cradle cut through the seat with 1.5 mm to spare, so the pod goes
   on and off straight down its lens axis with the lens fitted. The 6 mm lens has two locking
   thumbscrews about 5 mm proud of its barrel, and focusing turns the aperture ring, so its screw can
-  end up pointing anywhere. The cradle is therefore O43 from the pod to just past that screw
-  (20.4 mm in front of the CS seat), and O33 round the rest of the lens. With the plain O33 cradle
-  the screws would have hit the seat over a third to a half of their circles (their sweep overlaps
-  it by 970 mm³).
+  end up pointing anywhere. The cradle is therefore **O43 the whole length of the lens**, from the
+  pod to 1.5 mm past the lens's front. With the plain O33 cradle the screws would have hit the seat
+  over a third to a half of their circles (their sweep overlaps it by 970 mm³).
+- **Until 2026-10-29 the O43 stopped 20.4 mm in front of the CS seat,** just past where
+  [`cad/lenses.py`](cad/lenses.py) puts the aperture screw, and the cradle was O33 round the lens's
+  last 11 mm. The real screw sits further forward, and it caught that strip on the first fit
+  ([below](#boring-the-cradle-out-to-o43-2026-10-29)).
 - **Neither camera sees it.** The HQ sees no printed part at all. The seat's top corner is bevelled
   along the bottom of the Wide's view, so the Wide sees no more of the bracket than it did before
   (the collar's top ear and the old web's front edge, at the bottom-left of its picture).
-- The seat adds 15.5 cm³ to the bracket (36.3 to 51.8 cm³ solid).
+- The seat adds 15.5 cm³ to the bracket (36.3 to 51.8 cm³ solid; 50.1 cm³ since the cradle was
+  bored out).
 
 ![The pod seat](renders/pod_seat.png)
 
@@ -114,6 +122,44 @@ each screw once round the lens and cuts both brackets through it
   ([Printing](#printing)). Until then, the old bracket only works if both screws end up pointing
   away from the gripper. (Since then, the 13 October set needs a new pod and bracket for the HQ
   Camera's tripod mount: see [The HQ Camera in the pod](#the-hq-camera-in-the-pod).)
+- **This GIF has the screws where `lenses.py` puts them,** and the aperture screw turned out to be
+  further forward. The O43 cradle in it is the one printed on 2026-10-13, which the screw still
+  caught. The next section bores it out.
+
+### Boring the cradle out to O43 (2026-10-29)
+
+On the first fit, on 2026-10-28, the 6 mm lens's aperture screw caught the O33 strip at the front of
+the cradle. The cradle is now O43 from the pod to 1.5 mm past the lens's front. Only the bracket
+changed: 1.6 cm³ came off it (51.7 to 50.1 cm³ solid). The pod, carrier, spacers and tag wedges
+haven't changed.
+
+![The lens cradle as printed and bored out to O43](renders/cradle_bore.png)
+
+- **The screws now clear wherever they sit along the lens.** [`cad/cradle_bore.py`](cad/cradle_bore.py)
+  slides a thumbscrew head (O3, its tip 20 mm from the axis) along the lens at any angle
+  ([`exports/cradle_bore.json`](exports/cradle_bore.json)):
+  - in the cradle as printed, a screw centred 19 mm or more in front of the CS seat cuts into the
+    bracket, by up to 344 mm³;
+  - in the bored-out cradle, nothing does anywhere along the lens. The tips clear the bracket by
+    1.0 mm.
+- **The two tab screws are right behind that strip.** Near the lens's front the O43 passes 0.14 mm
+  from their holes in the pad, so the bore leaves 1 mm of wall round each (`tab_wall`, orange
+  above):
+  - At the lens's front face the walls come 0.5 mm inside the O43. From 2 mm behind it they don't
+    reach into it at all. That is where the 1.0 mm above is measured.
+  - Above the pad the cradle opens into the two hex-key channels. The screw heads still seat on the
+    pad, all round.
+- **The plastic in front of the lens stays.** Boring on through the bracket's front face would take
+  127 mm³ more. All of it is the pad's face on the gripper's tab, next to those two screws: within
+  7 mm of them, that face would go from 255 to 184 mm². The lens's screws can't reach past its
+  front, so that plastic can't touch them. The pad's face stays at 1170 mm².
+- **Reprint the bracket.** Alone, on the A1 mini in PLA with the same settings, it is
+  **1 h 18 min and 35.3 g** ([Printing](#printing)).
+- **Not redone for it:** the stress and stiffness analyses below, the assembly GIF and renders,
+  the fastener check, the tight-spaces envelope and `cradle_fit.gif`. The same goes for the 16 mm
+  lens comparison, whose bracket is cut the same way, and the OT-2 zoom's, which now cuts less than
+  its 1099 mm³ into the bracket. Taking plastic off the bracket can't create an overlap, so their
+  fit results stand.
 
 **How much stiffer, simulated.** [`sim/joint_fea.py`](sim/joint_fea.py) meshes bracket and pod
 as one bonded body (quadratic tets, gmsh + scikit-fem), fixes the collar bore and the pad round the
@@ -624,19 +670,20 @@ CLI, the same way as #234 and #238, and writes
 [`slice/piper_camera_mount_A1mini_PLA.3mf`](slice/piper_camera_mount_A1mini_PLA.3mf) and
 [`slice/report.json`](slice/report.json):
 
-- **One plate:** all five part types, **2 h 48 min and 85.5 g** with 3 walls and 25 % infill on the
-  Textured PEI plate. The same parts on the H2D in PAHT-CF weigh 70.3 g (0.4 mm nozzle) or 81.6 g
+- **One plate:** all five part types, **2 h 48 min and 84.4 g** with 3 walls and 25 % infill on the
+  Textured PEI plate. The same parts on the H2D in PAHT-CF weigh 69.4 g (0.4 mm nozzle) or 80.4 g
   (0.6 mm); see [As sliced](#as-sliced-paht-cf-and-pla-simsliced_feapy). The wider lens cradle took
-  1.6 g of PLA off the bracket.
+  1.6 g of PLA off the bracket, and boring it out to O43 (2026-10-29) another 0.9 g.
 - **The pod and the bracket,** to fix the PLA set printed on 2026-10-13 (its pod and bracket were
   cut for the HQ housing as first modelled; see [The HQ Camera in the pod](#the-hq-camera-in-the-pod)):
-  the pod is **37 min and 14.2 g** and the bracket **1 h 19 min and 36.2 g** on the A1 mini, with the
+  the pod is **38 min and 14.0 g** and the bracket **1 h 18 min and 35.3 g** on the A1 mini, with the
   same settings ([`slice/slice_configs.json`](slice/slice_configs.json), `a1m_pla_04`, plates 3 and 2).
   Open the plate in Bambu Studio and delete everything but those two. The carrier, spacers and tag
-  wedges haven't changed.
+  wedges haven't changed. Every bracket printed so far also needs the bored-out cradle
+  ([Boring the cradle out to O43](#boring-the-cradle-out-to-o43-2026-10-29)).
 - **The whole set on the H2D in PAHT-CF, one plate:**
-  [`slice/piper_camera_mount_H2D_PAHT-CF.3mf`](slice/piper_camera_mount_H2D_PAHT-CF.3mf), **3 h 45 min
-  and 70.4 g**. It prints from the left nozzle, the 0.4 mm hardened-steel one, and is mapped there by
+  [`slice/piper_camera_mount_H2D_PAHT-CF.3mf`](slice/piper_camera_mount_H2D_PAHT-CF.3mf), **3 h 43 min
+  and 69.5 g**. It prints from the left nozzle, the 0.4 mm hardened-steel one, and is mapped there by
   hand: left alone the slicer picks the right. [The H2D in PAHT-CF](slice/README.md#the-h2d-in-paht-cf-one-plate-slice_h2dpy)
   has the details and what to check in Studio before sending it.
 - **No supports.** Supports are off, and Bambu's own support check flags none of the six objects.
@@ -1104,9 +1151,11 @@ pass:
   foot, the screws in the shoulders and the focus-lock block stay 1.0 mm from the pod and 1.5 mm
   from the bracket. The focus ring keeps the 0.5 mm it always had in the pod's O37 hole
   ([The HQ Camera in the pod](#the-hq-camera-in-the-pod)).
-- **The lens's thumbscrews at any angle:** each screw's whole circle is checked against the bracket,
-  the pod, the Wide and the gripper, and comes out at 0 mm³. They stay 1.5 mm from the bracket and
-  14.2 mm from the finger plate.
+- **The lens's thumbscrews at any angle, anywhere along the lens:** the circle their tips sweep,
+  the whole length of the lens, is checked against the bracket, the pod, the Wide and the gripper,
+  and comes out at 0 mm³. It stays 1.0 mm from the bracket (at the walls round the tab screws, at
+  the lens's front) and 3.1 mm from the finger plate. Until 2026-10-29 only each screw's own circle,
+  where `lenses.py` puts it, was checked; on the first fit the aperture screw was further forward.
 - **Clearance to the fingers:** the nearest part stays 15.6 mm away with the fingers closed and
   17.8 mm away fully open. The finger tag wedges stay 72 mm from the mount.
 - **The Camera Module 3 Wide,** as Raspberry Pi's drawing has it: its 10.8 mm housing stays 0.3 mm
@@ -1217,6 +1266,7 @@ xvfb-run -a -s "-screen 0 1920x1080x24" python fiducials.py         # renders/vi
 xvfb-run -a -s "-screen 0 1920x1080x24" python lens_compare.py      # 6 mm vs 16 mm: renders/lens_compare.png (~5 min)
 xvfb-run -a -s "-screen 0 1920x1080x24" python wrist_zoom.py        # renders/wrist_zoom.gif: the OT-2's zoom on the wrist (~2 min)
 python cradle_fit.py                                                 # renders/cradle_fit.gif: the lens's thumbscrews, old and new cradle
+xvfb-run -a -s "-screen 0 1920x1080x24" python cradle_bore.py       # renders/cradle_bore.png: the cradle bored out to O43, against the one printed
 xvfb-run -a -s "-screen 0 1920x1080x24" python hq_fit.py            # renders/hq_fit*.png: the HQ housing in the printed pod and the new one
 python cm3w_fit.py                                                   # renders/cm3w_fit.png: the Wide's housing and flex in the pod (fetches Raspberry Pi's STEP; ~2 min)
 python detail_compare.py                                             # renders/detail_compare.png: fine detail, wrist vs a fixed zoom
@@ -1255,7 +1305,9 @@ python ../onshape/update_doc.py --doc 93ef145982c24192bfd160be --ws e3d08fcb2dca
   - The 6 mm lens's O30 x 34 mm and 53 g are the maker's figures. Its thread length (4 mm), ring
     layout and thumbscrews are estimates, measured off product photos
     ([`cad/lenses.py`](cad/lenses.py)). Most of all, check how far the thumbscrews stand out: the
-    cradle allows for 5 mm plus 1.5 mm of clearance.
+    cradle allows for 5 mm plus 1.5 mm of clearance. Where they sit along the lens no longer
+    matters: the aperture screw is further forward than estimated, so the cradle allows for the
+    screws the whole length of the lens.
   - The Pi 5's connector positions are read off Raspberry Pi's drawing, and its outline is a
     simplified envelope, as in #234.
 - **The HQ Camera didn't fit the 2026-10-13 set.** The first PLA set went to the A1 mini on
