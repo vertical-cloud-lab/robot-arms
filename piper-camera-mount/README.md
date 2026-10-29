@@ -1180,11 +1180,12 @@ checks stricter.
 ## Onshape
 
 The design is in Onshape in the lab's **vcl-shared › 6DOF Robot Arm** folder:
-[PiPER wrist camera mount (e082c8b)](https://cad.onshape.com/documents/93ef145982c24192bfd160be/w/e3d08fcb2dcad7c92e183721).
-It's owned by Vertical Cloud Lab and it's private. On 2026-10-28 it was brought up to date in place,
-so the link is the same as before. It now has this branch's parts, as exported at `7165e21`: the Ø43
-cradle, the pod and bracket that clear the HQ Camera's housing, and the Camera Module 3 Wide's square
-hole with the flex cut-out.
+[PiPER wrist camera mount (393c198)](https://cad.onshape.com/documents/93ef145982c24192bfd160be/w/e3d08fcb2dcad7c92e183721).
+It's owned by Vertical Cloud Lab and it's private. It is brought up to date in place, so the link
+stays the same; the last update was on 2026-10-29. It has this branch's parts as of `393c198`: the
+lens cradle bored out to Ø43 the whole length of the lens
+([Boring the cradle out to O43](#boring-the-cradle-out-to-o43-2026-10-29)), the pod and bracket that
+clear the HQ Camera's housing, and the Camera Module 3 Wide's square hole with the flex cut-out.
 
 **To print from it, open the Print plate tab.** It holds only the printed parts, each already in its
 print orientation and where the A1 mini plate puts it. Select the parts you want, right-click and
@@ -1194,7 +1195,8 @@ committed [A1 mini plate](slice/piper_camera_mount_A1mini_PLA.3mf) is the same p
 Exported from Onshape as STL at Fine resolution, the whole tab has the plate's exact bounding box,
 and its round holes come out at most 0.03 mm small (0.01 mm in the committed STLs), far less than
 a printer can show ([`print_plate.py --check-stl`](onshape/print_plate.py), numbers in the
-[record](onshape/run_2026-10-28_update.json)).
+[record](onshape/run_2026-10-28_update.json)). That export was checked on 2026-10-28; the 29 October
+plate was only checked by its volumes in Onshape ([record](onshape/run_2026-10-29_update.json)).
 Of the set printed on 13 October, only the pod and the bracket have changed since; the carrier,
 spacers and tag wedges are the same.
 
@@ -1204,14 +1206,18 @@ spacers and tag wedges are the same.
 | Mount parts (exports/assembly.step) | Our parts on the gripper's frame, plus envelopes of the Pi 5 and the cameras |
 | AgileX gripper (reference, do not share) | AgileX's gripper STEP, 13 parts. Onshape shows AgileX's Chinese part names garbled; they read 电机加底座 (motor and base), 法兰 (flange), 夹爪 (jaw) and 推力轴承 (thrust bearing), and MGN7 is the linear rail and its carriages |
 | Mount on gripper | The assembly. The two Part Studios above are inserted whole, at the origin, so the mount sits on the gripper exactly as in the renders |
-| OLD 4be6e17, superseded: do not print | The parts from 27 September. The API key can't delete tabs (HTTP 403), so delete it in the web app |
+| OLD e082c8b print plate, superseded: do not print | The print plate of 28 October. **Its bracket still has the O33 strip** that caught the lens's aperture screw. The API key can't delete tabs (HTTP 403), so delete it in the web app |
+| OLD e082c8b, superseded: do not print | The parts of 28 October, on the gripper's frame. Delete it in the web app too |
+| OLD 4be6e17, superseded: do not print | The parts from 27 September. Delete it in the web app too |
 | Part Studio 1 | Empty. Onshape's default tab, which the API key can't delete either |
 
 ![Onshape's Print plate tab: the printed parts in print orientation](onshape/onshape_print_plate.png)
 
 **Versions** (the clock icon, Versions and history): `4be6e17 (before e082c8b)` is the document as it
-stood before the update, and [`e082c8b`](https://cad.onshape.com/documents/93ef145982c24192bfd160be/v/e7a49a23794ebb202d18f725)
-is the update itself, a fixed copy to link to.
+stood before the 28 October update, and [`e082c8b`](https://cad.onshape.com/documents/93ef145982c24192bfd160be/v/e7a49a23794ebb202d18f725)
+is that update, a fixed copy to link to. The 29 October update is
+[`393c198`](https://cad.onshape.com/documents/93ef145982c24192bfd160be/v/b3d73f46329d8b169662934f),
+after `e082c8b (before 393c198)`, in 44 API calls ([record](onshape/run_2026-10-29_update.json)).
 [`onshape/update_doc.py`](onshape/update_doc.py) made the update in 38 API calls, plus 15 to check it
 afterwards ([record](onshape/run_2026-10-28_update.json)):
 
