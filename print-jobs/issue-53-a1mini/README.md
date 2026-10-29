@@ -67,7 +67,7 @@ slot floor). PLA takes that, but it is stiffer and more brittle than PETG, so it
 ## Source
 
 `stl/` is byte for byte PR #44's `end-effectors/auger-swap/cad/stl/` at `b9caa43` on
-`claude/issue-42-20261026-0528`: `pin_slider.stl`, `pin_guide.stl` and `finger_fixture.stl` are round 3's (the
+`claude/issue-42-20261026-0528`, and still at `59b1acd`, where that run finished (20:43 UTC on 29 Oct): `pin_slider.stl`, `pin_guide.stl` and `finger_fixture.stl` are round 3's (the
 low fixture and the latched slider); the two sleeve shells are unchanged since round 2 (sha256 `acbbfe227b11`
 and `955610231b4a`). Hardware, from PR #44's README: 2 × M4 countersunk wood screws each for the fixture and the
 guide; per sleeve, 2 × M3 × 10 and 2 × M3 × 12 countersunk (ISO 10642) and 4 × M3 × 5.7 heat-set inserts.
