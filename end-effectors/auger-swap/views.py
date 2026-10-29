@@ -80,12 +80,13 @@ def fixture():
     D = S.T((G.FIX_X, 0, G.FIX_AXIS_Z - G.AXIS_Z))
     items = [(H.finger_fixture_hifi(), FIXTURE, 1.0), (doser_part("Tap collar", D), (0.95, 0.95, 0.95), 1.0),
              (doser_part("Solenoid (Adafruit 412)", D), (0.80, 0.50, 0.15), 1.0), (doser_part("Auger", D), TUBE, 0.45)]
-    c = np.array([G.FIX_X, 90.0, G.FIX_AXIS_Z - 12])
+    c = np.array([G.FIX_X, 90.0, G.FIX_AXIS_Z])
     render(items, [(tuple(c + (170, -170, 140)), tuple(c), (0, 0, 1)), (tuple(c + (0, -250, 25)), tuple(c), (0, 0, 1)),
                    (tuple(c + (210, 150, 120)), tuple(c), (0, 0, 1))], OUT / "view_fixture.png",
            labels=["fixture with the collar and auger", "from the outlet end: F1 fork, collar", "gear side: F2 fork, 44T gear"])
-    render([(H.finger_fixture_hifi(), FIXTURE, 1.0)], [(tuple(c + (150, -150, 170)), tuple(c), (0, 0, 1))],
-           OUT / "view_fixture_alone.png", labels=["the nest is the collar's underside"])
+    c2 = np.array([G.FIX_X, 88.0, 22.0])
+    render([(H.finger_fixture_hifi(), FIXTURE, 1.0)], [(tuple(c2 + (110, -110, 120)), tuple(c2), (0, 0, 1))],
+           OUT / "view_fixture_alone.png", labels=["ledges are the collar's underside"])
 
 
 def _gripper(opening, fingers=True):
@@ -147,13 +148,21 @@ def custom_fingers():
 
 def pin():
     plate = doser_part("Mounting plate")
-    items = [(plate, (0.62, 0.64, 0.68), 1.0), (H.pin_housing_hifi(), (0.85, 0.22, 0.20), 1.0)]
-    for x, op in ((H.PIN_X_IN, 1.0),):
-        items += [(H.pin_rod().translate((x, H.PIN_Y, H.PIN_Z)), STEEL, op),
-                  (H.pin_handle().translate((x, H.PIN_Y, H.PIN_Z)), (0.85, 0.30, 0.25), op)]
-    c = np.array([60.0, H.PIN_Y, 35.0])
-    render(items, [(tuple(c + (160, -170, 120)), tuple(c), (0, 0, 1)), (tuple(c + (10, -230, 15)), tuple(c), (0, 0, 1))],
-           OUT / "view_pin.png", labels=["tilt-lock pin, pushed in over the floor", "Ø25 grab bar, Ø8 pin 0.5 mm over the floor"])
+    guide, slider = H.pin_guide(), H.pin_slider()
+    red, dred = (0.85, 0.22, 0.20), (0.60, 0.16, 0.14)
+    items = [(plate, (0.62, 0.64, 0.68), 1.0), (guide, red, 1.0),
+             (slider.translate((H.PIN_X_IN, H.PIN_Y, 0)), dred, 1.0)]
+    c = np.array([55.0, H.PIN_Y, 25.0])
+    render(items, [(tuple(c + (150, -170, 130)), tuple(c), (0, 0, 1)), (tuple(c + (5, -230, 20)), tuple(c), (0, 0, 1))],
+           OUT / "view_pin.png", labels=["tilt-lock slider pushed in over the floor", "tip 0.5 mm over the floor, Ø25 knob"])
+    # latched out: the guide cut on the slider's centre plane, so the latch beam and window show
+    cut = cq.Workplane("XY").box(200, 60, 100, centered=(True, False, True)).translate((60, H.PIN_Y - 60, 30))
+    items = [(plate.cut(cut.val()), (0.62, 0.64, 0.68), 1.0), (guide.cut(cut), red, 1.0),
+             (slider.translate((H.PIN_X_OUT, H.PIN_Y, 0)).cut(cut), dred, 1.0)]
+    c = np.array([62.0, H.PIN_Y, 24.0])
+    c2 = np.array([62.5, H.PIN_Y, 24.5])
+    render(items, [(tuple(c + (10, -150, 30)), tuple(c), (0, 0, 1)), (tuple(c2 + (0, -32, 2)), tuple(c2), (0, 0, 1))],
+           OUT / "view_pin_latch.png", labels=["pulled out: the latch holds it (section)", "bump in the roof window"])
 
 
 if __name__ == "__main__":

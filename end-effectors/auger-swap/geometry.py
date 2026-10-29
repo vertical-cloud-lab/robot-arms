@@ -80,7 +80,7 @@ def clip_base() -> cq.Workplane:
 
 # ----------------------------------------------------------------------------- finger fixture
 FIX_X = 150.0             # fixture slot centre (W)
-FIX_AXIS_Z = 75.0         # auger axis when the auger lies in the fixture
+FIX_AXIS_Z = 35.0         # auger axis when the auger lies in the fixture (S1/S2 lower their carriage first)
 FORK_FROM_OUTLET = (64.5, 70.5)   # fork plate sits between the collar and the 44T gear
 FORK_SLOT = 26.5          # wide enough for the Ø25 tube, far too narrow for the collar
 FIX_OUTLET_Y = OUTLET_Y   # the auger lies in the fixture at the same y as in the doser
