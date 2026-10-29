@@ -36,7 +36,7 @@
     {
       "part": "bracket",
       "stl": "bracket.stl",
-      "sha256": "aa11ca47658a",
+      "sha256": "9cd30f700dce",
       "centre": [
         128.0,
         125.0
@@ -150,9 +150,9 @@
         "tag_wedge_1",
         "tag_wedge_1"
       ],
-      "print_time_s": 13514,
-      "filament_g": 70.2,
-      "filament_m": 27.53,
+      "print_time_s": 13377,
+      "filament_g": 69.45,
+      "filament_m": 27.24,
       "filament_type": "PA-CF",
       "nozzles_used": [
         {
@@ -181,21 +181,21 @@
       "gcode_warnings": [],
       "feature_time_s": {
         "Bottom surface": 310,
-        "Bridge": 387,
+        "Bridge": 383,
         "Custom": 1038,
         "Flush": 26,
-        "Gap infill": 160,
-        "Inner wall": 2989,
-        "Internal solid infill": 1597,
-        "Outer wall": 1835,
+        "Gap infill": 170,
+        "Inner wall": 2974,
+        "Internal solid infill": 1554,
+        "Outer wall": 1821,
         "Overhang wall": 62,
-        "Sparse infill": 3327,
-        "Top surface": 255,
-        "Travel": 1537,
-        "Undefined": 1529
+        "Sparse infill": 3273,
+        "Top surface": 254,
+        "Travel": 1522,
+        "Undefined": 1514
       }
     }
   ],
-  "total_print_time_s": 13514,
-  "total_filament_g": 70.2
+  "total_print_time_s": 13377,
+  "total_filament_g": 69.45
 }

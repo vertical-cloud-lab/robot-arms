@@ -21,7 +21,7 @@
     {
       "part": "bracket",
       "stl": "bracket.stl",
-      "sha256": "aa11ca47658a",
+      "sha256": "9cd30f700dce",
       "centre": [
         43,
         55
@@ -135,9 +135,9 @@
         "tag_wedge_1",
         "tag_wedge_1"
       ],
-      "print_time_s": 10117,
-      "filament_g": 85.27,
-      "filament_m": 28.13,
+      "print_time_s": 10060,
+      "filament_g": 84.36,
+      "filament_m": 27.84,
       "bed_type": "Textured PEI Plate",
       "bed_temp_c": [
         65,
@@ -161,21 +161,21 @@
       ],
       "feature_time_s": {
         "Bottom surface": 307,
-        "Bridge": 387,
+        "Bridge": 383,
         "Custom": 348,
         "Flush": 28,
-        "Gap infill": 157,
-        "Inner wall": 1883,
-        "Internal solid infill": 1164,
-        "Outer wall": 1443,
+        "Gap infill": 169,
+        "Inner wall": 1875,
+        "Internal solid infill": 1169,
+        "Outer wall": 1426,
         "Overhang wall": 63,
-        "Sparse infill": 2537,
-        "Top surface": 294,
-        "Travel": 1523,
-        "Undefined": 1505
+        "Sparse infill": 2502,
+        "Top surface": 293,
+        "Travel": 1514,
+        "Undefined": 1496
       }
     }
   ],
-  "total_print_time_s": 10117,
-  "total_filament_g": 85.27
+  "total_print_time_s": 10060,
+  "total_filament_g": 84.36
 }
