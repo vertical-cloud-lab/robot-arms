@@ -1,0 +1,10 @@
+{
+  "note": "grams of PLA per object: its share of the extrusion inside Bambu's object markers, scaled to the plate total (which includes the purge and prime lines)",
+  "plate_total_g": 57.03,
+  "objects_g": {
+    "sleeve_main_shell_1_1": 18.7,
+    "sleeve_main_shell_2_1": 18.7,
+    "sleeve_fixing_shell_1_1": 9.8,
+    "sleeve_fixing_shell_2_1": 9.8
+  }
+}
