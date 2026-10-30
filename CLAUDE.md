@@ -83,6 +83,14 @@ services only when necessary and verify the arm is healthy end to end afterwards
 failures as failures. Changes made on the Pi (systemd units, udev rules, cron, config) do not
 live in this repo, so record them here so they can be reproduced.
 
+**Gripper Pi cord (#54).** A Pi hangs under the gripper, its USB-C power plug facing back
+toward J2. With the camera on top (J6 near 0), disabling the motors drops the arm onto its rest
+and lands the plug on J2's housing. Disable only with the gripper rolled so the Pi is to the
+side (J6 ≈ −90°, camera to the arm's left, as the arm sits parked), and don't roll it back under
+the wrist near home. `PiPER Sandbox Scripts/Up_and_Down.py` (copy at `~/Up_and_Down.py` on the
+arm Pi) holds the wrist where it starts and refuses to move unless the Pi faces sideways. #15's
+`~/piper_up_down.py` without `--hold-wrist` commands J6 to 0, so don't run it as is.
+
 The PiPER cell's fixed cameras get their own Pis: `CAM_PI_HOSTNAME`, tagged `tag:rpi-5-76zj`
 (login `CAM_PI_USERNAME`, sudo password `CAM_PI_PASSWORD`), and `CAM2_PI_HOSTNAME`, tagged
 `tag:rpi-5-mpzy` (`CAM2_PI_USERNAME`, `CAM2_PI_PASSWORD`). They do not drive the arm, but the
