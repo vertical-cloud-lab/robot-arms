@@ -25,46 +25,51 @@
   "source": {
     "pr": 44,
     "branch": "claude/issue-42-20261026-0528",
-    "commit": "b9caa43",
+    "commit": "162706d",
     "dir": "end-effectors/auger-swap/cad/stl"
   },
   "return_code": 0,
   "error_string": "Success.",
-  "support_necessity_checks_run": 7,
+  "support_necessity_checks_run": 4,
   "support_necessity_flags": [],
   "layout": [
     {
       "object": "pin_slider",
       "part": "pin_slider",
       "turns": "",
-      "sha256": "28733749e510",
+      "sha256": "7e36d3413e2f",
       "centre": [
-        45.0,
-        47.0
+        42.0,
+        36.0
       ],
       "footprint": [
-        10.25,
-        24.5,
-        79.75,
-        69.5
+        7.25,
+        12.0,
+        76.75,
+        60.0
       ],
-      "height": 36.0,
-      "print_params": {}
+      "height": 40.0,
+      "print_params": {
+        "enable_support": "1",
+        "support_on_build_plate_only": "1",
+        "bridge_no_support": "1",
+        "support_type": "normal(auto)"
+      }
     },
     {
       "object": "finger_fixture",
       "part": "finger_fixture",
       "turns": "",
-      "sha256": "2168b851c73f",
+      "sha256": "85627a02933f",
       "centre": [
-        110.25,
-        40.0
+        108.0,
+        32.0
       ],
       "footprint": [
-        90.0,
-        24.5,
-        130.5,
-        55.5
+        87.75,
+        16.5,
+        128.25,
+        47.5
       ],
       "height": 47.0,
       "print_params": {}
@@ -75,14 +80,14 @@
       "turns": "",
       "sha256": "bc8ecae86398",
       "centre": [
-        155.5,
-        40.5
+        153.0,
+        32.0
       ],
       "footprint": [
-        140.0,
-        24.5,
-        171.0,
-        56.5
+        137.5,
+        16.0,
+        168.5,
+        48.0
       ],
       "height": 27.75,
       "print_params": {}
@@ -91,16 +96,16 @@
       "object": "sleeve_main_shell_1",
       "part": "sleeve_main_shell_x2",
       "turns": "y270",
-      "sha256": "acbbfe227b11",
+      "sha256": "ed0d632e8df8",
       "centre": [
-        21.07,
-        109.55
+        22.0,
+        112.0
       ],
       "footprint": [
-        10.0,
-        85.0,
-        32.14,
-        134.1
+        10.93,
+        87.45,
+        33.07,
+        136.55
       ],
       "height": 48.4,
       "print_params": {
@@ -112,16 +117,16 @@
       "object": "sleeve_main_shell_2",
       "part": "sleeve_main_shell_x2",
       "turns": "y270",
-      "sha256": "acbbfe227b11",
+      "sha256": "ed0d632e8df8",
       "centre": [
-        53.07,
-        109.55
+        54.0,
+        112.0
       ],
       "footprint": [
-        42.0,
-        85.0,
-        64.14,
-        134.1
+        42.93,
+        87.45,
+        65.07,
+        136.55
       ],
       "height": 48.4,
       "print_params": {
@@ -132,65 +137,78 @@
     {
       "object": "sleeve_fixing_shell_1",
       "part": "sleeve_fixing_shell_x2",
-      "turns": "",
-      "sha256": "955610231b4a",
+      "turns": "x180",
+      "sha256": "e707c4542cdd",
       "centre": [
-        99.17,
-        100.5
+        102.0,
+        92.0
       ],
       "footprint": [
-        75.01,
-        85.0,
-        123.33,
-        116.0
+        77.84,
+        76.5,
+        126.16,
+        107.5
       ],
       "height": 15.25,
       "print_params": {
         "wall_loops": "4",
-        "sparse_infill_density": "40%"
+        "sparse_infill_density": "40%",
+        "enable_support": "1",
+        "support_on_build_plate_only": "1"
       }
     },
     {
       "object": "sleeve_fixing_shell_2",
       "part": "sleeve_fixing_shell_x2",
-      "turns": "",
-      "sha256": "955610231b4a",
+      "turns": "x180",
+      "sha256": "e707c4542cdd",
       "centre": [
-        99.17,
-        139.5
+        102.0,
+        140.0
       ],
       "footprint": [
-        75.01,
-        124.0,
-        123.33,
-        155.0
+        77.84,
+        124.5,
+        126.16,
+        155.5
       ],
       "height": 15.25,
       "print_params": {
         "wall_loops": "4",
-        "sparse_infill_density": "40%"
+        "sparse_infill_density": "40%",
+        "enable_support": "1",
+        "support_on_build_plate_only": "1"
       }
     }
   ],
   "layout_warnings": [],
   "object_settings_in_3mf": {
-    "pin_slider_1": {},
+    "pin_slider_1": {
+      "bridge_no_support": "1",
+      "enable_support": "1",
+      "support_on_build_plate_only": "1",
+      "support_type": "normal(auto)"
+    },
+    "finger_fixture_1": {},
     "sleeve_main_shell_2_1": {
       "sparse_infill_density": "40%",
       "wall_loops": "4"
     },
+    "pin_guide_1": {},
     "sleeve_main_shell_1_1": {
       "sparse_infill_density": "40%",
       "wall_loops": "4"
     },
-    "finger_fixture_1": {},
-    "pin_guide_1": {},
     "sleeve_fixing_shell_2_1": {
+      "enable_support": "1",
       "sparse_infill_density": "40%",
+      "support_on_build_plate_only": "1",
       "wall_loops": "4"
     },
     "sleeve_fixing_shell_1_1": {
+      "enable_support": "1",
       "sparse_infill_density": "40%",
+      "support_on_build_plate_only": "1",
       "wall_loops": "4"
     }
   },
@@ -205,10 +223,10 @@
       "sleeve_fixing_shell_1_1",
       "sleeve_fixing_shell_2_1"
     ],
-    "print_time_s": 11747,
-    "filament_g": 98.81,
-    "filament_m": 32.6,
-    "layers": 242,
+    "print_time_s": 12723,
+    "filament_g": 99.52,
+    "filament_m": 32.84,
+    "layers": 296,
     "max_z_mm": 48.4,
     "bed_type": "Textured PEI Plate",
     "bed_temp_c": [
@@ -219,7 +237,7 @@
     "nozzle_temp_c": "220",
     "brim_type": "auto_brim",
     "toolpath_outside_bed": false,
-    "support_used": false,
+    "support_used": true,
     "slicer_warnings": [],
     "gcode_warnings": [
       {
@@ -234,19 +252,22 @@
       }
     ],
     "feature_time_s": {
-      "Bottom surface": 191,
-      "Bridge": 287,
+      "Bottom surface": 131,
+      "Bridge": 318,
       "Custom": 349,
       "Flush": 28,
-      "Gap infill": 273,
-      "Inner wall": 3177,
-      "Internal solid infill": 733,
-      "Outer wall": 1676,
-      "Overhang wall": 107,
-      "Sparse infill": 2999,
-      "Top surface": 204,
-      "Travel": 1740,
-      "Undefined": 1722
+      "Gap infill": 241,
+      "Inner wall": 3255,
+      "Internal solid infill": 812,
+      "Outer wall": 1735,
+      "Overhang wall": 160,
+      "Sparse infill": 2637,
+      "Support": 717,
+      "Support interface": 87,
+      "Support transition": 23,
+      "Top surface": 280,
+      "Travel": 1966,
+      "Undefined": 1948
     }
   }
 }

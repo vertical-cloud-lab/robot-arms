@@ -50,22 +50,28 @@ SLEEVE_SETTINGS = {"wall_loops": "4", "sparse_infill_density": "40%"}
 FILAMENT_COLOUR = "#000000"
 OSMESA = Path("/usr/lib/x86_64-linux-gnu/libOSMesa.so.8")
 
-SOURCE = {"pr": 44, "branch": "claude/issue-42-20261026-0528", "commit": "b9caa43",
+SOURCE = {"pr": 44, "branch": "claude/issue-42-20261026-0528", "commit": "162706d",
           "dir": "end-effectors/auger-swap/cad/stl"}
 
 # (object name, STL in stl/, turns, centre of its footprint on the bed, per-object settings).
 # turns: quarter turns applied in order, e.g. "x180" or "y90 z90" (right-handed, degrees).
+# Round 4 (PR #44 at 162706d): the slider's bar sits 16 mm off the bed, and the fixed fixing
+# shell has no support-free orientation, so both get tree supports from the plate.
+SLIDER_SETTINGS = {"enable_support": "1", "support_on_build_plate_only": "1", "bridge_no_support": "1", "support_type": "normal(auto)"}
+FIXING_SETTINGS = {**SLEEVE_SETTINGS, "enable_support": "1", "support_on_build_plate_only": "1"}
 PARTS = [
-    # front row: the slider (already turned onto its -Y face by PR #44), the fixture and the guide (base-down)
-    ("pin_slider", "pin_slider", "", (45.0, 47.0), {}),
-    ("finger_fixture", "finger_fixture", "", (110.25, 40.0), {}),
-    ("pin_guide", "pin_guide", "", (155.5, 40.5), {}),
-    # back row: the main shells stood on their -X end (the cradle's half-bore upright),
-    # and the fixing shells on their split face (the four leg feet), as exported
-    ("sleeve_main_shell_1", "sleeve_main_shell_x2", "y270", (21.07, 109.55), SLEEVE_SETTINGS),
-    ("sleeve_main_shell_2", "sleeve_main_shell_x2", "y270", (53.07, 109.55), SLEEVE_SETTINGS),
-    ("sleeve_fixing_shell_1", "sleeve_fixing_shell_x2", "", (99.17, 100.5), SLEEVE_SETTINGS),
-    ("sleeve_fixing_shell_2", "sleeve_fixing_shell_x2", "", (99.17, 139.5), SLEEVE_SETTINGS),
+    # front row: the slider on its knob's end, as exported (PR #44 turned the STL; supports under
+    # the bar), the fixture and the guide base-down, as exported
+    ("pin_slider", "pin_slider", "", (42.0, 36.0), SLIDER_SETTINGS),
+    ("finger_fixture", "finger_fixture", "", (108.0, 32.0), {}),
+    ("pin_guide", "pin_guide", "", (153.0, 32.0), {}),
+    # back row: the main shells stood on their -X end (the cradle's half-bore upright), and the
+    # fixing shells on their back (x180: the split face and the finger channel up; the shorter
+    # band's back and the spine sit 5.5 mm up, on supports)
+    ("sleeve_main_shell_1", "sleeve_main_shell_x2", "y270", (22.0, 112.0), SLEEVE_SETTINGS),
+    ("sleeve_main_shell_2", "sleeve_main_shell_x2", "y270", (54.0, 112.0), SLEEVE_SETTINGS),
+    ("sleeve_fixing_shell_1", "sleeve_fixing_shell_x2", "x180", (102.0, 92.0), FIXING_SETTINGS),
+    ("sleeve_fixing_shell_2", "sleeve_fixing_shell_x2", "x180", (102.0, 140.0), FIXING_SETTINGS),
 ]
 MIN_GAP = 5.0
 
