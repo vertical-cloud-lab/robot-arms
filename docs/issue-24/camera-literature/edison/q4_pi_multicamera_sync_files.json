@@ -1,0 +1,40 @@
+{
+ "data": [
+  {
+   "id": 29889584,
+   "data_storage_id": "25a6d3c1-5d2b-4827-b755-9b5074bdf74d",
+   "operation": "create",
+   "actor_id": "d778fa75-5c92-4567-ac66-486ef5c08cbc",
+   "actor_type": "trajectory",
+   "timestamp": "2026-10-21T21:24:54.588463Z",
+   "data_storage": {
+    "name": "pqa:docs:d778fa75-5c92-4567-ac66-486ef5c08cbc",
+    "description": null,
+    "is_collection": false,
+    "status": "active",
+    "content": null,
+    "embedding": null,
+    "user_id": "UxTMERa8SbeYkryBDMlwEgoJNF53",
+    "label": "6e3a9c448a2d",
+    "parent_id": null,
+    "dataset_id": "b6fe2a2d-fcc2-4526-80a3-9ab56c9f33ab",
+    "project_id": null,
+    "share_status": "private",
+    "short_alias": null,
+    "id": "25a6d3c1-5d2b-4827-b755-9b5074bdf74d",
+    "path": "6e3a9c448a2d",
+    "created_at": "2026-10-21T21:24:54.491708Z",
+    "modified_at": "2026-10-21T21:24:58.322619Z",
+    "tags": null,
+    "file_path": "/tmp/tmp7u96j4ik.pkl",
+    "metadata": {
+     "size": 155938447
+    },
+    "trajectory_id": null,
+    "project_name": null,
+    "project_description": null,
+    "is_kosmos_project": null
+   }
+  }
+ ]
+}

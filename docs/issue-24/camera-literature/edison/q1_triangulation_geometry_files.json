@@ -1,0 +1,122 @@
+{
+ "data": [
+  {
+   "id": 29889539,
+   "data_storage_id": "aa282686-96e5-401f-9748-81a330d8fc37",
+   "operation": "create",
+   "actor_id": "608d6d35-9a47-4855-bf32-832049726449",
+   "actor_type": "trajectory",
+   "timestamp": "2026-10-21T21:21:15.808692Z",
+   "data_storage": {
+    "name": "pqa:docs:608d6d35-9a47-4855-bf32-832049726449",
+    "description": null,
+    "is_collection": false,
+    "status": "active",
+    "content": null,
+    "embedding": null,
+    "user_id": "UxTMERa8SbeYkryBDMlwEgoJNF53",
+    "label": "2bfbe75f7c10",
+    "parent_id": null,
+    "dataset_id": "1bcdc4aa-c226-4576-88aa-b0119931400c",
+    "project_id": null,
+    "share_status": "private",
+    "short_alias": null,
+    "id": "aa282686-96e5-401f-9748-81a330d8fc37",
+    "path": "2bfbe75f7c10",
+    "created_at": "2026-10-21T21:21:15.723010Z",
+    "modified_at": "2026-10-21T21:21:18.168078Z",
+    "tags": null,
+    "file_path": "/tmp/tmp4q0v0aoa.pkl",
+    "metadata": {
+     "size": 47539540
+    },
+    "trajectory_id": null,
+    "project_name": null,
+    "project_description": null,
+    "is_kosmos_project": null
+   }
+  },
+  {
+   "id": 29889311,
+   "data_storage_id": "55302431-ee1a-46c9-bcee-fbb8538f504e",
+   "operation": "create",
+   "actor_id": "608d6d35-9a47-4855-bf32-832049726449",
+   "actor_type": "trajectory",
+   "timestamp": "2026-10-21T21:17:51.756965Z",
+   "data_storage": {
+    "name": "Fraser Imaging Geometry Comparison",
+    "description": "Fraser\u2019s 1984 four-image simulations compare normal, mixed, and convergent networks under common scale, image-precision, and datum assumptions. The 120\u00b0 convergent network gives isotropic XY/Z precision, while 180\u00b0 gives the most homogeneous coordinate precision.",
+    "is_collection": false,
+    "status": "active",
+    "content": null,
+    "embedding": null,
+    "user_id": "UxTMERa8SbeYkryBDMlwEgoJNF53",
+    "label": "0f33a0192bc0",
+    "parent_id": null,
+    "dataset_id": "e346d850-e50f-4650-b489-7790a057f64a",
+    "project_id": null,
+    "share_status": "private",
+    "short_alias": null,
+    "id": "55302431-ee1a-46c9-bcee-fbb8538f504e",
+    "path": "0f33a0192bc0",
+    "created_at": "2026-10-21T21:17:51.722718Z",
+    "modified_at": "2026-10-21T21:17:51.722718Z",
+    "tags": null,
+    "file_path": null,
+    "metadata": {
+     "session_id": "608d6d35-9a47-4855-bf32-832049726449",
+     "artifact_id": "21bf3250-979e-4a09-b533-ec2e505c4f16",
+     "state_artifact_id": "artifact-01",
+     "artifact_type": "table",
+     "artifact_title": "Fraser Imaging Geometry Comparison",
+     "artifact_caption": "Fraser\u2019s 1984 four-image simulations compare normal, mixed, and convergent networks under common scale, image-precision, and datum assumptions. The 120\u00b0 convergent network gives isotropic XY/Z precision, while 180\u00b0 gives the most homogeneous coordinate precision."
+    },
+    "trajectory_id": null,
+    "project_name": null,
+    "project_description": null,
+    "is_kosmos_project": null
+   }
+  },
+  {
+   "id": 29889187,
+   "data_storage_id": "3ae51080-c9c4-41d5-ab51-a7a5a03b4a39",
+   "operation": "create",
+   "actor_id": "608d6d35-9a47-4855-bf32-832049726449",
+   "actor_type": "trajectory",
+   "timestamp": "2026-10-21T21:16:32.422248Z",
+   "data_storage": {
+    "name": "Quantitative Camera Placement Rules",
+    "description": "Key geometric and empirical rules for designing a multi-camera triangulation network, including convergence angle, depth uncertainty, oblique coverage, camera count, and occlusion tradeoffs.",
+    "is_collection": false,
+    "status": "active",
+    "content": null,
+    "embedding": null,
+    "user_id": "UxTMERa8SbeYkryBDMlwEgoJNF53",
+    "label": "dc8ce3f56db1",
+    "parent_id": null,
+    "dataset_id": "c3827cb8-4596-4dcd-8352-80a6f6b6c8b9",
+    "project_id": null,
+    "share_status": "private",
+    "short_alias": null,
+    "id": "3ae51080-c9c4-41d5-ab51-a7a5a03b4a39",
+    "path": "dc8ce3f56db1",
+    "created_at": "2026-10-21T21:16:32.386930Z",
+    "modified_at": "2026-10-21T21:16:32.386930Z",
+    "tags": null,
+    "file_path": null,
+    "metadata": {
+     "session_id": "608d6d35-9a47-4855-bf32-832049726449",
+     "artifact_id": "aa80110a-f4fc-4090-b160-40ca714d8f09",
+     "state_artifact_id": "artifact-00",
+     "artifact_type": "table",
+     "artifact_title": "Quantitative Camera Placement Rules",
+     "artifact_caption": "Key geometric and empirical rules for designing a multi-camera triangulation network, including convergence angle, depth uncertainty, oblique coverage, camera count, and occlusion tradeoffs."
+    },
+    "trajectory_id": null,
+    "project_name": null,
+    "project_description": null,
+    "is_kosmos_project": null
+   }
+  }
+ ]
+}

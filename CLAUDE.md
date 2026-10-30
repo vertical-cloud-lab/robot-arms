@@ -186,9 +186,72 @@ around it. sudo is password-gated, so feed the password over stdin so it never a
 process list or shell history: `ssh … "sudo -S -p '' <cmd>" <<< "$ARM_PI_PASSWORD"`. Never
 print the hostname or any credential in comments, commits, or logs.
 
+**Side camera and digital twin (issue #24).** The Pi Camera Module 3 Wide (imx708_wide, CSI) is
+taped to the table and looks at the arm side-on. It was moved between #19 and 2026-10-13 (now
+lower and closer, with a shelf behind the arm in view), so #19's image calibration no longer
+applies. The current camera model is `docs/issue-24/camera_2026-10-13.json` (OpenCV, full-sensor
+4608x2592 pixels, arm base frame in mm). `scripts/piper_twin.py` draws AgileX's URDF meshes
+(piper_ros, pinned by SHA) through it; the URDF reproduces the SDK's DH forward kinematics to
+0.1 mm, so SDK joint feedback drives it directly. `scripts/piper_camera_check.py` (stdlib only,
+copy at `~/piper_camera_check.py` on the Pi) plans and, with `--go`, runs the small-motion check
+on video; `scripts/piper_camera_compare.py` turns the run into errors and a side-by-side video.
+For video, use `rpicam-vid --mode 2304:1296:10:P`: it covers the full sensor, while the
+1536x864 mode is a centre crop that cuts off the base. When the arm is unpowered, `can0` stays
+up but `ConnectPort()` logs `SearchPiperFirmwareVersion send failed: SEND_MESSAGE_FAILED` (no
+node acknowledges) and no joint feedback arrives.
+
 **Using the Pi as a proxy.** Some vendor sites (and YouTube's player) block GitHub Actions IP
 ranges; the Pi's residential IP is not blocked. The Pi is on constrained Wi-Fi and may be
 running the arm, so rate-cap transfers (`curl --limit-rate`) and never run speed tests.
+
+**Is the arm on? A silent bus doesn't mean off.** The PiPER talks to the Pi through its own
+candleLight USB-CAN adapter (`gs_usb`, `can0`, 1 Mbit/s). On 2026-10-14 two runs here reported
+the arm off because `can0` received 0 frames. In fact it was powered and answered as soon as
+it was asked (#25). Check in this order:
+
+1. `ip -details -statistics link show can0`. If the state is not `ERROR-ACTIVE`, restart the
+   interface. That sends nothing and cannot move the arm. Nothing brings `can0` up at boot,
+   so after a Pi reboot this step is required:
+
+   ```bash
+   ssh … "sudo -S -p '' sh -c 'ip link set can0 down && ip link set can0 type can bitrate 1000000 && ip link set can0 up'" <<< "$ARM_PI_PASSWORD"
+   ```
+2. `ssh … 'python3 - --query' < scripts/piper_bus_check.py`. It listens, then sends one
+   firmware-version query (no enable, no motion, no settings). It reports which case applies:
+   streaming feedback; a leader arm; powered but not streaming (needs a power cycle at the arm,
+   which was the 2026-10-14 state); or nothing acknowledging the query (unpowered or not wired).
+3. Only after that, ask someone at the arm for the physical steps: a power cycle, or checking
+   the 24 V supply and the cable breakout.
+
+**Look through the camera before any motion.** A Camera Module 3 Wide (`imx708_wide`) on the
+Pi's CSI port is taped at the table edge, viewing the arm from the side (the "side camera" in
+`piper_camera_check.py`). Grab a frame and open it:
+
+```bash
+ssh … 'rpicam-still -n -t 1500 --width 2304 --height 1296 -o /tmp/cam_now.jpg >/dev/null 2>&1 && cat /tmp/cam_now.jpg' > cam_now.jpg
+```
+
+If anyone is within reach of the arm, don't move it, and report what the frame shows. People
+walk up to this table. This repo is public, so crop people out of any frame you commit.
+
+**Arm state that lives on the Pi, not here** (as of 2026-10-14):
+- `~/piper-venv` has `piper_sdk` 0.6.2 and `python-can` 4.6.1. The firmware is `S-V1.8-1`, so
+  use `C_PiperInterface_V2`; `V3` is for `S-V1.8-8` and later.
+- In `~` are `piper_status.py` (status queries only), plus `piper_up_down.py` and
+  `piper_camera_check.py` (these move the arm only with `--go`, and refuse without joint
+  feedback). All three were left by earlier sessions.
+- On 2026-10-14 the arm was sent the follower ("motion output arm") setting,
+  `0x470 FC 00 00 00`, to rule out leader mode. That is AgileX's default for a single arm;
+  `FA` would make it a leader again.
+
+**Rest seat (#24).** A printed seat behind the base (`docs/issue-24/rest-seat/`) holds the upper
+arm, and with it J1, while the arm is parked. Once someone confirms on an issue that it is
+installed, every script that moves the arm must:
+- lift J2 to at least 8° before moving J1;
+- come home by setting J1 = 0 first and lowering J2 last;
+- keep J1 above −130° while the arm is still folded.
+
+If the arm can't settle into the seat at home, J1's zero is wrong: stop rather than push.
 
 ## Secret inventory
 
