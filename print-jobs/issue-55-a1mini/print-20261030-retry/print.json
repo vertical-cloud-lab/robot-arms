@@ -1,0 +1,53 @@
+{
+ "what": "PR #44's round-5 stock-finger sleeves (2 x main shell with flat counterbores, 2 x fixing shell) on one A1 mini plate in black PLA: the retry of this issue's cancelled 05:01 UTC attempt",
+ "result": "NOT SENT. The plate was empty, but a black part on a small white block sat on the bench about 1-2 cm beyond the parked bed's edge, in line with the bed's Y travel, and the start sequence's nozzle wipes move the bed 5 mm further that way (Y 180 -> Y 185). The run couldn't tell from the camera whether the bed clears it, asked in the thread, and held. No reply came and the block was still there at the 06:30 UTC cutoff stated in the thread, so the run stopped without sending",
+ "printer": {
+  "model": "Bambu Lab A1 mini",
+  "name_in_studio": "Thumbelina, the A1 Mini",
+  "nozzle": "0.4 mm stainless steel, standard flow (Studio's Printer Parts, read from the printer at 05:27:45 UTC)",
+  "state": "idle; last job issue53_A1mini_PLA_issue53 Finished 100 %; nozzle and bed 23 C, heaters off; no HMS alerts at 05:28:59",
+  "ams": "AMS lite: A1 blue PLA, A2 empty, A3 black PLA, A4 PETG (as on the Device page)",
+  "mode": "Bambu cloud",
+  "lan": "not reachable from this run (claude-print.yml has no Tailscale step), so all checks were on Studio's Device page"
+ },
+ "route": "Bambu Studio 02.08.02.61 GUI on the runner's Xvfb display, logged in to the lab's Bambu account (password plus a bambu-totp authenticator code, in an approved @claude-print run)",
+ "request": "https://github.com/vertical-cloud-lab/robot-arms/issues/55#issuecomment-6515602111 (jss265, 2026-10-30T05:18:27Z): \"@claude-print try again the previous print only after claude has finished updating the files here: https://github.com/vertical-cloud-lab/robot-arms/pull/44#issuecomment-6515225555\"",
+ "interpretation": "the same plate as the previous attempt in this issue (2 x sleeve_main_shell_x2 + 2 x sleeve_fixing_shell_x2), from PR #44's files once its Claude run had finished. That run finished at 05:10 UTC; its last commit, 097006f (05:09:24), is still the head of claude/issue-42-20261026-0528, and ../stl/ matches it byte for byte (sha256 143dc8432c48 main shell, e707c4542cdd fixing shell)",
+ "replies": [],
+ "ready_file": {
+  "file": "issue55_sleeves_A1mini_PLA_gui.gcode.3mf",
+  "what": "the plate as sliced in Studio's GUI (File > Export > Export plate sliced file, 05:50 UTC), with 3D/3dmodel.model's DesignerUserId blanked. Not sent",
+  "plate_1_gcode_md5": "be3e19209bf99c3e9ec49e2bfdd3b53a (the same as Studio's own slice in /tmp/bamboo_model)",
+  "source": "../issue55_sleeves_A1mini_PLA.3mf, the previous attempt's CLI project (../slice_a1mini.py), opened in the GUI and sliced there without changes",
+  "settings": "0.20mm Standard @BBL A1M; 4 walls and 40% infill (all four shells, per object); circle compensation on; supports from the plate only, tree(auto), under the fixing shells only; Bambu PLA Basic @BBL A1M, black; Textured PEI Plate at 65 C, nozzle 220 C; auto brim. The GUI kept them all (different_settings_to_system lists circle compensation, infill and walls)",
+  "slice": "GUI: 242 layers to 48.40 mm, 57.00 g (18.81 m; model 54.57 g, support 2.43 g), total 2 h 17 min 7 s. CLI: 242 layers, 57.03 g, 2 h 19 min 15 s. Same start G-code and temperatures. Per-layer extrusion differs only in the tree supports on layers 1-22 (at most 8.4 mm of filament on one layer, 0.05 % in total), and the GUI uses Bambu's stock acceleration limits"
+ },
+ "plate_check": {
+  "rule": "CLAUDE.md's plate rule of 2026-10-23 (90 s wait since #51): frame first, the run reads the plate, at least 90 s for objections, a fresh frame before Send",
+  "first_frame": "20261030T052600Z_a1mini_camera_studio.jpg (posted 05:28:48 UTC): plate empty apart from its texture and the faint outline of an earlier print; plate mean luma 130/255. Gantry parked high (Z ~146 after #53), so the bench and room show; room above the bench blurred",
+  "beside_bed": "20261030T052600Z_beside_bed_zoom.jpg: a black part on a small white block on the bench just left of the plate, about 1-2 cm from the plate's edge in the image, with a white cable from it running toward the bed. #53's end G-code parks the bed at Y 180 (G1 X-13 Y180); this plate's start G-code goes to Y 185 four times (nozzle wipes) and to Y -4 at the other end; if the bed had been slid by hand while the plate was cleared, the travel toward the block would be larger still. The 05:01 frame of the previous attempt had that corner blurred, so it couldn't be compared",
+  "hold_posted": "2026-10-30T05:31:44Z, asking anyone at the printer to move the block or say it's clear; cutoff 06:30 UTC stated at 05:49:43",
+  "frames_during_hold": "every ~2.5 min from 05:35 to 06:28 (23 frames): mean absolute difference from the first frame 0.0016-0.0035 of full scale on both the plate and the bench-left region, i.e. no change. Three false alarms were the live view closing itself (05:40) and Studio being on the Prepare tab (05:50); none was a change at the printer",
+  "last_frame": "20261030T062841Z_a1mini_camera_studio_last.jpg: the plate still empty and the block still beside the bed",
+  "go": "none: no replies in the thread from 05:18:56 to the last poll at 06:30:20"
+ },
+ "timeline_utc": {
+  "request": "2026-10-30T05:18:27Z",
+  "pr44_run_finished": "2026-10-30T05:10:26Z (comment final); last commit 097006f at 05:09:24",
+  "previous_attempt_cancelled": "2026-10-30T05:14:42Z (actions run 41005427517, before Send)",
+  "job_started": "2026-10-30T05:18:30Z (approved); tracking comment 05:18:56",
+  "studio_started": "2026-10-30T05:22:07Z (first run: certificate prompt, wizard with North America, plug-in, Cancel on the profile update, Beta prompts)",
+  "studio_login": "2026-10-30T05:25:12Z (Log In 05:24:48, authenticator code typed 05:25:10, Confirm 05:25:12; no e-mailed code asked for)",
+  "first_frame": "2026-10-30T05:26:00Z (posted 05:28:48)",
+  "printer_parts": "2026-10-30T05:27:45Z",
+  "hms": "2026-10-30T05:28:59Z (none)",
+  "hold": "2026-10-30T05:31:44Z",
+  "gui_slice": "2026-10-30T05:32:34Z",
+  "export": "2026-10-30T05:50Z",
+  "token_reminted": "2026-10-30T06:08Z",
+  "cutoff": "2026-10-30T06:30:12Z",
+  "signed_out": "2026-10-30T06:30:50Z; Studio then closed and its config (~/.config/BambuStudio, which holds the printers' LAN access codes), /tmp/bamboo_model and the recording deleted by 06:31:15"
+ },
+ "recording": "the runner's screen was recorded (ffmpeg x11grab, 5 fps, 5 min segments, 05:22-06:30, 128 MB) but not published: it shows the account e-mail during login and the lab room, and print runs have no YouTube token. Deleted at 06:31 UTC",
+ "after": "nothing sent; Thumbelina left idle with its plate empty. To print: clear the bench beside the bed (or confirm the block is clear of the bed's travel), then comment @claude-print naming print-jobs/issue-55-a1mini/print-20261030-retry/issue55_sleeves_A1mini_PLA_gui.gcode.3mf on claude/issue-55-20261030-0518 and Thumbelina"
+}
