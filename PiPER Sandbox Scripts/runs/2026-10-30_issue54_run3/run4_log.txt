@@ -1,0 +1,36 @@
+joints (deg): [  -1.24,   -2.04,    1.84,   -2.57,   24.73,  -21.50]
+enabled: [False, False, False, False, False, False]
+as found: Pi side of the gripper points to the arm's right (-y), 56 deg below horizontal
+plan, J1 held at -1.24 deg throughout:
+  the J5-J6 link is at -19.5 deg now
+  level [  -1.24,   -2.04,    1.84,   -2.57,    5.20,  -21.50]  J5 only: the link to +0.0 deg, lifting the gripper off its rest
+  up    [  -1.24,   20.00,  -20.00,   -2.57,    5.01,  -21.50]  J2/J3: the wrist rises 94 mm and moves 30 mm forward
+  then  [  -1.24,   20.00,  -20.00,   -2.57,    5.01,  -52.00]  gripper rolled to J6 = -52 at the top: Pi side of the gripper points to the arm's right (-y), 35 deg below horizontal
+  down  [  -1.24,    0.00,    0.00,   -2.57,    5.01,  -52.00]  link at -0.0 deg
+  1 up/down cycle(s) in all at up to 12 deg/s
+  land  [  -1.24,   -1.74,    1.54,   -2.57,    5.20,  -52.00]  0.3 deg above the rest; firmware limits J2 >= -2.5, J3 <= 2.3 for the run, back to 0 after
+  lower the gripper: J5 toward 25.2 at 4 deg/s until it rests (Pi side of the gripper points to the arm's right (-y), 31 deg below horizontal), then disable
+firmware limits J2, J3 (deg): ((0.0, 180.0), (-170.0, 0.0))
+firmware limits now J2 >= -2.54, J3 <= 2.34
+enabled in 0.10 s
+level the J5-J6 link: [  -1.24,   -2.04,    1.84,   -2.57,    5.20,  -21.50] over 2.6 s
+  reached in 2.6 s: [  -1.24,   -2.04,    1.84,   -2.57,    5.31,  -21.50]
+  link at -0.1 deg
+  J5 holds the gripper up with -1.85 A
+cycle 1/1 up: [  -1.24,   20.00,  -20.00,   -2.57,    5.01,  -21.50] over 2.9 s
+  reached in 2.9 s: [  -1.24,   19.95,  -19.92,   -2.57,    4.99,  -21.50]
+roll the gripper: [  -1.24,   20.00,  -20.00,   -2.57,    5.01,  -52.00] over 4.0 s
+  reached in 4.0 s: [  -1.24,   19.95,  -19.92,   -2.57,    4.99,  -51.99]
+  Pi side of the gripper points to the arm's right (-y), 35 deg below horizontal
+cycle 1/1 down: [  -1.24,    0.00,    0.00,   -2.57,    5.01,  -52.00] over 2.6 s
+  reached in 2.6 s: [  -1.24,    0.00,    0.00,   -2.57,    4.99,  -51.99]
+land on the rest: [  -1.24,   -1.74,    1.54,   -2.57,    5.20,  -51.99] over 1.4 s
+  reached in 1.4 s: [  -1.24,   -1.64,    1.47,   -2.57,    5.21,  -51.99]
+lower the gripper: J5 from 5.21 toward 25.23 at 4 deg/s until it rests (J5 holding -1.8 A now)
+  stopped at J5 = 24.87: resting: J5 carries -0.62 A (was -1.80 A hanging free)
+disabled at [  -1.24,   -1.64,    1.47,   -2.57,   24.97,  -51.99]: Pi side of the gripper points to the arm's right (-y), 31 deg below horizontal
+settled 3 s later at [  -1.24,   -1.89,    2.07,   -2.90,   24.89,  -51.99]: Pi side of the gripper points to the arm's right (-y), 30 deg below horizontal
+dropped (deg): J1 +0.00, J2 -0.25, J3 +0.60, J4 -0.33, J5 -0.08, J6 +0.00
+firmware limits back to J2 >= 0, J3 <= 0: (0.0, 180.0) (-170.0, 0.0)
+completed 1/1 cycles
+trace written to ~/issue54/run4_trace.csv

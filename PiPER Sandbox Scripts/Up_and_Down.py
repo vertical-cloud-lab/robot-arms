@@ -48,7 +48,10 @@ at J6 = -55.0 (J5 = 11), with J6's current going from 0.1 A to 16 A. The lag che
 0.35 s to see it, which is why the current check and the back-off exist, and why the roll now
 stops at J6 = -52 by default. Second run: rolled to -52 with the wrist drooped, the gripper
 came to rest on something at home (J5's current flipped sign), and the next lift tripped J3's
-current limit, which is why the wrist is now level whenever the arm moves.
+current limit, which is why the wrist is now level whenever the arm moves. Third and fourth
+runs, with the link level: no snags, and nothing touched at home. From the arm's own rest the
+power-off drop was J2 0.25, J3 0.60, J5 0.08 deg (J3's rest wanders between +1.8 and +2.4 from
+run to run, so the fixed --land-above-deg can't promise half a degree there).
 
 Runs on the Pi that has the USB-CAN adapter (rpi-5-mpzy since 2026-10-30; the arm Pi,
 rpi-5-eufi, before that), in the venv that has piper_sdk (~/piper-venv). can0 must already be

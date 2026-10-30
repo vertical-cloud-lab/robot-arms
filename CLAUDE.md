@@ -87,10 +87,11 @@ live in this repo, so record them here so they can be reproduced.
 toward J2. With the camera on top (J6 near 0), disabling the motors drops the arm onto its rest
 and lands the plug on J2's housing. Disable only with the gripper rolled so the Pi is to the
 side, as in #54's third photo. `PiPER Sandbox Scripts/Up_and_Down.py` (copy at
-`~/Up_and_Down.py` on whichever Pi has the CAN adapter) raises J2/J3 with the wrist as it finds
-it, rolls the wrist at the top (J4 = J5 = 0, J6 = `--park-j6-deg`, default −90), cycles up and
-down, and disables only at home with the Pi to the side. It stops on a current rise or a lag and
-backs off. Its "Pi to the side" check is forward kinematics that assume the camera is straight up
+`~/Up_and_Down.py` on whichever Pi has the CAN adapter) levels the J5–J6 link on the rest (J5
+about +5°), raises J2/J3, rolls the gripper at the top (J6 = `--park-j6-deg`, default −52), cycles
+up and down with the link level, lands just above the rest, lowers the gripper until J5's current
+shows it resting, and only then disables. It stops on a current rise, a lag, or (once the gripper
+hangs level) J5 easing off because something is holding the gripper up, and backs off. Its "Pi to the side" check is forward kinematics that assume the camera is straight up
 at J6 = 0, which nobody has checked against the hardware. #15's `~/piper_up_down.py` without
 `--hold-wrist` commands J6 to 0, so don't run it as is.
 - The first run (2026-10-30, `PiPER Sandbox Scripts/runs/2026-10-30_issue54/`) started at
@@ -103,6 +104,16 @@ at J6 = 0, which nobody has checked against the hardware. #15's `~/piper_up_down
   as found) without trouble. On the way down, from about J2 = 2°, J5's current reversed, as if
   the wrist were resting on something, and the lift off home that followed tripped J3's 4 A
   limit, so it stopped after one cycle. At J6 −52° the Pi is still about 35° below horizontal.
+- Third and fourth runs (2026-10-30 04:54 and 04:57 UTC, `runs/2026-10-30_issue54_run3/`), with
+  the J5–J6 link level whenever the arm moved (jss265's request): 3 of 3 and 1 of 1 cycles, no
+  snags. With the link level, J5 held −1.7 to −1.9 A at home, so the gripper no longer touched
+  anything there (run 2's contact was the drooped wrist). Lowering the gripper at the end, J5's
+  current eased off at J5 ≈ 24°, the drooped gripper's own rest. Power-off drops: run 3 J3
+  1.55°, J5 0.82°, because the start pose had been moved by hand to J3 +0.7° and the script
+  landed relative to it. Run 4, from the arm's own rest and landing 0.3° above it: J2 0.25°,
+  J3 0.60°, J4 0.33°, J5 0.08°. J3's own rest wanders between +1.8° and +2.4° from run to run,
+  so a fixed offset can't promise 0.5° on J3; lowering J3 until its current eases off, as J5
+  now does, would.
 - **Why the arm drops 2° at disable:** the firmware limits J2 to ≥ 0° and J3 to ≤ 0°, and the
   rest is about J2 −2°, J3 +2°. `Up_and_Down.py` widens those two limits to just past the rest
   (`MotorAngleLimitMaxSpdSet`, the other ends and speeds left alone), lands 0.4° above the
@@ -124,6 +135,9 @@ arm (eufi still has its venv and scripts). Changes made on mpzy that day:
 - Second run: the updated `~/Up_and_Down.py`, and `run2*` files (log, trace, video) in
   `~/issue54/` on both mpzy and eufi. The J2/J3 firmware limits were widened during the run
   and set back to 0° afterwards (read back: J2 0 to 180°, J3 −170 to 0°).
+- Third and fourth runs: the updated `~/Up_and_Down.py` on mpzy, and `run3*`/`run4*` files (log,
+  trace, video) in `~/issue54/` on mpzy and eufi (eufi at 720p 15 fps MJPEG). The J2/J3 limits
+  were set back to 0° after each run and read back.
 
 The PiPER cell's fixed cameras get their own Pis: `CAM_PI_HOSTNAME`, tagged `tag:rpi-5-76zj`
 (login `CAM_PI_USERNAME`, sudo password `CAM_PI_PASSWORD`), and `CAM2_PI_HOSTNAME`, tagged
