@@ -6,7 +6,8 @@ the build plate on Thumbelina (A1 mini) with the slider parts, the finger fixtur
 needed to equip the stock gripper fingers ... Then send it to the printer to print on PLA black."
 
 **Sent on 30 Oct 2026 at 00:15:49 UTC** from Bambu Studio's GUI in an approved `@claude-print` run, after the plate
-check below. The run's record is [`print-20261030/print.json`](print-20261030/print.json). An earlier run on 29 Oct
+check below. At 02:26 UTC it was at layer 151 of 296 (60 %), with Studio's estimated finish at 03:47 UTC; the run's
+180 min limit ended the watching before that. The run's record is [`print-20261030/print.json`](print-20261030/print.json). An earlier run on 29 Oct
 sliced PR #44's round 3 but sent nothing, because the requester asked to wait for round 4. Its record is
 [`print-20261029/print.json`](print-20261029/print.json).
 

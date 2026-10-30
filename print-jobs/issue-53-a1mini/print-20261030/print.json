@@ -50,6 +50,6 @@
  },
  "watching": "monitor.jsonl: watch_studio.py (byu-vcl bambu/studio, WATCH_LAYOUT=a1mini BED_TARGET=65) OCR of the Device page every 10 s, from 00:17:49 to 02:25:41 in six runs, with a camera frame every 1-5 min. Layers advanced steadily from 1 (00:23) to 150 (02:25); the nozzle read 218-220 C and the bed 64-65 C; no new dialog, stall or blank camera. The 'bed target 165' and 'bed 1/64' entries are its usual misreads of '65 /65'. The thread was polled every minute: no replies",
  "recording": "the runner's screen was recorded (ffmpeg x11grab, 8 fps, 5 min segments) but not published: it shows the account e-mail during login and people in the lab, and print runs have no YouTube token. Deleted at 02:27 UTC",
- "after": "still printing on Thumbelina at 02:27 UTC, with people in the lab; the remaining ~80 min were not watched by this run",
+ "after": "still printing on Thumbelina at 02:27 UTC; the remaining ~80 min were not watched by this run",
  "not_watched": "from 02:27 UTC to the end of the print (Studio's estimate 03:47 UTC)"
 }
