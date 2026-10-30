@@ -97,5 +97,135 @@
       "volts at the converter": 11.72,
       "lost (%)": 2.3
     }
+  ],
+  "extension_by_length": [
+    {
+      "extension (m)": 1.0,
+      "reach (m)": 2.2,
+      "amps": [
+        1.5,
+        2.0,
+        2.5
+      ],
+      "volts at the Pi": [
+        4.88,
+        4.81,
+        4.73
+      ]
+    },
+    {
+      "extension (m)": 1.5,
+      "reach (m)": 2.7,
+      "amps": [
+        1.5,
+        2.0,
+        2.5
+      ],
+      "volts at the Pi": [
+        4.83,
+        4.74,
+        4.65
+      ]
+    },
+    {
+      "extension (m)": 2.0,
+      "reach (m)": 3.2,
+      "amps": [
+        1.5,
+        2.0,
+        2.5
+      ],
+      "volts at the Pi": [
+        4.78,
+        4.67,
+        4.57
+      ]
+    },
+    {
+      "extension (m)": 3.0,
+      "reach (m)": 4.2,
+      "amps": [
+        1.5,
+        2.0,
+        2.5
+      ],
+      "volts at the Pi": [
+        4.68,
+        4.54,
+        4.4
+      ]
+    }
+  ],
+  "longer_leads": [
+    {
+      "route": "Raspberry Pi 27 W (1.2 m, 17 AWG) + 2 m extension: the plan",
+      "reach (m)": 3.2,
+      "amps": [
+        1.5,
+        2.0,
+        2.5
+      ],
+      "volts at the Pi": [
+        4.78,
+        4.67,
+        4.57
+      ]
+    },
+    {
+      "route": "Raspberry Pi 45 W (1.5 m, 17 AWG) + 1.5 m extension",
+      "reach (m)": 3.0,
+      "amps": [
+        1.5,
+        2.0,
+        2.5
+      ],
+      "volts at the Pi": [
+        4.81,
+        4.72,
+        4.62
+      ]
+    },
+    {
+      "route": "Raspberry Pi 45 W (1.5 m, 17 AWG) + 2 m extension",
+      "reach (m)": 3.5,
+      "amps": [
+        1.5,
+        2.0,
+        2.5
+      ],
+      "volts at the Pi": [
+        4.77,
+        4.65,
+        4.54
+      ]
+    },
+    {
+      "route": "iUniker 5.25 V / 4 A (1.5 m, if 18 AWG) + 2 m extension",
+      "reach (m)": 3.5,
+      "amps": [
+        1.5,
+        2.0,
+        2.5
+      ],
+      "volts at the Pi": [
+        4.9,
+        4.78,
+        4.66
+      ]
+    },
+    {
+      "route": "JSAUX 45 W, its own 10 ft lead at 5 V / 3 A (if 20 AWG), no extension",
+      "reach (m)": 3.05,
+      "amps": [
+        1.5,
+        2.0,
+        2.5
+      ],
+      "volts at the Pi": [
+        4.67,
+        4.55,
+        4.44
+      ]
+    }
   ]
 }
