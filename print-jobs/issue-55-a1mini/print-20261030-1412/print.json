@@ -1,0 +1,47 @@
+{
+ "what": "PR #44's round-5 stock-finger sleeves (2 x main shell with flat counterbores, 2 x fixing shell) on one A1 mini plate in black PLA: the second retry of this issue's print, after the 05:18 run held for a part beside the bed",
+ "result": "DRAFT: sent at 14:24:22 UTC and printing",
+ "printer": {
+  "model": "Bambu Lab A1 mini",
+  "name_in_studio": "Thumbelina, the A1 Mini",
+  "nozzle": "0.4 mm stainless steel, standard flow (Studio's Printer Parts, read from the printer at 14:20:47 UTC)",
+  "state": "idle at 14:19:39; last job issue53_A1mini_PLA_issue53 Finished 100 %; nozzle and bed 21 C, heaters off; no HMS alerts at 14:21:11",
+  "ams": "AMS lite: A1 blue PLA, A2 empty, A3 black PLA, A4 PETG (as on the Device page)",
+  "mode": "Bambu cloud",
+  "lan": "not reachable from this run (claude-print.yml has no Tailscale step), so all checks and the watching were on Studio's Device page"
+ },
+ "route": "Bambu Studio 02.08.02.61 GUI on the runner's Xvfb display, logged in to the lab's Bambu account (password plus a bambu-totp authenticator code, in an approved @claude-print run)",
+ "request": "https://github.com/vertical-cloud-lab/robot-arms/issues/55#issuecomment-6524875590 (jss265, 2026-10-30T14:11:41Z): \"@claude-print try it now. That piece is no where near the print bed. Everything is clear and ready to go.\"",
+ "interpretation": "send the ready file the 05:18 run prepared and held (print-jobs/issue-55-a1mini/print-20261030-retry/issue55_sleeves_A1mini_PLA_gui.gcode.3mf on claude/issue-55-20261030-0518, commit 8120030) to Thumbelina. The requester answered that run's only open question: the black part on the white block beside the bed is nowhere near the bed",
+ "replies": [],
+ "sent_file": {
+  "file": "issue55_sleeves_A1mini_PLA_sent.gcode.3mf",
+  "what": "the ready file, byte for byte (sha256 d1a93d9de53500ee97a6ece1aa3e28c88bae94dbe226e2f11d91800fe6981e2f). Studio opened the .gcode.3mf in Preview and uploaded it as is: its temp folder's origin.txt names the opened file and the extracted plate_1.gcode has the same MD5",
+  "plate_1_gcode_md5": "be3e19209bf99c3e9ec49e2bfdd3b53a",
+  "slice": "242 layers to 48.40 mm, 57.00 g (model 54.57 g, support 2.43 g), 2 h 17 min 7 s; 0.20mm Standard @BBL A1M, Bambu PLA Basic @BBL A1M, Textured PEI Plate, 0.4 nozzle, 220 C nozzle, 4 walls, 40 % infill",
+  "send_dialog": "Thumbelina, the A1 Mini, 0.4 mm; plate PEI; PLA -> A3; timelapse off; auto bed levelling on; flow dynamics calibration on; job name renamed from issue55_sleeves_A1mini_PLA_gui.gcode_issue55 to issue55_sleeves_A1mini_PLA"
+ },
+ "plate_check": {
+  "rule": "CLAUDE.md's plate rule of 2026-10-23 (90 s wait since #51): frame first, the run reads the plate, at least 90 s for objections, a fresh frame before Send",
+  "first_frame": "20261030T141939Z_a1mini_camera_studio.jpg (posted 14:20:37 UTC): plate empty apart from its texture, the faint outline of earlier prints and the corner mark; plate mean luma 130/255. Gantry still parked high after #53, so the bench and room show; room above the bench blurred. The bed sat about 30 px further left in the frame than at 06:28 (mean difference over the plate 8.1/255 against the 05:18 run's last frame), so someone had been at the printer; the black part on the white block and the red parts box were where they had been overnight",
+  "beside_bed": "the requester's comment that the part beside the bed is nowhere near it was taken as settling the 05:18 run's hold",
+  "pre_send_frame": "20261030T142306Z_a1mini_camera_studio.jpg: unchanged (mean absolute difference from the first frame 1.97/255 on the plate, 1.16 on the bench left of it)",
+  "go": "no replies in the thread from the request (14:11:41) to the last poll before Send (14:24:20); the 90 s window ended 14:22:07",
+  "hms": "no alerts at 14:21:11 UTC"
+ },
+ "timeline_utc": {
+  "request": "2026-10-30T14:11:41Z",
+  "job_started": "2026-10-30T14:12:35Z (approved); tracking comment 14:12:44",
+  "studio_started": "2026-10-30T14:14:56Z (first run: certificate prompt, wizard with North America, plug-in, three Beta prompts, Cancel on the profile update)",
+  "studio_login": "2026-10-30T14:18:10Z (Log In 14:17:52, authenticator code typed 14:18:08, Confirm 14:18:10; no e-mailed code asked for)",
+  "first_frame": "2026-10-30T14:19:39Z (posted 14:20:37)",
+  "printer_parts": "2026-10-30T14:20:47Z",
+  "hms": "2026-10-30T14:21:11Z (none)",
+  "file_opened": "2026-10-30T14:22:05Z",
+  "pre_send_frame": "2026-10-30T14:23:06Z",
+  "send": "2026-10-30T14:24:22Z (\"Successfully sent\")",
+  "heatbed_preheating": "2026-10-30T14:24:56Z",
+  "layer_1": "2026-10-30T14:32:01Z, after filament change, vibration compensation, nozzle cleaning, bed levelling and flow calibration",
+  "fixing_shells_done": "2026-10-30T15:47Z (layer 76)"
+ }
+}
