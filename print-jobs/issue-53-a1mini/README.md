@@ -1,94 +1,94 @@
 # #53: PR #44's slider, finger fixture and stock-finger sleeves on one A1 mini plate
 
-Asked for on [#53](https://github.com/vertical-cloud-lab/robot-arms/issues/53): once the Claude run on
-[PR #44's comment](https://github.com/vertical-cloud-lab/robot-arms/pull/44#issuecomment-6506342698) (a lower
-finger fixture, and a compliant latch on the slider) had finished, "load the build plate on Thumbelina
-(A1 mini) with the slider parts, the finger fixture, and the two shell sleeves needed to equip the stock
-gripper fingers", in black PLA, and wait for the requester's approval before sending.
+Asked for on [#53](https://github.com/vertical-cloud-lab/robot-arms/issues/53#issuecomment-6511306990): from
+[PR #44's round-4 comment](https://github.com/vertical-cloud-lab/robot-arms/pull/44#issuecomment-6508700624), "load
+the build plate on Thumbelina (A1 mini) with the slider parts, the finger fixture, and also the two shell sleeves
+needed to equip the stock gripper fingers ... Then send it to the printer to print on PLA black."
 
-**Not printed.** At 21:27 UTC the requester asked to wait for PR #44's next run instead
-([comment](https://github.com/vertical-cloud-lab/robot-arms/issues/53#issuecomment-6508723569)), which moves the slider
-bar to mid-knob, adds side supports and a 45° bevel to the fixture, and notches the sleeve cradles, and to print its
-files. That run outlasted this print run, so this plate (PR #44 round 3) was never sent. To print round 4: copy its
-five STLs into `stl/`, set `SOURCE["commit"]`, give the slider `{"enable_support": "1"}` in `PARTS` (its bar now
-sits off the bed) and check every part's orientation against its README, then re-run the two commands at the end.
-The print run's record is [`print-20261029/print.json`](print-20261029/print.json).
+**Sent on 30 Oct 2026 at 00:15:49 UTC** from Bambu Studio's GUI in an approved `@claude-print` run, after the plate
+check below. The run's record is [`print-20261030/print.json`](print-20261030/print.json). An earlier run on 29 Oct
+sliced PR #44's round 3 but sent nothing, because the requester asked to wait for round 4. Its record is
+[`print-20261029/print.json`](print-20261029/print.json).
 
 ![The plate, from its own G-code](plate.png)
 
 ## The plate
 
-| | [`issue53_A1mini_PLA.3mf`](issue53_A1mini_PLA.3mf) |
+| | [`issue53_A1mini_PLA.3mf`](issue53_A1mini_PLA.3mf) (CLI slice), sent as [`print-20261030/issue53_round4_A1mini_PLA_sent.gcode.3mf`](print-20261030/issue53_round4_A1mini_PLA_sent.gcode.3mf) |
 |---|---|
-| Parts | the **slider** (bar, latch beam and Ø25 knob) and its **guide**; the **finger fixture**; **2 × main shell** and **2 × fixing shell**, one of each per stock finger |
-| Time (Bambu's estimate) | 3 h 16 min (the GUI says 3 h 13 min: Studio's stock acceleration limits) |
-| PLA | 98.81 g (32.60 m): slider 12.5 g, guide 7.2 g, fixture 17.4 g, main shells 2 × 20.5 g, fixing shells 2 × 10.3 g |
-| Layers | 242, to 48.4 mm (the main shells) |
+| Parts | the **slider** (bar, latch beam, post and Ø25 T-knob) and its **guide**; the **finger fixture**; **2 × main shell** and **2 × fixing shell**, one of each per stock finger |
+| Time (Bambu's estimate) | 3 h 29 min in the GUI (the CLI says 3 h 32 min: the GUI uses Bambu's stock acceleration limits) |
+| PLA | 99.52 g (32.84 m), 6.06 g of it support: slider 15.8 g, guide 6.9 g, fixture 17.5 g, main shells 2 × 19.5 g, fixing shells 2 × 10.2 g |
+| Layers | 296 to 48.4 mm (the main shells). 242 object layers at 0.20 mm; the slider's normal supports add their own layers |
 
-- **Printer and material:** A1 mini, **0.4 mm nozzle** (read from the printer on 29 Oct), **black Bambu PLA
+- **Printer and material:** A1 mini, **0.4 mm nozzle** (read from the printer at 00:01:30 UTC on 30 Oct), **black Bambu PLA
   Basic** (AMS slot A3), Textured PEI plate at 65 °C, nozzle 220 °C.
-- **Settings:** Bambu's `0.20mm Standard @BBL A1M`, circle compensation on, supports off.
-  - Slider, guide and fixture: 3 walls, 20 % infill. PR #44 says 15–20 % is plenty for the fixture.
-    The slider's latch beam is 2 mm thick, so its walls make it solid.
-  - Sleeve shells: 4 walls, 40 % infill (per-object settings), for the grip and pull-out loads and the
-    heat-set inserts.
-- **Checks:** no toolpath leaves the bed, Bambu's support check flags nothing, no supports. The auto brim
-  adds none. The only G-code warning is Bambu's usual timelapse note.
-- **The GUI kept the settings.** Opened in Studio 02.08.02.61's GUI, the project kept 3 walls, 20 % infill
-  and circle compensation (preset marked modified), and the sleeves kept their 4 walls and 40 %. Its own
-  slice had the same 98.81 g, 242 layers and 48.40 mm top, and the same start G-code (`M620 S0A`, `M190 S65`,
-  `M109 S220`). Net extrusion is within 0.39 mm of filament on every layer. Only Studio's stock acceleration
-  limits differ. [Prepare view](plate_studio_prepare.png), [sliced](plate_studio_preview.png).
+- **Settings:** Bambu's `0.20mm Standard @BBL A1M`, circle compensation on, auto brim (none added).
+  - Slider, guide and fixture: 3 walls, 20 % infill.
+  - Sleeve shells: 4 walls, 40 % infill (per-object settings), for the grip and pull-out loads and the heat-set inserts.
+  - Supports (per object, from the plate only): **normal** supports under the slider, with bridges left unsupported,
+    and **tree** supports under the fixing shells. Nothing else is supported.
+- **Checks:** no toolpath leaves the bed; Bambu's support check flags none of the unsupported parts. The only
+  G-code warning is Bambu's usual timelapse note.
+- **The GUI kept the settings.** Opened in Studio 02.08.02.61's GUI, the project kept 3 walls, 20 % infill and circle
+  compensation (preset marked modified), and the per-object settings. Its own slice, which is what was sent, matched
+  the CLI's: 296 layers, 99.52 g, 48.40 mm, the same start G-code (`M620 S0A`, `M190 S65`, `M109 S220`), and
+  extrusion within 0.25 mm of filament on every layer. Only Studio's stock acceleration limits differ
+  ([sliced](plate_studio_preview.png)). The sent plate G-code's MD5 is `ab7cf944b01cceccdf3e14bd74ae08c4`.
 
-## Orientations
+## Orientations and supports
 
-| Part | On the bed | Why |
-|---|---|---|
-| Slider | its −Y face, as exported (PR #44 turned the STL) | bar, latch beam and post in the layer plane; the knob prints as an upright cup |
-| Guide | base-down, as exported | the tunnel roof is an 8.5 mm bridge |
-| Finger fixture | base-down, as exported | no overhangs |
-| Main shell | **stood on its −X end** (`y270`), so the cradle's half-bore is upright | see below |
-| Fixing shell | on its split face, as exported: the four leg feet and the bands' ends | see below |
+| Part | On the bed | Supports | Why |
+|---|---|---|---|
+| Slider | standing on one end of its knob, as exported (PR #44 turned the STL) | normal, under the bar only | PR #44: the bar, latch beam and post lie in the layer plane, so the beam flexes along its layers; the bar is 16 mm off the bed |
+| Guide | base-down, as exported | none | the tunnel roof is an 8.5 mm bridge |
+| Finger fixture | base-down, as exported | none | no overhangs |
+| Main shell | **stood on its −X end** (`y270`), so the cradle's half-bore is upright | none | below |
+| Fixing shell | **on its back** (`x180`): split face, finger channel and insert holes up | tree | below |
 
-PR #44's README says to print "the main shell on its outer web with the cradle up, the fixing shell on its
-back". With these STLs that doesn't work:
-
-- **Main shell.** Its cradle opens the same way as the web's outer face, and the cradle block stands
-  13 mm proud of that face, so the web can't sit on the bed. As exported (cradle down) it rests on the tooth
-  and jaw faces (197 mm²), and turned cradle-up (`x180`) on the lip over the fingertip (306 mm²); Bambu's
-  support check flags a floating cantilever either way.
-  The shell is a straight extrusion along the tube, so standing it on its end puts the whole profile in every
-  layer: 505 mm² on the bed, almost no overhang, a round half-bore, and the grip and screw loads along the
-  layers. Its M3 holes print horizontal.
-- **Fixing shell.** Its two bands stand 15.2 mm (gripper end) and 9.7 mm (tip end) off the split face, following
-  the finger's back, so on its back it rests on one band, and Bambu flags a floating cantilever. On its split face it stands on all four legs
-  (664 mm²); the spine between the bands is a short bridge over the finger channel. The insert holes print
-  vertical.
+- **Slider.** With tree supports (Bambu's default), the CLI also filled the knob's lower bore with supports
+  under the hub, which PR #44 means to bridge the Ø19 bore. With normal supports and *don't support bridges*,
+  the bore stays empty: only the bar gets supports, and the hub and the post (between the bar and the knob) print
+  as bridges. Clean the bar's supported face well, because it slides in the guide with 0.25 mm a side.
+- **Main shell.** PR #44's README says to print it on its outer web with the cradle up, but the cradle block stands
+  13 mm proud of that face, so the web can't sit on the bed (see the round-3 notes in git history). The shell is a straight
+  extrusion along the tube, so standing it on its end puts the whole profile in every layer: 505 mm² on the bed,
+  a round half-bore, and the grip and screw loads along the layers. Round 4's 10 mm relief notch in the jaw leaves
+  one 3.4 mm overhang (13 mm²) at the notch's top. Bambu's support check doesn't flag it. The M3 holes print horizontal.
+- **Fixing shell.** Round 4 fixed this STL. Rounds 2 and 3 had 3.9 cm³ inside the stock finger, and that solid gave
+  the old "split face" orientation its 664 mm² on the bed. With the finger channel cut out, no orientation is
+  support-free (layer-by-layer check of every quarter turn):
+  - on its split face it stands on the four leg feet (209 mm²), and the spine is a 15 mm cantilever over the channel;
+  - stood on a band, the far band's leg feet hang 12 mm;
+  - on its back (PR #44's choice) it rests on the taller band, and the shorter band and the spine sit 5.5 mm up.
+  The last needs supports only under the outside of its back. The finger channel, the leg faces that meet the
+  main shell, and the vertical insert holes all print clean.
 
 ## Material
 
 PR #44 designs the slider and guide in **PETG**; #53 asks for **PLA**. By PR #44's own beam formula,
 PLA's higher modulus (about 2.75 GPa against 2.0) makes the latch take about **9 N** to push in instead of
-about 6 N (5.8 N on the bump instead of 4.2 N). The beam's strain is the same 0.8 % (1.1 % if pressed to the
-slot floor). PLA takes that, but it is stiffer and more brittle than PETG, so it has less margin.
+about 6.4 N, at the same 0.8 % strain. PLA takes that, but it is stiffer and more brittle than PETG, so it has less margin.
 
 ## Source
 
-`stl/` is byte for byte PR #44's `end-effectors/auger-swap/cad/stl/` at `b9caa43` on
-`claude/issue-42-20261026-0528`, and still at `59b1acd`, where that run finished (20:43 UTC on 29 Oct): `pin_slider.stl`, `pin_guide.stl` and `finger_fixture.stl` are round 3's (the
-low fixture and the latched slider); the two sleeve shells are unchanged since round 2 (sha256 `acbbfe227b11`
-and `955610231b4a`). Hardware, from PR #44's README: 2 × M4 countersunk wood screws each for the fixture and the
-guide; per sleeve, 2 × M3 × 10 and 2 × M3 × 12 countersunk (ISO 10642) and 4 × M3 × 5.7 heat-set inserts.
+`stl/` is byte for byte PR #44's `end-effectors/auger-swap/cad/stl/` at `162706d` on
+`claude/issue-42-20261026-0528` (round 4, 22:55 UTC on 29 Oct): `pin_slider.stl` (sha256 `7e36d3413e2f`),
+`pin_guide.stl` (`bc8ecae86398`, unchanged since round 3), `finger_fixture.stl` (`85627a02933f`),
+`sleeve_main_shell_x2.stl` (`ed0d632e8df8`) and `sleeve_fixing_shell_x2.stl` (`e707c4542cdd`); print the `_x2`
+files twice. Hardware, from PR #44's README: 2 × M4 countersunk wood screws each for the fixture and the guide; per
+sleeve, 2 × M3 × 10 and 2 × M3 × 12 countersunk (ISO 10642) and 4 × M3 × 5.7 heat-set inserts.
 
 ## Files
 
 | File | What |
 |---|---|
-| [`slice_a1mini.py`](slice_a1mini.py) | Turns, places and slices the plate with the Bambu Studio 02.08.02.61 CLI (the #52 bracket's script, with quarter turns and per-object settings). Writes the 3MF and `report.json` |
+| [`slice_a1mini.py`](slice_a1mini.py) | Turns, places and slices the plate with the Bambu Studio 02.08.02.61 CLI (the #52 bracket's script, with quarter turns and per-object settings, supports included). Writes the 3MF and `report.json` |
 | [`report.json`](report.json) | The CLI slice's numbers and checks |
 | [`plate_view.py`](plate_view.py) | Draws `plate.png` from the plate's G-code (#52's, relabelled) and writes `per_object.json` |
 | `glxshim.c` | PR #10's OpenGL shim, for headless thumbnails |
-| `print-20261029/` | The print run: camera frames, Device-page screenshots, and later the sent file and `print.json` |
+| `print-20261030/` | This print: camera frames (first, pre-Send, layer 1 and while printing), Device-page screenshots, Printer Parts, HMS, the Send dialog, the sent file and `print.json` |
+| `print-20261029/` | The round-3 run that wasn't sent |
 
 To regenerate, with Bambu Studio's AppImage extracted to `~/bambu/squashfs-root`:
 

@@ -182,17 +182,22 @@ def still(mesh: pv.PolyData, rep: dict, out: Path) -> None:
     axes[1].set_title(f"From above: the whole {BED[0]:g} x {BED[1]:g} mm Textured PEI plate",
                       fontsize=11, color=INK, loc="left")
     o, so = rep["overrides"], rep["sleeve_overrides"]
-    supported = [LABELS.get(k.rsplit("_", 1)[0], k) for k, v in rep["object_settings_in_3mf"].items()
-                 if v.get("enable_support") == "1"]
-    supports = f"tree supports under the {', '.join(supported)} only" if supported else "no supports"
+    kinds: dict[str, list[str]] = {}  # support type -> the parts that use it
+    for k, v in rep["object_settings_in_3mf"].items():
+        if v.get("enable_support") == "1":
+            label = LABELS.get(k.rsplit("_", 1)[0], k)
+            kinds.setdefault(v.get("support_type", "tree(auto)").split("(")[0], []).append(label)
+    supports = ", ".join(f"{kind} supports under the {' and '.join(sorted(set(labels)))}"
+                         + ("s" if len(labels) > len(set(labels)) else "")
+                         for kind, labels in kinds.items()) or "no supports"
     fig.suptitle(f"A1 mini, one plate in black PLA Basic: PR #44's tilt-lock slider and its guide, the finger "
                  f"fixture, and two stock-finger sleeves (main + fixing shell each)\n{h} h {m:02d} min and {p['filament_g']:.1f} g by Bambu "
-                 f"Studio {rep['bambu_studio']}; 0.20 mm layers, {supports}; fixture and slider parts "
+                 f"Studio {rep['bambu_studio']}; 0.20 mm layers, {supports};\nfixture and slider parts "
                  f"{o['wall_loops']} walls, {o['sparse_infill_density']} infill; sleeves {so['wall_loops']} walls, "
                  f"{so['sparse_infill_density']} infill", fontsize=12, color=INK, x=0.02, ha="left", y=0.995)
     fig.legend(handles=[Patch(color=c, label=n) for c, n in zip(COLOURS, NAMES)], loc="lower center", ncol=3,
                frameon=False, fontsize=10, bbox_to_anchor=(0.5, -0.005))
-    fig.subplots_adjust(left=0.005, right=0.995, top=0.88, bottom=0.06)
+    fig.subplots_adjust(left=0.005, right=0.995, top=0.85, bottom=0.06)
     fig.savefig(out, facecolor="white")
     plt.close(fig)
 
