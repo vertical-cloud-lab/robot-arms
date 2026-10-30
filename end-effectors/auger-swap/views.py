@@ -130,7 +130,34 @@ def sleeves():
            (green.translate((0, 0, 14)), GREEN, 1.0)] + [(h.translate((0, 0, -18)), BRASS, 1.0) for _, h in H.sleeve_hardware()[0::2]]
     c = np.array([-8.0, -58.0, 33.0])
     render(one, [(tuple(c + (200, -40, 10)), tuple(c), (0, 1, 0)), (tuple(c + (120, -110, -120)), tuple(c), (0, 1, 0))],
-           OUT / "view_sleeve_exploded.png", labels=["main shell (blue), fixing shell (green)", "4 × M3 countersunk, 2 at each arrow"])
+           OUT / "view_sleeve_exploded.png", labels=["main shell (blue), fixing shell (green)", "4 × M3 socket head, 3.5 mm counterbores"])
+
+
+def counterbores():
+    """Sections through the sleeve's screw pairs (one finger, as modelled), looking along the
+    finger from its tip: flat counterbores 3.5 mm deep with the heads 0.5 mm below the surface."""
+    from PIL import Image
+    sol = AGX.solids()
+    blue, green = H.sleeve_main_shell().val(), H.sleeve_fixing_shell().val()
+    tube = cq.Workplane("YZ").center(H.SL_YC, H.SL_ZC).circle(G.TUBE_R).extrude(60).translate((-38, 0, 0)).val()
+    parts = [(sol[7], FIN), (sol[6], FIN), (blue, BLUE), (green, GREEN), (tube, TUBE)]
+    parts += [(h.val(), STEEL if "socket" in n else BRASS) for n, h in H.sleeve_hardware()]
+    tiles = []
+    for k, (y, zc, lab) in enumerate(((H.BAND_Y[0], 36.0, "upper pair: M3 × 6, head 0.5 mm under the web's face"),
+                                      (H.BAND_Y[1], 28.0, "lower pair: M3 × 8, head 0.5 mm over the cradle's top"))):
+        slab = cq.Solid.makeBox(200, 10, 200, pnt=cq.Vector(-100, y, -100))
+        items = [(s.intersect(slab), c, 0.55 if c == TUBE else 1.0) for s, c in parts]
+        items = [(s, c, o) for s, c, o in items if s.Volume() > 1e-6]
+        c = np.array([-8.0, y, zc])
+        p = OUT / f"_counterbores_{k}.png"
+        render(items, [(tuple(c + (0, -105, 0)), tuple(c), (0, 0, 1))], p, labels=[lab])
+        tiles.append(Image.open(p).convert("RGB"))
+        p.unlink()
+    canvas = Image.new("RGB", (sum(t.width for t in tiles), max(t.height for t in tiles)), "white")
+    for i, t in enumerate(tiles):
+        canvas.paste(t, (i * tiles[0].width, 0))
+    canvas.save(OUT / "view_sleeve_counterbores.png")
+    print("->", (OUT / "view_sleeve_counterbores.png").relative_to(HERE))
 
 
 def custom_fingers():
@@ -200,6 +227,6 @@ def knob():
 
 
 if __name__ == "__main__":
-    which = sys.argv[1:] or ["fixture", "sleeves", "custom_fingers", "pin", "knob"]
+    which = sys.argv[1:] or ["fixture", "sleeves", "counterbores", "custom_fingers", "pin", "knob"]
     for w in which:
         globals()[w]()

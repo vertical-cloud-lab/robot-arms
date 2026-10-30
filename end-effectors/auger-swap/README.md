@@ -13,10 +13,11 @@ it back through the collar and presses it into the doser. The auger is held by
 | **Alternative A, custom fingers**: minimal fingers on the gripper's own carriages + tilt-lock slider | the same cradle, built into the finger | the arm, with the same slider | **high** |
 | **Alternative B**: stock gripper + the same sleeves | the same sleeves | the arm; the doser's tilt servos hold the plate | high (sleeves), medium (sequence) |
 
-The finger fixture, sleeves, custom fingers, tilt-lock slider and Strategy 1 tool are high fidelity (rounds 2 to 4, [PR #44](https://github.com/vertical-cloud-lab/robot-arms/pull/44)):
+The finger fixture, sleeves, custom fingers, tilt-lock slider and Strategy 1 tool are high fidelity (rounds 2 to 5, [PR #44](https://github.com/vertical-cloud-lab/robot-arms/pull/44)):
 real fasteners, fits and print orientations, and built against the real parts (AgileX's own gripper STEP, the doser's STEP files).
 Round 3 made the fixture low and lean and replaced the steel pin with a printed slider that latches itself out (see below).
 Round 4 gave the fixture thin side webs and 45° lead-ins, and moved the slider's post to the middle of its knob, with a relief notch in each cradle's jaw.
+Round 5 turned the sleeves' countersinks into flat counterbores for socket head screws, deep enough that the heads sit below the surface.
 Strategy 2 is unchanged from round 1, except that it now lowers its carriage at the fixture as Strategy 1 does.
 
 ## The PiPER gripper's finger interface
@@ -96,8 +97,8 @@ has a relief notch in its middle for the slider's post (see the slider below).
 | Tube axis from the J6 face | 135 mm | **89 mm** |
 | Gripper command (pad-to-pad width) to hold a Ø25 tube | 34.5 mm | 24.0 mm |
 | Command to release | 70 mm | 60 mm (never below 22: the fingers meet) |
-| Printed parts per finger | main shell 22.7 cm³ + fixing shell 6.7 cm³ | 15.6 cm³ |
-| Hardware per finger | 2 × M3 × 10 + 2 × M3 × 12 countersunk (ISO 10642), 4 × M3 × 5.7 heat-set inserts | 4 × M2 × 8 (the stock screws), 1 × M3 × 5.7 heat-set insert; the stock shoulder screw and spacer |
+| Printed parts per finger | main shell 22.5 cm³ + fixing shell 6.7 cm³ | 15.6 cm³ |
+| Hardware per finger | 2 × M3 × 6 + 2 × M3 × 8 socket head (ISO 4762), 4 × M3 × 5.7 heat-set inserts | 4 × M2 × 8 (the stock screws), 1 × M3 × 5.7 heat-set insert; the stock shoulder screw and spacer |
 
 The custom-finger GIF lands every frame on its IK target (0.00 mm). The sleeves hold the tube 46 mm further from J6, so from the assumed base position
 the arm runs out of reach on 20 frames, all around the bin, missing by up to 1.5 mm. With round 2's taller fixture it was 40 frames and 5.8 mm,
@@ -107,6 +108,7 @@ two of them lining up on the fixture. Every move at the slider, the doser, the f
 
 ![sleeves closed on the tube](renders/view_sleeves.png)
 ![one sleeve, exploded](renders/view_sleeve_exploded.png)
+![sections through the two screw pairs](renders/view_sleeve_counterbores.png)
 
 - **Main shell (blue).** It sits on the grip face, carrying a Ø25.2 half-bore with a tooth above and a jaw below that wrap 180° of the tube. Its inner face is the pad's
   own surface, cut from AgileX's finger with 0.15 mm clearance. The 2 mm step and ramp stop it sliding toward the tip, and a lip over
@@ -115,10 +117,16 @@ two of them lining up on the fixture. Every move at the slider, the doser, the f
   wraps 155° there and 171° over the rest of its 48 mm.
 - **Fixing shell (green).** Two 8 mm bands go round the finger's sides and back at the two arrows, joined by a spine that follows the curved back and drops
   into the back's channel, which locks it sideways. 0.2 mm clearance.
-- **Screws: 4 × M3 countersunk, two at each arrow.** They run along the finger travel, beside the finger (4.3 mm outside each edge), through the main shell and into
-  heat-set inserts in the bands' legs. The upper pair is 30.5 mm from the fingertip, M3 × 10 through a 5 mm web. The lower pair sits in the bottom of the cradle,
-  7.5 mm from the tip, M3 × 12; their heads sit below the half-bore's surface.
-- **Printing:** the main shell on its outer web with the cradle up, the fixing shell on its back. Neither needs supports.
+- **Screws: 4 × M3 socket head (ISO 4762), two at each arrow, in flat counterbores (round 5).** They run along the finger travel, beside the finger (4.3 mm
+  outside each edge), through the main shell and into heat-set inserts in the bands' legs. Each counterbore is Ø6.2 and 3.5 mm deep, twice the depth of the old
+  90° countersink's lowest point (1.75 mm), so the 3.0 mm head sits 0.5 mm below the surface.
+  - **Upper pair**, 30.5 mm from the fingertip: M3 × 6 through the 5 mm web. That leaves 1.5 mm under the head, and 0.9 mm of wall between the counterbore and the shell's side.
+  - **Lower pair**, in the bottom of the cradle, 7.5 mm from the tip: M3 × 8, with 3.15 mm under the head and 0.6 mm between the head and the tube.
+  - Each screw goes 4.5–4.85 mm into its 5.7 mm insert. Don't mix the lengths up: an M3 × 8 in an upper hole would reach the end of the insert's hole.
+    Pan or button heads (Ø5.6–5.7) also fit below the surface.
+- **Printing:** the main shell on either side face, with the cradle's axis vertical, so the counterbores print as horizontal holes; the fixing shell on its back.
+  Neither needs supports. (Rounds 2 to 4 said the main shell prints on its outer web, but the cradle stands 13 mm proud of that face.)
+  **Re-download `sleeve_main_shell_x2.stl` for the counterbores (round 5);** the fixing shell is unchanged since round 4.
   **Re-download both STLs if you have round 2 or 3's:** that `sleeve_fixing_shell_x2.stl` had lost its finger clearance (10.8 cm³, 3.9 cm³ of it inside the finger),
   and that `sleeve_main_shell_x2.stl` wasn't watertight. Building the main shell first had changed the tolerances of the shared AgileX solids; `agilex.solids()` now hands out copies.
 

@@ -13,6 +13,7 @@ Needs ONSHAPE_ACCESS_KEY / ONSHAPE_SECRET_KEY (an API key pair of a company memb
 
     python onshape_upload.py              # sync + render
     python onshape_upload.py --view-only  # just re-render the recorded document
+    python onshape_upload.py --only alt_a_sleeves_pin.step alt_b_sleeves.step   # just these STEPs and their assemblies
 """
 from __future__ import annotations
 
@@ -179,7 +180,7 @@ def fill_assembly(c: Onshape, did, wid, aid, studio_ids) -> None:
                                           "isAssembly": False, "isWholePartStudio": True})
 
 
-def sync(c: Onshape, rebuild: bool = False) -> dict:
+def sync(c: Onshape, rebuild: bool = False, only=None) -> dict:
     if DOC_JSON.exists():
         rec = json.loads(DOC_JSON.read_text())
     else:
@@ -203,6 +204,8 @@ def sync(c: Onshape, rebuild: bool = False) -> dict:
     studios = rec.setdefault("partStudios", {})
     changed = set()
     for fname, tab in STUDIOS.items():
+        if only and fname not in only:
+            continue
         p = CAD / fname
         h = sha(p)
         old = studios.get(fname)
@@ -277,13 +280,16 @@ def shaded(c: Onshape, path: str, out: Path, view="isometric", w=1400, h=1000, p
     print("->", out.relative_to(HERE))
 
 
-def render(c: Onshape, rec: dict) -> None:
+def render(c: Onshape, rec: dict, only=None) -> None:
     did, wid = rec["documentId"], rec["workspaceId"]
     ps = rec["partStudios"]["doser_compliant_clips.step"]["elementId"]
-    shaded(c, f"/partstudios/d/{did}/w/{wid}/e/{ps}", OUT / "onshape_doser_clips_fixture_iso.png")
-    shaded(c, f"/partstudios/d/{did}/w/{wid}/e/{ps}", OUT / "onshape_doser_clips_closeup.png",
-           view=view_matrix((0.9, -0.75, 0.75), (40.0, 120.0, 50.0)), w=1400, h=1000, pixel=0.00022)
+    if not only or "doser_compliant_clips.step" in only:
+        shaded(c, f"/partstudios/d/{did}/w/{wid}/e/{ps}", OUT / "onshape_doser_clips_fixture_iso.png")
+        shaded(c, f"/partstudios/d/{did}/w/{wid}/e/{ps}", OUT / "onshape_doser_clips_closeup.png",
+               view=view_matrix((0.9, -0.75, 0.75), (40.0, 120.0, 50.0)), w=1400, h=1000, pixel=0.00022)
     for name, (fname, target, direction, px) in ASSEMBLIES.items():
+        if only and not set(_files(fname)) & set(only):
+            continue
         aid = rec["assemblies"][name]["elementId"]
         base = f"/assemblies/d/{did}/w/{wid}/e/{aid}"
         tag = name.lower().replace(" ", "_")
@@ -296,10 +302,11 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--view-only", action="store_true")
     ap.add_argument("--rebuild-assemblies", action="store_true", help="refill every assembly")
+    ap.add_argument("--only", nargs="+", metavar="STEP", help="sync and render only these STEP files and the assemblies that use them")
     a = ap.parse_args()
     c = Onshape()
-    rec = json.loads(DOC_JSON.read_text()) if a.view_only else sync(c, a.rebuild_assemblies)
-    render(c, rec)
+    rec = json.loads(DOC_JSON.read_text()) if a.view_only else sync(c, a.rebuild_assemblies, a.only)
+    render(c, rec, a.only)
 
 
 if __name__ == "__main__":

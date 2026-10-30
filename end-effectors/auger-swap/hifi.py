@@ -7,7 +7,8 @@
   the board (the custom tools lower their carriage first) and cut it to 25 cm3.
 * ``sleeve_*``: the stock-finger sleeve as two printed shells: a main shell (blue in the
   photo on PR #44) on the grip face with the tube cradle, and a fixturing shell (green)
-  over the back. Four M3 countersunk screws, two at each arrow, pass beside the finger into
+  over the back. Four M3 socket head screws, two at each arrow, sit in flat counterbores
+  3.5 mm deep (heads 0.5 mm below the surface) and pass beside the finger into
   heat-set inserts in the green shell. Both shells are cut from AgileX's own finger
   (agilex.py), so they follow the 2 mm step in the grip face, the tapered sides and the
   curved back, and those lock them on.
@@ -33,6 +34,9 @@ import geometry as G
 
 # ------------------------------------------------------------------------------- hardware
 M3_CLEAR, M3_CSK_D, M3_INSERT_D, M3_INSERT_L = 3.4, 6.9, 4.0, 5.7   # Ø4.0 hole for an M3 x 5.7 insert
+# flat counterbore for an ISO 4762 M3 head (Ø5.5 x 3.0): twice as deep as the old 90 deg
+# countersink's lowest point ((6.9 - 3.4) / 2 = 1.75 mm), so the head sits 0.5 mm below the surface
+M3_CB_D, M3_CB_DEPTH = 6.2, 3.5
 M2_CLEAR = 2.4
 
 
@@ -42,11 +46,11 @@ def cs_hole(depth: float, d: float = M3_CLEAR, csk: float = M3_CSK_D) -> cq.Work
     return cq.Workplane("XY").circle(d / 2).extrude(depth).union(cq.Workplane().add(cone))
 
 
-def cs_screw(length: float) -> cq.Workplane:
-    """ISO 10642 M3 countersunk screw: head top at z = 0, shank along +Z, length incl. head."""
-    head = cq.Solid.makeCone(6.72 / 2, 3.0 / 2, 1.86, pnt=cq.Vector(0, 0, 0), dir=cq.Vector(0, 0, 1))
-    s = cq.Workplane().add(head).union(cq.Workplane("XY").circle(1.5).extrude(length).translate((0, 0, 0)))
-    return s.cut(cq.Workplane("XY").polygon(6, 2.0 / math.cos(math.pi / 6)).extrude(1.2).translate((0, 0, -0.01)))
+def cb_hole(depth: float, d: float = M3_CLEAR, cb: float = M3_CB_D, cb_depth: float = M3_CB_DEPTH) -> cq.Workplane:
+    """Clearance hole along +Z with a flat-bottomed counterbore opening at z = 0 (cut from
+    1 mm below, so it also opens cleanly onto a curved face such as the cradle's top)."""
+    bore = cq.Workplane("XY").circle(cb / 2).extrude(cb_depth + 1.0).translate((0, 0, -1.0))
+    return cq.Workplane("XY").circle(d / 2).extrude(depth).union(bore)
 
 
 def socket_screw(d: float, length: float) -> cq.Workplane:
@@ -114,7 +118,7 @@ def _finger_edges(y: float) -> tuple[float, float]:
 
 
 def sleeve_screws() -> list[tuple[float, float, float]]:
-    """(x, y, z of the countersink face) of the four M3 screws, upper arrow first."""
+    """(x, y, z of the face each counterbore opens on) of the four M3 screws, upper arrow first."""
     out = []
     for y, z in ((BAND_Y[0], SL_OUT_Z), (BAND_Y[1], SL_ZC + CRADLE_R)):
         x0, x1 = _finger_edges(y)
@@ -126,7 +130,7 @@ def sleeve_main_shell() -> cq.Workplane:
     """Blue: the cradle side. Its inner face is the pad's own surface (the R51.5 bend and the
     5.1 deg ramp), so it can't slide toward the tip, and a lip over the fingertip stops it
     sliding the other way. The jaw has the slider-post relief notch in its middle. Prints on
-    its outer face's flat (the 5 mm web) with the cradle up."""
+    either side face (the cradle's axis vertical), so the counterbores print as horizontal holes."""
     yc, zc, zt = SL_YC, SL_ZC, SL_TIP_Z
     prof = [(SL_TOP_Y, SPLIT_Z), (SL_TOP_Y, SL_OUT_Z + 1.0), (SL_TOP_Y - 1.0, SL_OUT_Z),
             (-51.4, SL_OUT_Z), (-53.9, zt), (yc - CRADLE_R - 3.5, zt), (yc - CRADLE_R - 4.5, zt + 1.0),
@@ -138,7 +142,7 @@ def sleeve_main_shell() -> cq.Workplane:
     blue = blue.cut(post_relief(yc, zc, yc - CRADLE_R - 4.5))
     blue = blue.cut(cq.Workplane().add(_finger_clear(FIT, [(0, 0, -1), (1, 0, 0), (-1, 0, 0), (0, -1, 0)])))
     for x, y, z in sleeve_screws():
-        blue = blue.cut(cs_hole(SPLIT_Z - z + 1).translate((x, y, z)))
+        blue = blue.cut(cb_hole(SPLIT_Z - z + 1).translate((x, y, z)))
     # soften the outer corners along the tube
     return blue
 
@@ -173,8 +177,8 @@ def sleeve_fixing_shell() -> cq.Workplane:
 def sleeve_hardware() -> list[tuple[str, cq.Workplane]]:
     out = []
     for i, (x, y, z) in enumerate(sleeve_screws()):
-        L = 10.0 if i < 2 else 12.0
-        out.append((f"M3x{L:.0f} countersunk (ISO 10642)", cs_screw(L).translate((x, y, z))))
+        L = 6.0 if i < 2 else 8.0      # 4.5 / 4.85 mm into the insert; an M3 x 8 in the upper pair would reach the hole's end
+        out.append((f"M3x{L:.0f} socket head (ISO 4762)", socket_screw(3.0, L).translate((x, y, z + M3_CB_DEPTH))))
         out.append(("M3 x 5.7 heat-set insert", insert_m3().translate((x, y, SPLIT_Z))))
     return out
 
