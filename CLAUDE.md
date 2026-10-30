@@ -99,6 +99,17 @@ at J6 = 0, which nobody has checked against the hardware. #15's `~/piper_up_down
   caught before rolling J6 that way again.
 - J5 droops to about +23° whenever the arm is disabled. That keeps a Pi rolled to the side
   beside the gripper, since J5 turns about the same axis the Pi points along.
+- The second run (2026-10-30, `runs/2026-10-30_issue54_run2/`) rolled J6 alone to −52° (J4, J5
+  as found) without trouble. On the way down, from about J2 = 2°, J5's current reversed, as if
+  the wrist were resting on something, and the lift off home that followed tripped J3's 4 A
+  limit, so it stopped after one cycle. At J6 −52° the Pi is still about 35° below horizontal.
+- **Why the arm drops 2° at disable:** the firmware limits J2 to ≥ 0° and J3 to ≤ 0°, and the
+  rest is about J2 −2°, J3 +2°. `Up_and_Down.py` widens those two limits to just past the rest
+  (`MotorAngleLimitMaxSpdSet`, the other ends and speeds left alone), lands 0.4° above the
+  rest, disables, then sets them back to 0° and reads them back. The second run dropped J2
+  0.15°, J3 0.41°. The arm ignores a second limit write that arrives within 0.1 s of the first,
+  so pause and read back after each one. If a run dies between widening and restoring, check
+  with `SearchMotorMaxAngleSpdAccLimit` and set J2 min and J3 max back to 0.
 
 **The USB-CAN adapter is on `rpi-5-mpzy` since 2026-10-30**, so that camera Pi now drives the
 arm (eufi still has its venv and scripts). Changes made on mpzy that day:
@@ -109,7 +120,10 @@ arm (eufi still has its venv and scripts). Changes made on mpzy that day:
   so run it again after a reboot or a replug.
 - `~/Up_and_Down.py`, and `~/issue54/` with the run's log, trace and a 100 s 720p video
   (`rpicam-vid --codec libav`). The same recording on eufi failed: eufi's `rpicam-vid` doesn't
-  know `--codec libav`.
+  know `--codec libav`; it has no H.264 encoder at all, so record there with `--codec mjpeg`.
+- Second run: the updated `~/Up_and_Down.py`, and `run2*` files (log, trace, video) in
+  `~/issue54/` on both mpzy and eufi. The J2/J3 firmware limits were widened during the run
+  and set back to 0° afterwards (read back: J2 0 to 180°, J3 −170 to 0°).
 
 The PiPER cell's fixed cameras get their own Pis: `CAM_PI_HOSTNAME`, tagged `tag:rpi-5-76zj`
 (login `CAM_PI_USERNAME`, sudo password `CAM_PI_PASSWORD`), and `CAM2_PI_HOSTNAME`, tagged

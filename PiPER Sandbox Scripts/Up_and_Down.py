@@ -173,16 +173,20 @@ def firmware_limits(piper, motor):
 
 def set_rest_limits(piper, j2_min, j3_max):
     """Set J2's lower and J3's upper firmware limit (deg; the other ends and the speed limits
-    are left alone), read them back and return True if both took."""
-    for _ in range(3):
-        piper.MotorAngleLimitMaxSpdSet(2, 0x7FFF, round(j2_min * 10), 0x7FFF)
-        time.sleep(0.1)
-        piper.MotorAngleLimitMaxSpdSet(3, round(j3_max * 10), 0x7FFF, 0x7FFF)
-        time.sleep(0.1)
-        l2, l3 = firmware_limits(piper, 2), firmware_limits(piper, 3)
-        if l2 and l3 and abs(l2[0] - j2_min) < 0.15 and abs(l3[1] - j3_max) < 0.15:
-            return True
-    return False
+    are left alone), read each back and return True if both took. The arm drops a second
+    setting sent within 0.1 s of the first, so each gets its own pause and check."""
+    ok = True
+    for motor, hi, lo in ((2, None, j2_min), (3, j3_max, None)):
+        for _ in range(3):
+            piper.MotorAngleLimitMaxSpdSet(motor, 0x7FFF if hi is None else round(hi * 10),
+                                           0x7FFF if lo is None else round(lo * 10), 0x7FFF)
+            time.sleep(0.5)
+            got = firmware_limits(piper, motor)
+            if got and abs(got[0 if hi is None else 1] - (lo if hi is None else hi)) < 0.15:
+                break
+        else:
+            ok = False
+    return ok
 
 
 def currents_a(piper):
@@ -195,6 +199,9 @@ def back_off(piper, q, start, goal, args):
     rest in proportion), so nothing keeps pushing on whatever caught."""
     span = max(abs(b - a) for a, b in zip(start, goal)) or 1.0
     back = [v - args.backoff_deg * (b - a) / span for v, a, b in zip(q, start, goal)]
+    # Never below home: the second run (#54) snagged just above home and backed off 1.3 deg
+    # below it, toward whatever was under the arm, because the landing had widened the limits.
+    back[1], back[2] = max(back[1], min(q[1], 0.0)), min(back[2], max(q[2], 0.0))
     t0 = time.time()
     while time.time() - t0 < 0.5:
         send(piper, back, args.speed)
