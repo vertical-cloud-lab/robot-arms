@@ -1,0 +1,48 @@
+{
+ "what": "PR #44's round-4 tilt-lock slider and its guide, the finger fixture, and two stock-finger sleeves (2 x main shell, 2 x fixing shell), on one A1 mini plate in black PLA",
+ "result": "sent; printing",
+ "printer": {
+  "model": "Bambu Lab A1 mini",
+  "name_in_studio": "Thumbelina, the A1 Mini",
+  "nozzle": "0.4 mm stainless steel, standard flow (Studio's Printer Parts, read from the printer at 00:01:30 UTC)",
+  "ams": "AMS lite: A1 blue PLA, A2 empty, A3 black PLA, A4 PETG",
+  "mode": "Bambu cloud",
+  "lan": "not reachable from this run (claude-print.yml has no Tailscale step and no A1_MINI_IP / A1_MINI_ACCESS_CODE), so the checks and the watching were done on Studio's Device page"
+ },
+ "route": "Bambu Studio 02.08.02.61 GUI on the GitHub Actions runner's Xvfb display, logged in to the lab's Bambu account (password plus a bambu-totp authenticator code, in an approved @claude-print run)",
+ "request": "https://github.com/vertical-cloud-lab/robot-arms/issues/53#issuecomment-6511306990 (jss265, 2026-10-29T23:51:52Z): \"From: https://github.com/vertical-cloud-lab/robot-arms/pull/44#issuecomment-6508700624 please load the build plate on Thumbelina (A1 mini) with the slider parts, the finger fixture, and also the two shell sleeves needed to equip the stock gripper fingers from https://github.com/vertical-cloud-lab/robot-arms/pull/44#issuecomment-6426892475. Then send it to the printer to print on PLA black.\"",
+ "interpretation": "the five round-4 STLs PR #44 lists for Alternative A with the stock gripper: pin_slider, pin_guide, finger_fixture, and sleeve_main_shell_x2 and sleeve_fixing_shell_x2 printed twice each (not custom_finger_x2, which replaces the stock fingers)",
+ "replies": [],
+ "concurrent_runs": "the spacer run on this issue (actions run 40975350601, requested 23:46:06) was cancelled at 23:49:16 before it logged in, so nothing else was queued for Thumbelina; its tracking comment still shows a spinner",
+ "sent_file": {
+  "file": "issue53_round4_A1mini_PLA_sent.gcode.3mf",
+  "what": "the 3MF Studio uploaded at Send (from /tmp/bamboo_model), with 3D/3dmodel.model's DesignerUserId blanked",
+  "plate_1_gcode_md5": "ab7cf944b01cceccdf3e14bd74ae08c4 (unchanged by the blanking; the same as Studio's GUI slice)",
+  "source": "PR #44's end-effectors/auger-swap/cad/stl/ at 162706d (claude/issue-42-20261026-0528), copied to ../stl/, placed and sliced by ../slice_a1mini.py, then opened, checked and re-sliced in Studio's GUI",
+  "settings": "0.20mm Standard @BBL A1M; 3 walls and 20% infill (slider, guide, fixture); 4 walls and 40% infill (sleeve shells); auto circle contour-hole compensation on; supports from the plate only: normal(auto) with bridges unsupported under the slider, tree(auto) under the fixing shells; Bambu PLA Basic @BBL A1M, black, from AMS A3; Textured PEI Plate at 65 C, nozzle 220 C; auto brim (none added)",
+  "slice": "GUI: 296 layers to 48.40 mm, 99.52 g (32.84 m; model 93.46 g, support 6.06 g), 3 h 29 min total (model printing 3 h 21 min). The CLI slice (../issue53_A1mini_PLA.3mf) has the same layers, grams and start G-code and per-layer extrusion within 0.25 mm of filament; only the acceleration limits differ (CLI 3 h 32 min)",
+  "send_dialog": "Thumbelina, the A1 Mini, 0.4 mm; plate PEI; PLA -> A3; timelapse off; auto bed levelling on; flow dynamics calibration on; job name issue53_A1mini_PLA_issue53 (no spaces)"
+ },
+ "plate_check": {
+  "rule": "CLAUDE.md's plate rule of 2026-10-23 (90 s wait since #51): frame first, the run reads the plate, at least 90 s for objections, a fresh frame before Send",
+  "first_frame": "20261030T000042Z_a1mini_camera_studio.jpg (posted 00:02:43 UTC): plate empty apart from its texture and the pale outline of an earlier print; the three spacers left at 23:47 had been taken off (small black parts now in the red box beside the bed); the red box on the bench behind the bed's right side and the black cable at the lower right as in earlier frames. Mean luma 118/255",
+  "pre_send_frame": "20261030T001427Z_a1mini_camera_studio.jpg: the plate unchanged (blurred, brightness-normalised difference over the plate only a broad light change on its back-left corner, where someone was now standing beside the printer); nothing new beside the bed",
+  "go": "no replies in the thread from 23:52 to the last check at 00:15:44; the 90 s window ended 00:04:13",
+  "hms": "no alerts at 00:02:05 UTC",
+  "blur": "the room above the bed is blurred in every committed frame because people were at the printer"
+ },
+ "timeline_utc": {
+  "request": "2026-10-29T23:51:52Z",
+  "job_started": "2026-10-29T23:52Z (approved), Claude Code at 23:53",
+  "studio_login": "2026-10-30T00:00:00Z (Log In 23:59:28, authenticator code typed 23:59:44, confirmed 23:59:46; no e-mailed code asked for)",
+  "first_frame": "2026-10-30T00:00:42Z (posted 00:02:43)",
+  "cli_slice": "2026-10-30T00:10Z",
+  "gui_slice": "2026-10-30T00:12:56Z",
+  "pre_send_frame": "2026-10-30T00:14:27Z",
+  "send": "2026-10-30T00:15:49Z (\"Successfully sent\")",
+  "heatbed_preheating": "2026-10-30T00:16:24Z",
+  "layer_1": "2026-10-30T00:23:19Z (first seen by the watcher), after filament change, vibration compensation, bed levelling and flow calibration"
+ },
+ "watching": "monitor.jsonl: watch_studio.py (byu-vcl bambu/studio, WATCH_LAYOUT=a1mini BED_TARGET=65) OCR of the Device page every 10 s. The 'bed target 165' notes are its usual misread of '/65'",
+ "recording": "the runner's screen was recorded (ffmpeg x11grab, 5 min segments) but not published: it shows the account e-mail during login and people in the lab, and print runs have no YouTube token"
+}
