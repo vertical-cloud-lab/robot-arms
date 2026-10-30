@@ -4,34 +4,41 @@
 The gripper Pi sits opposite the camera: underneath the gripper with J6 near 0, its USB-C
 power plug facing back toward J2. Disabling the motors there drops the arm onto its rest and
 lands the plug on J2's housing. Rolled to J6 = -90 (the third photo on #54: Pi to the arm's
-right, camera to its left) the arm drops clear. So the script:
+right, camera to its left) the arm drops clear. With the motors off the wrist also droops
+(J5 near +23, the gripper about 18 deg nose-down) until the gripper rests on something. So
+the script:
 
 1. Starts from the rest (J2 and J3 within --home-tol-deg of 0) or from a pose it raised, with
    J1 within --j1-tol-deg of 0. J1 stays where it starts the whole time, so nothing swings
    sideways toward the printer.
-2. Raises the arm with the wrist as it found it: J2 up by --lift-deg and J3 open by the same
-   angle, so the forearm keeps its pitch and the wrist rises 94 mm (for 20 degrees) and moves
-   30 mm forward. The Pi lifts straight up, away from J2, before anything at the wrist moves.
-3. At the top, rolls the wrist to J6 = --park-j6-deg, with J4 and J5 held as found (a pure
-   twist). From a wrist that has drooped onto the rest (J5 near 23, J6 near 0), the Pi only
-   rises on the way round, from below the gripper toward its side.
-4. Lowers to home (J2 = J3 = 0) and repeats up and down until it has done --cycles in all,
-   with the wrist parked. "Down" is never lower than home.
-5. Lands the arm --land-above-deg above the rest it started on, then disables, so the arm
-   drops less than half a degree. The firmware stops J2 at 0 and J3 at 0 while the rest is at
-   about -2 and +2, so the script widens those two limits to just past the rest first and
-   sets them back to 0 after disabling (--no-land skips all this and disables at home, which
-   drops the arm about 2 degrees). Then it watches the arm settle for 3 s and reports how far
-   each joint dropped.
+2. Levels the J5-J6 link first (J5 to about +5, so the gripper's axis is horizontal), which
+   lifts the drooped gripper off whatever it rests on. --no-level keeps the wrist as found.
+3. Raises the arm with the wrist level: J2 up by --lift-deg and J3 open by the same angle,
+   so the forearm keeps its pitch and the wrist rises 94 mm (for 20 degrees) and moves 30 mm
+   forward.
+4. At the top, rolls the gripper to J6 = --park-j6-deg, with J4 and J5 held (a pure twist).
+5. Lowers to home (J2 = J3 = 0) with the link level and the gripper rolled, and repeats up
+   and down until it has done --cycles in all. "Down" is never lower than home.
+6. Lands the arm --land-above-deg above the rest it started on, then lowers the gripper
+   (J5) slowly toward where it was found drooped, stopping as soon as whatever it rests on
+   takes its weight (J5's current falls under --rest-current-a), then disables, so nothing
+   drops more than about half a degree. The firmware stops J2 at 0 and J3 at 0 while the rest
+   is at about -2 and +2, so the script widens those two limits to just past the rest first
+   and sets them back to 0 after disabling (--no-land skips all this and disables at home,
+   which drops the arm about 2 degrees). Then it watches the arm settle for 3 s and reports
+   how far each joint dropped.
 
 Every move follows a smooth profile that peaks at --deg-s, streamed at 50 Hz, with the
 controller's own speed capped at --speed percent as well. A snag is a joint drawing more than
-its --max-current-a (a cable going taut shows here first) or falling more than --lag-deg
-behind its target. On a snag it first backs the joints off --backoff-deg along the way they
-came, so nothing keeps pushing on whatever caught, and then:
-- on the way up, or while turning the wrist, it holds, puts the wrist back as it found it,
-  and goes back down to where it started, then disables: no worse than before the run;
-- once the wrist is parked, on the way up, it goes back down to home and disables;
+its --max-current-a (a cable going taut shows here first), falling more than --lag-deg
+behind its target, or, once the gripper hangs level, J5 carrying less than --contact-a of the
+gripper's weight (something underneath is holding it up: the second run's failure). On a snag
+it first backs the joints off --backoff-deg along the way they came, so nothing keeps pushing
+on whatever caught, and then:
+- while leveling, it lowers the gripper back onto its rest and disables;
+- on the way up, or while rolling the gripper, it holds, puts the roll back as it found it,
+  goes back down to home, lands and disables: no worse than before the run;
+- once the gripper is rolled, on the way up, it goes back down to home, lands and disables;
 - on the way down (something under the arm), it holds there with the motors on and says so.
 If the arm reports an error or its feedback stops (E-stop or power cut), it stops commanding
 motion and says so.
@@ -39,7 +46,9 @@ motion and says so.
 First run, 2026-10-30 (#54): from J6 = -18 the roll toward -90 (also straightening J5) jammed
 at J6 = -55.0 (J5 = 11), with J6's current going from 0.1 A to 16 A. The lag check alone took
 0.35 s to see it, which is why the current check and the back-off exist, and why the roll now
-stops at J6 = -52 by default.
+stops at J6 = -52 by default. Second run: rolled to -52 with the wrist drooped, the gripper
+came to rest on something at home (J5's current flipped sign), and the next lift tripped J3's
+current limit, which is why the wrist is now level whenever the arm moves.
 
 Runs on the Pi that has the USB-CAN adapter (rpi-5-mpzy since 2026-10-30; the arm Pi,
 rpi-5-eufi, before that), in the venv that has piper_sdk (~/piper-venv). can0 must already be
@@ -48,7 +57,7 @@ up at 1 Mbit/s; this script never touches the interface.
     ~/piper-venv/bin/python Up_and_Down.py            # read-only: check the pose, print the plan
     ~/piper-venv/bin/python Up_and_Down.py --go       # enable the motors and move
     ~/piper-venv/bin/python Up_and_Down.py --park --go
-        # one cycle only (up, park the wrist, down, disable), e.g. after an interrupted run
+        # one cycle only (up, roll the gripper, down, land), e.g. after an interrupted run
 """
 import argparse
 import math
@@ -113,6 +122,25 @@ def describe_pi(q_deg, args):
     side = "the arm's left (+y)" if d[1] > 0 else "the arm's right (-y)"
     return f"Pi side of the gripper points to {side}, {abs(tilt):.0f} deg " \
            f"{'below' if tilt < 0 else 'above'} horizontal"
+
+
+def wrist_pitch(q_deg):
+    """Degrees above horizontal (negative: below) of the gripper's axis, the J5-J6 link."""
+    R, _ = fk(q_deg)
+    return math.degrees(math.asin(max(-1.0, min(1.0, R[2][2]))))
+
+
+def level(q_deg, pitch_deg=0.0):
+    """q_deg with J5 set so the J5-J6 link points pitch_deg above horizontal. Raising J5 tips
+    the gripper down, so bisect on that."""
+    lo, hi = -60.0, 60.0
+    for _ in range(40):
+        mid = (lo + hi) / 2
+        if wrist_pitch([*q_deg[:4], mid, q_deg[5]]) > pitch_deg:
+            lo = mid
+        else:
+            hi = mid
+    return [*q_deg[:4], round((lo + hi) / 2, 2), q_deg[5]]
 
 
 def joints_deg(piper):
@@ -209,15 +237,17 @@ def back_off(piper, q, start, goal, args):
     print(f"  backed off to {fmt(joints_deg(piper))}", flush=True)
 
 
-def move(piper, start, goal, args, label):
+def move(piper, start, goal, args, label, hang=None):
     """Stream a smooth move from start to goal. Returns None once there, else why it stopped:
     ("fault", text) if the arm reported a problem or went quiet, ("stuck", text) if a joint
-    drew too much current, fell behind its target or didn't arrive. When a joint drew too much
-    or fell behind, it has already backed off."""
+    drew too much current, fell behind its target or didn't arrive, or (with hang, J5's current
+    while the gripper hangs free) J5 carried less than --contact-a of the gripper's weight.
+    When a joint drew too much, fell behind or was held up, it has already backed off."""
     span = max(abs(b - a) for a, b in zip(start, goal))
     duration = max(math.pi / 2 * span / args.deg_s, 0.3)  # raised cosine peaks at pi/2 x mean
     print(f"{label}: {fmt(goal)} over {duration:.1f} s", flush=True)
     t0 = time.time()
+    held_up = 0  # consecutive samples with J5 carrying less than --contact-a
     while True:
         t = time.time() - t0
         s = 0.5 - 0.5 * math.cos(math.pi * min(t / duration, 1.0))
@@ -239,6 +269,10 @@ def move(piper, start, goal, args, label):
         elif lag[worst] > args.lag_deg:
             why = (f"J{worst + 1} at {q[worst]:.2f} deg is {lag[worst]:.1f} deg from its target "
                    f"{target[worst]:.2f}")
+        held_up = held_up + 1 if hang and amps[4] * math.copysign(1, hang) < args.contact_a else 0
+        if not why and held_up >= 2:
+            why = (f"J5 carries {amps[4]:+.2f} A against {hang:+.2f} A hanging free: something "
+                   "is holding the gripper up")
         if why:
             back_off(piper, q, start, goal, args)
             return "stuck", f"{why}; all joints {fmt(q)}"
@@ -257,6 +291,58 @@ def hold_here(piper, args):
         send(piper, q, args.speed)
         time.sleep(PERIOD_S)
     return q
+
+
+def hanging_current(piper, args):
+    """J5's mean current over 0.3 s while holding still, or None if it's too small to tell a
+    free-hanging gripper from one resting on something."""
+    samples = []
+    for _ in range(15):
+        time.sleep(PERIOD_S)
+        samples.append(currents_a(piper)[4])
+    mean = sum(samples) / len(samples)
+    return mean if abs(mean) >= args.contact_a + 0.4 else None
+
+
+def lower_gripper(piper, q, rest_j5, args):
+    """Tip the gripper down (raise J5) at --lower-deg-s toward rest_j5 + 0.5, where it was found
+    drooped, and stop as soon as whatever it rests on takes its weight: J5's current, which
+    holds the gripper up, falls under --rest-current-a. Returns why it stopped, or None if the
+    gripper was already down. A fault is returned as ("fault", text)."""
+    goal = rest_j5 + 0.5
+    if q[4] >= rest_j5 - 0.5:
+        return None
+    hang = hanging_current(piper, args)
+    print(f"lower the gripper: J5 from {q[4]:.2f} toward {goal:.2f} at {args.lower_deg_s:g} deg/s "
+          f"until it rests (J5 holding {hang if hang is None else round(hang, 2)} A now)",
+          flush=True)
+    t0, below = time.time(), 0
+    while True:
+        t = time.time() - t0
+        j5 = min(q[4] + args.lower_deg_s * t, goal)
+        send(piper, [*q[:4], j5, q[5]], args.speed)
+        time.sleep(PERIOD_S)
+        fault = arm_fault(piper)
+        if fault:
+            return "fault", fault
+        m = joints_deg(piper)
+        amps = currents_a(piper)
+        over = [i for i in range(6) if abs(amps[i]) > args.max_current_a[i]]
+        below = below + 1 if hang and amps[4] * math.copysign(1, hang) < args.rest_current_a else 0
+        why = None
+        if t > 0.3 and below >= 2:
+            why = f"resting: J5 carries {amps[4]:+.2f} A (was {hang:+.2f} A hanging free)"
+        elif over:
+            why = "; ".join(f"J{i + 1} drew {amps[i]:.1f} A" for i in over)
+        elif abs(m[4] - j5) > 2.0:
+            why = f"J5 at {m[4]:.2f} is {abs(m[4] - j5):.1f} deg behind {j5:.2f}"
+        elif j5 >= goal and abs(m[4] - goal) <= 0.3:
+            why = f"reached J5 = {m[4]:.2f} without J5's current dropping"
+        elif t > (goal - q[4]) / args.lower_deg_s + 3:
+            why = f"J5 at {m[4]:.2f} didn't reach {goal:.2f}"
+        if why:
+            print(f"  stopped at J5 = {hold_here(piper, args)[4]:.2f}: {why}", flush=True)
+            return why
 
 
 def trace_loop(piper, path, stop, period_s=0.02):
@@ -284,9 +370,9 @@ def main():
     ap.add_argument("--can", default="can0")
     ap.add_argument("--go", action="store_true", help="enable the motors and move")
     ap.add_argument("--park", action="store_true",
-                    help="one cycle only: up, park the wrist, down, disable")
+                    help="one cycle only: up, roll the gripper, down, land, disable")
     ap.add_argument("--cycles", type=int, default=3,
-                    help="up/down cycles in all; the first parks the wrist at the top")
+                    help="up/down cycles in all; the first rolls the gripper at the top")
     ap.add_argument("--lift-deg", type=float, default=20.0, help="J2 lift (and J3 opening)")
     ap.add_argument("--deg-s", type=float, default=12.0, help="peak joint speed, deg/s")
     ap.add_argument("--speed", type=int, default=15,
@@ -307,9 +393,24 @@ def main():
                     help="J2 and J3 must start this close to 0 (the rest is about -2 and +2)")
     ap.add_argument("--j1-tol-deg", type=float, default=10.0, help="J1 must start this close to 0")
     ap.add_argument("--park-j6-deg", type=float, default=-52.0,
-                    help="J6 when parked, J4 and J5 held as found. The first run (#54) jammed at "
+                    help="J6 when parked, J4 held as found. The first run (#54) jammed at "
                          "J6 = -55.0, so the default stops 3 deg short; -90 would be the third "
                          "photo on #54")
+    ap.add_argument("--wrist-pitch-deg", type=float, default=0.0,
+                    help="pitch of the J5-J6 link (the gripper's axis) whenever the arm moves, "
+                         "deg above horizontal: 0 is level, which is J5 = +5 at home")
+    ap.add_argument("--no-level", action="store_true",
+                    help="keep J5 as found instead (the second run's behaviour)")
+    ap.add_argument("--contact-a", type=float, default=0.7,
+                    help="once the gripper hangs level, stop if J5 holds less than this much of "
+                         "it up (A, against about 1.5 A hanging free)")
+    ap.add_argument("--rest-current-a", type=float, default=0.7,
+                    help="lowering the gripper at the end, stop once J5 holds less than this")
+    ap.add_argument("--lower-deg-s", type=float, default=4.0,
+                    help="speed at which J5 lowers the gripper onto its rest at the end")
+    ap.add_argument("--rest-j5-deg", type=float,
+                    help="J5 with the gripper drooped onto its rest (default: as found when the "
+                         "arm starts on its rest, else 23)")
     ap.add_argument("--land-above-deg", type=float, default=0.4,
                     help="before disabling, lower J2 and J3 to this far above the rest they "
                          "started on, so the arm drops only this far")
@@ -340,6 +441,12 @@ def main():
         sys.exit("--cycles must be in [1, 10]")
     if not 0.1 <= args.land_above_deg <= 1.5:
         sys.exit("--land-above-deg must be in [0.1, 1.5]")
+    if not -15 <= args.wrist_pitch_deg <= 15:
+        sys.exit("--wrist-pitch-deg must be in [-15, 15]")
+    if not 1 <= args.lower_deg_s <= 8:
+        sys.exit("--lower-deg-s must be in [1, 8]")
+    if not 0.2 <= args.contact_a <= args.rest_current_a <= 1.2:
+        sys.exit("need 0.2 <= --contact-a <= --rest-current-a <= 1.2")
 
     state = open(f"/sys/class/net/{args.can}/operstate").read().strip() \
         if os.path.exists(f"/sys/class/net/{args.can}") else "missing"
@@ -363,11 +470,15 @@ def main():
         sys.exit(f"not moving: {fault}")
 
     found = q0[3:]
-    park_wrist = [found[0], found[1], args.park_j6_deg]
-    home0 = [q0[0], 0.0, 0.0, *found]  # where it started, raised off the rest
-    up0 = [q0[0], args.lift_deg, -args.lift_deg, *found]
-    up = [q0[0], args.lift_deg, -args.lift_deg, *park_wrist]
-    home = [q0[0], 0.0, 0.0, *park_wrist]
+
+    def lv(q):  # J5 set so the J5-J6 link has --wrist-pitch-deg, unless --no-level
+        return list(q) if args.no_level else level(q, args.wrist_pitch_deg)
+
+    start = lv(q0)  # the link leveled where the arm lies
+    home0 = lv([q0[0], 0.0, 0.0, *found])  # where it started, raised off the rest
+    up0 = lv([q0[0], args.lift_deg, -args.lift_deg, *found])
+    up = lv([q0[0], args.lift_deg, -args.lift_deg, found[0], found[1], args.park_j6_deg])
+    home = lv([q0[0], 0.0, 0.0, found[0], found[1], args.park_j6_deg])
     if abs(pi_tilt(home, args)) > args.side_tol_deg:
         sys.exit(f"--park-j6-deg {args.park_j6_deg:g} doesn't put the Pi to the side: "
                  f"{describe_pi(home, args)}")
@@ -384,31 +495,42 @@ def main():
         if q0[1] < -MAX_WIDEN_DEG + 0.5 or q0[2] > MAX_WIDEN_DEG - 0.5:
             problems.append(f"J2/J3 rest at {q0[1]:.2f}/{q0[2]:.2f} deg is further below the "
                             f"limits than the {MAX_WIDEN_DEG:g} deg this script will widen them")
-        land = [q0[0], min(q0[1] + args.land_above_deg, 0.0),
-                max(q0[2] - args.land_above_deg, 0.0), *park_wrist]
+        land = lv([q0[0], min(q0[1] + args.land_above_deg, 0.0),
+                   max(q0[2] - args.land_above_deg, 0.0), *home[3:]])
         widen = (min(q0[1] - 0.5, 0.0), max(q0[2] + 0.5, 0.0))
+    rest_j5 = args.rest_j5_deg if args.rest_j5_deg is not None else \
+        q0[4] if at_rest and q0[4] > 10 else 23.0
+    if not 10 <= rest_j5 <= 30:
+        problems.append(f"the gripper's rest at J5 = {rest_j5:.1f} isn't the 23-25 deg droop seen "
+                        "so far; give --rest-j5-deg")
     if any(not lo <= v <= hi for v, (lo, hi) in zip(found, LIMITS[3:])):
         problems.append(f"J4-J6 at {fmt(found)} are outside the joint limits {LIMITS[3:]}, so "
                         "they can't be held where they are")
     if problems:
         sys.exit("not moving:\n  " + "\n  ".join(problems))
 
-    wrist_parked = max(abs(a - b) for a, b in zip(found, park_wrist)) <= args.tol_deg
+    wrist_parked = abs(q0[5] - args.park_j6_deg) <= args.tol_deg
+    leveled = abs(q0[4] - start[4]) <= args.tol_deg
     rise = [b - a for a, b in zip(fk(home0)[1], fk(up0)[1])]
     print("plan, J1 held at", f"{q0[0]:.2f} deg throughout:")
-    print(f"  up   {fmt(up0)}  J2/J3 only: the wrist rises {rise[2]:.0f} mm and moves "
+    print(f"  the J5-J6 link is at {wrist_pitch(q0):+.1f} deg now")
+    if not leveled:
+        print(f"  level {fmt(start)}  J5 only: the link to {wrist_pitch(start):+.1f} deg, lifting "
+              "the gripper off its rest")
+    print(f"  up    {fmt(up0)}  J2/J3: the wrist rises {rise[2]:.0f} mm and moves "
           f"{rise[0]:.0f} mm forward")
     if not wrist_parked:
-        print(f"  then {fmt(up)}  wrist rolled to J6 = {args.park_j6_deg:g} at the top: "
+        print(f"  then  {fmt(up)}  gripper rolled to J6 = {args.park_j6_deg:g} at the top: "
               f"{describe_pi(up, args)}")
-    print(f"  down {fmt(home)}")
+    print(f"  down  {fmt(home)}  link at {wrist_pitch(home):+.1f} deg")
     print(f"  {args.cycles} up/down cycle(s) in all at up to {args.deg_s:g} deg/s")
     if land:
-        print(f"  land {fmt(land)}  {args.land_above_deg:g} deg above the rest, then disable; "
-              f"firmware limits J2 >= {widen[0]:.1f}, J3 <= {widen[1]:.1f} for the run, back to "
-              "0 after")
+        print(f"  land  {fmt(land)}  {args.land_above_deg:g} deg above the rest; firmware limits "
+              f"J2 >= {widen[0]:.1f}, J3 <= {widen[1]:.1f} for the run, back to 0 after")
     else:
-        print("  then disable at home")
+        print("  stay at home (--no-land)")
+    print(f"  lower the gripper: J5 toward {rest_j5 + 0.5:.1f} at {args.lower_deg_s:g} deg/s until "
+          f"it rests ({describe_pi([*home[:4], rest_j5, home[5]], args)}), then disable")
     if not args.go:
         print("read-only run (no --go): nothing sent to the arm")
         return
@@ -444,25 +566,38 @@ def main():
         time.sleep(0.01)
     print(f"enabled in {time.time() - t0:.2f} s", flush=True)
 
-    completed, stopped, phase = 0, None, "up"
+    completed, stopped, phase, hang = 0, None, "level", None
     try:
+        if not leveled:
+            stopped = move(piper, joints_deg(piper), start, args, "level the J5-J6 link")
+            if not stopped:
+                print(f"  link at {wrist_pitch(joints_deg(piper)):+.1f} deg", flush=True)
+                time.sleep(args.pause_s)
+        if not stopped:
+            hang = hanging_current(piper, args)  # J5 holding the gripper up, hanging free
+            print(f"  J5 holds the gripper up with {hang if hang is None else round(hang, 2)} A"
+                  + ("" if hang else ": too little to tell, so no check for it resting on "
+                     "something"), flush=True)
         for i in range(1, args.cycles + 1):
+            if stopped:
+                break
             phase = "up"
             stopped = move(piper, joints_deg(piper), up if wrist_parked else up0, args,
-                           f"cycle {i}/{args.cycles} up")
+                           f"cycle {i}/{args.cycles} up", hang)
             if stopped:
                 break
             time.sleep(args.pause_s)
             if not wrist_parked:
                 phase = "wrist"
-                stopped = move(piper, joints_deg(piper), up, args, "park the wrist")
+                stopped = move(piper, joints_deg(piper), up, args, "roll the gripper", hang)
                 if stopped:
                     break
                 wrist_parked = True
                 print("  " + describe_pi(joints_deg(piper), args), flush=True)
                 time.sleep(args.pause_s)
             phase = "down"
-            stopped = move(piper, joints_deg(piper), home, args, f"cycle {i}/{args.cycles} down")
+            stopped = move(piper, joints_deg(piper), home, args, f"cycle {i}/{args.cycles} down",
+                           hang)
             if stopped:
                 break
             completed += 1
@@ -471,21 +606,24 @@ def main():
     except KeyboardInterrupt:
         stopped = ("interrupted", "Ctrl-C")
     finally:
-        # Disable only at home: parked if the wrist got there, else where it started.
+        # Disable only at home: rolled if the gripper got there, else where it started. A snag
+        # while leveling leaves the arm on its rest, so the gripper is lowered there instead.
         target = home if wrist_parked else home0
         at_target = stopped is None
+        on_rest = bool(stopped) and stopped[0] == "stuck" and phase == "level"
         if stopped:
             kind, why = stopped
             print(f"STOPPED ({phase}, {kind}): {why}", flush=True)
             if kind == "fault":
                 print("not commanding anything further", flush=True)
+            elif on_rest:
+                print("held at", fmt(hold_here(piper, args)), flush=True)
             elif kind == "stuck" and phase in ("up", "wrist"):
                 q = hold_here(piper, args)
                 print("held at", fmt(q), flush=True)
                 back = None
                 if phase == "wrist":
-                    back = move(piper, q, [q0[0], q[1], q[2], *found], args,
-                                "wrist back as it was found")
+                    back = move(piper, q, [*q[:5], found[2]], args, "roll the gripper back")
                     q = joints_deg(piper)
                 if back is None:
                     at_target = move(piper, q, target, args, "back down to home") is None
@@ -493,14 +631,18 @@ def main():
                 print("holding at", fmt(hold_here(piper, args)), flush=True)
         q = joints_deg(piper)
         near = [abs(a - b) for a, b in zip(q, target)]
-        if at_target and max(near[1:3]) <= args.home_tol_deg and max(near[3:]) <= args.tol_deg * 2:
-            if land:
-                low = [q0[0], land[1], land[2], *q[3:]]
+        if on_rest or (at_target and max(near[1:3]) <= args.home_tol_deg
+                       and max(near[3:]) <= args.tol_deg * 2):
+            if land and not on_rest:
+                low = lv([q0[0], land[1], land[2], *q[3:]])
                 slow = argparse.Namespace(**{**vars(args), "deg_s": 2.0})  # last 2 deg slowly
                 why = move(piper, q, low, slow, "land on the rest")
                 if why:
-                    print(f"  landing stopped ({why[1]}); disabling here", flush=True)
+                    print(f"  landing stopped ({why[1]}); lowering the gripper and disabling here",
+                          flush=True)
                 q = joints_deg(piper)
+            lower_gripper(piper, q, rest_j5, args)
+            q = joints_deg(piper)
             t0 = time.time()
             while piper.DisablePiper() and time.time() - t0 < 5:
                 time.sleep(0.01)
@@ -514,12 +656,12 @@ def main():
                                                 for i, (a, b) in enumerate(zip(q_off, q))),
                   flush=True)
             if not wrist_parked:
-                print("the wrist never got parked, so this is how the arm started, Pi underneath",
+                print("the gripper never got rolled, so the Pi is underneath, as it started",
                       flush=True)
         elif stopped and stopped[0] == "fault":
             print("WARNING: left as the fault left it, last read at", fmt(q), flush=True)
             print("  check the arm and the E-stop before rerunning (--park --go brings a raised "
-                  "arm home)", flush=True)
+                  "arm home and lands it)", flush=True)
         else:
             print("WARNING: not back home, so the motors stay on and holding:", fmt(q), flush=True)
             print("  clear whatever stopped it, then rerun with --park --go, or hold the arm "
