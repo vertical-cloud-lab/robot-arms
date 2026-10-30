@@ -1,6 +1,6 @@
 {
  "what": "PR #44's round-5 stock-finger sleeves (2 x main shell with flat counterbores, 2 x fixing shell) on one A1 mini plate in black PLA: the second retry of this issue's print, after the 05:18 run held for a part beside the bed",
- "result": "DRAFT: sent at 14:24:22 UTC and printing",
+ "result": "PRINTED: sent at 14:24:22 UTC, finished at about 16:42:38 (100 %, layer 242/242, 2 h 18 min after Send; Studio's estimate 2 h 17 min). No dialog or HMS alert during the print or after it. The two fixing shells came out clean. The two main shells reached full height and their tops look whole, but they are wrapped in a large tangle of loose strands that grew from about layer 21 onwards; how their sides came out can only be judged once the strands are off",
  "printer": {
   "model": "Bambu Lab A1 mini",
   "name_in_studio": "Thumbelina, the A1 Mini",
@@ -42,6 +42,25 @@
   "send": "2026-10-30T14:24:22Z (\"Successfully sent\")",
   "heatbed_preheating": "2026-10-30T14:24:56Z",
   "layer_1": "2026-10-30T14:32:01Z, after filament change, vibration compensation, nozzle cleaning, bed levelling and flow calibration",
-  "fixing_shells_done": "2026-10-30T15:47Z (layer 76)"
- }
+  "fixing_shells_done": "2026-10-30T15:47Z (layer 76)",
+  "first_strands": "2026-10-30T14:51:54Z (layer 21)",
+  "tangle_reported": "2026-10-30T15:26:41Z (tracking comment)",
+  "main_shells_checked": "2026-10-30T15:53:22Z (layer ~92) and 16:07:52 (layer ~140): solid, still printing",
+  "heavy_stringing": "2026-10-30T16:23:10Z (layer ~190)",
+  "finished": "2026-10-30T16:42:38Z (first read of 100 % with 'Finished'; layer 242/242 at 16:41:02)",
+  "final_frame": "2026-10-30T16:43:30Z",
+  "signed_out": "2026-10-30T16:44:52Z; Studio then closed and its config (~/.config/BambuStudio, which holds the printers' LAN access codes), ~/.local/share/bambu-studio (the login page's WebKit storage), /tmp/bamboo_model, the screenshots and the recording deleted by 16:45:30",
+  "token_reminted": "2026-10-30T14:53Z, 15:38Z and 16:25Z (scripts/refresh_github_app_token.py)"
+ },
+ "watching": "monitor.jsonl: watch_studio.py (byu-vcl bambu/studio, WATCH_LAYOUT=a1mini BED_TARGET=65) OCR of the Device page every 10 s from 14:25:29 to 16:42:59, in nine runs (25-28 min each, restarted; three ended on the full-screen camera window this run opened itself, the last on an OCR misread of the cooling nozzle as 646 C). Layers advanced steadily; nozzle 218-221 C, bed 64-65 C (the 'bed 1/64' and '65/165' entries are the usual OCR misreads of '65 /65'). The thread was polled every minute: no replies. Close-ups came from Studio's full-screen camera (1920 x 1080) at layers ~48, 60, 62, 90, 140 and 190",
+ "defect": {
+  "seen": "thin strands beside the parts at layer 21 (14:51), more by layer 30, a bird's nest beside one fixing shell and loose strands behind the other by layer 45-48 (15:24), the tangle behind both fixing shells by layer 60 (15:35), then a curtain of strings hanging from the main shells to the plate by layer ~190 (16:23). It never caught on the nozzle and no part moved",
+  "likely_cause": "unsupported overhangs. In this file the main shells print 'Floating vertical shell' (walls over nothing) on most layers from 18 to 68 and again on a few later ones (92-98, 147-148, 173-183), with no supports under them (supports were set only under the fixing shells); the fixing shells bridge at layers 29 and 41. The timing matches. Heavy PLA stringing can also mean damp filament; that wasn't checked",
+  "decision": "let it run: the parts' bodies looked sound in every close-up, nothing was caught on the nozzle, the fixing shells finished at layer 76, and stopping would have lost the main shells. Reported in the tracking comment at 15:26, 15:38, 15:54, 16:08 and 16:24; nobody asked to stop"
+ },
+ "final_frame": "20261030T164330Z_done_a1mini_camera_studio.jpg (gantry parked high after the print): the fixing shells clean in front; behind them the main shells' tops and a large tangle of strands around them. Room above the bench blurred",
+ "hms_after": "20261030T164400Z_a1mini_hms_after.jpg: no alerts",
+ "recording": "the runner's screen was recorded (ffmpeg x11grab, 5 fps, 5 min segments, 14:15-16:45, 678 MB) but not published: it shows the account e-mail during login and the lab room, and print runs have no YouTube token. Deleted at 16:45 UTC",
+ "after": "Thumbelina idle with the finished plate on it, heaters off and cooling (nozzle 154 C, bed 59 C at 16:43). Someone needs to take the parts off, pull the strands off the main shells and check their overhangs and counterbores. If the main shells need reprinting: supports under their overhangs (this slice has none there), and drying the black PLA in AMS A3, are worth trying",
+ "not_watched": "nothing: watched from Send to the finish"
 }
