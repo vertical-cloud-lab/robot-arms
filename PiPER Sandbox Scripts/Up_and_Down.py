@@ -12,14 +12,17 @@ right, camera to its left) the arm drops clear. So the script:
 2. Raises the arm with the wrist as it found it: J2 up by --lift-deg and J3 open by the same
    angle, so the forearm keeps its pitch and the wrist rises 94 mm (for 20 degrees) and moves
    30 mm forward. The Pi lifts straight up, away from J2, before anything at the wrist moves.
-3. At the top, turns the wrist to the parked orientation: J4 = J5 = 0, J6 = --park-j6-deg.
-   From a wrist that has drooped onto the rest (J5 near 23, J6 near 0), the Pi only rises on
-   the way round, from below the gripper to beside it.
+3. At the top, rolls the wrist to J6 = --park-j6-deg, with J4 and J5 held as found (a pure
+   twist). From a wrist that has drooped onto the rest (J5 near 23, J6 near 0), the Pi only
+   rises on the way round, from below the gripper toward its side.
 4. Lowers to home (J2 = J3 = 0) and repeats up and down until it has done --cycles in all,
    with the wrist parked. "Down" is never lower than home.
-5. Disables only at home with the Pi to the side, so the arm drops the couple of degrees onto
-   its rest with the plug clear of J2. Then it watches the arm settle for 3 s and reports
-   where it ended up.
+5. Lands the arm --land-above-deg above the rest it started on, then disables, so the arm
+   drops less than half a degree. The firmware stops J2 at 0 and J3 at 0 while the rest is at
+   about -2 and +2, so the script widens those two limits to just past the rest first and
+   sets them back to 0 after disabling (--no-land skips all this and disables at home, which
+   drops the arm about 2 degrees). Then it watches the arm settle for 3 s and reports how far
+   each joint dropped.
 
 Every move follows a smooth profile that peaks at --deg-s, streamed at 50 Hz, with the
 controller's own speed capped at --speed percent as well. A snag is a joint drawing more than
@@ -33,9 +36,10 @@ came, so nothing keeps pushing on whatever caught, and then:
 If the arm reports an error or its feedback stops (E-stop or power cut), it stops commanding
 motion and says so.
 
-First run, 2026-10-30 (#54): from J6 = -18 the roll toward -90 jammed at J6 = -55 (J5 = 10),
-with J6's current going from 0.1 A to 16 A. The lag check alone took 0.35 s to see it, which
-is why the current check and the back-off exist. Before rolling again, find what caught.
+First run, 2026-10-30 (#54): from J6 = -18 the roll toward -90 (also straightening J5) jammed
+at J6 = -55.0 (J5 = 11), with J6's current going from 0.1 A to 16 A. The lag check alone took
+0.35 s to see it, which is why the current check and the back-off exist, and why the roll now
+stops at J6 = -52 by default.
 
 Runs on the Pi that has the USB-CAN adapter (rpi-5-mpzy since 2026-10-30; the arm Pi,
 rpi-5-eufi, before that), in the venv that has piper_sdk (~/piper-venv). can0 must already be
@@ -59,6 +63,7 @@ STALE_S = 0.5  # joint feedback older than this means the arm stopped talking
 # Joint limits from piper_sdk's JointCtrl docstring. The SDK doesn't enforce them by default, and
 # the arm rests just outside J2's and J3's (about -2 and +2), so targets are clamped here.
 LIMITS = [(-150, 150), (0, 180), (-170, 0), (-100, 100), (-70, 70), (-120, 120)]
+MAX_WIDEN_DEG = 4.0  # never move J2's lower or J3's upper firmware limit further than this
 
 # piper_sdk's DH table (C_PiperForwardKinematics, dh_is_offset=1): modified DH, mm and degrees.
 DH = [  # a, alpha, theta offset, d
@@ -151,6 +156,33 @@ def arm_fault(piper):
     if st.arm_status != 0 or comms:
         return f"arm status {st.arm_status}, err code {st.err_code}, flags {comms or 'none'}"
     return None
+
+
+def firmware_limits(piper, motor):
+    """(min, max) firmware angle limit of one joint in degrees, or None if it didn't answer."""
+    t0 = time.time()
+    piper.SearchMotorMaxAngleSpdAccLimit(motor, 0x01)
+    while time.time() - t0 < 1.0:
+        time.sleep(0.05)
+        msg = piper.GetCurrentMotorAngleLimitMaxVel()
+        x = msg.current_motor_angle_limit_max_vel
+        if msg.time_stamp > t0 and x.motor_num == motor:
+            return x.min_angle_limit / 10, x.max_angle_limit / 10
+    return None
+
+
+def set_rest_limits(piper, j2_min, j3_max):
+    """Set J2's lower and J3's upper firmware limit (deg; the other ends and the speed limits
+    are left alone), read them back and return True if both took."""
+    for _ in range(3):
+        piper.MotorAngleLimitMaxSpdSet(2, 0x7FFF, round(j2_min * 10), 0x7FFF)
+        time.sleep(0.1)
+        piper.MotorAngleLimitMaxSpdSet(3, round(j3_max * 10), 0x7FFF, 0x7FFF)
+        time.sleep(0.1)
+        l2, l3 = firmware_limits(piper, 2), firmware_limits(piper, 3)
+        if l2 and l3 and abs(l2[0] - j2_min) < 0.15 and abs(l3[1] - j3_max) < 0.15:
+            return True
+    return False
 
 
 def currents_a(piper):
@@ -267,12 +299,18 @@ def main():
     ap.add_argument("--home-tol-deg", type=float, default=6.0,
                     help="J2 and J3 must start this close to 0 (the rest is about -2 and +2)")
     ap.add_argument("--j1-tol-deg", type=float, default=10.0, help="J1 must start this close to 0")
-    ap.add_argument("--park-j6-deg", type=float, default=-90.0,
-                    help="J6 when parked (J4 = J5 = 0): -90 puts the Pi to the arm's right and "
-                         "the camera to its left, as in the third photo on #54")
+    ap.add_argument("--park-j6-deg", type=float, default=-52.0,
+                    help="J6 when parked, J4 and J5 held as found. The first run (#54) jammed at "
+                         "J6 = -55.0, so the default stops 3 deg short; -90 would be the third "
+                         "photo on #54")
+    ap.add_argument("--land-above-deg", type=float, default=0.4,
+                    help="before disabling, lower J2 and J3 to this far above the rest they "
+                         "started on, so the arm drops only this far")
+    ap.add_argument("--no-land", action="store_true",
+                    help="leave the firmware limits alone and disable at home (J2 = J3 = 0)")
     ap.add_argument("--camera-up-j6-deg", type=float, default=0.0,
                     help="J6 with the camera on top and the Pi underneath, at home")
-    ap.add_argument("--side-tol-deg", type=float, default=30.0,
+    ap.add_argument("--side-tol-deg", type=float, default=50.0,
                     help="parked, the Pi's side must be within this of horizontal")
     ap.add_argument("--trace", metavar="CSV",
                     help="log commanded and measured joints and motor currents at 50 Hz to CSV")
@@ -293,6 +331,8 @@ def main():
         sys.exit("--speed must be in [1, 30]")
     if not 1 <= args.cycles <= 10:
         sys.exit("--cycles must be in [1, 10]")
+    if not 0.1 <= args.land_above_deg <= 1.5:
+        sys.exit("--land-above-deg must be in [0.1, 1.5]")
 
     state = open(f"/sys/class/net/{args.can}/operstate").read().strip() \
         if os.path.exists(f"/sys/class/net/{args.can}") else "missing"
@@ -316,7 +356,7 @@ def main():
         sys.exit(f"not moving: {fault}")
 
     found = q0[3:]
-    park_wrist = [0.0, 0.0, args.park_j6_deg]
+    park_wrist = [found[0], found[1], args.park_j6_deg]
     home0 = [q0[0], 0.0, 0.0, *found]  # where it started, raised off the rest
     up0 = [q0[0], args.lift_deg, -args.lift_deg, *found]
     up = [q0[0], args.lift_deg, -args.lift_deg, *park_wrist]
@@ -331,6 +371,15 @@ def main():
     if not (-args.home_tol_deg <= q0[1] <= 45 and -60 <= q0[2] <= args.home_tol_deg):
         problems.append(f"J2/J3 at {q0[1]:.1f}/{q0[2]:.1f} deg is neither the rest nor a pose "
                         "this script raised (J2 up to 45, J3 down to -60)")
+    at_rest = q0[1] <= 0 and q0[2] >= 0  # resting below J2's and J3's firmware limits
+    land = None
+    if not args.no_land and at_rest:
+        if q0[1] < -MAX_WIDEN_DEG + 0.5 or q0[2] > MAX_WIDEN_DEG - 0.5:
+            problems.append(f"J2/J3 rest at {q0[1]:.2f}/{q0[2]:.2f} deg is further below the "
+                            f"limits than the {MAX_WIDEN_DEG:g} deg this script will widen them")
+        land = [q0[0], min(q0[1] + args.land_above_deg, 0.0),
+                max(q0[2] - args.land_above_deg, 0.0), *park_wrist]
+        widen = (min(q0[1] - 0.5, 0.0), max(q0[2] + 0.5, 0.0))
     if any(not lo <= v <= hi for v, (lo, hi) in zip(found, LIMITS[3:])):
         problems.append(f"J4-J6 at {fmt(found)} are outside the joint limits {LIMITS[3:]}, so "
                         "they can't be held where they are")
@@ -343,11 +392,16 @@ def main():
     print(f"  up   {fmt(up0)}  J2/J3 only: the wrist rises {rise[2]:.0f} mm and moves "
           f"{rise[0]:.0f} mm forward")
     if not wrist_parked:
-        print(f"  then {fmt(up)}  wrist to J4 = J5 = 0, J6 = {args.park_j6_deg:g} at the top: "
+        print(f"  then {fmt(up)}  wrist rolled to J6 = {args.park_j6_deg:g} at the top: "
               f"{describe_pi(up, args)}")
     print(f"  down {fmt(home)}")
-    print(f"  {args.cycles} up/down cycle(s) in all at up to {args.deg_s:g} deg/s, then disable "
-          "at home")
+    print(f"  {args.cycles} up/down cycle(s) in all at up to {args.deg_s:g} deg/s")
+    if land:
+        print(f"  land {fmt(land)}  {args.land_above_deg:g} deg above the rest, then disable; "
+              f"firmware limits J2 >= {widen[0]:.1f}, J3 <= {widen[1]:.1f} for the run, back to "
+              "0 after")
+    else:
+        print("  then disable at home")
     if not args.go:
         print("read-only run (no --go): nothing sent to the arm")
         return
@@ -357,6 +411,18 @@ def main():
         tracer = threading.Thread(target=trace_loop, args=(piper, args.trace, stop), daemon=True)
         tracer.start()
         time.sleep(0.5)  # a little baseline before the motors enable
+
+    if land:
+        before = firmware_limits(piper, 2), firmware_limits(piper, 3)
+        print("firmware limits J2, J3 (deg):", before, flush=True)
+        if before[0] is None or before[1] is None or before[0][0] != 0 or before[1][1] != 0:
+            sys.exit("J2/J3 firmware limits aren't the stock 0 deg; not changing them")
+        if not set_rest_limits(piper, *widen):
+            set_rest_limits(piper, 0.0, 0.0)
+            sys.exit("couldn't widen the J2/J3 limits (tried to set them back to 0); nothing moved")
+        LIMITS[1] = (widen[0], LIMITS[1][1])
+        LIMITS[2] = (LIMITS[2][0], widen[1])
+        print(f"firmware limits now J2 >= {widen[0]:.2f}, J3 <= {widen[1]:.2f}", flush=True)
 
     # Make the current pose the target before enabling, so enabling can't jump to an old one.
     t0 = time.time()
@@ -421,14 +487,25 @@ def main():
         q = joints_deg(piper)
         near = [abs(a - b) for a, b in zip(q, target)]
         if at_target and max(near[1:3]) <= args.home_tol_deg and max(near[3:]) <= args.tol_deg * 2:
+            if land:
+                low = [q0[0], land[1], land[2], *q[3:]]
+                slow = argparse.Namespace(**{**vars(args), "deg_s": 2.0})  # last 2 deg slowly
+                why = move(piper, q, low, slow, "land on the rest")
+                if why:
+                    print(f"  landing stopped ({why[1]}); disabling here", flush=True)
+                q = joints_deg(piper)
             t0 = time.time()
             while piper.DisablePiper() and time.time() - t0 < 5:
                 time.sleep(0.01)
             print(f"disabled at {fmt(q)}: {describe_pi(q, args)}", flush=True)
             for _ in range(6):
                 time.sleep(0.5)
+            q_off = q
             q = joints_deg(piper)
             print(f"settled 3 s later at {fmt(q)}: {describe_pi(q, args)}", flush=True)
+            print("dropped (deg): " + ", ".join(f"J{i + 1} {b - a:+.2f}"
+                                                for i, (a, b) in enumerate(zip(q_off, q))),
+                  flush=True)
             if not wrist_parked:
                 print("the wrist never got parked, so this is how the arm started, Pi underneath",
                       flush=True)
@@ -440,6 +517,14 @@ def main():
             print("WARNING: not back home, so the motors stay on and holding:", fmt(q), flush=True)
             print("  clear whatever stopped it, then rerun with --park --go, or hold the arm "
                   "and use the E-stop", flush=True)
+        if land and not any(piper.GetArmEnableStatus()):
+            ok = set_rest_limits(piper, 0.0, 0.0)
+            print("firmware limits back to J2 >= 0, J3 <= 0:" if ok else
+                  "WARNING: couldn't confirm J2/J3 limits are back at 0:",
+                  firmware_limits(piper, 2), firmware_limits(piper, 3), flush=True)
+        elif land:
+            print(f"WARNING: motors still on, so J2/J3 firmware limits left at {widen}; set them "
+                  "back to 0 once it's disabled", flush=True)
         print(f"completed {completed}/{args.cycles} cycles", flush=True)
         if args.trace:
             time.sleep(0.5)
