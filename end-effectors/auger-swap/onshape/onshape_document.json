@@ -1,0 +1,79 @@
+{
+ "documentId": "a2afbff32210cfef4035e3a7",
+ "workspaceId": "656f6668acfca73fa886bbb8",
+ "owner": "Vertical Cloud Lab",
+ "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8",
+ "partStudios": {
+  "doser_compliant_clips.step": {
+   "elementId": "84da4bd471ae162bb09fd705",
+   "sha256": "ea7f8b6cee7fd260985ccc30d03f3c44f5a4c7111ab5c02e98b26b87812bcef2",
+   "tab": "Doser + compliant clips + finger fixture",
+   "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/84da4bd471ae162bb09fd705"
+  },
+  "s1_two_servo_tool.step": {
+   "elementId": "dde328d002bdd126c1aa604f",
+   "sha256": "530256b17c45eff292f4bbfd407c3be2528863e4d1095b861bdb5742384471c3",
+   "tab": "S1 two-servo tool",
+   "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/dde328d002bdd126c1aa604f"
+  },
+  "s2_one_servo_wheel_tool.step": {
+   "elementId": "62b0ce943acc1c2d5951923b",
+   "sha256": "89014db46335efeaed3bfe383c83459219cea45582c6c71383d07017b31b8b03",
+   "tab": "S2 one-servo wheel tool",
+   "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/62b0ce943acc1c2d5951923b"
+  },
+  "alt_a_sleeves_pin.step": {
+   "elementId": "0cddbb996c8dc474b02a109d",
+   "sha256": "f6513c8d730ca3d7be2a63f85e0c166c1529c93eddcf10167e3caa773b20d66c",
+   "tab": "Alt A sleeves + tilt-lock slider",
+   "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/0cddbb996c8dc474b02a109d"
+  },
+  "alt_b_sleeves.step": {
+   "elementId": "c35cc3f6cc387f21bf7cd736",
+   "sha256": "763f7d7f488d64dbe2720e303c486a87d016343845bda842d4e7b4c9024b6fb4",
+   "tab": "Alt B sleeves",
+   "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/c35cc3f6cc387f21bf7cd736"
+  },
+  "alt_a_custom_fingers_pin.step": {
+   "elementId": "4d6e11d16ea5da425da28134",
+   "sha256": "a4a847751a5e58065c0a4333d298af78c053896483bf1dc91dd927e6c6e8a4dc",
+   "tab": "Alt A custom fingers + tilt-lock slider",
+   "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/4d6e11d16ea5da425da28134"
+  },
+  "agilex_gripper_ref_alt_a.step": {
+   "elementId": "4b031882d11b4ae954b45ec7",
+   "sha256": "decc596f6ebb90322de84fd3714eb08bd0e539616a29545b152a62484ecca28a",
+   "tab": "AgileX gripper (reference), Alt A pose",
+   "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/4b031882d11b4ae954b45ec7"
+  },
+  "agilex_gripper_ref_alt_a_cf.step": {
+   "elementId": "a66cfbff4e42ef06e9f2db39",
+   "sha256": "b5f445ea0367fb582ca2f358e5e001f663c5f5e5ff3dcefdb935dcedf25dc9bc",
+   "tab": "AgileX gripper (reference), custom-finger pose",
+   "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/a66cfbff4e42ef06e9f2db39"
+  }
+ },
+ "assemblies": {
+  "Strategy 1": {
+   "elementId": "4b0e2b44f7762a4ba874dfba",
+   "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/4b0e2b44f7762a4ba874dfba"
+  },
+  "Strategy 2": {
+   "elementId": "4c0d62fbf6e4fb0beda072f9",
+   "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/4c0d62fbf6e4fb0beda072f9"
+  },
+  "Alternative A": {
+   "elementId": "c32900085919816e940d424b",
+   "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/c32900085919816e940d424b"
+  },
+  "Alternative B": {
+   "elementId": "55472b6c00b0741d6cf2e8af",
+   "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/55472b6c00b0741d6cf2e8af"
+  },
+  "Alternative A custom fingers": {
+   "elementId": "5a5c127205394e863e2a013d",
+   "url": "https://cad.onshape.com/documents/a2afbff32210cfef4035e3a7/w/656f6668acfca73fa886bbb8/e/5a5c127205394e863e2a013d"
+  }
+ },
+ "folder": "vcl-shared > 6DOF Robot Arm"
+}
