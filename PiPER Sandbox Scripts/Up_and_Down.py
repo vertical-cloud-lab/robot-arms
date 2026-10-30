@@ -22,14 +22,20 @@ right, camera to its left) the arm drops clear. So the script:
    where it ended up.
 
 Every move follows a smooth profile that peaks at --deg-s, streamed at 50 Hz, with the
-controller's own speed capped at --speed percent as well. If a joint falls more than
---lag-deg behind its target (a snag):
+controller's own speed capped at --speed percent as well. A snag is a joint drawing more than
+its --max-current-a (a cable going taut shows here first) or falling more than --lag-deg
+behind its target. On a snag it first backs the joints off --backoff-deg along the way they
+came, so nothing keeps pushing on whatever caught, and then:
 - on the way up, or while turning the wrist, it holds, puts the wrist back as it found it,
   and goes back down to where it started, then disables: no worse than before the run;
 - once the wrist is parked, on the way up, it goes back down to home and disables;
 - on the way down (something under the arm), it holds there with the motors on and says so.
 If the arm reports an error or its feedback stops (E-stop or power cut), it stops commanding
 motion and says so.
+
+First run, 2026-10-30 (#54): from J6 = -18 the roll toward -90 jammed at J6 = -55 (J5 = 10),
+with J6's current going from 0.1 A to 16 A. The lag check alone took 0.35 s to see it, which
+is why the current check and the back-off exist. Before rolling again, find what caught.
 
 Runs on the Pi that has the USB-CAN adapter (rpi-5-mpzy since 2026-10-30; the arm Pi,
 rpi-5-eufi, before that), in the venv that has piper_sdk (~/piper-venv). can0 must already be
@@ -147,10 +153,28 @@ def arm_fault(piper):
     return None
 
 
+def currents_a(piper):
+    hs = piper.GetArmHighSpdInfoMsgs()
+    return [getattr(hs, f"motor_{i}").current / 1000 for i in range(1, 7)]
+
+
+def back_off(piper, q, start, goal, args):
+    """Go back --backoff-deg the way the move came (the joint moving most by that much, the
+    rest in proportion), so nothing keeps pushing on whatever caught."""
+    span = max(abs(b - a) for a, b in zip(start, goal)) or 1.0
+    back = [v - args.backoff_deg * (b - a) / span for v, a, b in zip(q, start, goal)]
+    t0 = time.time()
+    while time.time() - t0 < 0.5:
+        send(piper, back, args.speed)
+        time.sleep(PERIOD_S)
+    print(f"  backed off to {fmt(joints_deg(piper))}", flush=True)
+
+
 def move(piper, start, goal, args, label):
     """Stream a smooth move from start to goal. Returns None once there, else why it stopped:
     ("fault", text) if the arm reported a problem or went quiet, ("stuck", text) if a joint
-    fell behind its target or didn't arrive."""
+    drew too much current, fell behind its target or didn't arrive. When a joint drew too much
+    or fell behind, it has already backed off."""
     span = max(abs(b - a) for a, b in zip(start, goal))
     duration = max(math.pi / 2 * span / args.deg_s, 0.3)  # raised cosine peaks at pi/2 x mean
     print(f"{label}: {fmt(goal)} over {duration:.1f} s", flush=True)
@@ -165,11 +189,20 @@ def move(piper, start, goal, args, label):
         if fault:
             return "fault", fault
         q = joints_deg(piper)
+        amps = currents_a(piper)
+        over = [i for i in range(6) if abs(amps[i]) > args.max_current_a[i]]
         lag = [abs(a - b) for a, b in zip(q, target)]
         worst = max(range(6), key=lambda i: lag[i])
-        if lag[worst] > args.lag_deg:
-            return "stuck", (f"J{worst + 1} at {q[worst]:.2f} deg is {lag[worst]:.1f} deg from "
-                             f"its target {target[worst]:.2f}; all joints {fmt(q)}")
+        why = None
+        if over:
+            why = "; ".join(f"J{i + 1} drew {amps[i]:.1f} A (limit {args.max_current_a[i]:g})"
+                            for i in over)
+        elif lag[worst] > args.lag_deg:
+            why = (f"J{worst + 1} at {q[worst]:.2f} deg is {lag[worst]:.1f} deg from its target "
+                   f"{target[worst]:.2f}")
+        if why:
+            back_off(piper, q, start, goal, args)
+            return "stuck", f"{why}; all joints {fmt(q)}"
         if t >= duration and all(abs(a - b) <= args.tol_deg for a, b in zip(q, goal)):
             print(f"  reached in {t:.1f} s: {fmt(q)}", flush=True)
             return None
@@ -223,6 +256,12 @@ def main():
     ap.add_argument("--tol-deg", type=float, default=1.0, help="pose reached tolerance")
     ap.add_argument("--lag-deg", type=float, default=4.0,
                     help="stop if any joint is this far from its streamed target")
+    ap.add_argument("--max-current-a", default="1.5,3,4,1.5,4.5,1.5",
+                    help="stop if a joint draws more than this, J1-J6 in A. The first run "
+                         "(#54) peaked at 0.04, 1.1, 2.0, 0.2, 2.7 and 0.45 A while moving "
+                         "freely; J6 reached 1.3 A 40 ms into its jam")
+    ap.add_argument("--backoff-deg", type=float, default=3.0,
+                    help="on a snag, go this far back the way the move came")
     ap.add_argument("--settle-s", type=float, default=3.0,
                     help="time allowed after a profile ends to come within --tol-deg")
     ap.add_argument("--home-tol-deg", type=float, default=6.0,
@@ -241,6 +280,11 @@ def main():
 
     if args.park:
         args.cycles = 1
+    args.max_current_a = [float(v) for v in args.max_current_a.split(",")]
+    if len(args.max_current_a) != 6 or not all(0 < v <= 10 for v in args.max_current_a):
+        sys.exit("--max-current-a takes six values in (0, 10] A, J1 to J6")
+    if not 0 <= args.backoff_deg <= 10:
+        sys.exit("--backoff-deg must be in [0, 10]")
     if not 0 < args.lift_deg <= 30:
         sys.exit("--lift-deg must be in (0, 30]")
     if not 1 <= args.deg_s <= 20:

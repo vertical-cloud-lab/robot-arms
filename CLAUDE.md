@@ -86,15 +86,36 @@ live in this repo, so record them here so they can be reproduced.
 **Gripper Pi cord (#54).** A Pi hangs under the gripper, its USB-C power plug facing back
 toward J2. With the camera on top (J6 near 0), disabling the motors drops the arm onto its rest
 and lands the plug on J2's housing. Disable only with the gripper rolled so the Pi is to the
-side (J6 ≈ −90°, camera to the arm's left, as the arm sits parked), and don't roll it back under
-the wrist near home. `PiPER Sandbox Scripts/Up_and_Down.py` (copy at `~/Up_and_Down.py` on the
-arm Pi) holds the wrist where it starts and refuses to move unless the Pi faces sideways. #15's
-`~/piper_up_down.py` without `--hold-wrist` commands J6 to 0, so don't run it as is.
+side, as in #54's third photo. `PiPER Sandbox Scripts/Up_and_Down.py` (copy at
+`~/Up_and_Down.py` on whichever Pi has the CAN adapter) raises J2/J3 with the wrist as it finds
+it, rolls the wrist at the top (J4 = J5 = 0, J6 = `--park-j6-deg`, default −90), cycles up and
+down, and disables only at home with the Pi to the side. It stops on a current rise or a lag and
+backs off. Its "Pi to the side" check is forward kinematics that assume the camera is straight up
+at J6 = 0, which nobody has checked against the hardware. #15's `~/piper_up_down.py` without
+`--hold-wrist` commands J6 to 0, so don't run it as is.
+- The first run (2026-10-30, `PiPER Sandbox Scripts/runs/2026-10-30_issue54/`) started at
+  J6 −18° with J5 drooped to +23°. The roll toward −90° jammed hard at J6 −55° (J5 +10°), J6
+  drawing 16 A. Something on the gripper caught: a cable or the camera ribbon. Find out what
+  caught before rolling J6 that way again.
+- J5 droops to about +23° whenever the arm is disabled. That keeps a Pi rolled to the side
+  beside the gripper, since J5 turns about the same axis the Pi points along.
+
+**The USB-CAN adapter is on `rpi-5-mpzy` since 2026-10-30**, so that camera Pi now drives the
+arm (eufi still has its venv and scripts). Changes made on mpzy that day:
+- `python3 -m venv ~/piper-venv`, then `pip install piper_sdk==0.6.2 python-can==4.6.1`
+  (eufi's versions).
+- `can0` brought up by hand: `sudo ip link set can0 type can bitrate 1000000 && sudo ip link
+  set can0 up`. Nothing makes this persistent (no systemd unit, udev rule or interfaces file),
+  so run it again after a reboot or a replug.
+- `~/Up_and_Down.py`, and `~/issue54/` with the run's log, trace and a 100 s 720p video
+  (`rpicam-vid --codec libav`). The same recording on eufi failed: eufi's `rpicam-vid` doesn't
+  know `--codec libav`.
 
 The PiPER cell's fixed cameras get their own Pis: `CAM_PI_HOSTNAME`, tagged `tag:rpi-5-76zj`
 (login `CAM_PI_USERNAME`, sudo password `CAM_PI_PASSWORD`), and `CAM2_PI_HOSTNAME`, tagged
-`tag:rpi-5-mpzy` (`CAM2_PI_USERNAME`, `CAM2_PI_PASSWORD`). They do not drive the arm, but the
-same rules apply: read-only first, and record every change made on them here.
+`tag:rpi-5-mpzy` (`CAM2_PI_USERNAME`, `CAM2_PI_PASSWORD`). Neither drove the arm until mpzy got
+the CAN adapter (above). The same rules apply to both: read-only first, and record every change
+made on them here.
 
 **The first camera Pi (`rpi-5-76zj`) as found** (read-only check on 2026-10-21,
 [#33](https://github.com/vertical-cloud-lab/robot-arms/issues/33); nothing on it was changed):
