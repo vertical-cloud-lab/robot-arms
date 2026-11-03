@@ -209,6 +209,29 @@ class LatestFrame(threading.Thread):
             return cv2.cvtColor(yuv, cv2.COLOR_YUV2BGR_I420), self.seq
 
 
+def wait_for_camera():
+    """Block until libcamera lists a camera.
+
+    Called before the Lambda is touched, so a Pi that boots without its camera
+    (a loose ribbon, or a reboot the firmware's auto-detect missed) neither ends
+    the broadcast that is live nor opens one that never gets video.
+    """
+    cmd = shutil.which("rpicam-hello") or shutil.which("libcamera-hello")
+    if not cmd:
+        raise SystemExit("rpicam-hello not found")
+    while True:
+        try:
+            r = subprocess.run([cmd, "--list-cameras"], capture_output=True,
+                               text=True, timeout=30)  # fmt: skip
+            out = r.stdout + r.stderr
+        except subprocess.TimeoutExpired:
+            out = ""
+        if "Available cameras" in out:
+            return
+        print("No camera found; checking again in 60 s", flush=True)
+        time.sleep(60)
+
+
 def camera_cmd(width, height):
     cmd = shutil.which("rpicam-vid") or shutil.which("libcamera-vid")
     if not cmd:
@@ -316,6 +339,7 @@ def main():
           f"{len(MASK_RECTS)} fixed masks", flush=True)  # fmt: skip
 
     signal.signal(signal.SIGTERM, lambda *_: sys.exit(0))
+    wait_for_camera()
     ffmpeg_url = create_broadcast()
     while True:
         print("Starting stream", flush=True)

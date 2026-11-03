@@ -88,19 +88,42 @@ The PiPER cell's fixed cameras get their own Pis: `CAM_PI_HOSTNAME`, tagged `tag
 `tag:rpi-5-mpzy` (`CAM2_PI_USERNAME`, `CAM2_PI_PASSWORD`). They do not drive the arm, but the
 same rules apply: read-only first, and record every change made on them here.
 
-**The arm Pi's livestream** (2026-11-03,
+**The PiPER cell livestream** (2026-11-03,
 [#61](https://github.com/vertical-cloud-lab/robot-arms/issues/61); details in
-[`livestream/README.md`](livestream/README.md)). Changes made on the arm Pi:
+[`livestream/README.md`](livestream/README.md)). **mpzy streams; eufi's stream is installed but
+disabled.** mpzy's camera (front-left post) looks into the cell and sees no lab; eufi's
+(back-right post) sees the lab in its top-left third. The stream holds the streaming Pi's camera,
+so **stop `picam-stream.service` before anything else opens that camera** and start it again
+afterwards (each start is a new broadcast). It never touches CAN, the relay or the arm. No
+watchdog timer and no reboot cron on either Pi: those reboot the Pi, which would kill an arm run.
+
+Changes made on mpzy (which also drives the arm now, through the CAN adapter and the GPIO17
+relay):
+
+- `/boot/firmware/config.txt`: `camera_auto_detect=1` → `0`, plus `dtoverlay=imx708,cam0` under
+  `[all]`. Auto-detect had missed the Camera Module 3 Wide on CAM/DISP 0 at the 2026-11-03
+  01:04 UTC boot (after the relay wiring), so `rpicam-hello --list-cameras` said `No cameras
+  available!` although the camera was fine. The old file is
+  `/boot/firmware/config.txt.bak-2026-11-03-issue61`. Until the next reboot the same overlay is
+  loaded at runtime (`sudo dtoverlay imx708 cam0`, 20:01 UTC). **A camera moved to CAM/DISP 1,
+  swapped or added needs its own `dtoverlay=` line there.**
+- `~/picam-stream/`: `device.py`, the YuNet model, `my_secrets.py` (mode 600, holds the Lambda
+  URL, so read single lines rather than `cat` it; no `MASK_RECTS`) and a `venv`
+  (`--system-site-packages`; opencv-python-headless 5.0.0 from PyPI, with the system's numpy
+  2.2.4 and requests 2.32.3). The staging copy is `~/picam-stream-src/`. ffmpeg was already
+  installed; nothing came from apt.
+- `/etc/systemd/system/picam-stream.service`, enabled, `Restart=always`, `CPUQuota=200%`,
+  `Nice=10`, `OOMScoreAdjust=500`.
+
+Changes made on eufi (the first #61 run, same day):
 
 - `apt-get install --no-install-recommends ffmpeg fonts-dejavu-core` (ffmpeg 7.1.5, 155 packages).
-- `~/picam-stream/`: `device.py`, the YuNet model, `my_secrets.py` (mode 600, holds the Lambda
-  URL, so read single lines rather than `cat` it) and a `venv` (`--system-site-packages`, numpy
-  and opencv-python-headless 5.0.0 installed offline from `~/vision-wheels`). The staging copy
-  is `~/picam-stream-src/`.
-- `/etc/systemd/system/picam-stream.service`, enabled, `Restart=always`. No watchdog timer and
-  no reboot cron: those reboot the Pi, which would kill an arm run.
-- It holds the camera, so **stop `picam-stream.service` before running a vision script** and
-  start it again afterwards. It never touches CAN or the arm.
+- `~/picam-stream/` as on mpzy, but its `my_secrets.py` has two `MASK_RECTS` over the lab, and
+  the venv's numpy and opencv-python-headless 5.0.0 came offline from `~/vision-wheels`. Staging
+  copy `~/picam-stream-src/`.
+- `/etc/systemd/system/picam-stream.service` (the older unit: `Nice=5`, no CPU cap). Streamed
+  from 18:00 to 20:06 UTC, then stopped and **disabled**. `sudo systemctl enable --now
+  picam-stream.service` brings it back, but stop mpzy's first (see the README).
 
 **The first camera Pi (`rpi-5-76zj`) as found** (read-only check on 2026-10-21,
 [#33](https://github.com/vertical-cloud-lab/robot-arms/issues/33); nothing on it was changed):

@@ -11,7 +11,12 @@ WorkingDirectory=@HOME@/picam-stream
 ExecStart=@HOME@/picam-stream/venv/bin/python -u @HOME@/picam-stream/device.py
 Restart=always
 RestartSec=30
-Nice=5
+# The streaming Pi also drives the arm, so the stream gets at most 2 of the 4
+# cores and is the first thing the OOM killer takes. (No MemoryMax: Raspberry
+# Pi kernels boot with cgroup_disable=memory, so systemd can't cap memory.)
+Nice=10
+CPUQuota=200%
+OOMScoreAdjust=500
 
 [Install]
 WantedBy=multi-user.target

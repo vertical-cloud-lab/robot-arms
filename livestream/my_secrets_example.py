@@ -30,12 +30,15 @@ FACE_SCORE_THRESHOLD = 0.5  # lower blurs more (and more false positives)
 FACE_BOX_MARGIN = 0.6  # grow each face box by this fraction of its size
 FACE_HOLD_FRAMES = 8  # keep blurring a face this many frames after it was last seen
 
-# Always-pixelated rectangles, (x0, y0, x1, y1) as fractions of the frame.
-# With the full-field sensor mode, the PiPER camera's top-left third looks past
-# the cell into the lab (benches, the floor, people walking by). The first
-# rectangle covers the room above the bench; the second the floor on the left.
-MASK_RECTS = [(0.0, 0.0, 0.345, 0.34), (0.0, 0.34, 0.2, 0.62)]
+# Always-pixelated rectangles, (x0, y0, x1, y1) as fractions of the frame, for
+# parts of the view that look past the cell into the lab. They belong to one
+# camera's view, so redo them whenever the camera or its mount changes.
+# - mpzy's camera (front-left post, looking into the cell; streams now) sees
+#   only the cell, the backdrop and the wall: no masks.
+# - eufi's camera (back-right post) sees the lab in its top-left third, which
+#   took these two: [(0.0, 0.0, 0.345, 0.34), (0.0, 0.34, 0.2, 0.62)]
+MASK_RECTS = []
 
-CV_THREADS = 2  # OpenCV threads; the arm Pi also runs the arm
+CV_THREADS = 2  # OpenCV threads; the streaming Pi also drives the arm
 SNAPSHOT_PATH = "/tmp/picam-stream-latest.jpg"  # last frame sent, every SNAPSHOT_SEC
 SNAPSHOT_SEC = 30
