@@ -6,25 +6,36 @@
 LAMBDA_FUNCTION_URL = "https://<id>.lambda-url.<region>.on.aws/"
 
 # Broadcast title is "<WORKFLOW_NAME> stream <CAM_NAME>, <time>". The Lambda
-# files it into the "<WORKFLOW_NAME> Livestreams Playlist", and "end" ends every
-# live broadcast whose title contains WORKFLOW_NAME (case-insensitive
-# substring), so it must not be a substring of another device's workflow.
-CAM_NAME = "picam-piper"
-WORKFLOW_NAME = "PiPER arm"
+# files it into the first playlist whose title contains WORKFLOW_NAME, making
+# "<WORKFLOW_NAME> Livestreams Playlist" (with this PRIVACY_STATUS) if there is
+# none. "end" ends every live broadcast whose title contains WORKFLOW_NAME
+# (case-insensitive substring), so no device's WORKFLOW_NAME may appear in
+# another's titles. The cell's cameras use:
+# - mpzy (front-left post): "PiPER arm front cam"
+# - eufi (back post):       "PiPER arm back cam"
+# Never use plain "PiPER arm": its "end" would end both of those.
+CAM_NAME = "picam"
+WORKFLOW_NAME = "PiPER arm front cam"
 
 # "private", "unlisted" or "public".
-PRIVACY_STATUS = "unlisted"
+PRIVACY_STATUS = "public"
 
 RESOLUTION = "720p"  # 144p, 240p, 360p, 480p, 720p, 1080p
-FRAME_RATE = 10
+FRAME_RATE = 5  # what two face detectors on every frame leave room for on 2 cores
 SENSOR_MODE = "2304:1296"  # full-field binned imx708 mode; None lets rpicam pick
 CAMERA_VFLIP = False
 CAMERA_HFLIP = False
 TIMESTAMP_OVERLAY = True
 VIDEO_BITRATE = "1500k"
 
-# Face blurring (OpenCV YuNet). Every frame is checked; there is no switch to
-# turn it off.
+# Face blurring, on the Pi, before encoding. Every frame is checked by each
+# detector listed and every box found is pixelated; there is no switch to turn
+# it off (an empty or unknown list refuses to stream).
+FACE_DETECTORS = ("centerface", "yunet")
+# deface's CenterFace (pip deface, see requirements-deface.txt)
+CENTERFACE_WIDTH = 640  # detector input width
+CENTERFACE_THRESHOLD = 0.2  # deface's default; lower blurs more
+# OpenCV YuNet
 FACE_DETECT_WIDTH = 960  # detector input width; larger finds smaller faces, costs CPU
 FACE_SCORE_THRESHOLD = 0.5  # lower blurs more (and more false positives)
 FACE_BOX_MARGIN = 0.6  # grow each face box by this fraction of its size
@@ -33,10 +44,11 @@ FACE_HOLD_FRAMES = 8  # keep blurring a face this many frames after it was last 
 # Always-pixelated rectangles, (x0, y0, x1, y1) as fractions of the frame, for
 # parts of the view that look past the cell into the lab. They belong to one
 # camera's view, so redo them whenever the camera or its mount changes.
-# - mpzy's camera (front-left post, looking into the cell; streams now) sees
-#   only the cell, the backdrop and the wall: no masks.
-# - eufi's camera (back-right post) sees the lab in its top-left third, which
-#   took these two: [(0.0, 0.0, 0.345, 0.34), (0.0, 0.34, 0.2, 0.62)]
+# - mpzy's camera (front-left post, looking into the cell) sees only the cell,
+#   the backdrop and the wall: no masks.
+# - eufi's camera (back-right post, as of 2026-11-03) sees the lab in its
+#   top-left third, which takes these two:
+#   [(0.0, 0.0, 0.345, 0.34), (0.0, 0.34, 0.2, 0.62)]
 MASK_RECTS = []
 
 CV_THREADS = 2  # OpenCV threads; the streaming Pi also drives the arm

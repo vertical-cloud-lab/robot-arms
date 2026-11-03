@@ -9,9 +9,13 @@ The YouTube broadcast is created and ended through the lab's streaming Lambda
 (vertical-cloud-lab/streamingLambda), with the same ``create``/``end`` calls as
 the byu-vcl stream cams' ``device.py`` (ac-training-lab ``87a3ccb`` plus local
 patches). Unlike those, every frame goes through Python, so faces can be
-blurred before anything is encoded. Nothing unblurred is ever written to
-ffmpeg: if the face detector cannot load, the script exits; if processing a
-frame fails, that frame is dropped.
+blurred on the Pi before anything is encoded or leaves it.
+
+Two face detectors check every frame and the union of what they find is
+pixelated: deface's CenterFace (the model and decoder from the ``deface``
+package, run through OpenCV) and OpenCV's YuNet. Nothing unblurred is ever
+written to ffmpeg: if a detector cannot load, the script exits before going
+live; if processing a frame fails, that frame is dropped.
 
 Settings come from ``my_secrets.py`` next to this file; see
 ``my_secrets_example.py``.
@@ -59,6 +63,13 @@ CAMERA_HFLIP = getattr(S, "CAMERA_HFLIP", False)
 TIMESTAMP_OVERLAY = getattr(S, "TIMESTAMP_OVERLAY", True)
 VIDEO_BITRATE = getattr(S, "VIDEO_BITRATE", "1500k")
 
+# Face detectors run on every frame; their boxes are pooled.
+FACE_DETECTORS = tuple(getattr(S, "FACE_DETECTORS", ("centerface", "yunet")))
+# deface's CenterFace. deface's own default threshold is 0.2: it is tuned to
+# blur anything that might be a face.
+CENTERFACE_WIDTH = getattr(S, "CENTERFACE_WIDTH", 640)
+CENTERFACE_THRESHOLD = getattr(S, "CENTERFACE_THRESHOLD", 0.2)
+# OpenCV YuNet.
 FACE_MODEL = getattr(S, "FACE_MODEL", str(HERE / "face_detection_yunet_2023mar.onnx"))
 FACE_DETECT_WIDTH = getattr(S, "FACE_DETECT_WIDTH", 960)
 FACE_SCORE_THRESHOLD = getattr(S, "FACE_SCORE_THRESHOLD", 0.5)
@@ -116,30 +127,87 @@ def create_broadcast():
     return ffmpeg_url
 
 
-class FaceBlur:
+class CenterFaceDetector:
+    """deface's detector: the CenterFace model and decoder from ``deface``.
+
+    Installed with ``pip install --no-deps deface``: ``deface.centerface``
+    needs only numpy and OpenCV, and with ``backend="opencv"`` it never
+    imports onnxruntime.
+    """
+
+    name = "centerface"
+
+    def __init__(self, width, height):
+        try:
+            from deface.centerface import CenterFace, default_onnx_path
+        except ImportError as e:
+            raise SystemExit(f"deface is not installed ({e}); refusing to stream")
+        if not Path(default_onnx_path).exists():
+            raise SystemExit(f"CenterFace model missing: {default_onnx_path}; refusing to stream")
+        self.scale = min(1.0, CENTERFACE_WIDTH / width)
+        self.size = (int(round(width * self.scale)), int(round(height * self.scale)))
+        self.net = CenterFace(in_shape=self.size, backend="opencv")
+        self.net(np.zeros((self.size[1], self.size[0], 3), np.uint8))  # fail here, not live
+
+    def __call__(self, frame):
+        small = frame if self.scale == 1.0 else cv2.resize(
+            frame, self.size, interpolation=cv2.INTER_AREA)  # fmt: skip
+        # deface feeds the model RGB frames (from imageio); ours are BGR.
+        dets, _ = self.net(cv2.cvtColor(small, cv2.COLOR_BGR2RGB),
+                           threshold=CENTERFACE_THRESHOLD)  # fmt: skip
+        k = 1 / self.scale
+        return [(x0 * k, y0 * k, (x1 - x0) * k, (y1 - y0) * k)
+                for x0, y0, x1, y1, _ in dets]  # fmt: skip
+
+
+class YuNetDetector:
+    """OpenCV's YuNet (opencv_zoo, face_detection_yunet_2023mar.onnx)."""
+
+    name = "yunet"
+
     def __init__(self, width, height):
         if not Path(FACE_MODEL).exists():
             raise SystemExit(f"Face model missing: {FACE_MODEL}; refusing to stream")
-        self.width, self.height = width, height
         self.scale = min(1.0, FACE_DETECT_WIDTH / width)
-        dw, dh = int(round(width * self.scale)), int(round(height * self.scale))
-        self.det_size = (dw, dh)
-        self.detector = cv2.FaceDetectorYN.create(
-            FACE_MODEL, "", self.det_size, FACE_SCORE_THRESHOLD, 0.3, 5000
+        self.size = (int(round(width * self.scale)), int(round(height * self.scale)))
+        self.net = cv2.FaceDetectorYN.create(
+            FACE_MODEL, "", self.size, FACE_SCORE_THRESHOLD, 0.3, 5000
         )
+
+    def __call__(self, frame):
+        small = frame if self.scale == 1.0 else cv2.resize(frame, self.size)
+        _, faces = self.net.detect(small)
+        if faces is None:
+            return []
+        return [tuple((f[:4] / self.scale).tolist()) for f in faces]
+
+
+DETECTORS = {"centerface": CenterFaceDetector, "yunet": YuNetDetector}
+
+
+class FaceBlur:
+    def __init__(self, width, height):
+        if not FACE_DETECTORS or set(FACE_DETECTORS) - set(DETECTORS):
+            raise SystemExit(f"FACE_DETECTORS must name some of {sorted(DETECTORS)}, "
+                             f"not {FACE_DETECTORS!r}; refusing to stream")  # fmt: skip
+        self.width, self.height = width, height
+        self.detectors = [DETECTORS[name](width, height) for name in FACE_DETECTORS]
+        self.counts = {d.name: 0 for d in self.detectors}  # boxes found, for the log
         self.held = []  # [(x0, y0, x1, y1, frames_left)]
         self.masks = [
             (int(x0 * width), int(y0 * height), int(x1 * width), int(y1 * height))
             for x0, y0, x1, y1 in MASK_RECTS
         ]
 
+    def describe(self):
+        return ", ".join(f"{d.name} at {d.size[0]}x{d.size[1]}" for d in self.detectors)
+
     def detect(self, frame):
-        small = frame if self.scale == 1.0 else cv2.resize(frame, self.det_size)
-        _, faces = self.detector.detect(small)
         boxes = []
-        if faces is not None:
-            for f in faces:
-                x, y, w, h = (f[:4] / self.scale).tolist()
+        for det in self.detectors:
+            found = det(frame)
+            self.counts[det.name] += len(found)
+            for x, y, w, h in found:
                 mx, my = w * FACE_BOX_MARGIN, h * FACE_BOX_MARGIN
                 boxes.append(
                     (
@@ -310,9 +378,11 @@ def stream_once(ffmpeg_url, width, height, blur):
                 os.replace(SNAPSHOT_PATH + ".tmp.jpg", SNAPSHOT_PATH)
             if time.monotonic() - t0 >= 120:
                 dt = time.monotonic() - t0
-                print(f"{n / dt:.1f} fps out, {faces} face detections, "
+                per = ", ".join(f"{k} {v}" for k, v in blur.counts.items())
+                print(f"{n / dt:.1f} fps out, {faces} face boxes ({per}), "
                       f"slowest frame {slow * 1000:.0f} ms", flush=True)  # fmt: skip
                 n, faces, t0, slow = 0, 0, time.monotonic(), 0.0
+                blur.counts = dict.fromkeys(blur.counts, 0)
     except BrokenPipeError:
         print("ffmpeg closed its input", flush=True)
     finally:
@@ -335,7 +405,7 @@ def main():
     cv2.setNumThreads(CV_THREADS)
     blur = FaceBlur(width, height)  # load before going live: fail closed
     print(f"{RESOLUTION} {width}x{height} @ {FRAME_RATE} fps, sensor mode "
-          f"{SENSOR_MODE or 'auto'}, face detection at {blur.det_size}, "
+          f"{SENSOR_MODE or 'auto'}, face detection: {blur.describe()}, "
           f"{len(MASK_RECTS)} fixed masks", flush=True)  # fmt: skip
 
     signal.signal(signal.SIGTERM, lambda *_: sys.exit(0))

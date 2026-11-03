@@ -1,0 +1,5 @@
+# Installed with --no-deps --require-hashes (see install.sh): device.py uses only
+# deface.centerface (the CenterFace model and decoder), which needs numpy and
+# OpenCV from requirements.txt. deface's own dependencies (opencv-python,
+# scikit-image, imageio, ...) are for its CLI and are not needed.
+deface==1.5.0 --hash=sha256:c787987bf236f9f714c69eff3f641dba49b4c552590f82456d813a18ac842655

@@ -8,10 +8,12 @@ DEST=$HOME/picam-stream
 [ -f "$SRC/my_secrets.py" ] || [ -f "$DEST/my_secrets.py" ] || { echo "my_secrets.py missing"; exit 1; }
 command -v ffmpeg >/dev/null || sudo apt-get install -y --no-install-recommends ffmpeg
 mkdir -p "$DEST"
-install -m 644 "$SRC"/device.py "$SRC"/requirements.txt "$SRC"/face_detection_yunet_2023mar.onnx "$DEST"/
+install -m 644 "$SRC"/device.py "$SRC"/requirements.txt "$SRC"/requirements-deface.txt \
+  "$SRC"/face_detection_yunet_2023mar.onnx "$DEST"/
 [ -f "$SRC/my_secrets.py" ] && install -m 600 "$SRC/my_secrets.py" "$DEST/"
 [ -x "$DEST/venv/bin/python" ] || python3 -m venv --system-site-packages "$DEST/venv"
 "$DEST/venv/bin/pip" install -q -r "$DEST/requirements.txt"
+"$DEST/venv/bin/pip" install -q --no-deps --require-hashes -r "$DEST/requirements-deface.txt"
 sed "s#@USER@#$(id -un)#; s#@HOME@#$HOME#g" "$SRC/picam-stream.service" |
   sudo tee /etc/systemd/system/picam-stream.service >/dev/null
 sudo systemctl daemon-reload
