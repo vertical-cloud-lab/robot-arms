@@ -44,6 +44,13 @@ pinctrl get 17         # show the pin's state
 The pin holds its state until it is changed or the Pi reboots. The PiPER has no brakes, so only
 switch its power off with the arm at its rest pose.
 
+Once the arm is on the relay, switch it with
+[`PiPER Sandbox Scripts/arm_power.py`](../../PiPER%20Sandbox%20Scripts/arm_power.py), not with
+`pinctrl`. `arm_power.py off` refuses unless the arm reports itself parked: all motors
+disabled, at the home pose in `arm_home.json`. `arm_power.py run -- PROG` powers the arm for
+one program and switches it off afterwards only if PROG exits 0 and the arm is parked. The
+first test on the arm is in `PiPER Sandbox Scripts/runs/2026-11-03_relay/`.
+
 Redraw the diagram with `python docs/wiring/iot_relay_pi5.py` (needs matplotlib).
 
 Sources: Raspberry Pi's [GPIO pinout](https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#gpio),

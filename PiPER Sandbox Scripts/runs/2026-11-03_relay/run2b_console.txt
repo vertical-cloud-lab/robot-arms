@@ -1,0 +1,29 @@
+01:43:39
+relay: off  (17: op dl pd | lo // GPIO17 = output)
+can: can0 up, ERROR-ACTIVE, 1000000 bit/s
+home pose: #54 rest with the gripper rolled toward the side (2026-11-03)
+arm: silent (no joint feedback)
+== run from off, read-only program (no --go)
+relay ON at 2026-11-03T01:43:42Z
+arm talking 2.1 s after the relay switched on
+arm joints (deg): [  -2.18,   -1.87,    1.64,   -0.44,   24.24,  -52.34]
+motors enabled:   [False, False, False, False, False, False] 
+arm status 0, ctrl mode 0, err code 0
+parked: yes, safe to power down
+running ~/piper-venv/bin/python ~/Up_and_Down.py --cycles 1  (output also in ~/arm_power_runs/20261102-184346.568.log)
+joints (deg): [  -2.18,   -1.87,    1.64,   -0.44,   24.24,  -52.34]
+enabled: [False, False, False, False, False, False]
+as found: Pi side of the gripper points to the arm's right (-y), 33 deg below horizontal
+  the J5-J6 link is at -19.0 deg now
+read-only run (no --go): nothing sent to the arm
+~/piper-venv/bin/python exited 0
+arm joints (deg): [  -2.18,   -1.87,    1.64,   -0.44,   24.24,  -52.34]
+motors enabled:   [False, False, False, False, False, False] 
+arm status 0, ctrl mode 0, err code 0
+parked: yes, safe to power down
+parked: [  -2.18,   -1.87,    1.64,   -0.44,   24.24,  -52.34] all motors disabled
+relay OFF at 2026-11-03T01:43:51Z
+arm silent 1.4 s after the relay switched off: power is off
+arm_power exit 0
+17: op dl pd | lo // GPIO17 = output
+01:43:53

@@ -42,7 +42,7 @@ crash leaves the power as it was. A reboot or power loss on the Pi itself pulls 
 and cuts the arm's power whatever the arm is doing. Neither this script nor the relay can
 prevent that.
 
-`run` copies PROG's output to its own output and to ~/arm_power_runs/<time>.log. It also
+`run` copies PROG's output to its own output and to ~/arm_power_runs/<UTC time>Z.log. It also
 ignores SIGHUP, which PROG inherits. If the SSH session that started it drops, the move
 finishes and parks, and the power goes off as usual. Ctrl-C and the E-stop still stop it.
 Every switch and refusal is appended to ~/arm_power.log.
@@ -428,7 +428,8 @@ def cmd_run(a, home):
         if rc != OK:
             return rc
         os.makedirs(RUN_LOGS, exist_ok=True)
-        path = os.path.join(RUN_LOGS, dt.datetime.now().strftime("%Y%m%d-%H%M%S.%f")[:-3] + ".log")
+        path = os.path.join(RUN_LOGS, dt.datetime.now(dt.timezone.utc).strftime("%Y%m%d-%H%M%S.%f")[:-3]
+                        + "Z.log")
         say(f"running {shlex.join(prog)}  (output also in {path})")
         log_event(f"run start: {shlex.join(prog)} -> {path}")
         interrupted = False
