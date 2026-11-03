@@ -122,6 +122,7 @@ jobs:
       # delete or edit (see youtube/README.md). byu-vcl's full-control token
       # stays in its youtube-admin environment and is not wired in here.
       YOUTUBE_UPLOAD_TOKEN_PICKLE_B64: ${{ secrets.YOUTUBE_UPLOAD_TOKEN_PICKLE_B64 }}
+      LAMBDA_FUNCTION_URL: ${{ secrets.LAMBDA_FUNCTION_URL }}
       # Allow long-blocking foreground commands (e.g., Edison polling)
       BASH_DEFAULT_TIMEOUT_MS: "900000" # 15 min default per Bash call
       BASH_MAX_TIMEOUT_MS: "3600000" # 60 min ceiling per Bash call
