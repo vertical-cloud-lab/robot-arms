@@ -1,0 +1,17 @@
+[Unit]
+Description=PiPER cell livestream with face blurring (livestream/device.py)
+Wants=network-online.target
+After=network-online.target
+StartLimitIntervalSec=3600
+StartLimitBurst=6
+
+[Service]
+User=@USER@
+WorkingDirectory=@HOME@/picam-stream
+ExecStart=@HOME@/picam-stream/venv/bin/python -u @HOME@/picam-stream/device.py
+Restart=always
+RestartSec=30
+Nice=5
+
+[Install]
+WantedBy=multi-user.target

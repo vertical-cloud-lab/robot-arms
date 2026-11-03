@@ -88,6 +88,20 @@ The PiPER cell's fixed cameras get their own Pis: `CAM_PI_HOSTNAME`, tagged `tag
 `tag:rpi-5-mpzy` (`CAM2_PI_USERNAME`, `CAM2_PI_PASSWORD`). They do not drive the arm, but the
 same rules apply: read-only first, and record every change made on them here.
 
+**The arm Pi's livestream** (2026-11-03,
+[#61](https://github.com/vertical-cloud-lab/robot-arms/issues/61); details in
+[`livestream/README.md`](livestream/README.md)). Changes made on the arm Pi:
+
+- `apt-get install --no-install-recommends ffmpeg fonts-dejavu-core` (ffmpeg 7.1.5, 155 packages).
+- `~/picam-stream/`: `device.py`, the YuNet model, `my_secrets.py` (mode 600, holds the Lambda
+  URL, so read single lines rather than `cat` it) and a `venv` (`--system-site-packages`, numpy
+  and opencv-python-headless 5.0.0 installed offline from `~/vision-wheels`). The staging copy
+  is `~/picam-stream-src/`.
+- `/etc/systemd/system/picam-stream.service`, enabled, `Restart=always`. No watchdog timer and
+  no reboot cron: those reboot the Pi, which would kill an arm run.
+- It holds the camera, so **stop `picam-stream.service` before running a vision script** and
+  start it again afterwards. It never touches CAN or the arm.
+
 **The first camera Pi (`rpi-5-76zj`) as found** (read-only check on 2026-10-21,
 [#33](https://github.com/vertical-cloud-lab/robot-arms/issues/33); nothing on it was changed):
 
