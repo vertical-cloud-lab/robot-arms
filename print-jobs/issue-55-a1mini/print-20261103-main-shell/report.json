@@ -1,0 +1,114 @@
+{
+  "bambu_studio": "02.08.02.61",
+  "presets": {
+    "machine": "Bambu Lab A1 mini 0.4 nozzle",
+    "process": "0.20mm Standard @BBL A1M",
+    "filament": "Bambu PLA Basic @BBL A1M"
+  },
+  "overrides": {
+    "wall_loops": "4",
+    "sparse_infill_density": "40%",
+    "curr_bed_type": "Textured PEI Plate",
+    "enable_circle_compensation": "1",
+    "enable_support": "0"
+  },
+  "sleeve_overrides": {
+    "wall_loops": "4",
+    "sparse_infill_density": "40%"
+  },
+  "marked_in_different_settings_to_system": [
+    "enable_circle_compensation",
+    "sparse_infill_density",
+    "wall_loops"
+  ],
+  "filament_colour": "#000000",
+  "source": {
+    "pr": 44,
+    "branch": "claude/issue-42-20261026-0528",
+    "commit": "097006f",
+    "dir": "end-effectors/auger-swap/cad/stl"
+  },
+  "return_code": 0,
+  "error_string": "Success.",
+  "support_necessity_checks_run": 1,
+  "support_necessity_flags": [],
+  "layout": [
+    {
+      "object": "sleeve_main_shell",
+      "part": "sleeve_main_shell_x2",
+      "turns": "y270",
+      "sha256": "143dc8432c48",
+      "centre": [
+        90.0,
+        90.0
+      ],
+      "footprint": [
+        78.93,
+        65.45,
+        101.07,
+        114.55
+      ],
+      "height": 48.4,
+      "print_params": {
+        "wall_loops": "4",
+        "sparse_infill_density": "40%"
+      }
+    }
+  ],
+  "layout_warnings": [],
+  "object_settings_in_3mf": {
+    "sleeve_main_shell_1": {
+      "sparse_infill_density": "40%",
+      "wall_loops": "4"
+    }
+  },
+  "thumbnails_embedded": [],
+  "plate": {
+    "objects": [
+      "sleeve_main_shell_1"
+    ],
+    "print_time_s": 3212,
+    "filament_g": 20.62,
+    "filament_m": 6.8,
+    "layers": 242,
+    "max_z_mm": 48.4,
+    "bed_type": "Textured PEI Plate",
+    "bed_temp_c": [
+      65,
+      65,
+      0
+    ],
+    "nozzle_temp_c": "220",
+    "brim_type": "auto_brim",
+    "toolpath_outside_bed": false,
+    "support_used": false,
+    "slicer_warnings": [],
+    "gcode_warnings": [
+      {
+        "msg": "not_support_traditional_timelapse",
+        "level": 2,
+        "code": "10018003"
+      },
+      {
+        "msg": "not_support_traditional_timelapse",
+        "level": 3,
+        "code": "1000C003"
+      }
+    ],
+    "feature_time_s": {
+      "Bottom surface": 21,
+      "Bridge": 20,
+      "Custom": 349,
+      "Flush": 28,
+      "Gap infill": 3,
+      "Inner wall": 908,
+      "Internal solid infill": 100,
+      "Outer wall": 362,
+      "Overhang wall": 15,
+      "Sparse infill": 825,
+      "Top surface": 36,
+      "Travel": 564,
+      "Undefined": 546
+    }
+  }
+}
