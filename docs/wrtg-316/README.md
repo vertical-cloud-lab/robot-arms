@@ -39,11 +39,12 @@ and what the AI produced.
 5. **Disclose in the submission.** Each assignment I turn in says how AI was used and links
    to its session issues.
 
-The setup work for this folder ([#49](https://github.com/vertical-cloud-lab/robot-arms/issues/49),
-[#50](https://github.com/vertical-cloud-lab/robot-arms/pull/50)) came before this protocol
-and is not part of the proposal or paper.
-
 ## Issues and pull requests
+
+Setting up this folder and the protocol, before work on the proposal or paper began:
+
+- [#49: Setup issue](https://github.com/vertical-cloud-lab/robot-arms/issues/49)
+- [#50: Setup pull request](https://github.com/vertical-cloud-lab/robot-arms/pull/50)
 
 These GitHub searches update by themselves as new sessions are posted:
 
