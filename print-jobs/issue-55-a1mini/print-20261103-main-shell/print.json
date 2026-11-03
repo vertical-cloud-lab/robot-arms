@@ -1,0 +1,74 @@
+{
+ "what": "One of PR #44's round-5 stock-finger sleeve main shells (sleeve_main_shell_x2 at 097006f, flat counterbores), on its own on Thumbelina's plate in black PLA, after the 2026-10-30 print's main shells came out wrapped in strands",
+ "result": "PRINTED: sent at 01:43:05 UTC, layer 242/242 with 'Finished' at 02:32:13 and heaters off by 02:32:34 (about 49.5 min after Send; Studio's estimate 52 min 54 s). No dialog or HMS alert during the print or after it. Not seen: Thumbelina's camera would not stream from before the print until the moment it ended, so the part itself was never on camera from this run (the one frame after the print has the parked toolhead in front of the lens)",
+ "printer": {
+  "model": "Bambu Lab A1 mini",
+  "name_in_studio": "Thumbelina, the A1 Mini",
+  "firmware": "01.08.01.00 (Studio: latest version); AMS Lite 00.00.08.15",
+  "nozzle": "0.4 mm stainless steel, standard flow (Studio's Printer Parts, read from the printer at 01:04:46 and again at 01:42:08 UTC)",
+  "state": "idle at 00:52 UTC; last job stub_holder_A1mini_blackPLA (53 min 32 s, 30.90 g) Finished 100 %, nozzle 43 C and bed 41 C with heaters off, so it had ended shortly before; idle at 01:41:53 with nozzle and bed at 24 C; no HMS alerts at 01:04:29 or 01:41:59",
+  "ams": "AMS lite: A1 blue PLA, A2 empty, A3 black PLA, A4 PETG (as on the Device page)",
+  "mode": "Bambu cloud",
+  "lan": "not reachable from this run (claude-print.yml has no Tailscale step), so all checks and the watching were on Studio's Device page"
+ },
+ "route": "Bambu Studio 02.08.02.61 GUI on the runner's Xvfb display, logged in to the lab's Bambu account (password plus a bambu-totp authenticator code, in an approved @claude-print run)",
+ "request": "https://github.com/vertical-cloud-lab/robot-arms/issues/55#issuecomment-6592252404 (jss265, 2026-11-03T00:39:40Z): \"@claude-print when the printer is free, please print one main shell, because the last print failed.\"",
+ "interpretation": "reprint one sleeve main shell (the part that strung on 2026-10-30) on Thumbelina, the printer that printed it before, from PR #44's latest sleeve files. PR #44's head was still 097006f (its sleeve STLs unchanged since the 10-30 print; its later comments were about power, not the sleeves). The run's comment first said the new plate would get supports; on reading the last print's G-code it was sliced without them (see slice)",
+ "slice": {
+  "source": "stl/sleeve_main_shell_x2.stl = PR #44's end-effectors/auger-swap/cad/stl/sleeve_main_shell_x2.stl at 097006f, byte for byte (sha256 143dc8432c48...)",
+  "project": "issue55_main_shell_A1mini_PLA.3mf from slice_a1mini.py (../print-20261030-retry's script with the other three objects removed): standing on its -X end (y270), centred at (90, 90), 22.1 x 49.1 mm footprint with its long side along Y; 0.20mm Standard @BBL A1M, Bambu PLA Basic @BBL A1M (black), Textured PEI Plate; 4 walls, 40 % infill, circle compensation on, supports off; auto brim. Bambu's support-necessity check flagged nothing (report.json)",
+  "ready_file": "issue55_main_shell_A1mini_PLA_gui.gcode.3mf: the project opened and sliced in Studio's GUI at 01:14, exported with File > Export > Export plate sliced file at 01:15, 3D/3dmodel.model's DesignerUserId blanked (sha256 4cb3299bff83...). The GUI kept walls, infill and circle compensation (different_settings_to_system lists all three); only the acceleration limits differ from the CLI (Bambu's stock values)",
+  "plate": "242 layers to 48.40 mm, 20.62 g (6.80 m), 52 min 54 s (GUI); CLI 242 layers, 20.62 g, 53 min 32 s. Nozzle 220 C, bed 65 C",
+  "plate_1_gcode_md5": "eca0db18aa79d15deff13d4849fa59b2",
+  "why_no_supports": "In the 10-30 print's G-code (../print-20261030-retry/issue55_sleeves_A1mini_PLA_gui.gcode.3mf), per object: the main shells had only small bridges (tops of the horizontal M3 holes, a 3.5 x 5.3 mm ceiling at z 29.2, internal bridges) and at most a few mm of overhang wall per layer; all tree supports (layers 1-28) and the big bridges and overhang walls (layers 18, 29, 40-41) were under the fixing shells, where the nest was first seen (layers 21-48). After the fixing shells finished at layer 76, the strings that grew came off the two main shells, which the nozzle travelled between on every layer. 'Floating vertical shell' in that G-code, which the 10-30 run read as walls over nothing, is Bambu's role for solid infill laid on sparse infill, not extrusion over air. So the main shell was printed alone (nothing to travel to), unsupported; supports along its back face would have added islands to travel to. Damp filament remains possible and wasn't checked"
+ },
+ "camera": {
+  "symptom": "From 00:52 UTC every live-view attempt ended in 'Loading failed. Please check the network and try again. [2:2]'. In Studio 02.08.02.61's MediaPlayCtrl.cpp that is a 15 s timeout in the loading state with no first frame (m_failed_code = 2), not a refusal",
+  "checked": "Studio restarted twice (once with GStreamer logging: this version does not stream through GStreamer, so no runner codec issue); extra GStreamer plugins installed anyway; the tunnel itself worked (Storage listed the SD card's files; status updated); outbound UDP from the runner worked (STUN); the H2D showed offline, so no comparison; Bambu Studio beta 02.08.04.57 (newer network plug-in, same 15 s rule) logged in separately at 01:37:48 and failed the same way, then was logged out and its config deleted",
+  "people": "jss265 replied at 01:35:19 that the camera had been down for everyone",
+  "recovered": "the live view started playing at 02:32:34, the moment the print ended (heaters off), and stopped loading again after 02:34"
+ },
+ "plate_check": {
+  "rule": "CLAUDE.md's plate rule of 2026-10-23 (90 s wait since #51): frame first, the run reads the plate, at least 90 s for objections, a fresh frame before Send; if the run can't tell, it waits for a person",
+  "first_frame": "none possible (camera, above). The tracking comment said so at 01:00:50, asked anyone at the printer at 01:08:36 and 01:18:43 to take the stub holder off the plate and close other live views, and said the run would only send if someone at the printer said the plate was empty and that they'd keep an eye on the print, with a 03:00 UTC cutoff",
+  "go": "jss265 (write access, the requester) at 01:35:19: \"Claude, listen carefully, the camera has been down for everyone. I can verify that the print bed is empty and ready to print please go ahead with the print\". The run's wait loop had ended at 01:34:34 and the background poller had logged the reply; the run read it at 01:41:02, posted that it was going ahead at 01:41:46, and asked for someone to look in on the print. The reply didn't say anyone would watch the print; it was taken as the person's go the rule asks for when the run can't tell",
+  "pre_send": "01:41:53 Device page idle, 24/24 C, last job Finished; 01:41:59 no HMS alerts; 01:42:08 nozzle 0.4 mm; 01:42:20 thread polled, no new replies; no frame (camera)",
+  "replies": [
+   "https://github.com/vertical-cloud-lab/robot-arms/issues/55#issuecomment-6593092582 (jss265, write, 2026-11-03T01:35:19Z): the go, above"
+  ]
+ },
+ "sent_file": {
+  "file": "issue55_main_shell_A1mini_PLA_gui.gcode.3mf (the ready file). Studio opened it in Preview and uploaded it: its temp folder's origin.txt names that file, and the extracted plate_1.gcode has the same MD5, eca0db18aa79d15deff13d4849fa59b2",
+  "send_dialog": "20261103T014304Z_send_dialog.png: Thumbelina, the A1 Mini, 0.4 mm; plate PEI; PLA -> A3; timelapse off; auto bed levelling on; flow dynamics calibration on; job name changed from issue55_main_shell_A1mini_PLA_gui.gcode_main_shell to issue55_main_shell_A1mini_PLA"
+ },
+ "timeline_utc": {
+  "request": "2026-11-03T00:39:40Z",
+  "job_started": "tracking comment 2026-11-03T00:46:34Z (approved shortly before)",
+  "studio_started": "2026-11-03T00:48:58Z (first run: certificate prompt, wizard with North America, plug-in, three Beta prompts, Cancel on the profile update); screen recording from 00:48:58",
+  "studio_login": "2026-11-03T00:51:49Z (Log In 00:51:33, authenticator code typed 00:51:48, Confirm 00:51:49; no e-mailed code asked for)",
+  "device_page": "2026-11-03T00:52:16Z: Thumbelina idle, stub holder Finished; live view failing from 00:52",
+  "hms": "2026-11-03T01:04:29Z (none)",
+  "printer_parts": "2026-11-03T01:04:46Z (0.4 mm)",
+  "no_frame_posted": "2026-11-03T01:00:50Z; asks 01:08:36; plan and 03:00 cutoff 01:18:43",
+  "cli_slice": "2026-11-03T01:13Z",
+  "gui_slice": "2026-11-03T01:14Z; exported 01:15; committed 5bc19d1",
+  "token_reminted": "2026-11-03T01:34:40Z and about 02:25Z (scripts/refresh_github_app_token.py)",
+  "beta_test": "2026-11-03T01:35-01:39Z (logged in 01:37:48, same failure, logged out, config deleted)",
+  "reply_go": "2026-11-03T01:35:19Z (read 01:41:02)",
+  "studio_restarted": "2026-11-03T01:39:50Z (stable, still signed in); ready file opened 01:40:40",
+  "pre_send_checks": "2026-11-03T01:41:53Z-01:42:20Z",
+  "send": "2026-11-03T01:43:05Z (downloading, then heating by 01:43:45)",
+  "first_layer_seen": "2026-11-03T01:50:31Z (OCR read layer 3/242; the watcher's OCR box missed the layer line until 02:07, so layer 1 wasn't timed)",
+  "layer_96": "2026-11-03T02:07:10Z (47 %)",
+  "layer_242_finished": "2026-11-03T02:32:13Z ('Finished', 0 min left)",
+  "heaters_off": "2026-11-03T02:32:34Z (camera playing at the same moment)",
+  "hms_after": "2026-11-03T02:34:36Z (none)",
+  "signed_out": "2026-11-03T02:36:44Z; Studio then closed and ~/.config/BambuStudio (which holds the printers' LAN access codes), ~/.local/share/bambu-studio, ~/.cache/bambu-studio, /tmp/bamboo_model, the screenshots and the recording deleted by 02:37:12"
+ },
+ "watching": "monitor.jsonl: byu-vcl's watch_studio.py (WATCH_LAYOUT=a1mini BED_TARGET=65), in a copy that also stops on a reply in the thread and presses the camera's play button when Studio stops retrying. OCR of the Device page every 10 s from 01:43:45 to 02:33:48 in four runs. Ends: a false alarm (the thread poller's session token expired at minute 60 and its error line was counted as a reply; poller restarted on the job token at 01:47:32), the stall rule at 02:07:04 (the OCR box sat below the layer line on this page; moved up to include the 'Printing' label and the layer), the time budget at 02:24:57, and an OCR misread of the cooling nozzle as 641 C at 02:33:48, after the finish. Layers advanced steadily (96 at 02:07, 138 at 02:14, 176 at 02:20, 204 at 02:25, 239 at 02:31, 242 at 02:32); nozzle 217-220 C and bed 64-65 C throughout (the 'bed 1/64' and '65/165' entries are the usual misreads of '65 /65'). No new window or dialog. The thread was polled every 20 s: no replies after the go. No camera frames: the pane showed Studio's placeholder until 02:32:34",
+ "after_frame": "20261103T023354Z_after_a1mini_camera_studio.jpg: the live view once the print ended. The parked toolhead (its 'Bambu Lab' cover) fills the top two thirds of the frame; below it, the textured PEI plate's front-left corner and the printer's base. The part is out of view",
+ "hms_after": "20261103T023436Z_a1mini_hms_after.png: no alerts",
+ "recording": "the runner's screen was recorded (ffmpeg x11grab, 5 fps, 5 min segments, 00:48:58-02:36:50, 51 MB) but not published: it shows the account e-mail during login, and print runs have no YouTube token. Deleted at 02:37 UTC",
+ "after": "Thumbelina idle at 02:34:41 with the finished main shell on the plate, heaters off and cooling (nozzle 133 C, bed 56 C). Someone needs to take it off once the bed is cool and check it, especially for strings, the four counterbores and the 29 mm ceiling and 34-41 mm ledge it printed without supports. If it strings again on its own, the black PLA in A3 probably needs drying",
+ "not_watched": "nothing visual: the whole print was followed only on the Device page's numbers, because the camera was down"
+}
