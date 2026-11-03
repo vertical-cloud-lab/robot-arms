@@ -1,0 +1,4 @@
+# Keep drafts local until they're turned in. Delete this file to publish them.
+*
+!.gitignore
+!README.md
