@@ -2,29 +2,32 @@
 
 The cell streams to the *BYU VCL Hardware Streams* YouTube channel through the lab's streaming
 Lambda ([`vertical-cloud-lab/streamingLambda`](https://github.com/vertical-cloud-lab/streamingLambda)),
-like the byu-vcl stream cams. Broadcasts are titled *PiPER arm stream picam-piper, &lt;UTC time&gt;*
-and go into the
-[*PiPER arm Livestreams Playlist*](https://www.youtube.com/playlist?list=PLAoVUnZkte3E). Every
-start of the service makes a new broadcast (and ends the old one), so the playlist is the
-stable link.
+like the byu-vcl stream cams. **Both of the cell's fixed cameras stream, publicly** (since
+2026-11-03 22:48 UTC). Every start of a Pi's service ends that camera's broadcast and makes a new
+one, so each camera's playlist is its stable link:
 
-## Which camera
+| Pi | Camera | `WORKFLOW_NAME` | Playlist | Fixed masks |
+| --- | --- | --- | --- | --- |
+| mpzy | Camera Module 3 Wide, front-left post, looking into the cell | `PiPER arm front cam` | [*PiPER arm front cam Livestreams Playlist*](https://www.youtube.com/playlist?list=PLEplFHLNPMWo) | none |
+| eufi | imx708 wide (the one `camera.json` calibrates), back-right post, looking diagonally across the cell | `PiPER arm back cam` | [*PiPER arm back cam Livestreams Playlist*](https://www.youtube.com/playlist?list=PLf8bu3tmddbw) | two, over the lab |
 
-**mpzy's Camera Module 3 Wide streams** (since 2026-11-03 20:06 UTC). It is fixed on the cell's
-front-left post and looks into the cell, so all it sees is the printer, the arm, the tool rack,
-the backdrop and the wall. It needs no fixed masks, only face blurring.
+Broadcasts are titled *&lt;WORKFLOW_NAME&gt; stream picam, &lt;UTC time&gt;*. mpzy's camera sees
+only the printer, the arm, the tool rack, the backdrop and the wall. eufi's looks towards the open
+front-left corner, so the top-left third of its view is the rest of the lab, and two fixed masks
+cover it:
 
-![A frame as sent from mpzy's camera](../docs/images/picam-piper-stream-mpzy-2026-11-03.jpg)
+![A frame as sent from mpzy's camera](../docs/images/picam-piper-stream-mpzy-public-2026-11-03.jpg)
+![A frame as sent from eufi's camera](../docs/images/picam-piper-stream-eufi-public-2026-11-03.jpg)
 
-The first broadcasts that day came from **eufi's camera** (the arm Pi's imx708 wide, on the
-back-right post, which `camera.json` calibrates). It looks diagonally across the cell towards the
-open front-left corner, so its top-left third sees the rest of the lab and needed two fixed masks
-([a frame as sent](../docs/images/picam-piper-stream-masked-2026-11-03.jpg)). Its unit is still
-installed on eufi but disabled, which leaves eufi's camera free for the vision scripts.
-
-**Run one Pi at a time.** Both use `WORKFLOW_NAME = "PiPER arm"`, and the Lambda's `end` ends
-every live broadcast whose title contains the workflow name, so starting one ends the other's
-broadcast. To stream both, give them workflow names that are not substrings of each other.
+**Workflow names must not overlap.** The Lambda's `end` ends every live broadcast whose title
+contains the caller's `WORKFLOW_NAME` (case-insensitive), and `create` files a broadcast into
+the first playlist whose title contains it, making `<WORKFLOW_NAME> Livestreams Playlist` with
+the broadcast's privacy if there is none. So no Pi's name may appear in another's titles. The
+first broadcasts (unlisted, 2026-11-03 18:00 to 22:48 UTC) used plain `PiPER arm` and are in the
+[*PiPER arm Livestreams Playlist*](https://www.youtube.com/playlist?list=PLAoVUnZkte3E). **Never
+use plain `PiPER arm` again**, since its `end` would end both cameras' broadcasts. A camera that
+moves keeps its name; a new one (76zj's, say) needs a name of its own, such as `PiPER arm gripper
+cam`. A new name makes a new playlist on its first start.
 
 ### mpzy's camera is loaded explicitly, not auto-detected
 
@@ -41,36 +44,56 @@ up without one, it logs `No camera found` every minute and leaves YouTube alone.
 
 ## Pipeline
 
-`rpicam-vid` (raw I420, 1280×720 at 10 fps from the full-field 2304×1296 sensor mode) →
+`rpicam-vid` (raw I420, 1280×720 at 5 fps from the full-field 2304×1296 sensor mode) →
 [`device.py`](device.py) → `ffmpeg` (libx264 ultrafast, 1.5 Mb/s, 2 s keyframes, silent AAC) → RTMP.
 
-`device.py` handles every frame in Python before anything is encoded:
+`device.py` handles every frame in Python, on the Pi, before anything is encoded or leaves it:
 
-1. **Faces.** OpenCV's YuNet detector (`face_detection_yunet_2023mar.onnx`, 230 kB, from
-   [opencv_zoo](https://github.com/opencv/opencv_zoo/tree/main/models/face_detection_yunet),
-   sha256 `8f2383e4…52fa4`) runs on a 960×540 copy of each frame. Each face box is grown by 60 %
-   (more upwards, for hair), pixelated, and held for 8 frames after the face was last seen, so a
-   miss of a frame or two stays covered.
+1. **Faces, with two detectors on every frame.** Every box either one finds is grown by 60 %
+   (more upwards, for hair), pixelated, and held for 8 frames after it was last seen, so a miss
+   of a frame or two stays covered.
+   - **deface's CenterFace**: the model and decoder from the
+     [`deface`](https://github.com/ORB-HD/deface) package (1.5.0, MIT, `centerface.onnx` sha256
+     `09189dea…f5aefbc`), on a 640×360 copy of each frame, at deface's own default threshold of
+     0.2. deface is built for anonymizing and is tuned to blur anything that might be a face.
+     It is installed `--no-deps` with a pinned hash ([`requirements-deface.txt`](requirements-deface.txt)):
+     `deface.centerface` needs only numpy and OpenCV, and with `backend="opencv"` it never imports
+     onnxruntime. Its CLI's dependencies (opencv-python, scikit-image, imageio) aren't needed.
+     (onnxruntime was no faster on a Pi 5: 118 ms a frame against OpenCV's 130 ms.)
+   - **OpenCV's YuNet** (`face_detection_yunet_2023mar.onnx`, 230 kB, from
+     [opencv_zoo](https://github.com/opencv/opencv_zoo/tree/main/models/face_detection_yunet),
+     sha256 `8f2383e4…52fa4`), on a 960×540 copy at threshold 0.5.
 2. **Fixed masks.** `MASK_RECTS` are always pixelated, for parts of a view that look past the
-   cell into the lab; the detector does not see the back of a head. They belong to one camera's
-   view: none for mpzy, two for eufi (see `my_secrets_example.py`).
+   cell into the lab, since neither detector sees the back of a head. They belong to one camera's
+   view: none for mpzy, two for eufi (see `my_secrets_example.py`). **Redo them whenever that
+   camera moves.**
 3. **Timestamp**, lab local time, top right.
 
-It fails closed: without the model file it exits before going live, and a frame whose blur step
-raises is dropped rather than sent.
+It fails closed: if deface isn't installed, either model file is missing, or `FACE_DETECTORS` is
+empty or names an unknown detector, it exits before going live. A frame whose blur step raises
+is dropped rather than sent.
 
-**False positives.** In mpzy's view, the black cable loop on top of the arm's elbow scores 0.47
-as a face against the 0.5 threshold, and the filament feeder's orange knobs score 0.33. When the
-loop scores over 0.5, a small patch of the arm is pixelated for a moment. That's left as it is,
-since raising the threshold would also miss real faces.
+**Test.** A public-domain group photo (the 1927 Solvay conference) fitted into a 1280×720 frame
+and put through `FaceBlur` as the stream does. CenterFace found 35 boxes and YuNet 31, which
+covers all 29 faces; YuNet's extras and CenterFace's are background:
 
-**Load on mpzy**, which drives the arm: 1.3 to 1.6 cores for Python (2 OpenCV threads) plus
-0.2 for ffmpeg, holding 10 fps, and about 200 MB of RAM (about 380 MB of mpzy's 1 GB stays
-available). The unit caps the stream at 2 of the 4 cores (`CPUQuota=200%`), runs it at
-`Nice=10`, and sets `OOMScoreAdjust=500` so the OOM killer takes the stream before anything
-that drives the arm. There is no memory cap, because Raspberry Pi kernels boot with
-`cgroup_disable=memory`. The last frame sent is saved to `/tmp/picam-stream-latest.jpg` every
-30 s for checking over SSH.
+![All 29 faces pixelated](../docs/images/face-blur-test-solvay-1927.jpg)
+
+**False positives.** Both views show the A1 mini's filament hub, whose two orange knobs
+CenterFace scores 0.37 to 0.43 as a face, so a small patch over the hub is pixelated in almost
+every frame. That's left as it is: masking the hub out of detection would also hide a real face
+there. In mpzy's view, YuNet scores the black cable loop on the arm's elbow 0.47 against its
+0.5 threshold, so a small patch of the arm may be pixelated for a moment.
+
+**Load.** Each Pi uses its whole cap of 2 of the 4 cores, holding 4.5 to 4.7 fps of the 5
+requested: about 190 ms a frame for the two detectors on 2 OpenCV threads (130 ms CenterFace,
+65 ms YuNet), plus ffmpeg. RAM is about 200 MB (mpzy keeps about 375 MB of its 1 GB
+available). mpzy also drives the arm, so the unit runs the stream at `Nice=10` with
+`CPUQuota=200%`, which leaves the arm the other two cores, and sets `OOMScoreAdjust=500` so the
+OOM killer takes the stream before anything that drives the arm. There is no memory cap, because
+Raspberry Pi kernels boot with `cgroup_disable=memory`. For a lighter stream, lower `FRAME_RATE`
+or drop `"yunet"` from `FACE_DETECTORS` (CenterFace alone takes about 130 ms a frame). The last frame
+sent is saved to `/tmp/picam-stream-latest.jpg` every 30 s for checking over SSH.
 
 ## Install
 
@@ -79,7 +102,7 @@ On the Pi, from a copy of this directory with a `my_secrets.py` (from
 the same name):
 
 ```bash
-./install.sh                      # ffmpeg, ~/picam-stream/{device.py,venv,my_secrets.py}, the unit
+./install.sh                      # ffmpeg, ~/picam-stream/{device.py,venv (+deface),my_secrets.py}, the unit
 sudo systemctl enable --now picam-stream.service
 ```
 
@@ -88,8 +111,9 @@ after an edit (which starts a new broadcast).
 
 ## The camera is held by the stream
 
-libcamera gives a camera to one process at a time, so anything else that opens mpzy's camera
-(run recordings like #54's, stills for calibration) fails while the stream runs. Stop the stream
+libcamera gives a camera to one process at a time, so anything else that opens a streaming Pi's
+camera (run recordings like #54's on mpzy, `piper_vision.py` or calibration stills on eufi) fails
+while the stream runs. Stop the stream
 first and start it again afterwards. Each start is a new broadcast, so the playlist link is the
 one to share.
 

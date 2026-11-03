@@ -90,12 +90,30 @@ same rules apply: read-only first, and record every change made on them here.
 
 **The PiPER cell livestream** (2026-11-03,
 [#61](https://github.com/vertical-cloud-lab/robot-arms/issues/61); details in
-[`livestream/README.md`](livestream/README.md)). **mpzy streams; eufi's stream is installed but
-disabled.** mpzy's camera (front-left post) looks into the cell and sees no lab; eufi's
-(back-right post) sees the lab in its top-left third. The stream holds the streaming Pi's camera,
-so **stop `picam-stream.service` before anything else opens that camera** and start it again
-afterwards (each start is a new broadcast). It never touches CAN, the relay or the arm. No
+[`livestream/README.md`](livestream/README.md)). **Both mpzy and eufi stream, publicly**
+(since 22:48 UTC that day), each with its own `WORKFLOW_NAME` and playlist: `PiPER arm front cam`
+(mpzy) and `PiPER arm back cam` (eufi). **Never give a device plain `PiPER arm`**: the Lambda's
+`end` matches by substring, so it would end both. mpzy's camera (front-left post) looks into the
+cell and sees no lab; eufi's (back-right post) sees the lab in its top-left third, under two
+fixed masks. Faces are pixelated on the Pi before encoding, by deface's CenterFace and OpenCV's
+YuNet on every frame. The stream holds each Pi's camera, so **stop `picam-stream.service` before
+anything else opens that camera** (`piper_vision.py` on eufi, run recordings on mpzy) and start it
+again afterwards (each start is a new broadcast). It never touches CAN, the relay or the arm. No
 watchdog timer and no reboot cron on either Pi: those reboot the Pi, which would kill an arm run.
+
+Changes made on both Pis by the third #61 run (22:40 to 22:55 UTC):
+
+- `~/picam-stream/venv`: `deface` 1.5.0, `pip install --no-deps --require-hashes -r
+  requirements-deface.txt` (one pure-Python wheel; nothing else installed or upgraded).
+- `~/picam-stream/device.py` with both detectors, and `requirements-deface.txt` next to it. The
+  staging copy `~/picam-stream-src/` was refreshed.
+- `~/picam-stream/my_secrets.py`: `CAM_NAME = "picam"`, `WORKFLOW_NAME` as above,
+  `PRIVACY_STATUS = "public"`, `FRAME_RATE = 5`. The previous file is
+  `my_secrets.py.bak-2026-11-03-public` (mode 600 too).
+- eufi only: `/etc/systemd/system/picam-stream.service` replaced with the current unit
+  (`CPUQuota=200%`, `Nice=10`, `OOMScoreAdjust=500`), then **enabled and started** again.
+- The last broadcast with the old name was ended through the Lambda (`end` for `PiPER arm`) before
+  the new names went live.
 
 Changes made on mpzy (which also drives the arm now, through the CAN adapter and the GPIO17
 relay):
@@ -122,8 +140,7 @@ Changes made on eufi (the first #61 run, same day):
   the venv's numpy and opencv-python-headless 5.0.0 came offline from `~/vision-wheels`. Staging
   copy `~/picam-stream-src/`.
 - `/etc/systemd/system/picam-stream.service` (the older unit: `Nice=5`, no CPU cap). Streamed
-  from 18:00 to 20:06 UTC, then stopped and **disabled**. `sudo systemctl enable --now
-  picam-stream.service` brings it back, but stop mpzy's first (see the README).
+  from 18:00 to 20:06 UTC, then stopped and disabled until the third run re-enabled it (above).
 
 **The first camera Pi (`rpi-5-76zj`) as found** (read-only check on 2026-10-21,
 [#33](https://github.com/vertical-cloud-lab/robot-arms/issues/33); nothing on it was changed):
