@@ -1,0 +1,14 @@
+# 2026-11-03T01:43:46Z arm_power run: ~/piper-venv/bin/python ~/Up_and_Down.py --cycles 1
+joints (deg): [  -2.18,   -1.87,    1.64,   -0.44,   24.24,  -52.34]
+enabled: [False, False, False, False, False, False]
+as found: Pi side of the gripper points to the arm's right (-y), 33 deg below horizontal
+plan, J1 held at -2.18 deg throughout:
+  the J5-J6 link is at -19.0 deg now
+  level [  -2.18,   -1.87,    1.64,   -0.44,    5.23,  -52.34]  J5 only: the link to +0.0 deg, lifting the gripper off its rest
+  up    [  -2.18,   20.00,  -20.00,   -0.44,    5.00,  -52.34]  J2/J3: the wrist rises 94 mm and moves 30 mm forward
+  down  [  -2.18,    0.00,    0.00,   -0.44,    5.00,  -52.00]  link at +0.0 deg
+  1 up/down cycle(s) in all at up to 12 deg/s
+  land  [  -2.18,   -1.47,    1.24,   -0.44,    5.23,  -52.00]  0.4 deg above the rest; firmware limits J2 >= -2.4, J3 <= 2.1 for the run, back to 0 after
+  lower the gripper: J5 toward 24.7 at 4 deg/s until it rests (Pi side of the gripper points to the arm's right (-y), 33 deg below horizontal), then disable
+read-only run (no --go): nothing sent to the arm
+# 2026-11-03T01:43:47Z exit 0

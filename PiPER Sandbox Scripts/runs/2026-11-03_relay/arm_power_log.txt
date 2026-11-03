@@ -1,0 +1,19 @@
+2026-11-03T01:37:10Z relay ON (GPIO17 high)
+2026-11-03T01:37:14Z on: arm talking after 2.1 s, enabled [False, False, False, False, False, False]
+2026-11-03T01:37:32Z off refused: J6 is at -22.8 deg, outside home's -95 to -45
+2026-11-03T01:42:46Z run start: ~/piper-venv/bin/python ~/Up_and_Down.py --go --cycles 1 --trace ~/relay_test/run_trace.csv -> ~/arm_power_runs/20261102-184246.059.log
+2026-11-03T01:43:14Z run end: exit 0
+2026-11-03T01:43:19Z relay OFF (GPIO17 low)
+2026-11-03T01:43:20Z off: arm silent after 1.4 s
+2026-11-03T01:43:42Z relay ON (GPIO17 high)
+2026-11-03T01:43:46Z on: arm talking after 2.1 s, enabled [False, False, False, False, False, False]
+2026-11-03T01:43:46Z run start: ~/piper-venv/bin/python ~/Up_and_Down.py --cycles 1 -> ~/arm_power_runs/20261102-184346.568.log
+2026-11-03T01:43:47Z run end: exit 0
+2026-11-03T01:43:51Z relay OFF (GPIO17 low)
+2026-11-03T01:43:53Z off: arm silent after 1.4 s
+2026-11-03T01:48:24Z relay ON (GPIO17 high)
+2026-11-03T01:48:28Z on: arm talking after 2.1 s, enabled [False, False, False, False, False, False]
+2026-11-03T01:48:28Z run start: ~/piper-venv/bin/python ~/Up_and_Down.py --go --cycles 1 --trace ~/relay_test/run3_trace.csv -> ~/arm_power_runs/20261102-184828.151.log
+2026-11-03T01:48:52Z run end: exit 0
+2026-11-03T01:48:56Z relay OFF (GPIO17 low)
+2026-11-03T01:48:58Z off: arm silent after 1.4 s

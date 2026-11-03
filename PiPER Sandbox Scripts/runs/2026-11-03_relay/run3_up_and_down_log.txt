@@ -1,0 +1,34 @@
+# 2026-11-03T01:48:28Z arm_power run: ~/piper-venv/bin/python ~/Up_and_Down.py --go --cycles 1 --trace ~/relay_test/run3_trace.csv
+joints (deg): [  -2.18,   -1.87,    1.64,   -0.44,   24.24,  -52.34]
+enabled: [False, False, False, False, False, False]
+as found: Pi side of the gripper points to the arm's right (-y), 33 deg below horizontal
+plan, J1 held at -2.18 deg throughout:
+  the J5-J6 link is at -19.0 deg now
+  level [  -2.18,   -1.87,    1.64,   -0.44,    5.23,  -52.34]  J5 only: the link to +0.0 deg, lifting the gripper off its rest
+  up    [  -2.18,   20.00,  -20.00,   -0.44,    5.00,  -52.34]  J2/J3: the wrist rises 94 mm and moves 30 mm forward
+  down  [  -2.18,    0.00,    0.00,   -0.44,    5.00,  -52.00]  link at +0.0 deg
+  1 up/down cycle(s) in all at up to 12 deg/s
+  land  [  -2.18,   -1.47,    1.24,   -0.44,    5.23,  -52.00]  0.4 deg above the rest; firmware limits J2 >= -2.4, J3 <= 2.1 for the run, back to 0 after
+  lower the gripper: J5 toward 24.7 at 4 deg/s until it rests (Pi side of the gripper points to the arm's right (-y), 33 deg below horizontal), then disable
+firmware limits J2, J3 (deg): ((0.0, 180.0), (-170.0, 0.0))
+firmware limits now J2 >= -2.37, J3 <= 2.14
+enabled in 0.07 s
+level the J5-J6 link: [  -2.18,   -1.87,    1.64,   -0.44,    5.23,  -52.34] over 2.6 s
+  reached in 2.6 s: [  -2.18,   -1.94,    1.64,   -0.44,    5.24,  -52.35]
+  link at +0.1 deg
+  J5 holds the gripper up with -1.8 A
+cycle 1/1 up: [  -2.18,   20.00,  -20.00,   -0.44,    5.00,  -52.00] over 2.9 s
+  reached in 2.9 s: [  -2.18,   19.96,  -19.98,   -0.44,    4.99,  -52.02]
+cycle 1/1 down: [  -2.18,    0.00,    0.00,   -0.44,    5.00,  -52.00] over 2.6 s
+  reached in 2.6 s: [  -2.18,    0.00,    0.00,   -0.48,    5.01,  -51.98]
+land on the rest: [  -2.18,   -1.47,    1.24,   -0.48,    5.23,  -51.98] over 1.2 s
+  reached in 1.2 s: [  -2.18,   -1.41,    1.21,   -0.48,    5.24,  -51.98]
+lower the gripper: J5 from 5.24 toward 24.74 at 4 deg/s until it rests (J5 holding -1.82 A now)
+  stopped at J5 = 24.47: reached J5 = 24.47 without J5's current dropping
+disabled at [  -2.18,   -1.41,    1.21,   -0.48,   24.47,  -51.98]: Pi side of the gripper points to the arm's right (-y), 33 deg below horizontal
+settled 3 s later at [  -2.18,   -2.04,    2.07,   -0.59,   24.66,  -52.12]: Pi side of the gripper points to the arm's right (-y), 33 deg below horizontal
+dropped (deg): J1 +0.00, J2 -0.64, J3 +0.86, J4 -0.11, J5 +0.18, J6 -0.15
+firmware limits back to J2 >= 0, J3 <= 0: (0.0, 180.0) (-170.0, 0.0)
+completed 1/1 cycles
+trace written to ~/relay_test/run3_trace.csv
+# 2026-11-03T01:48:52Z exit 0
