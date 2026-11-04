@@ -173,13 +173,22 @@ it was asked (#25). Check in this order:
 3. Only after that, ask someone at the arm for the physical steps: a power cycle, or checking
    the 24 V supply and the cable breakout.
 
-**Look through the camera before any motion.** A Camera Module 3 Wide (`imx708_wide`) on the
-Pi's CSI port is taped at the table edge, viewing the arm from the side (the "side camera" in
-`piper_camera_check.py`). Grab a frame and open it:
+**Look through the camera before any motion.** The table cameras on eufi (back) and mpzy
+(front) stream publicly through `picam-stream.service`
+([#61](https://github.com/vertical-cloud-lab/robot-arms/issues/61)). The stream holds each
+camera, so `rpicam-still` on them fails while it runs. **Never stop a stream, or reboot its Pi,
+to get a frame.** Instead, copy the frame each stream last sent (faces already pixelated,
+refreshed every 30 s). `scripts/table_camera_frames.sh OUTDIR` does that for every table
+camera, and only takes an `rpicam-still` on a Pi where no stream is running (76zj):
 
 ```bash
-ssh … 'rpicam-still -n -t 1500 --width 2304 --height 1296 -o /tmp/cam_now.jpg >/dev/null 2>&1 && cat /tmp/cam_now.jpg' > cam_now.jpg
+ssh … 'cat /tmp/picam-stream-latest.jpg' > cam_now.jpg
 ```
+
+Work that needs a camera itself, such as `piper_camera_check.py --go` (which records with
+`rpicam-vid`), stops that Pi's stream first and must start it again within 10 minutes. The
+restart then goes back to the same YouTube broadcast, so people's links keep working; after a
+longer stop it opens a new one.
 
 If anyone is within reach of the arm, don't move it, and report what the frame shows. People
 walk up to this table. This repo is public, so crop people out of any frame you commit.
