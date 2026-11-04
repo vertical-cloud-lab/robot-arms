@@ -2,3 +2,6 @@
 *
 !.gitignore
 !README.md
+# Except the Edison query records and source shortlist (issue #64), which are published.
+!edison/
+!edison/**
