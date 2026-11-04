@@ -93,6 +93,16 @@ CV_THREADS = getattr(S, "CV_THREADS", 2)
 # what goes out can be checked over SSH without opening YouTube.
 SNAPSHOT_PATH = getattr(S, "SNAPSHOT_PATH", "/tmp/picam-stream-latest.jpg")
 SNAPSHOT_SEC = getattr(S, "SNAPSHOT_SEC", 30)
+# A restart (stopping the stream to use the camera, a code update, a crash, a
+# reboot) goes back to the broadcast that was live, so its link keeps working,
+# if a frame went out less than BROADCAST_REUSE_SEC before. The Lambda creates
+# broadcasts with enableAutoStop off, so YouTube keeps them live through the
+# gap. Older than that, it ends that broadcast and starts a new one as before.
+# The file holds the stream key, so only its owner can read it. 0 turns it off.
+BROADCAST_STATE = Path(getattr(S, "BROADCAST_STATE", HERE / "broadcast.json"))
+BROADCAST_REUSE_SEC = getattr(S, "BROADCAST_REUSE_SEC", 600)
+# Exists once systemd-timesyncd has set the clock since boot.
+CLOCK_SYNCED = Path("/run/systemd/timesync/synchronized")
 
 
 def call_lambda(action, privacy_status="private"):
@@ -119,7 +129,48 @@ def call_lambda(action, privacy_status="private"):
     return result
 
 
+def save_broadcast(state):
+    """Write the broadcast state atomically, readable by its owner only."""
+    tmp = BROADCAST_STATE.with_name(BROADCAST_STATE.name + ".tmp")
+    fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "w") as f:
+        json.dump(state, f)
+    os.replace(tmp, BROADCAST_STATE)
+
+
+def saved_broadcast():
+    """The broadcast this camera was sending to, if a frame went out to it
+    less than BROADCAST_REUSE_SEC ago and the settings still match."""
+    if not BROADCAST_REUSE_SEC:
+        return None
+    # After a power cut the clock starts near the old time until NTP sets it,
+    # which would make an old broadcast look recent: wait for the sync.
+    for _ in range(30):
+        if CLOCK_SYNCED.exists():
+            break
+        time.sleep(1)
+    else:
+        print("Clock not synchronised; starting a new broadcast", flush=True)
+        return None
+    try:
+        state = json.loads(BROADCAST_STATE.read_text())
+        age = time.time() - float(state["last_sent"])
+        ok = (state["workflow_name"] == WORKFLOW_NAME
+              and state["privacy_status"] == PRIVACY_STATUS
+              and str(state["ffmpeg_url"]).startswith("rtmp"))  # fmt: skip
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+    return state if ok and 0 <= age < BROADCAST_REUSE_SEC else None
+
+
 def create_broadcast():
+    state = saved_broadcast()
+    if state:
+        age = time.time() - state["last_sent"]
+        print(f"Going back to broadcast {state.get('video_id')} (last frame sent "
+              f"{age:.0f} s ago), so its link keeps working", flush=True)  # fmt: skip
+        state["reused"] = True
+        return state
     try:
         call_lambda("end")
     except RuntimeError as e:
@@ -133,7 +184,16 @@ def create_broadcast():
     # Log the watch link but never the stream key.
     info = {k: v for k, v in result["result"].items() if k != "ffmpeg_url"}
     print(f"Broadcast: {info}", flush=True)
-    return ffmpeg_url
+    state = {"ffmpeg_url": ffmpeg_url, "video_id": info.get("video_id"),
+             "workflow_name": WORKFLOW_NAME, "privacy_status": PRIVACY_STATUS,
+             "created": time.time(), "last_sent": time.time()}  # fmt: skip
+    if BROADCAST_REUSE_SEC:
+        try:
+            save_broadcast(state)
+        except OSError as e:
+            print(f"Could not save the broadcast state: {e}", flush=True)
+    state["reused"] = False
+    return state
 
 
 class CenterFaceDetector:
@@ -397,16 +457,17 @@ def draw_timestamp(frame):
                 (255, 255, 255), thick, cv2.LINE_AA)  # fmt: skip
 
 
-def stream_once(ffmpeg_url, width, height, blur):
+def stream_once(state, width, height, blur):
     """Run one camera -> blur -> ffmpeg session until something exits."""
     # Buffered stdout, so read(n) returns a whole frame rather than whatever
     # the pipe holds. The camera's own log goes to the journal.
     cam = subprocess.Popen(camera_cmd(width, height), stdout=subprocess.PIPE)
-    enc = subprocess.Popen(ffmpeg_cmd(ffmpeg_url, width, height), stdin=subprocess.PIPE)
+    enc = subprocess.Popen(ffmpeg_cmd(state["ffmpeg_url"], width, height),
+                           stdin=subprocess.PIPE)  # fmt: skip
     reader = LatestFrame(cam.stdout, width, height)
     reader.start()
     seq, n, faces, t0, slow = 0, 0, 0, time.monotonic(), 0.0
-    last_snap = 0.0
+    last_snap = last_beat = 0.0
     try:
         while enc.poll() is None:
             frame, seq = reader.get(seq)
@@ -428,6 +489,13 @@ def stream_once(ffmpeg_url, width, height, blur):
                 last_snap = time.monotonic()
                 cv2.imwrite(SNAPSHOT_PATH + ".tmp.jpg", frame)
                 os.replace(SNAPSHOT_PATH + ".tmp.jpg", SNAPSHOT_PATH)
+            if BROADCAST_REUSE_SEC and time.monotonic() - last_beat >= 30:
+                last_beat = time.monotonic()
+                state["last_sent"] = time.time()
+                try:
+                    save_broadcast({k: v for k, v in state.items() if k != "reused"})
+                except OSError as e:
+                    print(f"Could not save the broadcast state: {e}", flush=True)
             if time.monotonic() - t0 >= 120:
                 dt = time.monotonic() - t0
                 print(f"{n / dt:.1f} fps out, {faces} face boxes ({blur.summary()}), "
@@ -460,10 +528,23 @@ def main():
 
     signal.signal(signal.SIGTERM, lambda *_: sys.exit(0))
     wait_for_camera()
-    ffmpeg_url = create_broadcast()
+    state = create_broadcast()
+    quick = 0
     while True:
         print("Starting stream", flush=True)
-        stream_once(ffmpeg_url, width, height, blur)
+        t = time.monotonic()
+        stream_once(state, width, height, blur)
+        if state["reused"]:
+            # A broadcast gone back to that keeps failing within a minute was
+            # probably ended (in YouTube Studio, say): forget it, and exit so
+            # systemd starts over with a new one.
+            quick = quick + 1 if time.monotonic() - t < 60 else 0
+            if quick >= 3:
+                BROADCAST_STATE.unlink(missing_ok=True)
+                raise SystemExit("The broadcast gone back to failed 3 times within a "
+                                 "minute; exiting to start a new one")  # fmt: skip
+            if time.monotonic() - t >= 60:
+                state["reused"] = False  # it works; from now on, as before
         print("Stream ended; retrying in 5 s", flush=True)
         time.sleep(5)
 

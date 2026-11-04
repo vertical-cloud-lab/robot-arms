@@ -3,8 +3,10 @@
 The cell streams to the *BYU VCL Hardware Streams* YouTube channel through the lab's streaming
 Lambda ([`vertical-cloud-lab/streamingLambda`](https://github.com/vertical-cloud-lab/streamingLambda)),
 like the byu-vcl stream cams. **Both of the cell's fixed cameras stream, publicly** (since
-2026-11-03 22:48 UTC). Every start of a Pi's service ends that camera's broadcast and makes a new
-one, so each camera's playlist is its stable link:
+2026-11-03 22:48 UTC). A restart of a Pi's service goes back to the broadcast that was live, so
+its link keeps working, if a frame went out less than 10 minutes before (`BROADCAST_REUSE_SEC`).
+After a longer stop, or a change to `WORKFLOW_NAME` or `PRIVACY_STATUS`, a start ends that
+camera's broadcast and makes a new one, so each camera's playlist is its stable link:
 
 | Pi | Camera | `WORKFLOW_NAME` | Playlist | Fixed masks |
 | --- | --- | --- | --- | --- |
@@ -140,19 +142,37 @@ sudo systemctl enable --now picam-stream.service
 ```
 
 `device.py` reads `my_secrets.py` only at start: `sudo systemctl restart picam-stream.service`
-after an edit (which starts a new broadcast).
+after an edit. That goes back to the same broadcast unless the edit changed `WORKFLOW_NAME` or
+`PRIVACY_STATUS`.
 
 ## The camera is held by the stream
 
 libcamera gives a camera to one process at a time, so anything else that opens a streaming Pi's
 camera (run recordings like #54's on mpzy, `piper_vision.py` or calibration stills on eufi) fails
-while the stream runs. Stop the stream
-first and start it again afterwards. Each start is a new broadcast, so the playlist link is the
-one to share.
+while the stream runs.
+
+**For a still, don't stop the stream.** The last frame sent, faces already pixelated, is in
+`/tmp/picam-stream-latest.jpg`, refreshed every 30 s:
+
+```bash
+ssh … 'cat /tmp/picam-stream-latest.jpg' > frame.jpg
+```
+
+**Anything that needs the camera itself:** stop the stream, use the camera, and start it again
+within 10 minutes. The restart then goes back to the same broadcast, so the link people have
+keeps working; viewers just see the video pause. After a longer stop the start makes a new
+broadcast with a new link (the playlist link still works).
 
 ```bash
 sudo systemctl stop picam-stream.service    # ... use the camera ...
 sudo systemctl start picam-stream.service
 ```
+
+How it works: `device.py` keeps the live broadcast's ingest URL in `~/picam-stream/broadcast.json`
+(mode 600, since it holds the stream key) and writes the time of the last frame sent there every
+30 s. The Lambda makes broadcasts with `enableAutoStop` off, so YouTube keeps one live through a
+gap in its video. A start waits for the clock to be set by NTP before trusting that time. If a
+broadcast it went back to fails three times within a minute of starting (ended in YouTube Studio,
+say), it deletes the file and exits, and systemd starts over with a new broadcast.
 
 The stream never touches the CAN bus, the relay or the arm.

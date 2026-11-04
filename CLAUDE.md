@@ -98,10 +98,26 @@ cell and sees no lab; eufi's (back-right post) sees the lab in its top-left thir
 fixed masks. Faces are pixelated on the Pi before encoding, by deface's CenterFace and OpenCV's
 YuNet on every frame. Each view also has one `STRICT_RECTS` box around the A1 mini's AMS lite
 feeders, which both detectors take for a face; **redo it if that camera or the AMS lite
-moves**. The stream holds each Pi's camera, so **stop `picam-stream.service` before
-anything else opens that camera** (`piper_vision.py` on eufi, run recordings on mpzy) and start it
-again afterwards (each start is a new broadcast). It never touches CAN, the relay or the arm. No
+moves**. The stream holds each Pi's camera. **For a still, never stop it**: copy
+`/tmp/picam-stream-latest.jpg`, the last frame sent (faces already pixelated), which is refreshed
+every 30 s. Only for work that needs the camera itself (`piper_vision.py` on eufi, run
+recordings on mpzy) stop `picam-stream.service`, and start it again **within 10 minutes**: the
+restart then goes back to the same YouTube broadcast, so people's links keep working. After a
+longer stop it makes a new broadcast. It never touches CAN, the relay or the arm. No
 watchdog timer and no reboot cron on either Pi: those reboot the Pi, which would kill an arm run.
+
+Changes made on both Pis from [PR #40](https://github.com/vertical-cloud-lab/robot-arms/pull/40)
+(2026-11-04, 23:08 to 23:13 UTC), so a restart no longer ends the broadcast:
+
+- `~/picam-stream/device.py` and the staging copy `~/picam-stream-src/device.py` save the live
+  broadcast and go back to it on a restart. The previous ones are
+  `device.py.bak-2026-11-04-pr40` in each directory.
+- `~/picam-stream/broadcast.json` (mode 600; it holds the stream key): the broadcast's ingest URL,
+  video ID, `WORKFLOW_NAME`, `PRIVACY_STATUS` and the time of the last frame sent. It was seeded
+  from the running ffmpeg's command line, so the deploy itself kept the links.
+- Each service restarted once, for about 10 s (mpzy 23:09:14, eufi 23:11:59). Both went back to
+  their broadcasts, which YouTube still showed live with unchanged start times: `HtO2Uf6cmp8`
+  (front cam, mpzy) and `j3-MVzhi3H4` (back cam, eufi).
 
 Changes made on both Pis by the fourth #61 run (2026-11-04, 22:20 to 22:30 UTC), to stop the
 AMS lite feeders being pixelated as a face:

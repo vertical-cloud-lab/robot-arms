@@ -66,3 +66,8 @@ STRICT_RECTS = []
 CV_THREADS = 2  # OpenCV threads; the streaming Pi also drives the arm
 SNAPSHOT_PATH = "/tmp/picam-stream-latest.jpg"  # last frame sent, every SNAPSHOT_SEC
 SNAPSHOT_SEC = 30
+# A restart goes back to the broadcast that was live, keeping its link, if a
+# frame went out less than this many seconds before; 0 always starts a new one.
+# The broadcast and its stream key are kept in BROADCAST_STATE (mode 600).
+BROADCAST_REUSE_SEC = 600
+# BROADCAST_STATE = "/home/<user>/picam-stream/broadcast.json"
