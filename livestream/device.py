@@ -13,7 +13,9 @@ blurred on the Pi before anything is encoded or leaves it.
 
 Two face detectors check every frame and the union of what they find is
 pixelated: deface's CenterFace (the model and decoder from the ``deface``
-package, run through OpenCV) and OpenCV's YuNet. Nothing unblurred is ever
+package, run through OpenCV) and OpenCV's YuNet. ``STRICT_RECTS`` raise the
+thresholds only over fixed objects they mistake for faces (the A1 mini's AMS
+lite feeders). Nothing unblurred is ever
 written to ffmpeg: if a detector cannot load, the script exits before going
 live; if processing a frame fails, that frame is dropped.
 
@@ -75,6 +77,13 @@ FACE_DETECT_WIDTH = getattr(S, "FACE_DETECT_WIDTH", 960)
 FACE_SCORE_THRESHOLD = getattr(S, "FACE_SCORE_THRESHOLD", 0.5)
 FACE_BOX_MARGIN = getattr(S, "FACE_BOX_MARGIN", 0.6)
 FACE_HOLD_FRAMES = getattr(S, "FACE_HOLD_FRAMES", 8)
+# Parts of the view, as (x0, y0, x1, y1) fractions of the frame, where a fixed
+# object looks like a face (the A1 mini's AMS lite feeders: a dark housing with
+# two orange couplers for eyes score up to about 0.4 with CenterFace and 0.55
+# with YuNet). A box centred in one is blurred only if it scores at least
+# STRICT_THRESHOLDS for its detector. Everywhere else nothing changes.
+STRICT_RECTS = getattr(S, "STRICT_RECTS", [])
+STRICT_THRESHOLDS = {"centerface": 0.6, "yunet": 0.7, **getattr(S, "STRICT_THRESHOLDS", {})}
 # Rectangles that are always pixelated, as (x0, y0, x1, y1) fractions of the
 # frame. Use them for parts of the view that look into the rest of the lab.
 MASK_RECTS = getattr(S, "MASK_RECTS", [])
@@ -156,8 +165,8 @@ class CenterFaceDetector:
         dets, _ = self.net(cv2.cvtColor(small, cv2.COLOR_BGR2RGB),
                            threshold=CENTERFACE_THRESHOLD)  # fmt: skip
         k = 1 / self.scale
-        return [(x0 * k, y0 * k, (x1 - x0) * k, (y1 - y0) * k)
-                for x0, y0, x1, y1, _ in dets]  # fmt: skip
+        return [(x0 * k, y0 * k, (x1 - x0) * k, (y1 - y0) * k, float(s))
+                for x0, y0, x1, y1, s in dets]  # fmt: skip
 
 
 class YuNetDetector:
@@ -179,7 +188,7 @@ class YuNetDetector:
         _, faces = self.net.detect(small)
         if faces is None:
             return []
-        return [tuple((f[:4] / self.scale).tolist()) for f in faces]
+        return [(*(f[:4] / self.scale).tolist(), float(f[-1])) for f in faces]
 
 
 DETECTORS = {"centerface": CenterFaceDetector, "yunet": YuNetDetector}
@@ -190,24 +199,67 @@ class FaceBlur:
         if not FACE_DETECTORS or set(FACE_DETECTORS) - set(DETECTORS):
             raise SystemExit(f"FACE_DETECTORS must name some of {sorted(DETECTORS)}, "
                              f"not {FACE_DETECTORS!r}; refusing to stream")  # fmt: skip
+        base = {"centerface": CENTERFACE_THRESHOLD, "yunet": FACE_SCORE_THRESHOLD}
+        if any(STRICT_THRESHOLDS[k] < v for k, v in base.items()):
+            raise SystemExit(f"STRICT_THRESHOLDS {STRICT_THRESHOLDS} is below the base "
+                             f"thresholds {base}; refusing to stream")  # fmt: skip
         self.width, self.height = width, height
         self.detectors = [DETECTORS[name](width, height) for name in FACE_DETECTORS]
         self.counts = {d.name: 0 for d in self.detectors}  # boxes found, for the log
         self.held = []  # [(x0, y0, x1, y1, frames_left)]
-        self.masks = [
-            (int(x0 * width), int(y0 * height), int(x1 * width), int(y1 * height))
-            for x0, y0, x1, y1 in MASK_RECTS
-        ]
+        self.masks = [self.to_pixels(r) for r in MASK_RECTS]
+        self.strict = [self.to_pixels(r) for r in STRICT_RECTS]
+        self.skipped = {d.name: [0, 0.0] for d in self.detectors}  # [count, max score]
+
+    def to_pixels(self, rect):
+        x0, y0, x1, y1 = rect
+        if not (0 <= x0 < x1 <= 1 and 0 <= y0 < y1 <= 1):
+            raise SystemExit(f"Bad rectangle {rect!r}: want (x0, y0, x1, y1) fractions; "
+                             "refusing to stream")  # fmt: skip
+        w, h = self.width, self.height
+        return int(x0 * w), int(y0 * h), int(x1 * w), int(y1 * h)
 
     def describe(self):
-        return ", ".join(f"{d.name} at {d.size[0]}x{d.size[1]}" for d in self.detectors)
+        base = {"centerface": CENTERFACE_THRESHOLD, "yunet": FACE_SCORE_THRESHOLD}
+        out = []
+        for d in self.detectors:
+            s = f"{d.name} at {d.size[0]}x{d.size[1]} (threshold {base[d.name]}"
+            if self.strict:
+                s += f", {STRICT_THRESHOLDS[d.name]} in strict rects"
+            out.append(s + ")")
+        return ", ".join(out) + f", {len(self.strict)} strict rects"
+
+    def summary(self):
+        """Boxes found since the last call, for the log; resets the counts."""
+        s = ", ".join(f"{k} {v}" for k, v in self.counts.items())
+        if self.strict:
+            s += "; strict rects skipped " + ", ".join(
+                f"{k} {n} (max {m:.2f})" for k, (n, m) in self.skipped.items())
+        self.counts = dict.fromkeys(self.counts, 0)
+        self.skipped = {k: [0, 0.0] for k in self.skipped}
+        return s
+
+    def keep(self, name, box):
+        """False for a box centred in a strict rectangle that scores below
+        its detector's STRICT_THRESHOLDS."""
+        x, y, w, h, score = box
+        cx, cy = x + w / 2, y + h / 2
+        if score >= STRICT_THRESHOLDS[name] or not any(
+            x0 <= cx < x1 and y0 <= cy < y1 for x0, y0, x1, y1 in self.strict
+        ):
+            return True
+        n, m = self.skipped[name]
+        self.skipped[name] = [n + 1, max(m, score)]
+        return False
 
     def detect(self, frame):
         boxes = []
         for det in self.detectors:
             found = det(frame)
+            if self.strict:
+                found = [b for b in found if self.keep(det.name, b)]
             self.counts[det.name] += len(found)
-            for x, y, w, h in found:
+            for x, y, w, h, _ in found:
                 mx, my = w * FACE_BOX_MARGIN, h * FACE_BOX_MARGIN
                 boxes.append(
                     (
@@ -378,11 +430,9 @@ def stream_once(ffmpeg_url, width, height, blur):
                 os.replace(SNAPSHOT_PATH + ".tmp.jpg", SNAPSHOT_PATH)
             if time.monotonic() - t0 >= 120:
                 dt = time.monotonic() - t0
-                per = ", ".join(f"{k} {v}" for k, v in blur.counts.items())
-                print(f"{n / dt:.1f} fps out, {faces} face boxes ({per}), "
+                print(f"{n / dt:.1f} fps out, {faces} face boxes ({blur.summary()}), "
                       f"slowest frame {slow * 1000:.0f} ms", flush=True)  # fmt: skip
                 n, faces, t0, slow = 0, 0, time.monotonic(), 0.0
-                blur.counts = dict.fromkeys(blur.counts, 0)
     except BrokenPipeError:
         print("ffmpeg closed its input", flush=True)
     finally:

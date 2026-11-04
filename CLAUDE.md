@@ -96,12 +96,32 @@ same rules apply: read-only first, and record every change made on them here.
 `end` matches by substring, so it would end both. mpzy's camera (front-left post) looks into the
 cell and sees no lab; eufi's (back-right post) sees the lab in its top-left third, under two
 fixed masks. Faces are pixelated on the Pi before encoding, by deface's CenterFace and OpenCV's
-YuNet on every frame. The stream holds each Pi's camera, so **stop `picam-stream.service` before
+YuNet on every frame. Each view also has one `STRICT_RECTS` box around the A1 mini's AMS lite
+feeders, which both detectors take for a face; **redo it if that camera or the AMS lite
+moves**. The stream holds each Pi's camera, so **stop `picam-stream.service` before
 anything else opens that camera** (`piper_vision.py` on eufi, run recordings on mpzy) and start it
 again afterwards (each start is a new broadcast). It never touches CAN, the relay or the arm. No
 watchdog timer and no reboot cron on either Pi: those reboot the Pi, which would kill an arm run.
 
-Changes made on both Pis by the third #61 run (22:40 to 22:55 UTC):
+Changes made on both Pis by the fourth #61 run (2026-11-04, 22:20 to 22:30 UTC), to stop the
+AMS lite feeders being pixelated as a face:
+
+- The stream was stopped for under 2 minutes on each Pi, while `/tmp/fpscan.py` (a copy of no
+  repo file; deleted afterwards) scored 50 live frames with both detectors and printed boxes and
+  scores only. No frame was saved.
+- `~/picam-stream/device.py` with `STRICT_RECTS`. The previous one is
+  `device.py.bak-2026-11-04-issue61`.
+- `~/picam-stream/my_secrets.py`: a `STRICT_RECTS` line appended (mpzy
+  `[(0.355, 0.208, 0.461, 0.347)]`, eufi `[(0.512, 0.25, 0.617, 0.368)]`). The previous file is
+  `my_secrets.py.bak-2026-11-04-issue61` (mode 600).
+- The staging copy `~/picam-stream-src/` now has the same `device.py` and `my_secrets.py` as
+  `~/picam-stream/`. Its `my_secrets.py` had still been the first run's (`WORKFLOW_NAME = "PiPER
+  arm"`, unlisted, and on eufi a single smaller mask), which `install.sh` would have copied over
+  the live one. That old copy is `~/picam-stream-src/my_secrets.py.bak-2026-11-04-issue61`.
+- Both services restarted, so both broadcasts are new (mpzy twice, once for an intermediate
+  version that ran for two minutes).
+
+Changes made on both Pis by the third #61 run (2026-11-03, 22:40 to 22:55 UTC):
 
 - `~/picam-stream/venv`: `deface` 1.5.0, `pip install --no-deps --require-hashes -r
   requirements-deface.txt` (one pure-Python wheel; nothing else installed or upgraded).

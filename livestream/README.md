@@ -16,8 +16,8 @@ only the printer, the arm, the tool rack, the backdrop and the wall. eufi's look
 front-left corner, so the top-left third of its view is the rest of the lab, and two fixed masks
 cover it:
 
-![A frame as sent from mpzy's camera](../docs/images/picam-piper-stream-mpzy-public-2026-11-03.jpg)
-![A frame as sent from eufi's camera](../docs/images/picam-piper-stream-eufi-public-2026-11-03.jpg)
+![A frame as sent from mpzy's camera](../docs/images/picam-piper-stream-mpzy-strict-2026-11-04.jpg)
+![A frame as sent from eufi's camera](../docs/images/picam-piper-stream-eufi-strict-2026-11-04.jpg)
 
 **Workflow names must not overlap.** The Lambda's `end` ends every live broadcast whose title
 contains the caller's `WORKFLOW_NAME` (case-insensitive), and `create` files a broadcast into
@@ -63,15 +63,19 @@ up without one, it logs `No camera found` every minute and leaves YouTube alone.
    - **OpenCV's YuNet** (`face_detection_yunet_2023mar.onnx`, 230 kB, from
      [opencv_zoo](https://github.com/opencv/opencv_zoo/tree/main/models/face_detection_yunet),
      sha256 `8f2383e4…52fa4`), on a 960×540 copy at threshold 0.5.
+   - **Strict rects** (`STRICT_RECTS`): small fixed areas around objects that the detectors
+     take for faces. A box centred in one is blurred only if it scores at least 0.6 (CenterFace)
+     or 0.7 (YuNet). See [False positives](#false-positives).
 2. **Fixed masks.** `MASK_RECTS` are always pixelated, for parts of a view that look past the
    cell into the lab, since neither detector sees the back of a head. They belong to one camera's
    view: none for mpzy, two for eufi (see `my_secrets_example.py`). **Redo them whenever that
    camera moves.**
 3. **Timestamp**, lab local time, top right.
 
-It fails closed: if deface isn't installed, either model file is missing, or `FACE_DETECTORS` is
-empty or names an unknown detector, it exits before going live. A frame whose blur step raises
-is dropped rather than sent.
+It fails closed: if deface isn't installed, either model file is missing, `FACE_DETECTORS` is
+empty or names an unknown detector, a rectangle isn't a valid `(x0, y0, x1, y1)` of fractions, or
+a strict threshold is below its detector's normal one, it exits before going live. A frame whose
+blur step raises is dropped rather than sent.
 
 **Test.** A public-domain group photo (the 1927 Solvay conference) fitted into a 1280×720 frame
 and put through `FaceBlur` as the stream does. CenterFace found 35 boxes and YuNet 31, which
@@ -79,11 +83,40 @@ covers all 29 faces; YuNet's extras and CenterFace's are background:
 
 ![All 29 faces pixelated](../docs/images/face-blur-test-solvay-1927.jpg)
 
-**False positives.** Both views show the A1 mini's filament hub, whose two orange knobs
-CenterFace scores 0.37 to 0.43 as a face, so a small patch over the hub is pixelated in almost
-every frame. That's left as it is: masking the hub out of detection would also hide a real face
-there. In mpzy's view, YuNet scores the black cable loop on the arm's elbow 0.47 against its
-0.5 threshold, so a small patch of the arm may be pixelated for a moment.
+### False positives
+
+**The A1 mini's AMS lite feeders look like a face** to both detectors: a dark housing with two
+orange tube couplers for eyes. From 2026-11-03 22:48 to 2026-11-04 22:20 UTC this kept a block
+pixelated over the printer's top spool in both views. Scores measured on unblurred frames, on
+the Pi, at the stream's size:
+
+![The AMS lite feeders and the boxes the detectors put on them](../docs/images/ams-lite-feeder-false-positive-2026-11-04.jpg)
+
+| | CenterFace (threshold 0.2) | YuNet (threshold 0.5) |
+| --- | --- | --- |
+| mpzy, 50 live frames, 2026-11-04 | 0.25 to 0.38, every frame | under 0.3 |
+| eufi, 50 live frames, 2026-11-04 | up to 0.30, 46 of 50 frames | 0.45 median, up to 0.54 |
+| older stills, 2026-11-03 | 0.43 (mpzy), 0.37 (eufi) | 0.27 (mpzy), 0.36 (eufi) |
+| for comparison: faces of people in the lab, eufi, same 50 frames (under its masks) | mostly 0.74 to 0.86 | mostly 0.80 to 0.92 |
+
+Since 2026-11-04 each view has one **strict rect** around the feeders (`STRICT_RECTS`; about
+135×100 px on mpzy and 135×85 px on eufi), where a box needs 0.6 from CenterFace or 0.7 from
+YuNet. That clears the feeders with a margin of about 0.16 on each detector, and leaves the
+thresholds everywhere else as they were. Why not raise the thresholds everywhere instead: on six
+public-domain group photos placed into a 1280×720 frame at three sizes, raising CenterFace from
+0.2 to 0.5 left 40 of 231 blurred boxes unblurred, and a dozen or so of those were real faces
+(small, in profile, or cut off by the frame edge).
+
+The cost: a real face centred in a strict rect, with CenterFace scoring 0.2 to 0.6 *and* YuNet
+under 0.7, isn't blurred. That means someone's head right in front of the feeders, from that
+camera, turned well away or mostly hidden. **Redo a strict rect whenever its camera or the AMS
+lite moves**: a rect left over empty table only raises the thresholds there, and if the feeders
+move out of it, they are pixelated again. Each Pi's log reports what the strict rects skipped
+every 2 minutes (`strict rects skipped centerface N (max S), yunet N (max S)`), so a score
+creeping towards the strict threshold shows up there.
+
+In mpzy's view, YuNet also scores the black cable loop on the arm's elbow 0.47 against its 0.5
+threshold, so a small patch of the arm may be pixelated for a moment.
 
 **Load.** Each Pi uses its whole cap of 2 of the 4 cores, holding 4.5 to 4.7 fps of the 5
 requested: about 190 ms a frame for the two detectors on 2 OpenCV threads (130 ms CenterFace,

@@ -51,6 +51,18 @@ FACE_HOLD_FRAMES = 8  # keep blurring a face this many frames after it was last 
 #   [(0.0, 0.0, 0.345, 0.34), (0.0, 0.34, 0.2, 0.62)]
 MASK_RECTS = []
 
+# Fixed objects in a view that look like faces to the detectors, (x0, y0, x1,
+# y1) fractions of the frame. A box centred in one is blurred only if it scores
+# at least STRICT_THRESHOLDS for its detector (default: centerface 0.6, yunet
+# 0.7, against 0.2 and 0.5 everywhere else). Keep them tight around the object,
+# and redo them whenever the camera or the object moves. As of 2026-11-04, both
+# views have one, over the A1 mini's AMS lite feeders (dark housing, two orange
+# couplers for eyes; CenterFace up to 0.43, YuNet up to 0.54):
+# - mpzy: [(0.355, 0.208, 0.461, 0.347)]
+# - eufi: [(0.512, 0.25, 0.617, 0.368)]
+STRICT_RECTS = []
+# STRICT_THRESHOLDS = {"centerface": 0.6, "yunet": 0.7}
+
 CV_THREADS = 2  # OpenCV threads; the streaming Pi also drives the arm
 SNAPSHOT_PATH = "/tmp/picam-stream-latest.jpg"  # last frame sent, every SNAPSHOT_SEC
 SNAPSHOT_SEC = 30
