@@ -5,19 +5,21 @@ queries asked for in [issue #64](https://github.com/vertical-cloud-lab/robot-arm
 (WRTG-Proposal-1), kept verbatim so anyone can see what Edison said before a source was
 checked or cited. The checked shortlist of sources is in [`selection.md`](selection.md).
 
-Every task is `LITERATURE_HIGH` (`job-futurehouse-paperqa3-high`), submitted 2026-11-04 with
-[`scripts/edison_6dof.py`](../../../scripts/edison_6dof.py), copied from byu-vcl.
+Every task is `LITERATURE_HIGH` (`job-futurehouse-paperqa3-high`), submitted 2026-11-04 between
+00:22 and 00:23 UTC with
+[`scripts/edison_6dof.py`](../../../scripts/edison_6dof.py), copied from byu-vcl. The
+"fetched by" times come from the 2-minute poll, so each task finished up to two minutes earlier.
 
 | Directory | Question | Edison `task_id` | Status |
 |---|---|---|---|
-| `q1-field-development/` | Q1, how arms have been used in SDLs and how low-cost/open-source arms developed | `cdb6d84d-8b9a-4563-8ad9-747686d06a50` | submitted |
-| `q2-repeatable-benchmarks/` | Q2, published benchmarks with industrial/research-arm results that we could rerun | `012eecd1-5e8f-4924-b308-1e0b1176aa4a` | submitted |
-| `q3-low-cost-vs-industrial/` | Q3, measured low-cost vs industrial arm data | `beff3bc9-93ed-41dd-b459-94108c3f103e` | submitted |
-| `q4-case-against/` | Q4, the case against low-cost arms in lab automation | `bd7bc674-13bb-4049-9242-3f1b303e1a8e` | submitted |
-| `q5-lab-workflows/` | Q5, arms swapping modules or tools on lab instruments; AprilTag and wrist-camera accuracy | `3d2ee330-007d-4964-a7a7-e1dc435d0232` | submitted |
-| `q6-reliability-statistics/` | Q6, reporting success rates, CIs, and trial counts | `dba83992-ac2a-4033-953b-a7ee7536d01c` | submitted |
-| `q7-learned-vs-scripted/` | Q7, imitation learning vs scripted motion on low-cost arms | `c3400c3a-ec4a-4b17-808a-0bf9b164d809` | submitted |
-| `q8-visualizing-repeatability/` | Q8 (lower priority), 3D views of positioning accuracy and repeatability | `dd9b8553-a779-4e70-9080-8045fd091ff7` | submitted |
+| `q1-field-development/` | Q1, how arms have been used in SDLs and how low-cost/open-source arms developed | `cdb6d84d-8b9a-4563-8ad9-747686d06a50` | success, fetched by 00:45 UTC |
+| `q2-repeatable-benchmarks/` | Q2, published benchmarks with industrial/research-arm results that we could rerun | `012eecd1-5e8f-4924-b308-1e0b1176aa4a` | success, fetched by 00:57 UTC |
+| `q3-low-cost-vs-industrial/` | Q3, measured low-cost vs industrial arm data | `beff3bc9-93ed-41dd-b459-94108c3f103e` | success, fetched by 00:49 UTC |
+| `q4-case-against/` | Q4, the case against low-cost arms in lab automation | `bd7bc674-13bb-4049-9242-3f1b303e1a8e` | success, fetched by 00:57 UTC |
+| `q5-lab-workflows/` | Q5, arms swapping modules or tools on lab instruments; AprilTag and wrist-camera accuracy | `3d2ee330-007d-4964-a7a7-e1dc435d0232` | success, fetched by 00:57 UTC |
+| `q6-reliability-statistics/` | Q6, reporting success rates, CIs, and trial counts | `dba83992-ac2a-4033-953b-a7ee7536d01c` | success, fetched by 00:53 UTC |
+| `q7-learned-vs-scripted/` | Q7, imitation learning vs scripted motion on low-cost arms | `c3400c3a-ec4a-4b17-808a-0bf9b164d809` | success, fetched by 00:47 UTC |
+| `q8-visualizing-repeatability/` | Q8 (lower priority), 3D views of positioning accuracy and repeatability | `dd9b8553-a779-4e70-9080-8045fd091ff7` | success, fetched by 00:47 UTC |
 
 Each directory holds `query.md` (the exact text sent) and `_task_id.json`, and after the fetch
 `answer.md`, `formatted_answer.md` (answer plus reference list), `raw_answer.md`,

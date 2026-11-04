@@ -1,0 +1,3979 @@
+{
+  "toolu_012FqTNgvQR1B1KwrJ7ZgSJr": [],
+  "toolu_015z6cuMhXmfyGj6ctDqPhcC": [],
+  "toolu_014UzBeWnLgM6R71mvEHvmCG": [
+    {
+      "embedding": null,
+      "docname": "adamek2023analyticalmodelsfor",
+      "dockey": "8860eb89d98fc8ff",
+      "citation": "Roman Ad\u00e1mek, Martin Brablc, Patrik V\u00e1vra, Barnab\u00e1s Dobossy, Martin Form\u00e1nek, and Filip Radil. Analytical models for pose estimate variance of planar fiducial markers for mobile robot localisation. Sensors, 23:5746, Jun 2023. URL: https://doi.org/10.3390/s23125746, doi:10.3390/s23125746.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "adamek2023analyticalmodelsfor",
+      "bibtex": "@article{adamek2023analyticalmodelsfor,\n    author = \"Ad\u00e1mek, Roman and Brablc, Martin and V\u00e1vra, Patrik and Dobossy, Barnab\u00e1s and Form\u00e1nek, Martin and Radil, Filip\",\n    title = \"Analytical Models for Pose Estimate Variance of Planar Fiducial Markers for Mobile Robot Localisation\",\n    year = \"2023\",\n    journal = \"Sensors\",\n    volume = \"23\",\n    pages = \"5746\",\n    month = \"Jun\",\n    doi = \"10.3390/s23125746\",\n    url = \"https://doi.org/10.3390/s23125746\",\n    publisher = \"MDPI AG\",\n    issue = \"12\",\n    issn = \"1424-8220\"\n}\n",
+      "authors": [
+        "Roman Ad\u00e1mek",
+        "Martin Brablc",
+        "Patrik V\u00e1vra",
+        "Barnab\u00e1s Dobossy",
+        "Martin Form\u00e1nek",
+        "Filip Radil"
+      ],
+      "publication_date": "2023-06-20T00:00:00Z",
+      "year": 2023,
+      "volume": "23",
+      "issue": "12",
+      "issn": "1424-8220",
+      "pages": "5746",
+      "journal": "Sensors",
+      "publisher": "MDPI AG",
+      "url": "https://doi.org/10.3390/s23125746",
+      "title": "Analytical Models for Pose Estimate Variance of Planar Fiducial Markers for Mobile Robot Localisation",
+      "citation_count": 27,
+      "bibtex_type": "misc",
+      "source_quality": 1,
+      "is_retracted": null,
+      "doi": "10.3390/s23125746",
+      "doi_url": "https://doi.org/10.3390/s23125746",
+      "doc_id": "8860eb89d98fc8ff",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://www.mdpi.com/1424-8220/23/12/5746/pdf?version=1687250295",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "crossref",
+          "semantic_scholar",
+          "crossref",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Roman Ad\u00e1mek, Martin Brablc, Patrik V\u00e1vra, Barnab\u00e1s Dobossy, Martin Form\u00e1nek, and Filip Radil. Analytical models for pose estimate variance of planar fiducial markers for mobile robot localisation. Sensors, 23:5746, Jun 2023. URL: https://doi.org/10.3390/s23125746, doi:10.3390/s23125746. This article has 27 citations and is from a peer-reviewed journal."
+    },
+    {
+      "embedding": null,
+      "docname": "howell2026aunifiedplatform",
+      "dockey": "b59b627b41717dcd",
+      "citation": "Lewis Howell, M. Waterston, T. Wah, J. Chandler, and James R. McLaughlan. A unified platform and quality assurance framework for 3d ultrasound reconstruction with robotic, optical, and electromagnetic tracking. ArXiv, Mar 2026. URL: https://doi.org/10.48550/arxiv.2603.20077, doi:10.48550/arxiv.2603.20077.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "howell2026aunifiedplatform",
+      "bibtex": "@article{howell2026aunifiedplatform,\n    author = \"Howell, Lewis and Waterston, M. and Wah, T. and Chandler, J. and McLaughlan, James R.\",\n    title = \"A Unified Platform and Quality Assurance Framework for 3D Ultrasound Reconstruction with Robotic, Optical, and Electromagnetic Tracking\",\n    year = \"2026\",\n    journal = \"ArXiv\",\n    volume = \"abs/2603.20077\",\n    month = \"Mar\",\n    doi = \"10.48550/arxiv.2603.20077\",\n    url = \"https://doi.org/10.48550/arxiv.2603.20077\"\n}\n",
+      "authors": [
+        "Lewis Howell",
+        "M. Waterston",
+        "T. Wah",
+        "J. Chandler",
+        "James R. McLaughlan"
+      ],
+      "publication_date": "2026-03-20T00:00:00Z",
+      "year": 2026,
+      "volume": "abs/2603.20077",
+      "issue": null,
+      "issn": null,
+      "pages": null,
+      "journal": "ArXiv",
+      "publisher": null,
+      "url": "",
+      "title": "A Unified Platform and Quality Assurance Framework for 3D Ultrasound Reconstruction with Robotic, Optical, and Electromagnetic Tracking",
+      "citation_count": 0,
+      "bibtex_type": "article",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.48550/arxiv.2603.20077",
+      "doi_url": "https://doi.org/10.48550/arxiv.2603.20077",
+      "doc_id": "b59b627b41717dcd",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "semantic_scholar",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          "semantic_scholar",
+          "self_generated",
+          "semantic_scholar",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Lewis Howell, M. Waterston, T. Wah, J. Chandler, and James R. McLaughlan. A unified platform and quality assurance framework for 3d ultrasound reconstruction with robotic, optical, and electromagnetic tracking. ArXiv, Mar 2026. URL: https://doi.org/10.48550/arxiv.2603.20077, doi:10.48550/arxiv.2603.20077. This article has 0 citations."
+    },
+    {
+      "embedding": null,
+      "docname": "bohacek2020volumetriccalculationof",
+      "dockey": "382b546bebc5c16f",
+      "citation": "Eleni Bohacek, Andrew J. Coates, and David R. Selviah. Volumetric calculation of quantization error in 3-d vision systems. Preprint, Jan 2020. URL: https://doi.org/10.48550/arxiv.2010.08390, doi:10.48550/arxiv.2010.08390.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "bohacek2020volumetriccalculationof",
+      "bibtex": "@article{bohacek2020volumetriccalculationof,\n    author = \"Bohacek, Eleni and Coates, Andrew J. and Selviah, David R.\",\n    title = \"Volumetric Calculation of Quantization Error in 3-D Vision Systems\",\n    year = \"2020\",\n    journal = \"Preprint\",\n    month = \"Jan\",\n    doi = \"10.48550/arxiv.2010.08390\",\n    url = \"https://doi.org/10.48550/arxiv.2010.08390\",\n    publisher = \"arXiv\"\n}\n",
+      "authors": [
+        "Eleni Bohacek",
+        "Andrew J. Coates",
+        "David R. Selviah"
+      ],
+      "publication_date": "2020-01-01T00:00:00Z",
+      "year": 2020,
+      "volume": null,
+      "issue": null,
+      "issn": null,
+      "pages": null,
+      "journal": "Preprint",
+      "publisher": "arXiv",
+      "url": "https://arxiv.org/abs/2010.08390",
+      "title": "Volumetric Calculation of Quantization Error in 3-D Vision Systems",
+      "citation_count": 1,
+      "bibtex_type": "misc",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.48550/arxiv.2010.08390",
+      "doi_url": "https://doi.org/10.48550/arxiv.2010.08390",
+      "doc_id": "382b546bebc5c16f",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://arxiv.org/pdf/2010.08390",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "datacite",
+          "datacite"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Eleni Bohacek, Andrew J. Coates, and David R. Selviah. Volumetric calculation of quantization error in 3-d vision systems. Preprint, Jan 2020. URL: https://doi.org/10.48550/arxiv.2010.08390, doi:10.48550/arxiv.2010.08390. This article has 1 citations."
+    },
+    {
+      "embedding": null,
+      "docname": "chajon2026photogrammetriccharacterizationof",
+      "dockey": "3bf2f9080e0a9161",
+      "citation": "Sebasti\u00e1n Chaj\u00f3n, J\u00f6rg Reiff-Stephan, and Norman G\u00fcnther. Photogrammetric characterization of robot positioning accuracy and repeatability. Robotics, 15:86, Apr 2026. URL: https://doi.org/10.3390/robotics15050086, doi:10.3390/robotics15050086.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "chajon2026photogrammetriccharacterizationof",
+      "bibtex": "@article{chajon2026photogrammetriccharacterizationof,\n    author = \"Chaj\u00f3n, Sebasti\u00e1n and Reiff-Stephan, J\u00f6rg and G\u00fcnther, Norman\",\n    title = \"Photogrammetric Characterization of Robot Positioning Accuracy and Repeatability\",\n    year = \"2026\",\n    journal = \"Robotics\",\n    volume = \"15\",\n    pages = \"86\",\n    month = \"Apr\",\n    doi = \"10.3390/robotics15050086\",\n    url = \"https://doi.org/10.3390/robotics15050086\",\n    publisher = \"MDPI AG\",\n    issue = \"5\",\n    issn = \"2218-6581\"\n}\n",
+      "authors": [
+        "Sebasti\u00e1n Chaj\u00f3n",
+        "J\u00f6rg Reiff-Stephan",
+        "Norman G\u00fcnther"
+      ],
+      "publication_date": "2026-04-27T00:00:00Z",
+      "year": 2026,
+      "volume": "15",
+      "issue": "5",
+      "issn": "2218-6581",
+      "pages": "86",
+      "journal": "Robotics",
+      "publisher": "MDPI AG",
+      "url": "https://doi.org/10.3390/robotics15050086",
+      "title": "Photogrammetric Characterization of Robot Positioning Accuracy and Repeatability",
+      "citation_count": 0,
+      "bibtex_type": "misc",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.3390/robotics15050086",
+      "doi_url": "https://doi.org/10.3390/robotics15050086",
+      "doc_id": "3bf2f9080e0a9161",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://www.mdpi.com/2218-6581/15/5/86/pdf?version=1777286234",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "semantic_scholar",
+          "semantic_scholar",
+          "crossref",
+          "crossref"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          "semantic_scholar",
+          "semantic_scholar",
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "crossref"
+          ],
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "crossref"
+          ],
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Sebasti\u00e1n Chaj\u00f3n, J\u00f6rg Reiff-Stephan, and Norman G\u00fcnther. Photogrammetric characterization of robot positioning accuracy and repeatability. Robotics, 15:86, Apr 2026. URL: https://doi.org/10.3390/robotics15050086, doi:10.3390/robotics15050086. This article has 0 citations."
+    },
+    {
+      "embedding": null,
+      "docname": "maset2022performanceinvestigationand",
+      "dockey": "ed9a336a7a78a4e8",
+      "citation": "Eleonora Maset, Lorenzo Scalera, Alberto Beinat, Domenico Visintini, and Alessandro Gasparetto. Performance investigation and repeatability assessment of a mobile robotic system for 3d mapping. Robotics, 11:54, Apr 2022. URL: https://doi.org/10.3390/robotics11030054, doi:10.3390/robotics11030054.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "maset2022performanceinvestigationand",
+      "bibtex": "@article{maset2022performanceinvestigationand,\n    author = \"Maset, Eleonora and Scalera, Lorenzo and Beinat, Alberto and Visintini, Domenico and Gasparetto, Alessandro\",\n    title = \"Performance Investigation and Repeatability Assessment of a Mobile Robotic System for 3D Mapping\",\n    year = \"2022\",\n    journal = \"Robotics\",\n    volume = \"11\",\n    pages = \"54\",\n    month = \"Apr\",\n    doi = \"10.3390/robotics11030054\",\n    url = \"https://doi.org/10.3390/robotics11030054\",\n    publisher = \"MDPI AG\",\n    issue = \"3\",\n    issn = \"2218-6581\"\n}\n",
+      "authors": [
+        "Eleonora Maset",
+        "Lorenzo Scalera",
+        "Alberto Beinat",
+        "Domenico Visintini",
+        "Alessandro Gasparetto"
+      ],
+      "publication_date": "2022-04-20T00:00:00Z",
+      "year": 2022,
+      "volume": "11",
+      "issue": "3",
+      "issn": "2218-6581",
+      "pages": "54",
+      "journal": "Robotics",
+      "publisher": "MDPI AG",
+      "url": "https://doi.org/10.3390/robotics11030054",
+      "title": "Performance Investigation and Repeatability Assessment of a Mobile Robotic System for 3D Mapping",
+      "citation_count": 43,
+      "bibtex_type": "article",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.3390/robotics11030054",
+      "doi_url": "https://doi.org/10.3390/robotics11030054",
+      "doc_id": "ed9a336a7a78a4e8",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://www.mdpi.com/2218-6581/11/3/54/pdf?version=1650418792",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "crossref",
+          "semantic_scholar",
+          "crossref",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Eleonora Maset, Lorenzo Scalera, Alberto Beinat, Domenico Visintini, and Alessandro Gasparetto. Performance investigation and repeatability assessment of a mobile robotic system for 3d mapping. Robotics, 11:54, Apr 2022. URL: https://doi.org/10.3390/robotics11030054, doi:10.3390/robotics11030054. This article has 43 citations."
+    }
+  ],
+  "toolu_015F4Q5xRPkEv4YtxHFJ4Kkx": [
+    {
+      "embedding": null,
+      "docname": "p\u0142aczek2018testingofan",
+      "dockey": "dad3b30b1b7fb1ea",
+      "citation": "M. P\u0142aczek and Lukasz Piszczek. Testing of an industrial robot\u2019s accuracy and repeatability in off and online environment. Eksploatacja i Niezawodno\u015b\u0107 \u2013 Maintenance and Reliability, 20:455-464, Sep 2018. URL: https://doi.org/10.17531/ein.2018.3.15, doi:10.17531/ein.2018.3.15.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "p\u0142aczek2018testingofan",
+      "bibtex": "@article{p\u0142aczek2018testingofan,\n    author = \"P\u0142aczek, M. and Piszczek, Lukasz\",\n    title = \"Testing of an industrial robot\u2019s accuracy and repeatability in off and online environment\",\n    year = \"2018\",\n    journal = \"Eksploatacja i Niezawodno\u015b\u0107 \u2013 Maintenance and Reliability\",\n    volume = \"20\",\n    pages = \"455-464\",\n    month = \"Sep\",\n    doi = \"10.17531/ein.2018.3.15\",\n    url = \"https://doi.org/10.17531/ein.2018.3.15\",\n    publisher = \"Polskie Naukowo-Techniczne Towarzystwo Eksploatacyjne\",\n    issue = \"3\",\n    issn = \"1507-2711\"\n}\n",
+      "authors": [
+        "M. P\u0142aczek",
+        "Lukasz Piszczek"
+      ],
+      "publication_date": "2018-09-30T00:00:00Z",
+      "year": 2018,
+      "volume": "20",
+      "issue": "3",
+      "issn": "1507-2711",
+      "pages": "455-464",
+      "journal": "Eksploatacja i Niezawodno\u015b\u0107 \u2013 Maintenance and Reliability",
+      "publisher": "Polskie Naukowo-Techniczne Towarzystwo Eksploatacyjne",
+      "url": "https://doi.org/10.17531/ein.2018.3.15",
+      "title": "Testing of an industrial robot\u2019s accuracy and repeatability in off and online environment",
+      "citation_count": 76,
+      "bibtex_type": "misc",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.17531/ein.2018.3.15",
+      "doi_url": "https://doi.org/10.17531/ein.2018.3.15",
+      "doc_id": "dad3b30b1b7fb1ea",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://doi.org/10.17531/ein.2018.3.15",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "semantic_scholar",
+          "semantic_scholar",
+          "crossref",
+          "crossref"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          "semantic_scholar",
+          "semantic_scholar",
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "crossref"
+          ],
+          [
+            "self_generated"
+          ],
+          [
+            "crossref"
+          ],
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "M. P\u0142aczek and Lukasz Piszczek. Testing of an industrial robot\u2019s accuracy and repeatability in off and online environment. Eksploatacja i Niezawodno\u015b\u0107 \u2013 Maintenance and Reliability, 20:455-464, Sep 2018. URL: https://doi.org/10.17531/ein.2018.3.15, doi:10.17531/ein.2018.3.15. This article has 76 citations."
+    },
+    {
+      "embedding": null,
+      "docname": "wang2023designofa",
+      "dockey": "1eee9595a80e2520",
+      "citation": "Yijie Wang, Yushan Zhou, Lai Wei, and Ruiya Li. Design of a four-axis robot arm system based on machine vision. Applied Sciences, 13:8836, Jul 2023. URL: https://doi.org/10.3390/app13158836, doi:10.3390/app13158836.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "wang2023designofa",
+      "bibtex": "@article{wang2023designofa,\n    author = \"Wang, Yijie and Zhou, Yushan and Wei, Lai and Li, Ruiya\",\n    title = \"Design of a Four-Axis Robot Arm System Based on Machine Vision\",\n    year = \"2023\",\n    journal = \"Applied Sciences\",\n    volume = \"13\",\n    pages = \"8836\",\n    month = \"Jul\",\n    doi = \"10.3390/app13158836\",\n    url = \"https://doi.org/10.3390/app13158836\",\n    publisher = \"MDPI AG\",\n    issue = \"15\",\n    issn = \"2076-3417\"\n}\n",
+      "authors": [
+        "Yijie Wang",
+        "Yushan Zhou",
+        "Lai Wei",
+        "Ruiya Li"
+      ],
+      "publication_date": "2023-07-31T00:00:00Z",
+      "year": 2023,
+      "volume": "13",
+      "issue": "15",
+      "issn": "2076-3417",
+      "pages": "8836",
+      "journal": "Applied Sciences",
+      "publisher": "MDPI AG",
+      "url": "https://doi.org/10.3390/app13158836",
+      "title": "Design of a Four-Axis Robot Arm System Based on Machine Vision",
+      "citation_count": 22,
+      "bibtex_type": "article",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.3390/app13158836",
+      "doi_url": "https://doi.org/10.3390/app13158836",
+      "doc_id": "1eee9595a80e2520",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://www.mdpi.com/2076-3417/13/15/8836/pdf?version=1690799449",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "crossref",
+          "semantic_scholar",
+          "crossref",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Yijie Wang, Yushan Zhou, Lai Wei, and Ruiya Li. Design of a four-axis robot arm system based on machine vision. Applied Sciences, 13:8836, Jul 2023. URL: https://doi.org/10.3390/app13158836, doi:10.3390/app13158836. This article has 22 citations."
+    },
+    {
+      "embedding": null,
+      "docname": "chen2015applicationofthe",
+      "dockey": "5bfd19e2cfda8974",
+      "citation": "KS Chen. Application of the iso 9283 standard to test repeatability of the baxter robot. Unknown journal, 2015.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "chen2015applicationofthe",
+      "bibtex": "@article{chen2015applicationofthe,\n    author = \"Chen, KS\",\n    title = \"Application of the ISO 9283 standard to test repeatability of the Baxter robot\",\n    year = \"2015\",\n    journal = \"Unknown journal\"\n}\n",
+      "authors": [
+        "KS Chen"
+      ],
+      "publication_date": null,
+      "year": 2015,
+      "volume": null,
+      "issue": null,
+      "issn": null,
+      "pages": null,
+      "journal": null,
+      "publisher": null,
+      "url": "https://www.ideals.illinois.edu/items/89299/bitstreams/229023/data.pdf",
+      "title": "Application of the ISO 9283 standard to test repeatability of the Baxter robot",
+      "citation_count": 7,
+      "bibtex_type": null,
+      "source_quality": null,
+      "is_retracted": null,
+      "doi": null,
+      "doi_url": null,
+      "doc_id": "5bfd19e2cfda8974",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://www.ideals.illinois.edu/items/89299/bitstreams/229023/data.pdf",
+      "other": {
+        "client_source": [
+          "paper_search"
+        ],
+        "bibtex_source": [
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "KS Chen. Application of the iso 9283 standard to test repeatability of the baxter robot. Unknown journal, 2015."
+    },
+    {
+      "embedding": null,
+      "docname": "boshoff2024performancemeasurementof",
+      "dockey": "e9aa6d8f21ae9576",
+      "citation": "Marius Boshoff, Gustavo Barros, and Bernd Kuhlenk\u00f6tter. Performance measurement of unmanned aerial vehicles to suit industrial applications. Production Engineering, Nov 2024. URL: https://doi.org/10.1007/s11740-024-01313-y, doi:10.1007/s11740-024-01313-y.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "boshoff2024performancemeasurementof",
+      "bibtex": "@article{boshoff2024performancemeasurementof,\n    author = \"Boshoff, Marius and Barros, Gustavo and Kuhlenk\u00f6tter, Bernd\",\n    title = \"Performance measurement of unmanned aerial vehicles to suit industrial applications\",\n    year = \"2024\",\n    journal = \"Production Engineering\",\n    month = \"Nov\",\n    doi = \"10.1007/s11740-024-01313-y\",\n    url = \"https://doi.org/10.1007/s11740-024-01313-y\",\n    publisher = \"Springer Science and Business Media LLC\",\n    issn = \"0944-6524\"\n}\n",
+      "authors": [
+        "Marius Boshoff",
+        "Gustavo Barros",
+        "Bernd Kuhlenk\u00f6tter"
+      ],
+      "publication_date": "2024-11-20T00:00:00Z",
+      "year": 2024,
+      "volume": null,
+      "issue": null,
+      "issn": "0944-6524",
+      "pages": null,
+      "journal": "Production Engineering",
+      "publisher": "Springer Science and Business Media LLC",
+      "url": "https://doi.org/10.1007/s11740-024-01313-y",
+      "title": "Performance measurement of unmanned aerial vehicles to suit industrial applications",
+      "citation_count": 12,
+      "bibtex_type": "article",
+      "source_quality": 1,
+      "is_retracted": null,
+      "doi": "10.1007/s11740-024-01313-y",
+      "doi_url": "https://doi.org/10.1007/s11740-024-01313-y",
+      "doc_id": "e9aa6d8f21ae9576",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s11740-024-01313-y.pdf",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "crossref",
+          "semantic_scholar",
+          "crossref",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Marius Boshoff, Gustavo Barros, and Bernd Kuhlenk\u00f6tter. Performance measurement of unmanned aerial vehicles to suit industrial applications. Production Engineering, Nov 2024. URL: https://doi.org/10.1007/s11740-024-01313-y, doi:10.1007/s11740-024-01313-y. This article has 12 citations and is from a peer-reviewed journal."
+    },
+    {
+      "embedding": null,
+      "docname": "nasertorabi2024repeatabilityassessmentof",
+      "dockey": "9b4df8ddc309112b",
+      "citation": "ALI NASERTORABI. Repeatability assessment of industrial robots according to iso 9283 using a vision-based measurement system. Unknown journal, 2024.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "nasertorabi2024repeatabilityassessmentof",
+      "bibtex": "@article{nasertorabi2024repeatabilityassessmentof,\n    author = \"NASERTORABI, ALI\",\n    title = \"Repeatability Assessment of Industrial Robots According to ISO 9283 Using a Vision-Based Measurement System\",\n    year = \"2024\",\n    journal = \"Unknown journal\"\n}\n",
+      "authors": [
+        "ALI NASERTORABI"
+      ],
+      "publication_date": null,
+      "year": 2024,
+      "volume": null,
+      "issue": null,
+      "issn": null,
+      "pages": null,
+      "journal": null,
+      "publisher": null,
+      "url": "https://unitesi.unipv.it/bitstream/20.500.14239/33532/1/Repeatability%20Assessment%20of%20Industrial%20Robots%20According%20to%20ISO%209283%20Using%20a%20Vision-Based.pdf",
+      "title": "Repeatability Assessment of Industrial Robots According to ISO 9283 Using a Vision-Based Measurement System",
+      "citation_count": 0,
+      "bibtex_type": null,
+      "source_quality": null,
+      "is_retracted": null,
+      "doi": null,
+      "doi_url": null,
+      "doc_id": "9b4df8ddc309112b",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://unitesi.unipv.it/bitstream/20.500.14239/33532/1/Repeatability%20Assessment%20of%20Industrial%20Robots%20According%20to%20ISO%209283%20Using%20a%20Vision-Based.pdf",
+      "other": {
+        "client_source": [
+          "paper_search"
+        ],
+        "bibtex_source": [
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "ALI NASERTORABI. Repeatability assessment of industrial robots according to iso 9283 using a vision-based measurement system. Unknown journal, 2024."
+    },
+    {
+      "embedding": null,
+      "docname": "pollak2023simulationdesignand",
+      "dockey": "0d6fdf7a39b1870d",
+      "citation": "Martin Poll\u00e1k and Karol Goryl. Simulation design and measurement of welding robot repeatability utilizing the contact measurement method. Machines, 11:734, Jul 2023. URL: https://doi.org/10.3390/machines11070734, doi:10.3390/machines11070734.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "pollak2023simulationdesignand",
+      "bibtex": "@article{pollak2023simulationdesignand,\n    author = \"Poll\u00e1k, Martin and Goryl, Karol\",\n    title = \"Simulation Design and Measurement of Welding Robot Repeatability Utilizing the Contact Measurement Method\",\n    year = \"2023\",\n    journal = \"Machines\",\n    volume = \"11\",\n    pages = \"734\",\n    month = \"Jul\",\n    doi = \"10.3390/machines11070734\",\n    url = \"https://doi.org/10.3390/machines11070734\",\n    publisher = \"MDPI AG\",\n    issue = \"7\",\n    issn = \"2075-1702\"\n}\n",
+      "authors": [
+        "Martin Poll\u00e1k",
+        "Karol Goryl"
+      ],
+      "publication_date": "2023-07-13T00:00:00Z",
+      "year": 2023,
+      "volume": "11",
+      "issue": "7",
+      "issn": "2075-1702",
+      "pages": "734",
+      "journal": "Machines",
+      "publisher": "MDPI AG",
+      "url": "https://doi.org/10.3390/machines11070734",
+      "title": "Simulation Design and Measurement of Welding Robot Repeatability Utilizing the Contact Measurement Method",
+      "citation_count": 8,
+      "bibtex_type": "article",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.3390/machines11070734",
+      "doi_url": "https://doi.org/10.3390/machines11070734",
+      "doc_id": "0d6fdf7a39b1870d",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://www.mdpi.com/2075-1702/11/7/734/pdf?version=1689227258",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "crossref",
+          "semantic_scholar",
+          "crossref",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Martin Poll\u00e1k and Karol Goryl. Simulation design and measurement of welding robot repeatability utilizing the contact measurement method. Machines, 11:734, Jul 2023. URL: https://doi.org/10.3390/machines11070734, doi:10.3390/machines11070734. This article has 8 citations."
+    }
+  ],
+  "toolu_015Q4UnaPDaF94rH36BVfy9D": [
+    {
+      "embedding": null,
+      "docname": "klupfel2025seeingthroughuncertainty",
+      "dockey": "c167aa65cf2aaf76",
+      "citation": "Leonard Kl\u00fcpfel, Lukas Burkhard, Anne Elisabeth Reichert, Maximilian Durner, and Rudolph Triebel. Seeing through uncertainty: robot pose estimation based on imperfect prior kinematic knowledge. IEEE Transactions on Robotics, 41:4459-4478, Jan 2025. URL: https://doi.org/10.1109/tro.2025.3577030, doi:10.1109/tro.2025.3577030.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "klupfel2025seeingthroughuncertainty",
+      "bibtex": "@article{klupfel2025seeingthroughuncertainty,\n    author = \"Kl\u00fcpfel, Leonard and Burkhard, Lukas and Reichert, Anne Elisabeth and Durner, Maximilian and Triebel, Rudolph\",\n    title = \"Seeing Through Uncertainty: Robot Pose Estimation Based on Imperfect Prior Kinematic Knowledge\",\n    year = \"2025\",\n    journal = \"IEEE Transactions on Robotics\",\n    volume = \"41\",\n    pages = \"4459-4478\",\n    month = \"Jan\",\n    doi = \"10.1109/tro.2025.3577030\",\n    url = \"https://doi.org/10.1109/tro.2025.3577030\",\n    publisher = \"Institute of Electrical and Electronics Engineers (IEEE)\",\n    issn = \"1552-3098\"\n}\n",
+      "authors": [
+        "Leonard Kl\u00fcpfel",
+        "Lukas Burkhard",
+        "Anne Elisabeth Reichert",
+        "Maximilian Durner",
+        "Rudolph Triebel"
+      ],
+      "publication_date": "2025-01-01T00:00:00Z",
+      "year": 2025,
+      "volume": "41",
+      "issue": null,
+      "issn": "1552-3098",
+      "pages": "4459-4478",
+      "journal": "IEEE Transactions on Robotics",
+      "publisher": "Institute of Electrical and Electronics Engineers (IEEE)",
+      "url": "https://doi.org/10.1109/tro.2025.3577030",
+      "title": "Seeing Through Uncertainty: Robot Pose Estimation Based on Imperfect Prior Kinematic Knowledge",
+      "citation_count": 2,
+      "bibtex_type": "article",
+      "source_quality": 3,
+      "is_retracted": null,
+      "doi": "10.1109/tro.2025.3577030",
+      "doi_url": "https://doi.org/10.1109/tro.2025.3577030",
+      "doc_id": "c167aa65cf2aaf76",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://elib.dlr.de/216633/1/25-0224_02_MS.pdf",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "crossref",
+          "semantic_scholar",
+          "crossref",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Leonard Kl\u00fcpfel, Lukas Burkhard, Anne Elisabeth Reichert, Maximilian Durner, and Rudolph Triebel. Seeing through uncertainty: robot pose estimation based on imperfect prior kinematic knowledge. IEEE Transactions on Robotics, 41:4459-4478, Jan 2025. URL: https://doi.org/10.1109/tro.2025.3577030, doi:10.1109/tro.2025.3577030. This article has 2 citations and is from a highest quality peer-reviewed journal."
+    },
+    {
+      "embedding": null,
+      "docname": "meyer2022theprobabilisticrobot",
+      "dockey": "9d98cf5fe68ad739",
+      "citation": "Lukas Meyer, Klaus H. Strobl, and Rudolph Triebel. The probabilistic robot kinematics model and its application to sensor fusion. 2022 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS), pages 3263-3270, Oct 2022. URL: https://doi.org/10.1109/iros47612.2022.9981399, doi:10.1109/iros47612.2022.9981399.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "meyer2022theprobabilisticrobot",
+      "bibtex": "@article{meyer2022theprobabilisticrobot,\n    author = \"Meyer, Lukas and Strobl, Klaus H. and Triebel, Rudolph\",\n    title = \"The Probabilistic Robot Kinematics Model and its Application to Sensor Fusion\",\n    year = \"2022\",\n    journal = \"2022 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)\",\n    pages = \"3263-3270\",\n    month = \"Oct\",\n    doi = \"10.1109/iros47612.2022.9981399\",\n    url = \"https://doi.org/10.1109/iros47612.2022.9981399\",\n    publisher = \"IEEE\"\n}\n",
+      "authors": [
+        "Lukas Meyer",
+        "Klaus H. Strobl",
+        "Rudolph Triebel"
+      ],
+      "publication_date": "2022-10-23T00:00:00Z",
+      "year": 2022,
+      "volume": null,
+      "issue": null,
+      "issn": null,
+      "pages": "3263-3270",
+      "journal": "2022 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)",
+      "publisher": "IEEE",
+      "url": "https://doi.org/10.1109/iros47612.2022.9981399",
+      "title": "The Probabilistic Robot Kinematics Model and its Application to Sensor Fusion",
+      "citation_count": 12,
+      "bibtex_type": "article",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.1109/iros47612.2022.9981399",
+      "doi_url": "https://doi.org/10.1109/iros47612.2022.9981399",
+      "doc_id": "9d98cf5fe68ad739",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://elib.dlr.de/191928/1/202212_ELIB_PAPER_VERSION_with_copyright.pdf",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "crossref",
+          "semantic_scholar",
+          "crossref",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Lukas Meyer, Klaus H. Strobl, and Rudolph Triebel. The probabilistic robot kinematics model and its application to sensor fusion. 2022 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS), pages 3263-3270, Oct 2022. URL: https://doi.org/10.1109/iros47612.2022.9981399, doi:10.1109/iros47612.2022.9981399. This article has 12 citations."
+    },
+    {
+      "embedding": null,
+      "docname": "yan2021decentralizedabilityawareadaptive",
+      "dockey": "1fe57f75d64c893e",
+      "citation": "Lei Yan, Theodoros Stouraitis, and Sethu Vijayakumar. Decentralized ability-aware adaptive control for multi-robot collaborative manipulation. IEEE Robotics and Automation Letters, 6:2311-2318, Feb 2021. URL: https://doi.org/10.48550/arxiv.2102.03689, doi:10.48550/arxiv.2102.03689.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "yan2021decentralizedabilityawareadaptive",
+      "bibtex": "@article{yan2021decentralizedabilityawareadaptive,\n    author = \"Yan, Lei and Stouraitis, Theodoros and Vijayakumar, Sethu\",\n    title = \"Decentralized Ability-Aware Adaptive Control for Multi-Robot Collaborative Manipulation\",\n    year = \"2021\",\n    journal = \"IEEE Robotics and Automation Letters\",\n    volume = \"6\",\n    pages = \"2311-2318\",\n    month = \"Feb\",\n    doi = \"10.48550/arxiv.2102.03689\",\n    url = \"https://doi.org/10.48550/arxiv.2102.03689\",\n    publisher = \"arXiv\"\n}\n",
+      "authors": [
+        "Lei Yan",
+        "Theodoros Stouraitis",
+        "Sethu Vijayakumar"
+      ],
+      "publication_date": "2021-02-07T00:00:00Z",
+      "year": 2021,
+      "volume": "6",
+      "issue": null,
+      "issn": null,
+      "pages": "2311-2318",
+      "journal": "IEEE Robotics and Automation Letters",
+      "publisher": "arXiv",
+      "url": "https://arxiv.org/abs/2102.03689",
+      "title": "Decentralized Ability-Aware Adaptive Control for Multi-Robot Collaborative Manipulation",
+      "citation_count": 92,
+      "bibtex_type": "article",
+      "source_quality": 2,
+      "is_retracted": null,
+      "doi": "10.48550/arxiv.2102.03689",
+      "doi_url": "https://doi.org/10.48550/arxiv.2102.03689",
+      "doc_id": "1fe57f75d64c893e",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://ieeexplore.ieee.org/iel7/7083369/9285111/09357952.pdf",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "datacite",
+          "semantic_scholar",
+          "datacite",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Lei Yan, Theodoros Stouraitis, and Sethu Vijayakumar. Decentralized ability-aware adaptive control for multi-robot collaborative manipulation. IEEE Robotics and Automation Letters, 6:2311-2318, Feb 2021. URL: https://doi.org/10.48550/arxiv.2102.03689, doi:10.48550/arxiv.2102.03689. This article has 92 citations and is from a domain leading peer-reviewed journal."
+    },
+    {
+      "embedding": null,
+      "docname": "fabisch2026newfeaturesof",
+      "dockey": "b8f8bb6c4aaf5a8b",
+      "citation": "Alexander Fabisch and Mihaela Popescu. New features of pytransform3d for robotics research: transformation graphs, uncertainty, and 3d visualization in python. Frontiers in Robotics and AI, Oct 2026. URL: https://doi.org/10.3389/frobt.2026.1860457, doi:10.3389/frobt.2026.1860457.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "fabisch2026newfeaturesof",
+      "bibtex": "@article{fabisch2026newfeaturesof,\n    author = \"Fabisch, Alexander and Popescu, Mihaela\",\n    title = \"New features of pytransform3d for robotics research: transformation graphs, uncertainty, and 3D visualization in Python\",\n    year = \"2026\",\n    journal = \"Frontiers in Robotics and AI\",\n    volume = \"13\",\n    month = \"Oct\",\n    doi = \"10.3389/frobt.2026.1860457\",\n    url = \"https://doi.org/10.3389/frobt.2026.1860457\",\n    publisher = \"Frontiers Media SA\",\n    issn = \"2296-9144\"\n}\n",
+      "authors": [
+        "Alexander Fabisch",
+        "Mihaela Popescu"
+      ],
+      "publication_date": "2026-10-16T00:00:00Z",
+      "year": 2026,
+      "volume": "13",
+      "issue": null,
+      "issn": "2296-9144",
+      "pages": null,
+      "journal": "Frontiers in Robotics and AI",
+      "publisher": "Frontiers Media SA",
+      "url": "https://doi.org/10.3389/frobt.2026.1860457",
+      "title": "New features of pytransform3d for robotics research: transformation graphs, uncertainty, and 3D visualization in Python",
+      "citation_count": 0,
+      "bibtex_type": "misc",
+      "source_quality": 1,
+      "is_retracted": null,
+      "doi": "10.3389/frobt.2026.1860457",
+      "doi_url": "https://doi.org/10.3389/frobt.2026.1860457",
+      "doc_id": "b8f8bb6c4aaf5a8b",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://www.frontiersin.org/journals/robotics-and-ai/articles/10.3389/frobt.2026.1860457/pdf",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "semantic_scholar",
+          "semantic_scholar",
+          "crossref",
+          "crossref"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          "semantic_scholar",
+          "semantic_scholar",
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "crossref"
+          ],
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "crossref"
+          ],
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Alexander Fabisch and Mihaela Popescu. New features of pytransform3d for robotics research: transformation graphs, uncertainty, and 3d visualization in python. Frontiers in Robotics and AI, Oct 2026. URL: https://doi.org/10.3389/frobt.2026.1860457, doi:10.3389/frobt.2026.1860457. This article has 0 citations and is from a peer-reviewed journal."
+    },
+    {
+      "embedding": null,
+      "docname": "balatti2020amethodfor",
+      "dockey": "c6d51fa956132977",
+      "citation": "Pietro Balatti, Dimitrios Kanoulas, Nikos Tsagarakis, and Arash Ajoudani. A method for autonomous robotic manipulation through exploratory interactions with uncertain environments. Autonomous Robots, 44:1395-1410, Aug 2020. URL: https://doi.org/10.1007/s10514-020-09933-w, doi:10.1007/s10514-020-09933-w.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "balatti2020amethodfor",
+      "bibtex": "@article{balatti2020amethodfor,\n    author = \"Balatti, Pietro and Kanoulas, Dimitrios and Tsagarakis, Nikos and Ajoudani, Arash\",\n    title = \"A method for autonomous robotic manipulation through exploratory interactions with uncertain environments\",\n    year = \"2020\",\n    journal = \"Autonomous Robots\",\n    volume = \"44\",\n    pages = \"1395-1410\",\n    month = \"Aug\",\n    doi = \"10.1007/s10514-020-09933-w\",\n    url = \"https://doi.org/10.1007/s10514-020-09933-w\",\n    publisher = \"Springer Science and Business Media LLC\",\n    issue = \"8\",\n    issn = \"0929-5593\"\n}\n",
+      "authors": [
+        "Pietro Balatti",
+        "Dimitrios Kanoulas",
+        "Nikos Tsagarakis",
+        "Arash Ajoudani"
+      ],
+      "publication_date": "2020-08-03T00:00:00Z",
+      "year": 2020,
+      "volume": "44",
+      "issue": "8",
+      "issn": "0929-5593",
+      "pages": "1395-1410",
+      "journal": "Autonomous Robots",
+      "publisher": "Springer Science and Business Media LLC",
+      "url": "https://link.springer.com/content/pdf/10.1007/s10514-020-09933-w.pdf",
+      "title": "A method for autonomous robotic manipulation through exploratory interactions with uncertain environments",
+      "citation_count": 26,
+      "bibtex_type": "article",
+      "source_quality": 2,
+      "is_retracted": null,
+      "doi": "10.1007/s10514-020-09933-w",
+      "doi_url": "https://doi.org/10.1007/s10514-020-09933-w",
+      "doc_id": "c6d51fa956132977",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s10514-020-09933-w.pdf",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "crossref",
+          "semantic_scholar",
+          "crossref",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Pietro Balatti, Dimitrios Kanoulas, Nikos Tsagarakis, and Arash Ajoudani. A method for autonomous robotic manipulation through exploratory interactions with uncertain environments. Autonomous Robots, 44:1395-1410, Aug 2020. URL: https://doi.org/10.1007/s10514-020-09933-w, doi:10.1007/s10514-020-09933-w. This article has 26 citations and is from a domain leading peer-reviewed journal."
+    },
+    {
+      "embedding": null,
+      "docname": "sinha2019computingrobustinverse",
+      "dockey": "1e14f97ed5c1a876",
+      "citation": "Anirban Sinha and Nilanjan Chakraborty. Computing robust inverse kinematics under uncertainty. ArXiv, Aug 2019. URL: https://doi.org/10.48550/arxiv.1910.10852, doi:10.48550/arxiv.1910.10852.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "sinha2019computingrobustinverse",
+      "bibtex": "@article{sinha2019computingrobustinverse,\n    author = \"Sinha, Anirban and Chakraborty, Nilanjan\",\n    title = \"Computing Robust Inverse Kinematics Under Uncertainty\",\n    year = \"2019\",\n    journal = \"ArXiv\",\n    volume = \"abs/1910.10852\",\n    month = \"Aug\",\n    doi = \"10.48550/arxiv.1910.10852\",\n    url = \"https://doi.org/10.48550/arxiv.1910.10852\",\n    publisher = \"arXiv\"\n}\n",
+      "authors": [
+        "Anirban Sinha",
+        "Nilanjan Chakraborty"
+      ],
+      "publication_date": "2019-08-18T00:00:00Z",
+      "year": 2019,
+      "volume": "abs/1910.10852",
+      "issue": null,
+      "issn": null,
+      "pages": null,
+      "journal": "ArXiv",
+      "publisher": "arXiv",
+      "url": "http://arxiv.org/pdf/1910.10852",
+      "title": "Computing Robust Inverse Kinematics Under Uncertainty",
+      "citation_count": 5,
+      "bibtex_type": "article",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.48550/arxiv.1910.10852",
+      "doi_url": "https://doi.org/10.48550/arxiv.1910.10852",
+      "doc_id": "1e14f97ed5c1a876",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://arxiv.org/pdf/1910.10852",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "datacite",
+          "semantic_scholar",
+          "datacite",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Anirban Sinha and Nilanjan Chakraborty. Computing robust inverse kinematics under uncertainty. ArXiv, Aug 2019. URL: https://doi.org/10.48550/arxiv.1910.10852, doi:10.48550/arxiv.1910.10852. This article has 5 citations."
+    },
+    {
+      "embedding": null,
+      "docname": "shahriari2024enhancingrobustnessin",
+      "dockey": "28e8943fcbd4973f",
+      "citation": "Erfan Shahriari, Kim Kirstin Peper, Matej Hoffmann, and Sami Haddadin. Enhancing robustness in manipulability assessment: the pseudo-ellipsoid approach. 2024 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS), pages 1329-1336, Oct 2024. URL: https://doi.org/10.48550/arxiv.2412.18869, doi:10.48550/arxiv.2412.18869.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "shahriari2024enhancingrobustnessin",
+      "bibtex": "@article{shahriari2024enhancingrobustnessin,\n    author = \"Shahriari, Erfan and Peper, Kim Kirstin and Hoffmann, Matej and Haddadin, Sami\",\n    title = \"Enhancing Robustness in Manipulability Assessment: The Pseudo-Ellipsoid Approach\",\n    year = \"2024\",\n    journal = \"2024 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)\",\n    pages = \"1329-1336\",\n    month = \"Oct\",\n    doi = \"10.48550/arxiv.2412.18869\",\n    url = \"https://doi.org/10.48550/arxiv.2412.18869\",\n    publisher = \"arXiv\"\n}\n",
+      "authors": [
+        "Erfan Shahriari",
+        "Kim Kirstin Peper",
+        "Matej Hoffmann",
+        "Sami Haddadin"
+      ],
+      "publication_date": "2024-10-14T00:00:00Z",
+      "year": 2024,
+      "volume": null,
+      "issue": null,
+      "issn": null,
+      "pages": "1329-1336",
+      "journal": "2024 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)",
+      "publisher": "arXiv",
+      "url": "https://arxiv.org/abs/2412.18869",
+      "title": "Enhancing Robustness in Manipulability Assessment: The Pseudo-Ellipsoid Approach",
+      "citation_count": 3,
+      "bibtex_type": "article",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.48550/arxiv.2412.18869",
+      "doi_url": "https://doi.org/10.48550/arxiv.2412.18869",
+      "doc_id": "28e8943fcbd4973f",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://arxiv.org/pdf/2412.18869",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "datacite",
+          "semantic_scholar",
+          "datacite",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Erfan Shahriari, Kim Kirstin Peper, Matej Hoffmann, and Sami Haddadin. Enhancing robustness in manipulability assessment: the pseudo-ellipsoid approach. 2024 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS), pages 1329-1336, Oct 2024. URL: https://doi.org/10.48550/arxiv.2412.18869, doi:10.48550/arxiv.2412.18869. This article has 3 citations."
+    },
+    {
+      "embedding": null,
+      "docname": "makhambetov2026stochasticpositioningaccuracy",
+      "dockey": "7f0e05b0bfabd5a1",
+      "citation": "Kaldybek Makhambetov, Nadezhda Kunicina, Antons Patlins, Gulshat Amirkhanova, Baurzhan Belgibayev, and Saltanat Adilzhanova. Stochastic positioning accuracy analysis of a 6-dof robotic manipulator using monte carlo simulation within a digital twin framework. Electronics, 15:3095, Jul 2026. URL: https://doi.org/10.3390/electronics15143095, doi:10.3390/electronics15143095.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "makhambetov2026stochasticpositioningaccuracy",
+      "bibtex": "@article{makhambetov2026stochasticpositioningaccuracy,\n    author = \"Makhambetov, Kaldybek and Kunicina, Nadezhda and Patlins, Antons and Amirkhanova, Gulshat and Belgibayev, Baurzhan and Adilzhanova, Saltanat\",\n    title = \"Stochastic Positioning Accuracy Analysis of a 6-DOF Robotic Manipulator Using Monte Carlo Simulation Within a Digital Twin Framework\",\n    year = \"2026\",\n    journal = \"Electronics\",\n    volume = \"15\",\n    pages = \"3095\",\n    month = \"Jul\",\n    doi = \"10.3390/electronics15143095\",\n    url = \"https://doi.org/10.3390/electronics15143095\",\n    publisher = \"MDPI AG\",\n    issue = \"14\",\n    issn = \"2079-9292\"\n}\n",
+      "authors": [
+        "Kaldybek Makhambetov",
+        "Nadezhda Kunicina",
+        "Antons Patlins",
+        "Gulshat Amirkhanova",
+        "Baurzhan Belgibayev",
+        "Saltanat Adilzhanova"
+      ],
+      "publication_date": "2026-07-14T00:00:00Z",
+      "year": 2026,
+      "volume": "15",
+      "issue": "14",
+      "issn": "2079-9292",
+      "pages": "3095",
+      "journal": "Electronics",
+      "publisher": "MDPI AG",
+      "url": "https://doi.org/10.3390/electronics15143095",
+      "title": "Stochastic Positioning Accuracy Analysis of a 6-DOF Robotic Manipulator Using Monte Carlo Simulation Within a Digital Twin Framework",
+      "citation_count": 0,
+      "bibtex_type": "misc",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.3390/electronics15143095",
+      "doi_url": "https://doi.org/10.3390/electronics15143095",
+      "doc_id": "7f0e05b0bfabd5a1",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://www.mdpi.com/2079-9292/15/14/3095/pdf?version=1784033013",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "semantic_scholar",
+          "semantic_scholar",
+          "crossref",
+          "crossref"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          "semantic_scholar",
+          "semantic_scholar",
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "crossref"
+          ],
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "crossref"
+          ],
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Kaldybek Makhambetov, Nadezhda Kunicina, Antons Patlins, Gulshat Amirkhanova, Baurzhan Belgibayev, and Saltanat Adilzhanova. Stochastic positioning accuracy analysis of a 6-dof robotic manipulator using monte carlo simulation within a digital twin framework. Electronics, 15:3095, Jul 2026. URL: https://doi.org/10.3390/electronics15143095, doi:10.3390/electronics15143095. This article has 0 citations."
+    },
+    {
+      "embedding": null,
+      "docname": "nguyen2019aprobabilisticframework",
+      "dockey": "9ed33d7db966623e",
+      "citation": "Huy Nguyen and Quang-Cuong Pham. A probabilistic framework for tracking uncertainties in robotic manipulation. Preprint, Jan 2019. URL: https://doi.org/10.48550/arxiv.1901.00969, doi:10.48550/arxiv.1901.00969.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "nguyen2019aprobabilisticframework",
+      "bibtex": "@article{nguyen2019aprobabilisticframework,\n    author = \"Nguyen, Huy and Pham, Quang-Cuong\",\n    title = \"A probabilistic framework for tracking uncertainties in robotic manipulation\",\n    year = \"2019\",\n    journal = \"Preprint\",\n    month = \"Jan\",\n    doi = \"10.48550/arxiv.1901.00969\",\n    url = \"https://doi.org/10.48550/arxiv.1901.00969\",\n    publisher = \"arXiv\"\n}\n",
+      "authors": [
+        "Huy Nguyen",
+        "Quang-Cuong Pham"
+      ],
+      "publication_date": "2019-01-01T00:00:00Z",
+      "year": 2019,
+      "volume": null,
+      "issue": null,
+      "issn": null,
+      "pages": null,
+      "journal": "Preprint",
+      "publisher": "arXiv",
+      "url": "https://arxiv.org/abs/1901.00969",
+      "title": "A probabilistic framework for tracking uncertainties in robotic manipulation",
+      "citation_count": 16,
+      "bibtex_type": "misc",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.48550/arxiv.1901.00969",
+      "doi_url": "https://doi.org/10.48550/arxiv.1901.00969",
+      "doc_id": "9ed33d7db966623e",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://arxiv.org/pdf/1901.00969",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "datacite",
+          "datacite"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Huy Nguyen and Quang-Cuong Pham. A probabilistic framework for tracking uncertainties in robotic manipulation. Preprint, Jan 2019. URL: https://doi.org/10.48550/arxiv.1901.00969, doi:10.48550/arxiv.1901.00969. This article has 16 citations."
+    },
+    {
+      "embedding": null,
+      "docname": "issametova2026reliabilityinrobotics",
+      "dockey": "3e104eabc0a330ab",
+      "citation": "Madina Issametova, Nikita V. Martyushev, Boris V. Malozyomov, Anton Y. Demin, Alexander V. Pogrebnoy, Elizaveta E. Kuleshova, and Denis V. Valuev. Reliability in robotics and intelligent systems: mathematical modeling and algorithmic innovations. Mathematics, 14:580, Feb 2026. URL: https://doi.org/10.3390/math14030580, doi:10.3390/math14030580.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "issametova2026reliabilityinrobotics",
+      "bibtex": "@article{issametova2026reliabilityinrobotics,\n    author = \"Issametova, Madina and Martyushev, Nikita V. and Malozyomov, Boris V. and Demin, Anton Y. and Pogrebnoy, Alexander V. and Kuleshova, Elizaveta E. and Valuev, Denis V.\",\n    title = \"Reliability in Robotics and Intelligent Systems: Mathematical Modeling and Algorithmic Innovations\",\n    year = \"2026\",\n    journal = \"Mathematics\",\n    volume = \"14\",\n    pages = \"580\",\n    month = \"Feb\",\n    doi = \"10.3390/math14030580\",\n    url = \"https://doi.org/10.3390/math14030580\",\n    publisher = \"MDPI AG\",\n    issue = \"3\",\n    issn = \"2227-7390\"\n}\n",
+      "authors": [
+        "Madina Issametova",
+        "Nikita V. Martyushev",
+        "Boris V. Malozyomov",
+        "Anton Y. Demin",
+        "Alexander V. Pogrebnoy",
+        "Elizaveta E. Kuleshova",
+        "Denis V. Valuev"
+      ],
+      "publication_date": "2026-02-06T00:00:00Z",
+      "year": 2026,
+      "volume": "14",
+      "issue": "3",
+      "issn": "2227-7390",
+      "pages": "580",
+      "journal": "Mathematics",
+      "publisher": "MDPI AG",
+      "url": "https://doi.org/10.3390/math14030580",
+      "title": "Reliability in Robotics and Intelligent Systems: Mathematical Modeling and Algorithmic Innovations",
+      "citation_count": 35,
+      "bibtex_type": "misc",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.3390/math14030580",
+      "doi_url": "https://doi.org/10.3390/math14030580",
+      "doc_id": "3e104eabc0a330ab",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://www.mdpi.com/2227-7390/14/3/580/pdf?version=1770870782",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "semantic_scholar",
+          "semantic_scholar",
+          "crossref",
+          "crossref"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          "semantic_scholar",
+          "semantic_scholar",
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "crossref"
+          ],
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "crossref"
+          ],
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Madina Issametova, Nikita V. Martyushev, Boris V. Malozyomov, Anton Y. Demin, Alexander V. Pogrebnoy, Elizaveta E. Kuleshova, and Denis V. Valuev. Reliability in robotics and intelligent systems: mathematical modeling and algorithmic innovations. Mathematics, 14:580, Feb 2026. URL: https://doi.org/10.3390/math14030580, doi:10.3390/math14030580. This article has 35 citations."
+    }
+  ],
+  "toolu_0194G2NW2PckGTRhZwNVFwPX": [
+    {
+      "embedding": null,
+      "docname": "wang2021currenttrendsin",
+      "dockey": "4717da711407bae0",
+      "citation": "Yun Wang, Di Cao, Si-Lin Chen, Yu-Mei Li, Yun-Wen Zheng, and Nobuhiro Ohkohchi. Current trends in three-dimensional visualization and real-time navigation as well as robot-assisted technologies in hepatobiliary surgery. World Journal of Gastrointestinal Surgery, 13:904-922, Sep 2021. URL: https://doi.org/10.4240/wjgs.v13.i9.904, doi:10.4240/wjgs.v13.i9.904.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "wang2021currenttrendsin",
+      "bibtex": "@article{wang2021currenttrendsin,\n    author = \"Wang, Yun and Cao, Di and Chen, Si-Lin and Li, Yu-Mei and Zheng, Yun-Wen and Ohkohchi, Nobuhiro\",\n    title = \"Current trends in three-dimensional visualization and real-time navigation as well as robot-assisted technologies in hepatobiliary surgery\",\n    year = \"2021\",\n    journal = \"World Journal of Gastrointestinal Surgery\",\n    volume = \"13\",\n    pages = \"904-922\",\n    month = \"Sep\",\n    doi = \"10.4240/wjgs.v13.i9.904\",\n    url = \"https://doi.org/10.4240/wjgs.v13.i9.904\",\n    publisher = \"Baishideng Publishing Group Inc.\",\n    issue = \"9\",\n    issn = \"1948-9366\"\n}\n",
+      "authors": [
+        "Yun Wang",
+        "Di Cao",
+        "Si-Lin Chen",
+        "Yu-Mei Li",
+        "Yun-Wen Zheng",
+        "Nobuhiro Ohkohchi"
+      ],
+      "publication_date": "2021-09-27T00:00:00Z",
+      "year": 2021,
+      "volume": "13",
+      "issue": "9",
+      "issn": "1948-9366",
+      "pages": "904-922",
+      "journal": "World Journal of Gastrointestinal Surgery",
+      "publisher": "Baishideng Publishing Group Inc.",
+      "url": "https://doi.org/10.4240/wjgs.v13.i9.904",
+      "title": "Current trends in three-dimensional visualization and real-time navigation as well as robot-assisted technologies in hepatobiliary surgery",
+      "citation_count": 72,
+      "bibtex_type": "article",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.4240/wjgs.v13.i9.904",
+      "doi_url": "https://doi.org/10.4240/wjgs.v13.i9.904",
+      "doc_id": "4717da711407bae0",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://www.wjgnet.com/1948-9366/full/v13/i9/904.htm",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "crossref",
+          "semantic_scholar",
+          "crossref",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Yun Wang, Di Cao, Si-Lin Chen, Yu-Mei Li, Yun-Wen Zheng, and Nobuhiro Ohkohchi. Current trends in three-dimensional visualization and real-time navigation as well as robot-assisted technologies in hepatobiliary surgery. World Journal of Gastrointestinal Surgery, 13:904-922, Sep 2021. URL: https://doi.org/10.4240/wjgs.v13.i9.904, doi:10.4240/wjgs.v13.i9.904. This article has 72 citations."
+    },
+    {
+      "embedding": null,
+      "docname": "papachristos2018autonomousexplorationand",
+      "dockey": "e83519c364bd1851",
+      "citation": "Christos Papachristos, Mina Kamel, Marija Popovi\u0107, Shehryar Khattak, Andreas Bircher, Helen Oleynikova, Tung Dang, Frank Mascarich, Kostas Alexis, and Roland Siegwart. Autonomous exploration and inspection path planning for aerial robots using the robot operating system. Studies in Computational Intelligence, pages 67-111, Jul 2018. URL: https://doi.org/10.1007/978-3-319-91590-6\\_3, doi:10.1007/978-3-319-91590-6\\_3.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "papachristos2018autonomousexplorationand",
+      "bibtex": "@article{papachristos2018autonomousexplorationand,\n    author = \"Papachristos, Christos and Kamel, Mina and Popovi\u0107, Marija and Khattak, Shehryar and Bircher, Andreas and Oleynikova, Helen and Dang, Tung and Mascarich, Frank and Alexis, Kostas and Siegwart, Roland\",\n    title = \"Autonomous Exploration and Inspection Path Planning for Aerial Robots Using the Robot Operating System\",\n    year = \"2018\",\n    journal = \"Studies in Computational Intelligence\",\n    pages = \"67-111\",\n    month = \"Jul\",\n    doi = \"10.1007/978-3-319-91590-6\\_3\",\n    url = \"https://doi.org/10.1007/978-3-319-91590-6\\_3\",\n    publisher = \"Springer International Publishing\",\n    issn = \"1860-949X\"\n}\n",
+      "authors": [
+        "Christos Papachristos",
+        "Mina Kamel",
+        "Marija Popovi\u0107",
+        "Shehryar Khattak",
+        "Andreas Bircher",
+        "Helen Oleynikova",
+        "Tung Dang",
+        "Frank Mascarich",
+        "Kostas Alexis",
+        "Roland Siegwart"
+      ],
+      "publication_date": "2018-07-06T00:00:00Z",
+      "year": 2018,
+      "volume": null,
+      "issue": null,
+      "issn": "1860-949X",
+      "pages": "67-111",
+      "journal": "Studies in Computational Intelligence",
+      "publisher": "Springer International Publishing",
+      "url": "https://doi.org/10.1007/978-3-319-91590-6_3",
+      "title": "Autonomous Exploration and Inspection Path Planning for Aerial Robots Using the Robot Operating System",
+      "citation_count": 101,
+      "bibtex_type": "article",
+      "source_quality": 1,
+      "is_retracted": null,
+      "doi": "10.1007/978-3-319-91590-6_3",
+      "doi_url": "https://doi.org/10.1007/978-3-319-91590-6_3",
+      "doc_id": "e83519c364bd1851",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://www.researchgate.net/profile/Shehryar-Khattak/publication/326233319_Autonomous_Exploration_and_Inspection_Path_Planning_for_Aerial_Robots_Using_the_Robot_Operating_System/links/60c65ac84585157774d6bc96/Autonomous-Exploration-and-Inspection-Path-Planning-for-Aerial-Robots-Using-the-Robot-Operating-System.pdf",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "crossref",
+          "semantic_scholar",
+          "crossref",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Christos Papachristos, Mina Kamel, Marija Popovi\u0107, Shehryar Khattak, Andreas Bircher, Helen Oleynikova, Tung Dang, Frank Mascarich, Kostas Alexis, and Roland Siegwart. Autonomous exploration and inspection path planning for aerial robots using the robot operating system. Studies in Computational Intelligence, pages 67-111, Jul 2018. URL: https://doi.org/10.1007/978-3-319-91590-6\\_3, doi:10.1007/978-3-319-91590-6\\_3. This article has 101 citations and is from a peer-reviewed journal."
+    },
+    {
+      "embedding": null,
+      "docname": "shepherd2019visualizingthe\"hidden\"",
+      "dockey": "2a9522d98a253648",
+      "citation": "David C. Shepherd, Nicholas A. Kraft, and Patrick Francis. Visualizing the \"hidden\" variables in robot programs. 2019 IEEE/ACM 2nd International Workshop on Robotics Software Engineering (RoSE), pages 13-16, May 2019. URL: https://doi.org/10.1109/rose.2019.00007, doi:10.1109/rose.2019.00007.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "shepherd2019visualizingthe\"hidden\"",
+      "bibtex": "@article{shepherd2019visualizingthe\"hidden\",\n    author = \"Shepherd, David C. and Kraft, Nicholas A. and Francis, Patrick\",\n    title = {Visualizing the \"Hidden\" Variables in Robot Programs},\n    year = \"2019\",\n    journal = \"2019 IEEE/ACM 2nd International Workshop on Robotics Software Engineering (RoSE)\",\n    pages = \"13-16\",\n    month = \"May\",\n    doi = \"10.1109/rose.2019.00007\",\n    url = \"https://doi.org/10.1109/rose.2019.00007\",\n    publisher = \"IEEE\"\n}\n",
+      "authors": [
+        "David C. Shepherd",
+        "Nicholas A. Kraft",
+        "Patrick Francis"
+      ],
+      "publication_date": "2019-05-01T00:00:00Z",
+      "year": 2019,
+      "volume": null,
+      "issue": null,
+      "issn": null,
+      "pages": "13-16",
+      "journal": "2019 IEEE/ACM 2nd International Workshop on Robotics Software Engineering (RoSE)",
+      "publisher": "IEEE",
+      "url": "https://doi.org/10.1109/rose.2019.00007",
+      "title": "Visualizing the \"Hidden\" Variables in Robot Programs",
+      "citation_count": 10,
+      "bibtex_type": "article",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.1109/rose.2019.00007",
+      "doi_url": "https://doi.org/10.1109/rose.2019.00007",
+      "doc_id": "2a9522d98a253648",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://rose-workshops.github.io/files/rose2019/papers/rose2019_3.pdf",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "crossref",
+          "semantic_scholar",
+          "crossref",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "David C. Shepherd, Nicholas A. Kraft, and Patrick Francis. Visualizing the \"hidden\" variables in robot programs. 2019 IEEE/ACM 2nd International Workshop on Robotics Software Engineering (RoSE), pages 13-16, May 2019. URL: https://doi.org/10.1109/rose.2019.00007, doi:10.1109/rose.2019.00007. This article has 10 citations."
+    },
+    {
+      "embedding": null,
+      "docname": "andronie2022remotebigdata",
+      "dockey": "af6a845bfc86b9a6",
+      "citation": "Mihai Andronie, George L\u0103z\u0103roiu, Oana Ludmila Karabolevski, Roxana \u0218tef\u0103nescu, Iulian Hurloiu, Adrian Dijm\u0103rescu, and Irina Dijmarescu. Remote big data management tools, sensing and computing technologies, and visual perception and environment mapping algorithms in the internet of robotic things. Electronics, 12:22, Dec 2022. URL: https://doi.org/10.3390/electronics12010022, doi:10.3390/electronics12010022.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "andronie2022remotebigdata",
+      "bibtex": "@article{andronie2022remotebigdata,\n    author = \"Andronie, Mihai and L\u0103z\u0103roiu, George and Karabolevski, Oana Ludmila and \u0218tef\u0103nescu, Roxana and Hurloiu, Iulian and Dijm\u0103rescu, Adrian and Dijmarescu, Irina\",\n    title = \"Remote Big Data Management Tools, Sensing and Computing Technologies, and Visual Perception and Environment Mapping Algorithms in the Internet of Robotic Things\",\n    year = \"2022\",\n    journal = \"Electronics\",\n    volume = \"12\",\n    pages = \"22\",\n    month = \"Dec\",\n    doi = \"10.3390/electronics12010022\",\n    url = \"https://doi.org/10.3390/electronics12010022\",\n    publisher = \"MDPI AG\",\n    issue = \"1\",\n    issn = \"2079-9292\"\n}\n",
+      "authors": [
+        "Mihai Andronie",
+        "George L\u0103z\u0103roiu",
+        "Oana Ludmila Karabolevski",
+        "Roxana \u0218tef\u0103nescu",
+        "Iulian Hurloiu",
+        "Adrian Dijm\u0103rescu",
+        "Irina Dijmarescu"
+      ],
+      "publication_date": "2022-12-21T00:00:00Z",
+      "year": 2022,
+      "volume": "12",
+      "issue": "1",
+      "issn": "2079-9292",
+      "pages": "22",
+      "journal": "Electronics",
+      "publisher": "MDPI AG",
+      "url": "https://doi.org/10.3390/electronics12010022",
+      "title": "Remote Big Data Management Tools, Sensing and Computing Technologies, and Visual Perception and Environment Mapping Algorithms in the Internet of Robotic Things",
+      "citation_count": 196,
+      "bibtex_type": "misc",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.3390/electronics12010022",
+      "doi_url": "https://doi.org/10.3390/electronics12010022",
+      "doc_id": "af6a845bfc86b9a6",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://www.mdpi.com/2079-9292/12/1/22/pdf?version=1671633816",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "semantic_scholar",
+          "semantic_scholar",
+          "crossref",
+          "crossref"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          "semantic_scholar",
+          "semantic_scholar",
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "crossref"
+          ],
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "crossref"
+          ],
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Mihai Andronie, George L\u0103z\u0103roiu, Oana Ludmila Karabolevski, Roxana \u0218tef\u0103nescu, Iulian Hurloiu, Adrian Dijm\u0103rescu, and Irina Dijmarescu. Remote big data management tools, sensing and computing technologies, and visual perception and environment mapping algorithms in the internet of robotic things. Electronics, 12:22, Dec 2022. URL: https://doi.org/10.3390/electronics12010022, doi:10.3390/electronics12010022. This article has 196 citations."
+    },
+    {
+      "embedding": null,
+      "docname": "schneider2014improvingroboticmachining",
+      "dockey": "7773449ddf2b761c",
+      "citation": "Ulrich Schneider, Manuel Drust, Matteo Ansaloni, Christian Lehmann, Marcello Pellicciari, Francesco Leali, Jan Willem Gunnink, and Alexander Verl. Improving robotic machining accuracy through experimental error investigation and modular compensation. The International Journal of Advanced Manufacturing Technology, 85:3-15, Jun 2014. URL: https://doi.org/10.1007/s00170-014-6021-2, doi:10.1007/s00170-014-6021-2.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "schneider2014improvingroboticmachining",
+      "bibtex": "@article{schneider2014improvingroboticmachining,\n    author = \"Schneider, Ulrich and Drust, Manuel and Ansaloni, Matteo and Lehmann, Christian and Pellicciari, Marcello and Leali, Francesco and Gunnink, Jan Willem and Verl, Alexander\",\n    title = \"Improving robotic machining accuracy through experimental error investigation and modular compensation\",\n    year = \"2014\",\n    journal = \"The International Journal of Advanced Manufacturing Technology\",\n    volume = \"85\",\n    pages = \"3-15\",\n    month = \"Jun\",\n    doi = \"10.1007/s00170-014-6021-2\",\n    url = \"https://doi.org/10.1007/s00170-014-6021-2\",\n    publisher = \"Springer Science and Business Media LLC\",\n    issue = \"1-4\",\n    issn = \"0268-3768\"\n}\n",
+      "authors": [
+        "Ulrich Schneider",
+        "Manuel Drust",
+        "Matteo Ansaloni",
+        "Christian Lehmann",
+        "Marcello Pellicciari",
+        "Francesco Leali",
+        "Jan Willem Gunnink",
+        "Alexander Verl"
+      ],
+      "publication_date": "2014-06-10T00:00:00Z",
+      "year": 2014,
+      "volume": "85",
+      "issue": "1-4",
+      "issn": "0268-3768",
+      "pages": "3-15",
+      "journal": "The International Journal of Advanced Manufacturing Technology",
+      "publisher": "Springer Science and Business Media LLC",
+      "url": "https://doi.org/10.1007/s00170-014-6021-2",
+      "title": "Improving robotic machining accuracy through experimental error investigation and modular compensation",
+      "citation_count": 179,
+      "bibtex_type": "article",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.1007/s00170-014-6021-2",
+      "doi_url": "https://doi.org/10.1007/s00170-014-6021-2",
+      "doc_id": "7773449ddf2b761c",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://iris.unimore.it/bitstream/11380/1073452/2/Improving%20Robotic%20Machining%20Accuracy%20through%20Experimental%20Error%20Investigation%20and%20Modular%20Compensation.pdf",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "crossref",
+          "semantic_scholar",
+          "crossref",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Ulrich Schneider, Manuel Drust, Matteo Ansaloni, Christian Lehmann, Marcello Pellicciari, Francesco Leali, Jan Willem Gunnink, and Alexander Verl. Improving robotic machining accuracy through experimental error investigation and modular compensation. The International Journal of Advanced Manufacturing Technology, 85:3-15, Jun 2014. URL: https://doi.org/10.1007/s00170-014-6021-2, doi:10.1007/s00170-014-6021-2. This article has 179 citations."
+    },
+    {
+      "embedding": null,
+      "docname": "makhataeva2020augmentedrealityfor",
+      "dockey": "2328433bb91452b3",
+      "citation": "Zhanat Makhataeva and Huseyin Varol. Augmented reality for robotics: a review. Robotics, 9:21, Apr 2020. URL: https://doi.org/10.3390/robotics9020021, doi:10.3390/robotics9020021.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "makhataeva2020augmentedrealityfor",
+      "bibtex": "@article{makhataeva2020augmentedrealityfor,\n    author = \"Makhataeva, Zhanat and Varol, Huseyin\",\n    title = \"Augmented Reality for Robotics: A Review\",\n    year = \"2020\",\n    journal = \"Robotics\",\n    volume = \"9\",\n    pages = \"21\",\n    month = \"Apr\",\n    doi = \"10.3390/robotics9020021\",\n    url = \"https://doi.org/10.3390/robotics9020021\",\n    publisher = \"MDPI AG\",\n    issue = \"2\",\n    issn = \"2218-6581\"\n}\n",
+      "authors": [
+        "Zhanat Makhataeva",
+        "Huseyin Varol"
+      ],
+      "publication_date": "2020-04-02T00:00:00Z",
+      "year": 2020,
+      "volume": "9",
+      "issue": "2",
+      "issn": "2218-6581",
+      "pages": "21",
+      "journal": "Robotics",
+      "publisher": "MDPI AG",
+      "url": "https://www.mdpi.com/2218-6581/9/2/21/pdf",
+      "title": "Augmented Reality for Robotics: A Review",
+      "citation_count": 396,
+      "bibtex_type": "article",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.3390/robotics9020021",
+      "doi_url": "https://doi.org/10.3390/robotics9020021",
+      "doc_id": "2328433bb91452b3",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://www.mdpi.com/2218-6581/9/2/21/pdf?version=1586433891",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "crossref",
+          "semantic_scholar",
+          "crossref",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Zhanat Makhataeva and Huseyin Varol. Augmented reality for robotics: a review. Robotics, 9:21, Apr 2020. URL: https://doi.org/10.3390/robotics9020021, doi:10.3390/robotics9020021. This article has 396 citations."
+    },
+    {
+      "embedding": null,
+      "docname": "khafagy2025automatedcomplexpath",
+      "dockey": "46fe4d1fe00c93d6",
+      "citation": "Ragab R. Khafagy, Mohamed E. H. Eltaib, and Roshdy F. Abo-Shanab. Automated complex path extraction and optimization based on scalable vector graphics and genetic algorithm for industrial robot applications. The International Journal of Advanced Manufacturing Technology, 139:1033-1052, Jun 2025. URL: https://doi.org/10.1007/s00170-025-15846-8, doi:10.1007/s00170-025-15846-8.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "khafagy2025automatedcomplexpath",
+      "bibtex": "@article{khafagy2025automatedcomplexpath,\n    author = \"Khafagy, Ragab R. and Eltaib, Mohamed E. H. and Abo-Shanab, Roshdy F.\",\n    title = \"Automated complex path extraction and optimization based on scalable vector graphics and genetic algorithm for industrial robot applications\",\n    year = \"2025\",\n    journal = \"The International Journal of Advanced Manufacturing Technology\",\n    volume = \"139\",\n    pages = \"1033-1052\",\n    month = \"Jun\",\n    doi = \"10.1007/s00170-025-15846-8\",\n    url = \"https://doi.org/10.1007/s00170-025-15846-8\",\n    publisher = \"Springer Science and Business Media LLC\",\n    issue = \"1-2\",\n    issn = \"0268-3768\"\n}\n",
+      "authors": [
+        "Ragab R. Khafagy",
+        "Mohamed E. H. Eltaib",
+        "Roshdy F. Abo-Shanab"
+      ],
+      "publication_date": "2025-06-19T00:00:00Z",
+      "year": 2025,
+      "volume": "139",
+      "issue": "1-2",
+      "issn": "0268-3768",
+      "pages": "1033-1052",
+      "journal": "The International Journal of Advanced Manufacturing Technology",
+      "publisher": "Springer Science and Business Media LLC",
+      "url": "https://doi.org/10.1007/s00170-025-15846-8",
+      "title": "Automated complex path extraction and optimization based on scalable vector graphics and genetic algorithm for industrial robot applications",
+      "citation_count": 7,
+      "bibtex_type": "article",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.1007/s00170-025-15846-8",
+      "doi_url": "https://doi.org/10.1007/s00170-025-15846-8",
+      "doc_id": "46fe4d1fe00c93d6",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s00170-025-15846-8.pdf",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "crossref",
+          "semantic_scholar",
+          "crossref",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Ragab R. Khafagy, Mohamed E. H. Eltaib, and Roshdy F. Abo-Shanab. Automated complex path extraction and optimization based on scalable vector graphics and genetic algorithm for industrial robot applications. The International Journal of Advanced Manufacturing Technology, 139:1033-1052, Jun 2025. URL: https://doi.org/10.1007/s00170-025-15846-8, doi:10.1007/s00170-025-15846-8. This article has 7 citations."
+    },
+    {
+      "embedding": null,
+      "docname": "othayoth2017robotkinematicsmade",
+      "dockey": "16e0561a3b8c07b1",
+      "citation": "Ratan S. Othayoth, Rajeevlochana G. Chittawadigi, Ravi P. Joshi, and Subir K. Saha. Robot kinematics made easy using roboanalyzer software. Computer Applications in Engineering Education, 25:669-680, Sep 2017. URL: https://doi.org/10.1002/cae.21828, doi:10.1002/cae.21828.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "othayoth2017robotkinematicsmade",
+      "bibtex": "@article{othayoth2017robotkinematicsmade,\n    author = \"Othayoth, Ratan S. and Chittawadigi, Rajeevlochana G. and Joshi, Ravi P. and Saha, Subir K.\",\n    title = \"Robot kinematics made easy using RoboAnalyzer software\",\n    year = \"2017\",\n    journal = \"Computer Applications in Engineering Education\",\n    volume = \"25\",\n    pages = \"669-680\",\n    month = \"Sep\",\n    doi = \"10.1002/cae.21828\",\n    url = \"https://doi.org/10.1002/cae.21828\",\n    publisher = \"Wiley\",\n    issue = \"5\",\n    issn = \"1061-3773\"\n}\n",
+      "authors": [
+        "Ratan S. Othayoth",
+        "Rajeevlochana G. Chittawadigi",
+        "Ravi P. Joshi",
+        "Subir K. Saha"
+      ],
+      "publication_date": "2017-09-01T00:00:00Z",
+      "year": 2017,
+      "volume": "25",
+      "issue": "5",
+      "issn": "1061-3773",
+      "pages": "669-680",
+      "journal": "Computer Applications in Engineering Education",
+      "publisher": "Wiley",
+      "url": "https://doi.org/10.1002/cae.21828",
+      "title": "Robot kinematics made easy using RoboAnalyzer software",
+      "citation_count": 76,
+      "bibtex_type": "article",
+      "source_quality": 1,
+      "is_retracted": null,
+      "doi": "10.1002/cae.21828",
+      "doi_url": "https://doi.org/10.1002/cae.21828",
+      "doc_id": "16e0561a3b8c07b1",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://sksaha.com/sites/default/files/upload_data/documents/CAEA17ra-ratan1.pdf",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "crossref",
+          "semantic_scholar",
+          "crossref",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Ratan S. Othayoth, Rajeevlochana G. Chittawadigi, Ravi P. Joshi, and Subir K. Saha. Robot kinematics made easy using roboanalyzer software. Computer Applications in Engineering Education, 25:669-680, Sep 2017. URL: https://doi.org/10.1002/cae.21828, doi:10.1002/cae.21828. This article has 76 citations and is from a peer-reviewed journal."
+    },
+    {
+      "embedding": null,
+      "docname": "nemlekar2018robotnavigationand",
+      "dockey": "ed941c9321652bb9",
+      "citation": "H Nemlekar and R Khajuriwal. Robot navigation and path planning. Unknown journal, 2018.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "nemlekar2018robotnavigationand",
+      "bibtex": "@article{nemlekar2018robotnavigationand,\n    author = \"Nemlekar, H and Khajuriwal, R\",\n    title = \"Robot Navigation and Path Planning\",\n    year = \"2018\",\n    journal = \"Unknown journal\"\n}\n",
+      "authors": [
+        "H Nemlekar",
+        "R Khajuriwal"
+      ],
+      "publication_date": null,
+      "year": 2018,
+      "volume": null,
+      "issue": null,
+      "issn": null,
+      "pages": null,
+      "journal": null,
+      "publisher": null,
+      "url": "https://nishantshah57.github.io/website/img/projects/dynamics-project.pdf",
+      "title": "Robot Navigation and Path Planning",
+      "citation_count": 1,
+      "bibtex_type": null,
+      "source_quality": null,
+      "is_retracted": null,
+      "doi": null,
+      "doi_url": null,
+      "doc_id": "ed941c9321652bb9",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://nishantshah57.github.io/website/img/projects/dynamics-project.pdf",
+      "other": {
+        "client_source": [
+          "paper_search"
+        ],
+        "bibtex_source": [
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "H Nemlekar and R Khajuriwal. Robot navigation and path planning. Unknown journal, 2018."
+    },
+    {
+      "embedding": null,
+      "docname": "andronie2023bigdatamanagement",
+      "dockey": "dbb2e538f95befae",
+      "citation": "Mihai Andronie, George L\u0103z\u0103roiu, Mariana Iatagan, Iulian Hurloiu, Roxana \u0218tef\u0103nescu, Adrian Dijm\u0103rescu, and Irina Dijmarescu. Big data management algorithms, deep learning-based object detection technologies, and geospatial simulation and sensor fusion tools in the internet of robotic things. ISPRS International Journal of Geo-Information, 12:35, Jan 2023. URL: https://doi.org/10.3390/ijgi12020035, doi:10.3390/ijgi12020035.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "andronie2023bigdatamanagement",
+      "bibtex": "@article{andronie2023bigdatamanagement,\n    author = \"Andronie, Mihai and L\u0103z\u0103roiu, George and Iatagan, Mariana and Hurloiu, Iulian and \u0218tef\u0103nescu, Roxana and Dijm\u0103rescu, Adrian and Dijmarescu, Irina\",\n    title = \"Big Data Management Algorithms, Deep Learning-Based Object Detection Technologies, and Geospatial Simulation and Sensor Fusion Tools in the Internet of Robotic Things\",\n    year = \"2023\",\n    journal = \"ISPRS International Journal of Geo-Information\",\n    volume = \"12\",\n    pages = \"35\",\n    month = \"Jan\",\n    doi = \"10.3390/ijgi12020035\",\n    url = \"https://doi.org/10.3390/ijgi12020035\",\n    publisher = \"MDPI AG\",\n    issue = \"2\",\n    issn = \"2220-9964\"\n}\n",
+      "authors": [
+        "Mihai Andronie",
+        "George L\u0103z\u0103roiu",
+        "Mariana Iatagan",
+        "Iulian Hurloiu",
+        "Roxana \u0218tef\u0103nescu",
+        "Adrian Dijm\u0103rescu",
+        "Irina Dijmarescu"
+      ],
+      "publication_date": "2023-01-21T00:00:00Z",
+      "year": 2023,
+      "volume": "12",
+      "issue": "2",
+      "issn": "2220-9964",
+      "pages": "35",
+      "journal": "ISPRS International Journal of Geo-Information",
+      "publisher": "MDPI AG",
+      "url": "https://doi.org/10.3390/ijgi12020035",
+      "title": "Big Data Management Algorithms, Deep Learning-Based Object Detection Technologies, and Geospatial Simulation and Sensor Fusion Tools in the Internet of Robotic Things",
+      "citation_count": 188,
+      "bibtex_type": "misc",
+      "source_quality": 1,
+      "is_retracted": null,
+      "doi": "10.3390/ijgi12020035",
+      "doi_url": "https://doi.org/10.3390/ijgi12020035",
+      "doc_id": "dbb2e538f95befae",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://www.mdpi.com/2220-9964/12/2/35/pdf?version=1675425507",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "semantic_scholar",
+          "semantic_scholar",
+          "crossref",
+          "crossref"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          "semantic_scholar",
+          "semantic_scholar",
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "crossref"
+          ],
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "crossref"
+          ],
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Mihai Andronie, George L\u0103z\u0103roiu, Mariana Iatagan, Iulian Hurloiu, Roxana \u0218tef\u0103nescu, Adrian Dijm\u0103rescu, and Irina Dijmarescu. Big data management algorithms, deep learning-based object detection technologies, and geospatial simulation and sensor fusion tools in the internet of robotic things. ISPRS International Journal of Geo-Information, 12:35, Jan 2023. URL: https://doi.org/10.3390/ijgi12020035, doi:10.3390/ijgi12020035. This article has 188 citations and is from a peer-reviewed journal."
+    }
+  ],
+  "toolu_01QS7g7Waz5JMyy9p2vR6Pk3": [],
+  "toolu_01S5oWogEUjs2CwaEARanxyY": [
+    {
+      "embedding": null,
+      "docname": "kesler2022assessmentofa",
+      "dockey": "496ecf7b1015ef23",
+      "citation": "Dalton Kesler and 0000-0003-3578-7475. Assessment of a velocity-based robot motion planner for surface preparation with geometric uncertainty. Text, Aug 2022. URL: https://doi.org/10.26153/tsw/43984, doi:10.26153/tsw/43984.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "kesler2022assessmentofa",
+      "bibtex": "@article{kesler2022assessmentofa,\n    author = \"Kesler, Dalton and 0000-0003-3578-7475\",\n    title = \"Assessment of a velocity-based robot motion planner for surface preparation with geometric uncertainty\",\n    year = \"2022\",\n    journal = \"Text\",\n    month = \"Aug\",\n    doi = \"10.26153/tsw/43984\",\n    url = \"https://doi.org/10.26153/tsw/43984\",\n    publisher = \"The University of Texas at Austin\"\n}\n",
+      "authors": [
+        "Dalton Kesler",
+        "0000-0003-3578-7475"
+      ],
+      "publication_date": "2022-08-12T00:00:00Z",
+      "year": 2022,
+      "volume": null,
+      "issue": null,
+      "issn": null,
+      "pages": null,
+      "journal": "Text",
+      "publisher": "The University of Texas at Austin",
+      "url": "https://repositories.lib.utexas.edu/handle/2152/117090",
+      "title": "Assessment of a velocity-based robot motion planner for surface preparation with geometric uncertainty",
+      "citation_count": 0,
+      "bibtex_type": "article",
+      "source_quality": 1,
+      "is_retracted": null,
+      "doi": "10.26153/tsw/43984",
+      "doi_url": "https://doi.org/10.26153/tsw/43984",
+      "doc_id": "496ecf7b1015ef23",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://repositories.lib.utexas.edu/bitstreams/c5169748-31fa-4dc2-b4f7-bb256bce0b83/download",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "datacite",
+          "datacite",
+          "datacite",
+          "datacite"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Dalton Kesler and 0000-0003-3578-7475. Assessment of a velocity-based robot motion planner for surface preparation with geometric uncertainty. Text, Aug 2022. URL: https://doi.org/10.26153/tsw/43984, doi:10.26153/tsw/43984. This article has 0 citations and is from a peer-reviewed journal."
+    },
+    {
+      "embedding": null,
+      "docname": "straizys2023learningroboticcutting",
+      "dockey": "9a6ffc79471b0fb9",
+      "citation": "Art\u016bras Strai\u017eys, Michael Burke, and Subramanian Ramamoorthy. Learning robotic cutting from demonstration: non-holonomic dmps using the udwadia-kalaba method. 2023 IEEE International Conference on Robotics and Automation (ICRA), pages 5034-5040, May 2023. URL: https://doi.org/10.1109/icra48891.2023.10160917, doi:10.1109/icra48891.2023.10160917.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "straizys2023learningroboticcutting",
+      "bibtex": "@article{straizys2023learningroboticcutting,\n    author = \"Strai\u017eys, Art\u016bras and Burke, Michael and Ramamoorthy, Subramanian\",\n    title = \"Learning Robotic Cutting from Demonstration: Non-Holonomic DMPs using the Udwadia-Kalaba Method\",\n    year = \"2023\",\n    journal = \"2023 IEEE International Conference on Robotics and Automation (ICRA)\",\n    pages = \"5034-5040\",\n    month = \"May\",\n    doi = \"10.1109/icra48891.2023.10160917\",\n    url = \"https://doi.org/10.1109/icra48891.2023.10160917\",\n    publisher = \"IEEE\"\n}\n",
+      "authors": [
+        "Art\u016bras Strai\u017eys",
+        "Michael Burke",
+        "Subramanian Ramamoorthy"
+      ],
+      "publication_date": "2023-05-29T00:00:00Z",
+      "year": 2023,
+      "volume": null,
+      "issue": null,
+      "issn": null,
+      "pages": "5034-5040",
+      "journal": "2023 IEEE International Conference on Robotics and Automation (ICRA)",
+      "publisher": "IEEE",
+      "url": "https://doi.org/10.1109/icra48891.2023.10160917",
+      "title": "Learning Robotic Cutting from Demonstration: Non-Holonomic DMPs using the Udwadia-Kalaba Method",
+      "citation_count": 11,
+      "bibtex_type": "inproceedings",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.1109/icra48891.2023.10160917",
+      "doi_url": "https://doi.org/10.1109/icra48891.2023.10160917",
+      "doc_id": "9a6ffc79471b0fb9",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://arxiv.org/pdf/2209.12039",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "crossref",
+          "crossref",
+          "semantic_scholar",
+          "crossref",
+          "crossref",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Art\u016bras Strai\u017eys, Michael Burke, and Subramanian Ramamoorthy. Learning robotic cutting from demonstration: non-holonomic dmps using the udwadia-kalaba method. 2023 IEEE International Conference on Robotics and Automation (ICRA), pages 5034-5040, May 2023. URL: https://doi.org/10.1109/icra48891.2023.10160917, doi:10.1109/icra48891.2023.10160917. This article has 11 citations."
+    }
+  ],
+  "toolu_01F9QrHiNZ9Xi7bP62hcSyMc": [
+    {
+      "embedding": null,
+      "docname": "wyk2019efficientlyimprovingand",
+      "dockey": "ef127755c5327f42",
+      "citation": "Karl Van Wyk, Joe Falco, and Geraldine Cheok. Efficiently improving and quantifying robot accuracy in situ. IEEE transactions on automation science and engineering : a publication of the IEEE Robotics and Automation Society, Aug 2019. URL: https://doi.org/10.48550/arxiv.1908.07273, doi:10.48550/arxiv.1908.07273.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "wyk2019efficientlyimprovingand",
+      "bibtex": "@article{wyk2019efficientlyimprovingand,\n    author = \"Wyk, Karl Van and Falco, Joe and Cheok, Geraldine\",\n    title = \"Efficiently Improving and Quantifying Robot Accuracy In Situ\",\n    year = \"2019\",\n    journal = \"IEEE transactions on automation science and engineering : a publication of the IEEE Robotics and Automation Society\",\n    volume = \"1\",\n    month = \"Aug\",\n    doi = \"10.48550/arxiv.1908.07273\",\n    url = \"https://doi.org/10.48550/arxiv.1908.07273\",\n    publisher = \"arXiv\"\n}\n",
+      "authors": [
+        "Karl Van Wyk",
+        "Joe Falco",
+        "Geraldine Cheok"
+      ],
+      "publication_date": "2019-08-20T00:00:00Z",
+      "year": 2019,
+      "volume": "1",
+      "issue": null,
+      "issn": null,
+      "pages": null,
+      "journal": "IEEE transactions on automation science and engineering : a publication of the IEEE Robotics and Automation Society",
+      "publisher": "arXiv",
+      "url": "https://arxiv.org/abs/1908.07273",
+      "title": "Efficiently Improving and Quantifying Robot Accuracy In Situ",
+      "citation_count": 4,
+      "bibtex_type": "article",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.48550/arxiv.1908.07273",
+      "doi_url": "https://doi.org/10.48550/arxiv.1908.07273",
+      "doc_id": "ef127755c5327f42",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10190160/pdf/nihms-1540311.pdf",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "semantic_scholar",
+          "datacite",
+          "semantic_scholar",
+          "semantic_scholar",
+          "datacite",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Karl Van Wyk, Joe Falco, and Geraldine Cheok. Efficiently improving and quantifying robot accuracy in situ. IEEE transactions on automation science and engineering : a publication of the IEEE Robotics and Automation Society, Aug 2019. URL: https://doi.org/10.48550/arxiv.1908.07273, doi:10.48550/arxiv.1908.07273. This article has 4 citations."
+    },
+    {
+      "embedding": null,
+      "docname": "maculotti2025traceabledigitaltwin",
+      "dockey": "cf823f3a1d0b296a",
+      "citation": "G. Maculotti, Fazluddin Khusnuddinov, J. Kholkhujaev, Gianfranco Genta, and Maurizio Galetto. Traceable digital twin for accurate positioning of industrial robot arms in human\u2013robot collaborative systems. Flexible Services and Manufacturing Journal, Aug 2025. URL: https://doi.org/10.1007/s10696-025-09632-7, doi:10.1007/s10696-025-09632-7.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "maculotti2025traceabledigitaltwin",
+      "bibtex": "@article{maculotti2025traceabledigitaltwin,\n    author = \"Maculotti, G. and Khusnuddinov, Fazluddin and Kholkhujaev, J. and Genta, Gianfranco and Galetto, Maurizio\",\n    title = \"Traceable digital twin for accurate positioning of industrial robot arms in human\u2013robot collaborative systems\",\n    year = \"2025\",\n    journal = \"Flexible Services and Manufacturing Journal\",\n    month = \"Aug\",\n    doi = \"10.1007/s10696-025-09632-7\",\n    url = \"https://doi.org/10.1007/s10696-025-09632-7\"\n}\n",
+      "authors": [
+        "G. Maculotti",
+        "Fazluddin Khusnuddinov",
+        "J. Kholkhujaev",
+        "Gianfranco Genta",
+        "Maurizio Galetto"
+      ],
+      "publication_date": "2025-08-05T00:00:00Z",
+      "year": 2025,
+      "volume": null,
+      "issue": null,
+      "issn": null,
+      "pages": null,
+      "journal": "Flexible Services and Manufacturing Journal",
+      "publisher": null,
+      "url": "https://link.springer.com/content/pdf/10.1007/s10696-025-09632-7.pdf",
+      "title": "Traceable digital twin for accurate positioning of industrial robot arms in human\u2013robot collaborative systems",
+      "citation_count": 11,
+      "bibtex_type": "article",
+      "source_quality": 1,
+      "is_retracted": null,
+      "doi": "10.1007/s10696-025-09632-7",
+      "doi_url": "https://doi.org/10.1007/s10696-025-09632-7",
+      "doc_id": "cf823f3a1d0b296a",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s10696-025-09632-7.pdf",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "semantic_scholar",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "G. Maculotti, Fazluddin Khusnuddinov, J. Kholkhujaev, Gianfranco Genta, and Maurizio Galetto. Traceable digital twin for accurate positioning of industrial robot arms in human\u2013robot collaborative systems. Flexible Services and Manufacturing Journal, Aug 2025. URL: https://doi.org/10.1007/s10696-025-09632-7, doi:10.1007/s10696-025-09632-7. This article has 11 citations and is from a peer-reviewed journal."
+    },
+    {
+      "embedding": null,
+      "docname": "ibaraki2023onthermalpositioning",
+      "dockey": "797a360a8124db0c",
+      "citation": "Soichi Ibaraki and Kandai Kawano. On thermal positioning error of a planar robot arm over entire workspace. Int. J. Autom. Technol., 17:504-511, Sep 2023. URL: https://doi.org/10.20965/ijat.2023.p0504, doi:10.20965/ijat.2023.p0504.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "ibaraki2023onthermalpositioning",
+      "bibtex": "@article{ibaraki2023onthermalpositioning,\n    author = \"Ibaraki, Soichi and Kawano, Kandai\",\n    title = \"On Thermal Positioning Error of a Planar Robot Arm over Entire Workspace\",\n    year = \"2023\",\n    journal = \"Int. J. Autom. Technol.\",\n    volume = \"17\",\n    pages = \"504-511\",\n    month = \"Sep\",\n    doi = \"10.20965/ijat.2023.p0504\",\n    url = \"https://doi.org/10.20965/ijat.2023.p0504\",\n    publisher = \"Fuji Technology Press Ltd.\",\n    issue = \"5\",\n    issn = \"1883-8022\"\n}\n",
+      "authors": [
+        "Soichi Ibaraki",
+        "Kandai Kawano"
+      ],
+      "publication_date": "2023-09-05T00:00:00Z",
+      "year": 2023,
+      "volume": "17",
+      "issue": "5",
+      "issn": "1883-8022",
+      "pages": "504-511",
+      "journal": "Int. J. Autom. Technol.",
+      "publisher": "Fuji Technology Press Ltd.",
+      "url": "https://doi.org/10.20965/ijat.2023.p0504",
+      "title": "On Thermal Positioning Error of a Planar Robot Arm over Entire Workspace",
+      "citation_count": 6,
+      "bibtex_type": "article",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.20965/ijat.2023.p0504",
+      "doi_url": "https://doi.org/10.20965/ijat.2023.p0504",
+      "doc_id": "797a360a8124db0c",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://www.jstage.jst.go.jp/article/ijat/17/5/17_504/_pdf",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "crossref",
+          "semantic_scholar",
+          "crossref",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Soichi Ibaraki and Kandai Kawano. On thermal positioning error of a planar robot arm over entire workspace. Int. J. Autom. Technol., 17:504-511, Sep 2023. URL: https://doi.org/10.20965/ijat.2023.p0504, doi:10.20965/ijat.2023.p0504. This article has 6 citations."
+    },
+    {
+      "embedding": null,
+      "docname": "rowekamper2017highlyaccuratelaser",
+      "dockey": "326bc6d4e427d1b4",
+      "citation": "J\u00f6rg R\u00f6wek\u00e4mper. Highly accurate laser based position estimation and planning in industrial robot applications. Unknown, Jan 2017. URL: https://doi.org/10.6094/unifr/13823, doi:10.6094/unifr/13823.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "rowekamper2017highlyaccuratelaser",
+      "bibtex": "@article{rowekamper2017highlyaccuratelaser,\n    author = \"R\u00f6wek\u00e4mper, J\u00f6rg\",\n    title = \"Highly accurate laser based position estimation and planning in industrial robot applications\",\n    year = \"2017\",\n    journal = \"Unknown\",\n    month = \"Jan\",\n    doi = \"10.6094/unifr/13823\",\n    url = \"https://doi.org/10.6094/unifr/13823\",\n    publisher = \"Albert-Ludwigs-Universit\u00e4t Freiburg\"\n}\n",
+      "authors": [
+        "J\u00f6rg R\u00f6wek\u00e4mper"
+      ],
+      "publication_date": "2017-01-01T00:00:00Z",
+      "year": 2017,
+      "volume": null,
+      "issue": null,
+      "issn": null,
+      "pages": null,
+      "journal": "Unknown",
+      "publisher": "Albert-Ludwigs-Universit\u00e4t Freiburg",
+      "url": "https://freidok.uni-freiburg.de/data/13823",
+      "title": "Highly accurate laser based position estimation and planning in industrial robot applications",
+      "citation_count": 0,
+      "bibtex_type": "misc",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.6094/unifr/13823",
+      "doi_url": "https://doi.org/10.6094/unifr/13823",
+      "doc_id": "326bc6d4e427d1b4",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://www.freidok.uni-freiburg.de/dnb/download/13823",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "datacite",
+          "datacite",
+          "datacite",
+          "datacite"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "J\u00f6rg R\u00f6wek\u00e4mper. Highly accurate laser based position estimation and planning in industrial robot applications. Unknown, Jan 2017. URL: https://doi.org/10.6094/unifr/13823, doi:10.6094/unifr/13823. This article has 0 citations."
+    },
+    {
+      "embedding": null,
+      "docname": "melvin2026ahybridlearningaugmented",
+      "dockey": "42783e0b7bf99b86",
+      "citation": "SA Melvin. A hybrid learning-augmented monte carlo framework for mobile robot localization in a symmetrical environment. Unknown journal, 2026.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "melvin2026ahybridlearningaugmented",
+      "bibtex": "@article{melvin2026ahybridlearningaugmented,\n    author = \"Melvin, SA\",\n    title = \"A Hybrid Learning-Augmented Monte Carlo Framework for Mobile Robot Localization in a Symmetrical Environment\",\n    year = \"2026\",\n    journal = \"Unknown journal\"\n}\n",
+      "authors": [
+        "SA Melvin"
+      ],
+      "publication_date": null,
+      "year": 2026,
+      "volume": null,
+      "issue": null,
+      "issn": null,
+      "pages": null,
+      "journal": null,
+      "publisher": null,
+      "url": "https://researchportal.murdoch.edu.au/esploro/fulltext/doctoral/A-Hybrid-Learning---Augmented-Monte/991005927418607891?repId=12203260230007891&mId=13203260220007891&institution=61MUN_INST",
+      "title": "A Hybrid Learning-Augmented Monte Carlo Framework for Mobile Robot Localization in a Symmetrical Environment",
+      "citation_count": 0,
+      "bibtex_type": null,
+      "source_quality": null,
+      "is_retracted": null,
+      "doi": null,
+      "doi_url": null,
+      "doc_id": "42783e0b7bf99b86",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://researchportal.murdoch.edu.au/esploro/fulltext/doctoral/A-Hybrid-Learning---Augmented-Monte/991005927418607891?repId=12203260230007891&mId=13203260220007891&institution=61MUN_INST",
+      "other": {
+        "client_source": [
+          "paper_search"
+        ],
+        "bibtex_source": [
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "SA Melvin. A hybrid learning-augmented monte carlo framework for mobile robot localization in a symmetrical environment. Unknown journal, 2026."
+    }
+  ],
+  "toolu_01DqvZfDVTvYG5t8b4LLmKkU": [],
+  "toolu_01YJgoGcktdYhwVF3Yp5EQuK": [
+    {
+      "embedding": null,
+      "docname": "saeidi2022autonomousroboticlaparoscopic",
+      "dockey": "908d8328bab8b47c",
+      "citation": "H. Saeidi, J. Opfermann, M. Kam, Shuwen Wei, Simon L\u00e9onard, M. Hsieh, Jin U. Kang, and Axel Krieger. Autonomous robotic laparoscopic surgery for intestinal anastomosis. Science Robotics, Jan 2022. URL: https://doi.org/10.1126/scirobotics.abj2908, doi:10.1126/scirobotics.abj2908.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "saeidi2022autonomousroboticlaparoscopic",
+      "bibtex": "@article{saeidi2022autonomousroboticlaparoscopic,\n    author = \"Saeidi, H. and Opfermann, J. and Kam, M. and Wei, Shuwen and L\u00e9onard, Simon and Hsieh, M. and Kang, Jin U. and Krieger, Axel\",\n    title = \"Autonomous robotic laparoscopic surgery for intestinal anastomosis\",\n    year = \"2022\",\n    journal = \"Science Robotics\",\n    volume = \"7\",\n    month = \"Jan\",\n    doi = \"10.1126/scirobotics.abj2908\",\n    url = \"https://doi.org/10.1126/scirobotics.abj2908\",\n    publisher = \"American Association for the Advancement of Science (AAAS)\",\n    issue = \"62\",\n    issn = \"2470-9476\"\n}\n",
+      "authors": [
+        "H. Saeidi",
+        "J. Opfermann",
+        "M. Kam",
+        "Shuwen Wei",
+        "Simon L\u00e9onard",
+        "M. Hsieh",
+        "Jin U. Kang",
+        "Axel Krieger"
+      ],
+      "publication_date": "2022-01-26T00:00:00Z",
+      "year": 2022,
+      "volume": "7",
+      "issue": "62",
+      "issn": "2470-9476",
+      "pages": null,
+      "journal": "Science Robotics",
+      "publisher": "American Association for the Advancement of Science (AAAS)",
+      "url": "https://doi.org/10.1126/scirobotics.abj2908",
+      "title": "Autonomous robotic laparoscopic surgery for intestinal anastomosis",
+      "citation_count": 554,
+      "bibtex_type": "article",
+      "source_quality": 3,
+      "is_retracted": null,
+      "doi": "10.1126/scirobotics.abj2908",
+      "doi_url": "https://doi.org/10.1126/scirobotics.abj2908",
+      "doc_id": "908d8328bab8b47c",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://www.science.org/doi/pdf/10.1126/scirobotics.abj2908",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "crossref",
+          "semantic_scholar",
+          "crossref",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "H. Saeidi, J. Opfermann, M. Kam, Shuwen Wei, Simon L\u00e9onard, M. Hsieh, Jin U. Kang, and Axel Krieger. Autonomous robotic laparoscopic surgery for intestinal anastomosis. Science Robotics, Jan 2022. URL: https://doi.org/10.1126/scirobotics.abj2908, doi:10.1126/scirobotics.abj2908. This article has 554 citations and is from a highest quality peer-reviewed journal."
+    },
+    {
+      "embedding": null,
+      "docname": "sufian2017investigatingthecapability",
+      "dockey": "68fc0e5e3834fb11",
+      "citation": "Mohammed Sufian, Xun Chen, and Dingli Yu. Investigating the capability of precision in robotic grinding. 2017 23rd International Conference on Automation and Computing (ICAC), pages 1-6, Sep 2017. URL: https://doi.org/10.23919/iconac.2017.8081984, doi:10.23919/iconac.2017.8081984.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "sufian2017investigatingthecapability",
+      "bibtex": "@article{sufian2017investigatingthecapability,\n    author = \"Sufian, Mohammed and Chen, Xun and Yu, Dingli\",\n    title = \"Investigating the capability of precision in robotic grinding\",\n    year = \"2017\",\n    journal = \"2017 23rd International Conference on Automation and Computing (ICAC)\",\n    pages = \"1-6\",\n    month = \"Sep\",\n    doi = \"10.23919/iconac.2017.8081984\",\n    url = \"https://doi.org/10.23919/iconac.2017.8081984\",\n    publisher = \"IEEE\"\n}\n",
+      "authors": [
+        "Mohammed Sufian",
+        "Xun Chen",
+        "Dingli Yu"
+      ],
+      "publication_date": "2017-09-01T00:00:00Z",
+      "year": 2017,
+      "volume": null,
+      "issue": null,
+      "issn": null,
+      "pages": "1-6",
+      "journal": "2017 23rd International Conference on Automation and Computing (ICAC)",
+      "publisher": "IEEE",
+      "url": "https://doi.org/10.23919/iconac.2017.8081984",
+      "title": "Investigating the capability of precision in robotic grinding",
+      "citation_count": 4,
+      "bibtex_type": "article",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.23919/iconac.2017.8081984",
+      "doi_url": "https://doi.org/10.23919/iconac.2017.8081984",
+      "doc_id": "68fc0e5e3834fb11",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://researchonline.ljmu.ac.uk/id/eprint/7128/1/D%3A%5CLJMU-Works%5CR%5CPublication%5CICAC%5CICAC%2717%5CMo%5Cp_66%20published.pdf",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "crossref",
+          "semantic_scholar",
+          "crossref",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Mohammed Sufian, Xun Chen, and Dingli Yu. Investigating the capability of precision in robotic grinding. 2017 23rd International Conference on Automation and Computing (ICAC), pages 1-6, Sep 2017. URL: https://doi.org/10.23919/iconac.2017.8081984, doi:10.23919/iconac.2017.8081984. This article has 4 citations."
+    },
+    {
+      "embedding": null,
+      "docname": "rezala2022analysisrandoncauses",
+      "dockey": "1f173ba092e83056",
+      "citation": "A. Rezala and M. Arbaoui. Analysis randon causes repeatability errors inducted by friction at joints in industrial robots. International Journal of Engineering, 35:451-457, Jan 2022. URL: https://doi.org/10.5829/ije.2022.35.02b.21, doi:10.5829/ije.2022.35.02b.21.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "rezala2022analysisrandoncauses",
+      "bibtex": "@article{rezala2022analysisrandoncauses,\n    author = \"Rezala, A. and Arbaoui, M.\",\n    title = \"Analysis Randon Causes Repeatability Errors Inducted by Friction at Joints in Industrial Robots\",\n    year = \"2022\",\n    journal = \"International Journal of Engineering\",\n    volume = \"35\",\n    pages = \"451-457\",\n    month = \"Jan\",\n    doi = \"10.5829/ije.2022.35.02b.21\",\n    url = \"https://doi.org/10.5829/ije.2022.35.02b.21\",\n    publisher = \"International Digital Organization for Scientific Information (IDOSI)\",\n    issue = \"2\",\n    issn = \"1728-144X\"\n}\n",
+      "authors": [
+        "A. Rezala",
+        "M. Arbaoui"
+      ],
+      "publication_date": "2022-01-01T00:00:00Z",
+      "year": 2022,
+      "volume": "35",
+      "issue": "2",
+      "issn": "1728-144X",
+      "pages": "451-457",
+      "journal": "International Journal of Engineering",
+      "publisher": "International Digital Organization for Scientific Information (IDOSI)",
+      "url": "https://doi.org/10.5829/ije.2022.35.02b.21",
+      "title": "Analysis Randon Causes Repeatability Errors Inducted by Friction at Joints in Industrial Robots",
+      "citation_count": 3,
+      "bibtex_type": "article",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.5829/ije.2022.35.02b.21",
+      "doi_url": "https://doi.org/10.5829/ije.2022.35.02b.21",
+      "doc_id": "1f173ba092e83056",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://www.ije.ir/article_141424_c20332cc8595f60854ea597dc6edd364.pdf",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "semantic_scholar",
+          "crossref",
+          "semantic_scholar",
+          "semantic_scholar",
+          "crossref",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "A. Rezala and M. Arbaoui. Analysis randon causes repeatability errors inducted by friction at joints in industrial robots. International Journal of Engineering, 35:451-457, Jan 2022. URL: https://doi.org/10.5829/ije.2022.35.02b.21, doi:10.5829/ije.2022.35.02b.21. This article has 3 citations."
+    },
+    {
+      "embedding": null,
+      "docname": "black2025visualhapticmodelmediated",
+      "dockey": "e01fbb80a882504f",
+      "citation": "David Black, M. Tirindelli, S. Salcudean, Wolfgang Wein, and Marco Esposito. Visual-haptic model mediated teleoperation for remote ultrasound. ArXiv, Feb 2025. URL: https://doi.org/10.48550/arxiv.2502.07922, doi:10.48550/arxiv.2502.07922.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "black2025visualhapticmodelmediated",
+      "bibtex": "@article{black2025visualhapticmodelmediated,\n    author = \"Black, David and Tirindelli, M. and Salcudean, S. and Wein, Wolfgang and Esposito, Marco\",\n    title = \"Visual-Haptic Model Mediated Teleoperation for Remote Ultrasound\",\n    year = \"2025\",\n    journal = \"ArXiv\",\n    volume = \"abs/2502.07922\",\n    month = \"Feb\",\n    doi = \"10.48550/arxiv.2502.07922\",\n    url = \"https://doi.org/10.48550/arxiv.2502.07922\"\n}\n",
+      "authors": [
+        "David Black",
+        "M. Tirindelli",
+        "S. Salcudean",
+        "Wolfgang Wein",
+        "Marco Esposito"
+      ],
+      "publication_date": "2025-02-11T00:00:00Z",
+      "year": 2025,
+      "volume": "abs/2502.07922",
+      "issue": null,
+      "issn": null,
+      "pages": null,
+      "journal": "ArXiv",
+      "publisher": null,
+      "url": "https://arxiv.org/pdf/2502.07922",
+      "title": "Visual-Haptic Model Mediated Teleoperation for Remote Ultrasound",
+      "citation_count": 3,
+      "bibtex_type": "article",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.48550/arxiv.2502.07922",
+      "doi_url": "https://doi.org/10.48550/arxiv.2502.07922",
+      "doc_id": "e01fbb80a882504f",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://arxiv.org/pdf/2502.07922",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "semantic_scholar",
+          "semantic_scholar",
+          "semantic_scholar",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "David Black, M. Tirindelli, S. Salcudean, Wolfgang Wein, and Marco Esposito. Visual-haptic model mediated teleoperation for remote ultrasound. ArXiv, Feb 2025. URL: https://doi.org/10.48550/arxiv.2502.07922, doi:10.48550/arxiv.2502.07922. This article has 3 citations."
+    },
+    {
+      "embedding": null,
+      "docname": "cavelli2025modelingthereachability",
+      "dockey": "1665a8a4a7181660",
+      "citation": "Rosario Francesco Cavelli, Pangcheng David Cen Cheng, and Marina Indri. Modeling the reachability space of robotic manipulators through ellipsoid equations. Journal of Intelligent &amp; Robotic Systems, Aug 2025. URL: https://doi.org/10.1007/s10846-025-02294-5, doi:10.1007/s10846-025-02294-5.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "cavelli2025modelingthereachability",
+      "bibtex": "@article{cavelli2025modelingthereachability,\n    author = \"Cavelli, Rosario Francesco and Cheng, Pangcheng David Cen and Indri, Marina\",\n    title = \"Modeling the Reachability Space of Robotic Manipulators through Ellipsoid Equations\",\n    year = \"2025\",\n    journal = \"Journal of Intelligent \\&amp; Robotic Systems\",\n    month = \"Aug\",\n    doi = \"10.1007/s10846-025-02294-5\",\n    url = \"https://doi.org/10.1007/s10846-025-02294-5\"\n}\n",
+      "authors": [
+        "Rosario Francesco Cavelli",
+        "Pangcheng David Cen Cheng",
+        "Marina Indri"
+      ],
+      "publication_date": "2025-08-05T00:00:00Z",
+      "year": 2025,
+      "volume": null,
+      "issue": null,
+      "issn": null,
+      "pages": null,
+      "journal": "Journal of Intelligent &amp; Robotic Systems",
+      "publisher": null,
+      "url": "https://link.springer.com/content/pdf/10.1007/s10846-025-02294-5.pdf",
+      "title": "Modeling the Reachability Space of Robotic Manipulators through Ellipsoid Equations",
+      "citation_count": 9,
+      "bibtex_type": "article",
+      "source_quality": 2,
+      "is_retracted": null,
+      "doi": "10.1007/s10846-025-02294-5",
+      "doi_url": "https://doi.org/10.1007/s10846-025-02294-5",
+      "doc_id": "1665a8a4a7181660",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s10846-025-02294-5.pdf",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "semantic_scholar",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Rosario Francesco Cavelli, Pangcheng David Cen Cheng, and Marina Indri. Modeling the reachability space of robotic manipulators through ellipsoid equations. Journal of Intelligent &amp; Robotic Systems, Aug 2025. URL: https://doi.org/10.1007/s10846-025-02294-5, doi:10.1007/s10846-025-02294-5. This article has 9 citations and is from a domain leading peer-reviewed journal."
+    },
+    {
+      "embedding": null,
+      "docname": "sufian2020geometricalerroranalysis",
+      "dockey": "b804c04bc1663c65",
+      "citation": "MT Sufian. Geometrical error analysis and correction in robotic grinding. ArXiv, May 2020. URL: https://doi.org/10.24377/ljmu.t.00012895, doi:10.24377/ljmu.t.00012895.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "sufian2020geometricalerroranalysis",
+      "bibtex": "@article{sufian2020geometricalerroranalysis,\n    author = \"Sufian, MT\",\n    title = \"Geometrical error analysis and correction in robotic grinding\",\n    year = \"2020\",\n    journal = \"ArXiv\",\n    month = \"May\",\n    doi = \"10.24377/ljmu.t.00012895\",\n    url = \"https://doi.org/10.24377/ljmu.t.00012895\",\n    publisher = \"Liverpool John Moores University\"\n}\n",
+      "authors": [
+        "MT Sufian"
+      ],
+      "publication_date": "2020-05-11T00:00:00Z",
+      "year": 2020,
+      "volume": "",
+      "issue": null,
+      "issn": null,
+      "pages": null,
+      "journal": "ArXiv",
+      "publisher": "Liverpool John Moores University",
+      "url": "http://researchonline.ljmu.ac.uk/id/eprint/12895",
+      "title": "Geometrical error analysis and correction in robotic grinding",
+      "citation_count": 0,
+      "bibtex_type": "article",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.24377/ljmu.t.00012895",
+      "doi_url": "https://doi.org/10.24377/ljmu.t.00012895",
+      "doc_id": "b804c04bc1663c65",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://researchonline.ljmu.ac.uk/id/eprint/12895/1/2020SufianPhD.pdf",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "datacite",
+          "semantic_scholar",
+          "datacite",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "MT Sufian. Geometrical error analysis and correction in robotic grinding. ArXiv, May 2020. URL: https://doi.org/10.24377/ljmu.t.00012895, doi:10.24377/ljmu.t.00012895. This article has 0 citations."
+    },
+    {
+      "embedding": null,
+      "docname": "kunze2016ontheflyworkspacevisualization",
+      "dockey": "97294f882db987e6",
+      "citation": "Mirko Kunze. On-the-fly workspace visualization for redundant manipulators. ArXiv, Jan 2016. URL: https://doi.org/10.5445/ir/1000065120, doi:10.5445/ir/1000065120.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "kunze2016ontheflyworkspacevisualization",
+      "bibtex": "@article{kunze2016ontheflyworkspacevisualization,\n    author = \"Kunze, Mirko\",\n    title = \"On-the-Fly Workspace Visualization for Redundant Manipulators\",\n    year = \"2016\",\n    journal = \"ArXiv\",\n    month = \"Jan\",\n    doi = \"10.5445/ir/1000065120\",\n    url = \"https://doi.org/10.5445/ir/1000065120\",\n    publisher = \"Karlsruhe\"\n}\n",
+      "authors": [
+        "Mirko Kunze"
+      ],
+      "publication_date": "2016-01-01T00:00:00Z",
+      "year": 2016,
+      "volume": "",
+      "issue": null,
+      "issn": null,
+      "pages": null,
+      "journal": "ArXiv",
+      "publisher": "Karlsruhe",
+      "url": "https://publikationen.bibliothek.kit.edu/1000065120",
+      "title": "On-the-Fly Workspace Visualization for Redundant Manipulators",
+      "citation_count": 3,
+      "bibtex_type": "article",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.5445/ir/1000065120",
+      "doi_url": "https://doi.org/10.5445/ir/1000065120",
+      "doc_id": "97294f882db987e6",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://scholar.archive.org/work/tncmafgmvbeqljf74plzbgfsim/access/wayback/https://publikationen.bibliothek.kit.edu/1000065120/4027693",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "datacite",
+          "semantic_scholar",
+          "datacite",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Mirko Kunze. On-the-fly workspace visualization for redundant manipulators. ArXiv, Jan 2016. URL: https://doi.org/10.5445/ir/1000065120, doi:10.5445/ir/1000065120. This article has 3 citations."
+    },
+    {
+      "embedding": null,
+      "docname": "qin2026areviewand",
+      "dockey": "62195392c2a7ff2d",
+      "citation": "Yan-Ding Qin, L. Dang, Fan Ren, Zhuomao Li, Li-Jun Duan, Hong-Peng Wang, and Jian-Da Han. A review and perspective of techniques for autonomous robotic ultrasound acquisitions. Sensors, 26:2081, Mar 2026. URL: https://doi.org/10.3390/s26072081, doi:10.3390/s26072081.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "qin2026areviewand",
+      "bibtex": "@article{qin2026areviewand,\n    author = \"Qin, Yan-Ding and Dang, L. and Ren, Fan and Li, Zhuomao and Duan, Li-Jun and Wang, Hong-Peng and Han, Jian-Da\",\n    title = \"A Review and Perspective of Techniques for Autonomous Robotic Ultrasound Acquisitions\",\n    year = \"2026\",\n    journal = \"Sensors\",\n    volume = \"26\",\n    pages = \"2081\",\n    month = \"Mar\",\n    doi = \"10.3390/s26072081\",\n    url = \"https://doi.org/10.3390/s26072081\",\n    publisher = \"MDPI AG\",\n    issue = \"7\",\n    issn = \"1424-8220\"\n}\n",
+      "authors": [
+        "Yan-Ding Qin",
+        "L. Dang",
+        "Fan Ren",
+        "Zhuomao Li",
+        "Li-Jun Duan",
+        "Hong-Peng Wang",
+        "Jian-Da Han"
+      ],
+      "publication_date": "2026-03-27T00:00:00Z",
+      "year": 2026,
+      "volume": "26",
+      "issue": "7",
+      "issn": "1424-8220",
+      "pages": "2081",
+      "journal": "Sensors",
+      "publisher": "MDPI AG",
+      "url": "https://doi.org/10.3390/s26072081",
+      "title": "A Review and Perspective of Techniques for Autonomous Robotic Ultrasound Acquisitions",
+      "citation_count": 3,
+      "bibtex_type": "misc",
+      "source_quality": 1,
+      "is_retracted": null,
+      "doi": "10.3390/s26072081",
+      "doi_url": "https://doi.org/10.3390/s26072081",
+      "doc_id": "62195392c2a7ff2d",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://www.mdpi.com/1424-8220/26/7/2081/pdf?version=1774599149",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "semantic_scholar",
+          "semantic_scholar",
+          "crossref",
+          "crossref"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          "semantic_scholar",
+          "semantic_scholar",
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "crossref"
+          ],
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "crossref"
+          ],
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Yan-Ding Qin, L. Dang, Fan Ren, Zhuomao Li, Li-Jun Duan, Hong-Peng Wang, and Jian-Da Han. A review and perspective of techniques for autonomous robotic ultrasound acquisitions. Sensors, 26:2081, Mar 2026. URL: https://doi.org/10.3390/s26072081, doi:10.3390/s26072081. This article has 3 citations and is from a peer-reviewed journal."
+    },
+    {
+      "embedding": null,
+      "docname": "diodato2018humanrobotinteractionand",
+      "dockey": "d7805cda048ff121",
+      "citation": "A Diodato. Human-robot interaction and control strategies in minimally-invasive surgery. Unknown journal, 2018.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "diodato2018humanrobotinteractionand",
+      "bibtex": "@article{diodato2018humanrobotinteractionand,\n    author = \"Diodato, A\",\n    title = \"Human-Robot Interaction and Control Strategies in Minimally-Invasive Surgery\",\n    year = \"2018\",\n    journal = \"Unknown journal\"\n}\n",
+      "authors": [
+        "A Diodato"
+      ],
+      "publication_date": null,
+      "year": 2018,
+      "volume": null,
+      "issue": null,
+      "issn": null,
+      "pages": null,
+      "journal": null,
+      "publisher": null,
+      "url": "https://tesidottorato.depositolegale.it/bitstream/20.500.14242/151968/1/Thesis_Diodato.pdf",
+      "title": "Human-Robot Interaction and Control Strategies in Minimally-Invasive Surgery",
+      "citation_count": 0,
+      "bibtex_type": null,
+      "source_quality": null,
+      "is_retracted": null,
+      "doi": null,
+      "doi_url": null,
+      "doc_id": "d7805cda048ff121",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://tesidottorato.depositolegale.it/bitstream/20.500.14242/151968/1/Thesis_Diodato.pdf",
+      "other": {
+        "client_source": [
+          "paper_search"
+        ],
+        "bibtex_source": [
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "A Diodato. Human-robot interaction and control strategies in minimally-invasive surgery. Unknown journal, 2018."
+    },
+    {
+      "embedding": null,
+      "docname": "chen2015applicationofthe",
+      "dockey": "29811ee202de028f",
+      "citation": "KS Chen. Application of the iso 9283 standard to test repeatability of the baxter robot. Unknown journal, 2015.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "chen2015applicationofthe",
+      "bibtex": "@article{chen2015applicationofthe,\n    author = \"Chen, KS\",\n    title = \"Application of the ISO 9283 standard to test repeatability of the Baxter robot\",\n    year = \"2015\",\n    journal = \"Unknown journal\"\n}\n",
+      "authors": [
+        "KS Chen"
+      ],
+      "publication_date": null,
+      "year": 2015,
+      "volume": null,
+      "issue": null,
+      "issn": null,
+      "pages": null,
+      "journal": null,
+      "publisher": null,
+      "url": "https://www.ideals.illinois.edu/items/89299/bitstreams/229023/data.pdf",
+      "title": "Application of the ISO 9283 standard to test repeatability of the Baxter robot",
+      "citation_count": 7,
+      "bibtex_type": null,
+      "source_quality": null,
+      "is_retracted": null,
+      "doi": null,
+      "doi_url": null,
+      "doc_id": "29811ee202de028f",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://www.ideals.illinois.edu/items/89299/bitstreams/229023/data.pdf",
+      "other": {
+        "client_source": [
+          "paper_search"
+        ],
+        "bibtex_source": [
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "KS Chen. Application of the iso 9283 standard to test repeatability of the baxter robot. Unknown journal, 2015."
+    },
+    {
+      "embedding": null,
+      "docname": "breitkopf2023modellingandworkspace",
+      "dockey": "5a763a003d603ce6",
+      "citation": "Lilla Breitkopf. Modelling and workspace of a mobile manipulator. Text, Jan 2023. URL: https://doi.org/10.34726/hss.2023.73963, doi:10.34726/hss.2023.73963.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "breitkopf2023modellingandworkspace",
+      "bibtex": "@article{breitkopf2023modellingandworkspace,\n    author = \"Breitkopf, Lilla\",\n    title = \"Modelling and Workspace of a Mobile Manipulator\",\n    year = \"2023\",\n    journal = \"Text\",\n    month = \"Jan\",\n    doi = \"10.34726/hss.2023.73963\",\n    url = \"https://doi.org/10.34726/hss.2023.73963\",\n    publisher = \"TU Wien\"\n}\n",
+      "authors": [
+        "Lilla Breitkopf"
+      ],
+      "publication_date": "2023-01-01T00:00:00Z",
+      "year": 2023,
+      "volume": null,
+      "issue": null,
+      "issn": null,
+      "pages": null,
+      "journal": "Text",
+      "publisher": "TU Wien",
+      "url": "https://repositum.tuwien.at/handle/20.500.12708/177670",
+      "title": "Modelling and Workspace of a Mobile Manipulator",
+      "citation_count": 1,
+      "bibtex_type": "article",
+      "source_quality": 1,
+      "is_retracted": null,
+      "doi": "10.34726/hss.2023.73963",
+      "doi_url": "https://doi.org/10.34726/hss.2023.73963",
+      "doc_id": "5a763a003d603ce6",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://repositum.tuwien.at/bitstream/20.500.12708/177670/1/Breitkopf%20Lilla%20-%202023%20-%20Modelling%20and%20workspace%20of%20a%20mobile%20manipulator.pdf",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "datacite",
+          "datacite",
+          "datacite",
+          "datacite"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Lilla Breitkopf. Modelling and workspace of a mobile manipulator. Text, Jan 2023. URL: https://doi.org/10.34726/hss.2023.73963, doi:10.34726/hss.2023.73963. This article has 1 citations and is from a peer-reviewed journal."
+    },
+    {
+      "embedding": null,
+      "docname": "aburaia2024workshoponinterdisciplinary",
+      "dockey": "05aea1f1b1e0917f",
+      "citation": "M Aburaia, W Kubinger, A M\u00fcller, S Tosatto, and M Vincze. Workshop on interdisciplinary advances and challenges of ai, robotics and vision. Unknown journal, 2024.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "aburaia2024workshoponinterdisciplinary",
+      "bibtex": "@article{aburaia2024workshoponinterdisciplinary,\n    author = \"Aburaia, M and Kubinger, W and M\u00fcller, A and Tosatto, S and Vincze, M\",\n    title = \"Workshop on Interdisciplinary Advances and Challenges of AI, Robotics and Vision\",\n    year = \"2024\",\n    journal = \"Unknown journal\"\n}\n",
+      "authors": [
+        "M Aburaia",
+        "W Kubinger",
+        "A M\u00fcller",
+        "S Tosatto",
+        "M Vincze"
+      ],
+      "publication_date": null,
+      "year": 2024,
+      "volume": null,
+      "issue": null,
+      "issn": null,
+      "pages": null,
+      "journal": null,
+      "publisher": null,
+      "url": "https://diglib.uibk.ac.at/download/pdf/13139426.pdf",
+      "title": "Workshop on Interdisciplinary Advances and Challenges of AI, Robotics and Vision",
+      "citation_count": 0,
+      "bibtex_type": null,
+      "source_quality": null,
+      "is_retracted": null,
+      "doi": null,
+      "doi_url": null,
+      "doc_id": "05aea1f1b1e0917f",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://diglib.uibk.ac.at/download/pdf/13139426.pdf",
+      "other": {
+        "client_source": [
+          "paper_search"
+        ],
+        "bibtex_source": [
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "M Aburaia, W Kubinger, A M\u00fcller, S Tosatto, and M Vincze. Workshop on interdisciplinary advances and challenges of ai, robotics and vision. Unknown journal, 2024."
+    }
+  ],
+  "toolu_01Hm7uDBfiD4QkNT1R9Lm45D": [],
+  "toolu_01PjjVFxp6rSqThCzYtVHLxH": [
+    {
+      "embedding": null,
+      "docname": "franzese2025mukcaaccurateand",
+      "dockey": "937a8d2bb99a9fd6",
+      "citation": "Giovanni Franzese, Max Spahn, Jens Kober, and C. D. Santina. Mukca: accurate and affordable cobot calibration without external measurement devices. ArXiv, Mar 2025. URL: https://doi.org/10.48550/arxiv.2503.12584, doi:10.48550/arxiv.2503.12584.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "franzese2025mukcaaccurateand",
+      "bibtex": "@article{franzese2025mukcaaccurateand,\n    author = \"Franzese, Giovanni and Spahn, Max and Kober, Jens and Santina, C. D.\",\n    title = \"MUKCa: Accurate and Affordable Cobot Calibration Without External Measurement Devices\",\n    year = \"2025\",\n    journal = \"ArXiv\",\n    volume = \"abs/2503.12584\",\n    month = \"Mar\",\n    doi = \"10.48550/arxiv.2503.12584\",\n    url = \"https://doi.org/10.48550/arxiv.2503.12584\"\n}\n",
+      "authors": [
+        "Giovanni Franzese",
+        "Max Spahn",
+        "Jens Kober",
+        "C. D. Santina"
+      ],
+      "publication_date": "2025-03-16T00:00:00Z",
+      "year": 2025,
+      "volume": "abs/2503.12584",
+      "issue": null,
+      "issn": null,
+      "pages": null,
+      "journal": "ArXiv",
+      "publisher": null,
+      "url": "https://arxiv.org/pdf/2503.12584",
+      "title": "MUKCa: Accurate and Affordable Cobot Calibration Without External Measurement Devices",
+      "citation_count": 1,
+      "bibtex_type": "article",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.48550/arxiv.2503.12584",
+      "doi_url": "https://doi.org/10.48550/arxiv.2503.12584",
+      "doc_id": "937a8d2bb99a9fd6",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://arxiv.org/pdf/2503.12584",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "semantic_scholar",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Giovanni Franzese, Max Spahn, Jens Kober, and C. D. Santina. Mukca: accurate and affordable cobot calibration without external measurement devices. ArXiv, Mar 2025. URL: https://doi.org/10.48550/arxiv.2503.12584, doi:10.48550/arxiv.2503.12584. This article has 1 citations."
+    },
+    {
+      "embedding": null,
+      "docname": "proia2024controltechniquesfor",
+      "dockey": "bff4792584eb3052",
+      "citation": "Silvia Proia. Control techniques for collaborative and cooperative robotic systems. Other, Jan 2024. URL: https://doi.org/10.60576/poliba/iris/proia-silvia\\_phd2024, doi:10.60576/poliba/iris/proia-silvia\\_phd2024.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "proia2024controltechniquesfor",
+      "bibtex": "@article{proia2024controltechniquesfor,\n    author = \"Proia, Silvia\",\n    title = \"Control techniques for collaborative and cooperative robotic systems\",\n    year = \"2024\",\n    journal = \"Other\",\n    month = \"Jan\",\n    doi = \"10.60576/poliba/iris/proia-silvia\\_phd2024\",\n    url = \"https://doi.org/10.60576/poliba/iris/proia-silvia\\_phd2024\",\n    publisher = \"Politecnico di Bari\"\n}\n",
+      "authors": [
+        "Silvia Proia"
+      ],
+      "publication_date": "2024-01-01T00:00:00Z",
+      "year": 2024,
+      "volume": null,
+      "issue": null,
+      "issn": null,
+      "pages": null,
+      "journal": "Other",
+      "publisher": "Politecnico di Bari",
+      "url": "https://iris.poliba.it/handle/11589/264192",
+      "title": "Control techniques for collaborative and cooperative robotic systems",
+      "citation_count": 5,
+      "bibtex_type": "misc",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.60576/poliba/iris/proia-silvia_phd2024",
+      "doi_url": "https://doi.org/10.60576/poliba/iris/proia-silvia_phd2024",
+      "doc_id": "bff4792584eb3052",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://tesidottorato.depositolegale.it/bitstream/20.500.14242/64911/1/36%20ciclo-PROIA%20Silvia.pdf",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "datacite",
+          "datacite",
+          "datacite",
+          "datacite"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Silvia Proia. Control techniques for collaborative and cooperative robotic systems. Other, Jan 2024. URL: https://doi.org/10.60576/poliba/iris/proia-silvia\\_phd2024, doi:10.60576/poliba/iris/proia-silvia\\_phd2024. This article has 5 citations."
+    },
+    {
+      "embedding": null,
+      "docname": "evangelista2023calibrationand3d",
+      "dockey": "f496b289155f8131",
+      "citation": "D Evangelista. Calibration and 3d mapping for multi-sensor inspection tasks with industrial robots. Unknown journal, 2023.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "evangelista2023calibrationand3d",
+      "bibtex": "@article{evangelista2023calibrationand3d,\n    author = \"Evangelista, D\",\n    title = \"Calibration and 3D Mapping for Multi-sensor Inspection Tasks with Industrial Robots\",\n    year = \"2023\",\n    journal = \"Unknown journal\"\n}\n",
+      "authors": [
+        "D Evangelista"
+      ],
+      "publication_date": null,
+      "year": 2023,
+      "volume": null,
+      "issue": null,
+      "issn": null,
+      "pages": null,
+      "journal": null,
+      "publisher": null,
+      "url": "https://www.research.unipd.it/bitstream/11577/3500142/2/tesi_Daniele_Evangelista.pdf",
+      "title": "Calibration and 3D Mapping for Multi-sensor Inspection Tasks with Industrial Robots",
+      "citation_count": 0,
+      "bibtex_type": null,
+      "source_quality": null,
+      "is_retracted": null,
+      "doi": null,
+      "doi_url": null,
+      "doc_id": "f496b289155f8131",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://www.research.unipd.it/bitstream/11577/3500142/2/tesi_Daniele_Evangelista.pdf",
+      "other": {
+        "client_source": [
+          "paper_search"
+        ],
+        "bibtex_source": [
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "D Evangelista. Calibration and 3d mapping for multi-sensor inspection tasks with industrial robots. Unknown journal, 2023."
+    },
+    {
+      "embedding": null,
+      "docname": "lingg2025modelingtrustin",
+      "dockey": "8ac88e308b72ba0c",
+      "citation": "N Lingg. Modeling trust in assistive human-robot interaction: a data-driven approach. Unknown journal, 2025.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "lingg2025modelingtrustin",
+      "bibtex": "@article{lingg2025modelingtrustin,\n    author = \"Lingg, N\",\n    title = \"Modeling trust in assistive human-robot interaction: a data-driven approach\",\n    year = \"2025\",\n    journal = \"Unknown journal\"\n}\n",
+      "authors": [
+        "N Lingg"
+      ],
+      "publication_date": null,
+      "year": 2025,
+      "volume": null,
+      "issue": null,
+      "issn": null,
+      "pages": null,
+      "journal": null,
+      "publisher": null,
+      "url": "https://spiral.imperial.ac.uk/bitstreams/9abe5061-dc9f-4439-90ff-2719e3b7b0f1/download",
+      "title": "Modeling trust in assistive human-robot interaction: a data-driven approach",
+      "citation_count": 0,
+      "bibtex_type": null,
+      "source_quality": null,
+      "is_retracted": null,
+      "doi": null,
+      "doi_url": null,
+      "doc_id": "8ac88e308b72ba0c",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://spiral.imperial.ac.uk/bitstreams/9abe5061-dc9f-4439-90ff-2719e3b7b0f1/download",
+      "other": {
+        "client_source": [
+          "paper_search"
+        ],
+        "bibtex_source": [
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "N Lingg. Modeling trust in assistive human-robot interaction: a data-driven approach. Unknown journal, 2025."
+    }
+  ],
+  "toolu_01NJFw4hQNzMk8zZkMH9G1MH": [],
+  "toolu_01NrWdr8MPz2r8mEj8CYiyC7": [
+    {
+      "embedding": null,
+      "docname": "song2025areviewof",
+      "dockey": "6a0ec8bbd1590564",
+      "citation": "Yafei Song, Zhuoyong Shi, and Zhuoyong Shi. A review of statistical modeling and inference methods for uav airborne sensors: from state estimation to probabilistic uncertainty perception. Journal of Intelligent Aeronautical Systems and Sustainable Flight Technologies, 1:60-71, Dec 2025. URL: https://doi.org/10.65904/3083-3450.2025.01.06, doi:10.65904/3083-3450.2025.01.06.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "song2025areviewof",
+      "bibtex": "@article{song2025areviewof,\n    author = \"Song, Yafei and Shi, Zhuoyong and Shi, Zhuoyong\",\n    title = \"A Review of Statistical Modeling and Inference Methods for UAV Airborne Sensors: From State Estimation to Probabilistic Uncertainty Perception\",\n    year = \"2025\",\n    journal = \"Journal of Intelligent Aeronautical Systems and Sustainable Flight Technologies\",\n    volume = \"1\",\n    pages = \"60-71\",\n    month = \"Dec\",\n    doi = \"10.65904/3083-3450.2025.01.06\",\n    url = \"https://doi.org/10.65904/3083-3450.2025.01.06\",\n    publisher = \"Open Horizon Global\",\n    issn = \"3083-3450\"\n}\n",
+      "authors": [
+        "Yafei Song",
+        "Zhuoyong Shi",
+        "Zhuoyong Shi"
+      ],
+      "publication_date": "2025-12-28T00:00:00Z",
+      "year": 2025,
+      "volume": "1",
+      "issue": null,
+      "issn": "3083-3450",
+      "pages": "60-71",
+      "journal": "Journal of Intelligent Aeronautical Systems and Sustainable Flight Technologies",
+      "publisher": "Open Horizon Global",
+      "url": "https://doi.org/10.65904/3083-3450.2025.01.06",
+      "title": "A Review of Statistical Modeling and Inference Methods for UAV Airborne Sensors: From State Estimation to Probabilistic Uncertainty Perception",
+      "citation_count": 1,
+      "bibtex_type": "misc",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.65904/3083-3450.2025.01.06",
+      "doi_url": "https://doi.org/10.65904/3083-3450.2025.01.06",
+      "doc_id": "6a0ec8bbd1590564",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://jiassft.com/index.php/jiassft/article/download/15/7",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "semantic_scholar",
+          "semantic_scholar",
+          "crossref",
+          "crossref"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          "semantic_scholar",
+          "self_generated",
+          "semantic_scholar",
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "crossref"
+          ],
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "crossref"
+          ],
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Yafei Song, Zhuoyong Shi, and Zhuoyong Shi. A review of statistical modeling and inference methods for uav airborne sensors: from state estimation to probabilistic uncertainty perception. Journal of Intelligent Aeronautical Systems and Sustainable Flight Technologies, 1:60-71, Dec 2025. URL: https://doi.org/10.65904/3083-3450.2025.01.06, doi:10.65904/3083-3450.2025.01.06. This article has 1 citations."
+    },
+    {
+      "embedding": null,
+      "docname": "wu2022quadraticposeestimation",
+      "dockey": "1de2d62071bce658",
+      "citation": "Jin Wu, Yu Zheng, Zhi Gao, Yi Jiang, Xiangcheng Hu, Yilong Zhu, Jianhao Jiao, and Ming Liu. Quadratic pose estimation problems: globally optimal solutions, solvability/observability analysis, and uncertainty description. IEEE Transactions on Robotics, 38:3314-3335, Oct 2022. URL: https://doi.org/10.1109/tro.2022.3155880, doi:10.1109/tro.2022.3155880.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "wu2022quadraticposeestimation",
+      "bibtex": "@article{wu2022quadraticposeestimation,\n    author = \"Wu, Jin and Zheng, Yu and Gao, Zhi and Jiang, Yi and Hu, Xiangcheng and Zhu, Yilong and Jiao, Jianhao and Liu, Ming\",\n    title = \"Quadratic Pose Estimation Problems: Globally Optimal Solutions, Solvability/Observability Analysis, and Uncertainty Description\",\n    year = \"2022\",\n    journal = \"IEEE Transactions on Robotics\",\n    volume = \"38\",\n    pages = \"3314-3335\",\n    month = \"Oct\",\n    doi = \"10.1109/tro.2022.3155880\",\n    url = \"https://doi.org/10.1109/tro.2022.3155880\",\n    publisher = \"Institute of Electrical and Electronics Engineers (IEEE)\",\n    issue = \"5\",\n    issn = \"1552-3098\"\n}\n",
+      "authors": [
+        "Jin Wu",
+        "Yu Zheng",
+        "Zhi Gao",
+        "Yi Jiang",
+        "Xiangcheng Hu",
+        "Yilong Zhu",
+        "Jianhao Jiao",
+        "Ming Liu"
+      ],
+      "publication_date": "2022-10-01T00:00:00Z",
+      "year": 2022,
+      "volume": "38",
+      "issue": "5",
+      "issn": "1552-3098",
+      "pages": "3314-3335",
+      "journal": "IEEE Transactions on Robotics",
+      "publisher": "Institute of Electrical and Electronics Engineers (IEEE)",
+      "url": "https://doi.org/10.1109/tro.2022.3155880",
+      "title": "Quadratic Pose Estimation Problems: Globally Optimal Solutions, Solvability/Observability Analysis, and Uncertainty Description",
+      "citation_count": 32,
+      "bibtex_type": "article",
+      "source_quality": 3,
+      "is_retracted": null,
+      "doi": "10.1109/tro.2022.3155880",
+      "doi_url": "https://doi.org/10.1109/tro.2022.3155880",
+      "doc_id": "1de2d62071bce658",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://gogojjh.github.io/assets/pdf/wu2022quadratic.pdf",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "crossref",
+          "semantic_scholar",
+          "crossref",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Jin Wu, Yu Zheng, Zhi Gao, Yi Jiang, Xiangcheng Hu, Yilong Zhu, Jianhao Jiao, and Ming Liu. Quadratic pose estimation problems: globally optimal solutions, solvability/observability analysis, and uncertainty description. IEEE Transactions on Robotics, 38:3314-3335, Oct 2022. URL: https://doi.org/10.1109/tro.2022.3155880, doi:10.1109/tro.2022.3155880. This article has 32 citations and is from a highest quality peer-reviewed journal."
+    },
+    {
+      "embedding": null,
+      "docname": "haq2026measurementuncertaintyand",
+      "dockey": "d4b78aae459ab235",
+      "citation": "Ihtisham Ul Haq, Francesco Felicetti, and Francesco Lamonaca. Measurement uncertainty and traceability in upper limb rehabilitation robotics: a metrology-oriented review. Journal of Sensor and Actuator Networks, 15:8, Jan 2026. URL: https://doi.org/10.3390/jsan15010008, doi:10.3390/jsan15010008.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "haq2026measurementuncertaintyand",
+      "bibtex": "@article{haq2026measurementuncertaintyand,\n    author = \"Haq, Ihtisham Ul and Felicetti, Francesco and Lamonaca, Francesco\",\n    title = \"Measurement Uncertainty and Traceability in Upper Limb Rehabilitation Robotics: A Metrology-Oriented Review\",\n    year = \"2026\",\n    journal = \"Journal of Sensor and Actuator Networks\",\n    volume = \"15\",\n    pages = \"8\",\n    month = \"Jan\",\n    doi = \"10.3390/jsan15010008\",\n    url = \"https://doi.org/10.3390/jsan15010008\",\n    publisher = \"MDPI AG\",\n    issue = \"1\",\n    issn = \"2224-2708\"\n}\n",
+      "authors": [
+        "Ihtisham Ul Haq",
+        "Francesco Felicetti",
+        "Francesco Lamonaca"
+      ],
+      "publication_date": "2026-01-07T00:00:00Z",
+      "year": 2026,
+      "volume": "15",
+      "issue": "1",
+      "issn": "2224-2708",
+      "pages": "8",
+      "journal": "Journal of Sensor and Actuator Networks",
+      "publisher": "MDPI AG",
+      "url": "https://doi.org/10.3390/jsan15010008",
+      "title": "Measurement Uncertainty and Traceability in Upper Limb Rehabilitation Robotics: A Metrology-Oriented Review",
+      "citation_count": 10,
+      "bibtex_type": "misc",
+      "source_quality": -1,
+      "is_retracted": null,
+      "doi": "10.3390/jsan15010008",
+      "doi_url": "https://doi.org/10.3390/jsan15010008",
+      "doc_id": "d4b78aae459ab235",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://www.mdpi.com/2224-2708/15/1/8/pdf?version=1767780476",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "semantic_scholar",
+          "semantic_scholar",
+          "crossref",
+          "crossref"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          "semantic_scholar",
+          "semantic_scholar",
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "crossref"
+          ],
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "crossref"
+          ],
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Ihtisham Ul Haq, Francesco Felicetti, and Francesco Lamonaca. Measurement uncertainty and traceability in upper limb rehabilitation robotics: a metrology-oriented review. Journal of Sensor and Actuator Networks, 15:8, Jan 2026. URL: https://doi.org/10.3390/jsan15010008, doi:10.3390/jsan15010008. This article has 10 citations."
+    },
+    {
+      "embedding": null,
+      "docname": "busch2020probabilisticinformationfusion",
+      "dockey": "1da05a043552da67",
+      "citation": "Maximilian Busch, Florian Schnoes, Thomas Semm, Michael F. Zaeh, Birgit Obst, and Dirk Hartmann. Probabilistic information fusion to model the pose-dependent dynamics of milling robots. Production Engineering, 14:435-444, Aug 2020. URL: https://doi.org/10.1007/s11740-020-00975-8, doi:10.1007/s11740-020-00975-8.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "busch2020probabilisticinformationfusion",
+      "bibtex": "@article{busch2020probabilisticinformationfusion,\n    author = \"Busch, Maximilian and Schnoes, Florian and Semm, Thomas and Zaeh, Michael F. and Obst, Birgit and Hartmann, Dirk\",\n    title = \"Probabilistic information fusion to model the pose-dependent dynamics of milling robots\",\n    year = \"2020\",\n    journal = \"Production Engineering\",\n    volume = \"14\",\n    pages = \"435-444\",\n    month = \"Aug\",\n    doi = \"10.1007/s11740-020-00975-8\",\n    url = \"https://doi.org/10.1007/s11740-020-00975-8\",\n    publisher = \"Springer Science and Business Media LLC\",\n    issue = \"4\",\n    issn = \"0944-6524\"\n}\n",
+      "authors": [
+        "Maximilian Busch",
+        "Florian Schnoes",
+        "Thomas Semm",
+        "Michael F. Zaeh",
+        "Birgit Obst",
+        "Dirk Hartmann"
+      ],
+      "publication_date": "2020-08-28T00:00:00Z",
+      "year": 2020,
+      "volume": "14",
+      "issue": "4",
+      "issn": "0944-6524",
+      "pages": "435-444",
+      "journal": "Production Engineering",
+      "publisher": "Springer Science and Business Media LLC",
+      "url": "https://link.springer.com/content/pdf/10.1007/s11740-020-00975-8.pdf",
+      "title": "Probabilistic information fusion to model the pose-dependent dynamics of milling robots",
+      "citation_count": 19,
+      "bibtex_type": "article",
+      "source_quality": 1,
+      "is_retracted": null,
+      "doi": "10.1007/s11740-020-00975-8",
+      "doi_url": "https://doi.org/10.1007/s11740-020-00975-8",
+      "doc_id": "1da05a043552da67",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s11740-020-00975-8.pdf",
+      "other": {
+        "client_source": [
+          "paper_search",
+          "crossref",
+          "semantic_scholar",
+          "crossref",
+          "semantic_scholar"
+        ],
+        "bibtex_source": [
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated",
+          [
+            "self_generated"
+          ],
+          [
+            "self_generated"
+          ],
+          "self_generated",
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Maximilian Busch, Florian Schnoes, Thomas Semm, Michael F. Zaeh, Birgit Obst, and Dirk Hartmann. Probabilistic information fusion to model the pose-dependent dynamics of milling robots. Production Engineering, 14:435-444, Aug 2020. URL: https://doi.org/10.1007/s11740-020-00975-8, doi:10.1007/s11740-020-00975-8. This article has 19 citations and is from a peer-reviewed journal."
+    },
+    {
+      "embedding": null,
+      "docname": "jeong2025uncertaintyaware6dofpose",
+      "dockey": "35a31fdad94cee5b",
+      "citation": "VC Jeong. Uncertainty-aware 6-dof pose tracking using keypoint detection and kalman filtering from a monocular camera. Unknown journal, 2025.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "jeong2025uncertaintyaware6dofpose",
+      "bibtex": "@article{jeong2025uncertaintyaware6dofpose,\n    author = \"Jeong, VC\",\n    title = \"Uncertainty-Aware 6-DoF Pose Tracking Using Keypoint Detection and Kalman Filtering from a Monocular Camera\",\n    year = \"2025\",\n    journal = \"Unknown journal\"\n}\n",
+      "authors": [
+        "VC Jeong"
+      ],
+      "publication_date": null,
+      "year": 2025,
+      "volume": null,
+      "issue": null,
+      "issn": null,
+      "pages": null,
+      "journal": null,
+      "publisher": null,
+      "url": "https://ualberta.scholaris.ca/bitstreams/d249854f-3644-40b1-a9de-795e2b05b7ad/download",
+      "title": "Uncertainty-Aware 6-DoF Pose Tracking Using Keypoint Detection and Kalman Filtering from a Monocular Camera",
+      "citation_count": 0,
+      "bibtex_type": null,
+      "source_quality": null,
+      "is_retracted": null,
+      "doi": null,
+      "doi_url": null,
+      "doc_id": "35a31fdad94cee5b",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://ualberta.scholaris.ca/bitstreams/d249854f-3644-40b1-a9de-795e2b05b7ad/download",
+      "other": {
+        "client_source": [
+          "paper_search"
+        ],
+        "bibtex_source": [
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "VC Jeong. Uncertainty-aware 6-dof pose tracking using keypoint detection and kalman filtering from a monocular camera. Unknown journal, 2025."
+    },
+    {
+      "embedding": null,
+      "docname": "kim2026unifiedprobabilisticmodel",
+      "dockey": "da98a5d26e63df35",
+      "citation": "T Kim. Unified probabilistic model for robot calibration fusing kinematic, sensor, and manufacturing priors. Unknown journal, 2026.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "kim2026unifiedprobabilisticmodel",
+      "bibtex": "@article{kim2026unifiedprobabilisticmodel,\n    author = \"Kim, T\",\n    title = \"Unified Probabilistic Model for Robot Calibration Fusing Kinematic, Sensor, and Manufacturing Priors\",\n    year = \"2026\",\n    journal = \"Unknown journal\"\n}\n",
+      "authors": [
+        "T Kim"
+      ],
+      "publication_date": null,
+      "year": 2026,
+      "volume": null,
+      "issue": null,
+      "issn": null,
+      "pages": null,
+      "journal": null,
+      "publisher": null,
+      "url": "https://www.tdcommons.org/cgi/viewcontent.cgi?article=11364&context=dpubs_series",
+      "title": "Unified Probabilistic Model for Robot Calibration Fusing Kinematic, Sensor, and Manufacturing Priors",
+      "citation_count": 0,
+      "bibtex_type": null,
+      "source_quality": null,
+      "is_retracted": null,
+      "doi": null,
+      "doi_url": null,
+      "doc_id": "da98a5d26e63df35",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://www.tdcommons.org/cgi/viewcontent.cgi?article=11364&context=dpubs_series",
+      "other": {
+        "client_source": [
+          "paper_search"
+        ],
+        "bibtex_source": [
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "T Kim. Unified probabilistic model for robot calibration fusing kinematic, sensor, and manufacturing priors. Unknown journal, 2026."
+    },
+    {
+      "embedding": null,
+      "docname": "nistico2025enhancingstateestimation",
+      "dockey": "2ec50dfc4661d511",
+      "citation": "Y Nistico. Enhancing state estimation in quadruped robots: multi-sensor fusion for challenging terrains. Unknown journal, 2025.",
+      "content_hash": null,
+      "fields_to_overwrite_from_metadata": [
+        "citation",
+        "content_hash",
+        "doc_id",
+        "dockey",
+        "docname",
+        "key"
+      ],
+      "key": "nistico2025enhancingstateestimation",
+      "bibtex": "@article{nistico2025enhancingstateestimation,\n    author = \"Nistico, Y\",\n    title = \"Enhancing State Estimation in Quadruped Robots: Multi-Sensor Fusion for Challenging Terrains\",\n    year = \"2025\",\n    journal = \"Unknown journal\"\n}\n",
+      "authors": [
+        "Y Nistico"
+      ],
+      "publication_date": null,
+      "year": 2025,
+      "volume": null,
+      "issue": null,
+      "issn": null,
+      "pages": null,
+      "journal": null,
+      "publisher": null,
+      "url": "https://tesidottorato.depositolegale.it/bitstream/20.500.14242/193704/4/phdunige_5180549.pdf",
+      "title": "Enhancing State Estimation in Quadruped Robots: Multi-Sensor Fusion for Challenging Terrains",
+      "citation_count": 1,
+      "bibtex_type": null,
+      "source_quality": null,
+      "is_retracted": null,
+      "doi": null,
+      "doi_url": null,
+      "doc_id": "2ec50dfc4661d511",
+      "file_location": null,
+      "license": null,
+      "pdf_url": "https://tesidottorato.depositolegale.it/bitstream/20.500.14242/193704/4/phdunige_5180549.pdf",
+      "other": {
+        "client_source": [
+          "paper_search"
+        ],
+        "bibtex_source": [
+          "self_generated"
+        ]
+      },
+      "formatted_citation": "Y Nistico. Enhancing state estimation in quadruped robots: multi-sensor fusion for challenging terrains. Unknown journal, 2025."
+    }
+  ],
+  "toolu_01QcjnDMrtZCfQogmtxSmyBp": [],
+  "toolu_01EyVBMdJdQKq2KrSVcNpg3t": [],
+  "toolu_01DxNhQL5igsjUQDupBLn8og": [],
+  "toolu_0151Aj4nT337L8eEd427GYav": [],
+  "toolu_01P6txxKFTQVAUAUFfGnxGij": [],
+  "toolu_01PkyEuKcsreTZG994r6Zd4Q": [],
+  "toolu_01H479YAhExiGGUz3VMzPciq": [],
+  "toolu_013cyCumDF9ZzFAqis5t55v5": [],
+  "toolu_01YZQq7z7KveYRvkWUjaC5gH": [],
+  "toolu_016UaM1mprPCZ3DngoyRnEqe": [],
+  "toolu_01PoURMjZEE9NVuPG5UsdWLo": [],
+  "toolu_01R9vxMFPqkve4KNoH52KTg9": [],
+  "toolu_01VXzGKtjtcrGeY1yWKNbbv3": [],
+  "toolu_01AV4nhtQvdyKzhyD3TaVLMY": []
+}

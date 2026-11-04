@@ -1,0 +1,59 @@
+1. (yang2019replabareproduciblea pages 2-3): Brian Yang, Dinesh Jayaraman, Jesse Zhang, and Sergey Levine. Replab: a reproducible low-cost arm benchmark for robotic learning. 2019 International Conference on Robotics and Automation (ICRA), pages 8691-8697, May 2019. URL: https://doi.org/10.1109/icra.2019.8794390, doi:10.1109/icra.2019.8794390. This article has 24 citations.
+
+2. (yang2019replabareproducible pages 2-3): Brian Yang, Jesse Zhang, Vitchyr Pong, Sergey Levine, and Dinesh Jayaraman. Replab: a reproducible low-cost arm benchmark platform for robotic learning. Preprint, Jan 2019. URL: https://doi.org/10.48550/arxiv.1905.07447, doi:10.48550/arxiv.1905.07447. This article has 41 citations.
+
+3. (yang2019replabareproduciblea pages 1-2): Brian Yang, Dinesh Jayaraman, Jesse Zhang, and Sergey Levine. Replab: a reproducible low-cost arm benchmark for robotic learning. 2019 International Conference on Robotics and Automation (ICRA), pages 8691-8697, May 2019. URL: https://doi.org/10.1109/icra.2019.8794390, doi:10.1109/icra.2019.8794390. This article has 24 citations.
+
+4. (gealy2019quasidirectdrivefor pages 5-6): David V. Gealy, Stephen McKinley, Brent Yi, Philipp Wu, Phillip R. Downey, Greg Balke, Allan Zhao, Menglong Guo, Rachel Thomasson, Anthony Sinclair, Peter Cuellar, Zoe McCarthy, and Pieter Abbeel. Quasi-direct drive for low-cost compliant robotic manipulation. 2019 International Conference on Robotics and Automation (ICRA), pages 437-443, May 2019. URL: https://doi.org/10.1109/icra.2019.8794236, doi:10.1109/icra.2019.8794236. This article has 148 citations.
+
+5. (gealy2019quasidirectdrivefor pages 1-2): David V. Gealy, Stephen McKinley, Brent Yi, Philipp Wu, Phillip R. Downey, Greg Balke, Allan Zhao, Menglong Guo, Rachel Thomasson, Anthony Sinclair, Peter Cuellar, Zoe McCarthy, and Pieter Abbeel. Quasi-direct drive for low-cost compliant robotic manipulation. 2019 International Conference on Robotics and Automation (ICRA), pages 437-443, May 2019. URL: https://doi.org/10.1109/icra.2019.8794236, doi:10.1109/icra.2019.8794236. This article has 148 citations.
+
+6. (gealy2019quasidirectdrivefor pages 6-8): David V. Gealy, Stephen McKinley, Brent Yi, Philipp Wu, Phillip R. Downey, Greg Balke, Allan Zhao, Menglong Guo, Rachel Thomasson, Anthony Sinclair, Peter Cuellar, Zoe McCarthy, and Pieter Abbeel. Quasi-direct drive for low-cost compliant robotic manipulation. 2019 International Conference on Robotics and Automation (ICRA), pages 437-443, May 2019. URL: https://doi.org/10.1109/icra.2019.8794236, doi:10.1109/icra.2019.8794236. This article has 148 citations.
+
+7. (chebly2025strongaccurateand pages 6-7): Georges Chebly, Spencer Little, Nisal Perera, Aliya Abedeen, Ken Suzuki, and Donghyun Kim. Strong, accurate, and low-cost robot manipulator. ArXiv, Jul 2025. URL: https://doi.org/10.48550/arxiv.2507.15693, doi:10.48550/arxiv.2507.15693. This article has 3 citations.
+
+8. (chebly2025strongaccurateand pages 5-6): Georges Chebly, Spencer Little, Nisal Perera, Aliya Abedeen, Ken Suzuki, and Donghyun Kim. Strong, accurate, and low-cost robot manipulator. ArXiv, Jul 2025. URL: https://doi.org/10.48550/arxiv.2507.15693, doi:10.48550/arxiv.2507.15693. This article has 3 citations.
+
+9. (chebly2025strongaccurateand pages 2-3): Georges Chebly, Spencer Little, Nisal Perera, Aliya Abedeen, Ken Suzuki, and Donghyun Kim. Strong, accurate, and low-cost robot manipulator. ArXiv, Jul 2025. URL: https://doi.org/10.48550/arxiv.2507.15693, doi:10.48550/arxiv.2507.15693. This article has 3 citations.
+
+10. (zahid2024cloudgripperanopen pages 3-5): Muhammad Zahid and Florian T. Pokorny. Cloudgripper: an open source cloud robotics testbed for robotic manipulation research, benchmarking and data collection at scale. 2024 IEEE International Conference on Robotics and Automation (ICRA), pages 12076-12082, May 2024. URL: https://doi.org/10.1109/icra57147.2024.10611548, doi:10.1109/icra57147.2024.10611548. This article has 13 citations.
+
+11. (chopra2026everydayvlaavisionlanguageaction pages 2-3): Samarth Chopra, Alex McMoil, Ben Carnovale, Evan Sokolson, Rajkumar Kubendran, and Samuel Dickerson. Everydayvla: a vision-language-action model for affordable robotic manipulation. 2026 IEEE International Conference on Robotics and Automation (ICRA), pages 677-684, Jun 2026. URL: https://doi.org/10.1109/icra57385.2026.11696905, doi:10.1109/icra57385.2026.11696905. This article has 6 citations.
+
+12. (hickok2026so101benchaccessible pages 2-4): Truman Hickok. So-101 bench: accessible spatial manipulation. ArXiv, Oct 2026. URL: https://doi.org/10.48550/arxiv.2610.36420, doi:10.48550/arxiv.2610.36420. This article has 0 citations.
+
+13. (cowling2026from12to pages 1-3): Simon L. Cowling. From 12 to 200 demonstrations: how act, diffusion policy, smolvla and $\pi _0.5$ scale on a low-cost arm. ArXiv, Oct 2026. URL: https://doi.org/10.48550/arxiv.2610.37170, doi:10.48550/arxiv.2610.37170. This article has 0 citations.
+
+14. (ferraguti2019amethodologyfor pages 6-6): Federica Ferraguti, Andrea Pertosa, Cristian Secchi, Cesare Fantuzzi, and Marcello Bonfe. A methodology for comparative analysis of collaborative robots for industry 4.0. 2019 Design, Automation & Test in Europe Conference & Exhibition (DATE), pages 1070-1075, Mar 2019. URL: https://doi.org/10.23919/date.2019.8714830, doi:10.23919/date.2019.8714830. This article has 36 citations.
+
+15. (chajon2026photogrammetriccharacterizationof pages 8-10): Sebastián Chajón, Jörg Reiff-Stephan, and Norman Günther. Photogrammetric characterization of robot positioning accuracy and repeatability. Robotics, 15:86, Apr 2026. URL: https://doi.org/10.3390/robotics15050086, doi:10.3390/robotics15050086. This article has 0 citations.
+
+16. (kirschner2021towardsareference pages 3-4): Robin Jeanne Kirschner, Alexander Kurdas, Kubra Karacan, Philipp Junge, Seyed Ali Baradaran Birjandi, Nico Mansfeld, Saeed Abdolshah, and Sami Haddadin. Towards a reference framework for tactile robot performance and safety benchmarking. 2021 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS), pages 4290-4297, Sep 2021. URL: https://doi.org/10.1109/iros51168.2021.9636329, doi:10.1109/iros51168.2021.9636329. This article has 35 citations.
+
+17. (ferraguti2019amethodologyfor pages 4-5): Federica Ferraguti, Andrea Pertosa, Cristian Secchi, Cesare Fantuzzi, and Marcello Bonfe. A methodology for comparative analysis of collaborative robots for industry 4.0. 2019 Design, Automation & Test in Europe Conference & Exhibition (DATE), pages 1070-1075, Mar 2019. URL: https://doi.org/10.23919/date.2019.8714830, doi:10.23919/date.2019.8714830. This article has 36 citations.
+
+18. (kirschner2021towardsareference pages 2-3): Robin Jeanne Kirschner, Alexander Kurdas, Kubra Karacan, Philipp Junge, Seyed Ali Baradaran Birjandi, Nico Mansfeld, Saeed Abdolshah, and Sami Haddadin. Towards a reference framework for tactile robot performance and safety benchmarking. 2021 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS), pages 4290-4297, Sep 2021. URL: https://doi.org/10.1109/iros51168.2021.9636329, doi:10.1109/iros51168.2021.9636329. This article has 35 citations.
+
+19. (raji2025industrialgradecollaborativerobots pages 4-8): Aisha Raji, Urvashy Gopaul, Jessica Babineau, Milos R. Popovic, and Cesar Marquez-Chin. Industrial-grade collaborative robots for motor rehabilitation after stroke and spinal cord injury: a systematic narrative review. BioMedical Engineering OnLine, Apr 2025. URL: https://doi.org/10.1186/s12938-025-01362-z, doi:10.1186/s12938-025-01362-z. This article has 9 citations and is from a peer-reviewed journal.
+
+20. (guist2023arobustopensource pages 7-8): Simon Guist, Jan Schneider, Hao Ma, Le Chen, Vincent Berenz, Julian Martus, Heiko Ott, Felix Grüninger, Michael Muehlebach, Jonathan Fiene, Bernhard Schölkopf, and Dieter Büchler. A robust open-source tendon-driven robot arm for learning control of dynamic motions. ArXiv, Jan 2023. URL: https://doi.org/10.48550/arxiv.2307.02654, doi:10.48550/arxiv.2307.02654. This article has 19 citations.
+
+21. (guist2023arobustopensource pages 2-3): Simon Guist, Jan Schneider, Hao Ma, Le Chen, Vincent Berenz, Julian Martus, Heiko Ott, Felix Grüninger, Michael Muehlebach, Jonathan Fiene, Bernhard Schölkopf, and Dieter Büchler. A robust open-source tendon-driven robot arm for learning control of dynamic motions. ArXiv, Jan 2023. URL: https://doi.org/10.48550/arxiv.2307.02654, doi:10.48550/arxiv.2307.02654. This article has 19 citations.
+
+22. (guist2023arobustopensource pages 5-6): Simon Guist, Jan Schneider, Hao Ma, Le Chen, Vincent Berenz, Julian Martus, Heiko Ott, Felix Grüninger, Michael Muehlebach, Jonathan Fiene, Bernhard Schölkopf, and Dieter Büchler. A robust open-source tendon-driven robot arm for learning control of dynamic motions. ArXiv, Jan 2023. URL: https://doi.org/10.48550/arxiv.2307.02654, doi:10.48550/arxiv.2307.02654. This article has 19 citations.
+
+23. (guist2023arobustopensource pages 6-7): Simon Guist, Jan Schneider, Hao Ma, Le Chen, Vincent Berenz, Julian Martus, Heiko Ott, Felix Grüninger, Michael Muehlebach, Jonathan Fiene, Bernhard Schölkopf, and Dieter Büchler. A robust open-source tendon-driven robot arm for learning control of dynamic motions. ArXiv, Jan 2023. URL: https://doi.org/10.48550/arxiv.2307.02654, doi:10.48550/arxiv.2307.02654. This article has 19 citations.
+
+24. (chen2015applicationofthe pages 18-23): KS Chen. Application of the iso 9283 standard to test repeatability of the baxter robot. Unknown journal, 2015.
+
+25. (pollak2023simulationdesignand pages 11-13): Martin Pollák and Karol Goryl. Simulation design and measurement of welding robot repeatability utilizing the contact measurement method. Machines, 11:734, Jul 2023. URL: https://doi.org/10.3390/machines11070734, doi:10.3390/machines11070734. This article has 8 citations.
+
+26. (yang2019replabareproduciblea pages 3-4): Brian Yang, Dinesh Jayaraman, Jesse Zhang, and Sergey Levine. Replab: a reproducible low-cost arm benchmark for robotic learning. 2019 International Conference on Robotics and Automation (ICRA), pages 8691-8697, May 2019. URL: https://doi.org/10.1109/icra.2019.8794390, doi:10.1109/icra.2019.8794390. This article has 24 citations.
+
+27. (yang2019replabareproducible pages 4-5): Brian Yang, Jesse Zhang, Vitchyr Pong, Sergey Levine, and Dinesh Jayaraman. Replab: a reproducible low-cost arm benchmark platform for robotic learning. Preprint, Jan 2019. URL: https://doi.org/10.48550/arxiv.1905.07447, doi:10.48550/arxiv.1905.07447. This article has 41 citations.
+
+28. (yang2019replabareproducible pages 5-7): Brian Yang, Jesse Zhang, Vitchyr Pong, Sergey Levine, and Dinesh Jayaraman. Replab: a reproducible low-cost arm benchmark platform for robotic learning. Preprint, Jan 2019. URL: https://doi.org/10.48550/arxiv.1905.07447, doi:10.48550/arxiv.1905.07447. This article has 41 citations.
+
+29. (kirschner2021towardsareference pages 4-5): Robin Jeanne Kirschner, Alexander Kurdas, Kubra Karacan, Philipp Junge, Seyed Ali Baradaran Birjandi, Nico Mansfeld, Saeed Abdolshah, and Sami Haddadin. Towards a reference framework for tactile robot performance and safety benchmarking. 2021 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS), pages 4290-4297, Sep 2021. URL: https://doi.org/10.1109/iros51168.2021.9636329, doi:10.1109/iros51168.2021.9636329. This article has 35 citations.
+
+30. (hickok2026so101benchaccessible pages 4-6): Truman Hickok. So-101 bench: accessible spatial manipulation. ArXiv, Oct 2026. URL: https://doi.org/10.48550/arxiv.2610.36420, doi:10.48550/arxiv.2610.36420. This article has 0 citations.
