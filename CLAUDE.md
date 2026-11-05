@@ -110,7 +110,9 @@ watchdog timer and no reboot cron on either Pi: those reboot the Pi, which would
 `picam-stream@wide.service` (`PiPER arm gripper wide cam`, the `imx708_wide`) and
 `picam-stream@hq.service` (`PiPER arm gripper HQ cam`, the `imx477`). They move with the arm,
 so they have no masks or strict rects, only face blurring, and they are unlisted because the
-wide one looks into the lab. Stop and start each one separately; its still is
+wide one looks into the lab. The HQ camera is mounted on its side, so its stream turns the
+picture upright (`CAMERA_ROTATION = 270`) and uses the full-sensor 2028×1520 mode, with black
+bars at the sides. Stop and start each one separately; its still is
 `/tmp/picam-stream-<wide|hq>-latest.jpg`. Changes made on 76zj by the fifth #61 run
 (2026-11-05, 00:36 to 00:44 UTC), after sgbaird reflashed its SD card on 2026-11-04:
 
@@ -128,6 +130,24 @@ wide one looks into the lab. Stop and start each one separately; its still is
 - `config.txt` is unchanged: `camera_auto_detect=1` found both cameras at boot.
 - `/tmp/preview.py` (copy of no repo file; it ran each camera for 20 frames through `FaceBlur`
   before going live and saved only blurred frames) was deleted afterwards.
+
+Changes made on 76zj by the sixth #61 run (2026-11-05, 01:28 to 01:29 UTC), so that the HQ stream
+shows the whole sensor, upright (the HQ camera is mounted on its side):
+
+- `~/picam-stream/device.py` and the staging copy `~/picam-stream-src/device.py`: the version
+  with `CAMERA_ROTATION`, sensor-mode-shaped pictures and `--preview`. The previous ones are
+  `device.py.bak-2026-11-05-hq-upright` in each directory. The wide stream wasn't restarted and
+  still runs the previous code. The new code does the same for it (16:9 mode, no rotation), and
+  it will load the new file on its next restart.
+- `~/picam-stream/my_secrets_hq.py`: `SENSOR_MODE = "2028:1520"` (was `'2028:1080'`) and a new
+  `CAMERA_ROTATION = 270`, each with a comment. The previous file is
+  `my_secrets_hq.py.bak-2026-11-05-hq-upright` (mode 600).
+- `picam-stream@hq` was stopped from 01:28:27 to 01:28:57 UTC. While it was down, a test wrote
+  three raw 720×540 frames to `/tmp` (measured their size only, then deleted them at once), and
+  `device.py --preview` saved one blurred frame, which was copied off and then deleted. On restart
+  it went back to its broadcast, `bK-Dzzfh9gs`, so the link didn't change.
+- mpzy and eufi weren't touched. They still run the PR #40 `device.py`, which behaves the same
+  as this one for them.
 
 Changes made on both Pis from [PR #40](https://github.com/vertical-cloud-lab/robot-arms/pull/40)
 (2026-11-04, 23:08 to 23:13 UTC), so a restart no longer ends the broadcast:

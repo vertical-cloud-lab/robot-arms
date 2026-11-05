@@ -45,11 +45,19 @@ playlist on its first start, with that broadcast's privacy.
 `broadcast-<name>.json` and `/tmp/picam-stream-<name>-latest.jpg` apart. Each settings file names
 its camera by sensor (`CAMERA_SENSOR = "imx708_wide"` or `"imx477"`), not by index, because
 libcamera renumbers the cameras when one is missing. A stream whose camera isn't there waits for
-it and leaves YouTube alone. The HQ stream uses the imx477's 2028×1080 mode (16:9, full width).
+it and leaves YouTube alone.
 
-| As sent, 2026-11-05: wide | HQ |
+**The HQ stream shows the whole sensor, upright** (since 2026-11-05 01:29 UTC). The HQ camera is
+mounted on its side, so its raw picture has the table along the left edge. Its settings use the
+imx477's full-field 2028×1520 mode (4:3) and `CAMERA_ROTATION = 270`, a quarter turn
+anticlockwise. The upright picture is 540×720, with black bars at the sides of the 1280×720
+stream. Until then it used the 16:9 2028×1080 mode, which leaves out the top and bottom 15% of
+the sensor, and libcamera trimmed another 3% off each side to fit 16:9. So it showed about two
+thirds of the sensor, turned 90°.
+
+| As sent, 2026-11-05: wide | HQ, upright, whole sensor (preview through the stream's code, 01:28 UTC) |
 | --- | --- |
-| ![The wide gripper camera's view](../docs/images/picam-piper-stream-76zj-wide-2026-11-05.jpg) | ![The HQ gripper camera's view](../docs/images/picam-piper-stream-76zj-hq-2026-11-05.jpg) |
+| ![The wide gripper camera's view](../docs/images/picam-piper-stream-76zj-wide-2026-11-05.jpg) | ![The HQ gripper camera's view, upright](../docs/images/picam-piper-stream-76zj-hq-upright-2026-11-05.jpg) |
 
 - **No fixed masks or strict rects.** These cameras move with the arm, so nothing stays put in
   their view. Face blurring with both detectors covers the whole frame. The wide camera looks
@@ -58,8 +66,8 @@ it and leaves YouTube alone. The HQ stream uses the imx477's 2028×1080 mode (16
   aren't listed on the channel. To make one public, set `PRIVACY_STATUS = "public"` in its
   settings file and restart it. That starts a new broadcast with a new link, and the playlist
   keeps the privacy it was made with (unlisted) until someone changes it in YouTube Studio.
-- **The HQ camera is out of focus.** Its C/CS-mount lens is focused by hand. As of 2026-11-05 the
-  picture is a blur of colours with nothing recognisable in it.
+- **The HQ camera's focus.** Its C/CS-mount lens is focused by hand. When the stream started
+  (2026-11-05 00:42 UTC) the picture was a blur; by 01:20 UTC someone had focused it.
 - **Load.** Two streams fill the Pi's 4 cores (each stream about 1.8 cores, at its
   `CPUQuota=200%`), so each sends 3.2 to 3.5 distinct frames a second of the 5 requested; ffmpeg
   repeats frames to keep 5 fps. With the fan running at about 5000 rpm the SoC sat at 60 °C,
@@ -89,6 +97,22 @@ up without one, it logs `No camera found` every minute and leaves YouTube alone.
 
 `rpicam-vid` (raw I420, 1280×720 at 5 fps from the full-field 2304×1296 sensor mode) →
 [`device.py`](device.py) → `ffmpeg` (libx264 ultrafast, 1.5 Mb/s, 2 s keyframes, silent AAC) → RTMP.
+
+**Shape and rotation.** libcamera crops a sensor mode to the shape of the size it is asked for, so
+`device.py` asks `rpicam-vid` for the mode's own shape, which keeps the mode's whole field of view.
+It then turns the picture by `CAMERA_ROTATION`, if set, and scales it to the largest size of that
+shape that fits the stream. Whatever is left of the 1280×720 frame is black. A 16:9 mode in a
+16:9 stream fills the frame exactly, so the cell cameras and the wide gripper camera are
+unchanged. Asked sizes are rounded up to a width that's a multiple of 64, because `rpicam-vid`
+pads each raw row to that. Measured on 76zj: three 720×540 frames came to 1,866,240 bytes, the
+size of 768×540 ones. The face detectors run on the upright picture, without the bars, so
+`MASK_RECTS` and `STRICT_RECTS` are fractions of the upright picture. For the HQ stream that is
+`rpicam-vid` 768×576 from the 2028×1520 mode, turned to 576×768 and scaled to 540×720.
+
+`device.py --preview /tmp/frame.jpg` (with `PICAM_INSTANCE=<name>` on 76zj) saves one frame made
+by the stream's own code, so it is turned and blurred, then exits without calling the Lambda.
+Stop that camera's stream first and start it again within 10 minutes. Use it to check a new
+camera position, rotation or mask before going live.
 
 `device.py` handles every frame in Python, on the Pi, before anything is encoded or leaves it:
 

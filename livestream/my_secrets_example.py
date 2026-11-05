@@ -32,11 +32,18 @@ CAMERA_SENSOR = None
 
 RESOLUTION = "720p"  # 144p, 240p, 360p, 480p, 720p, 1080p
 FRAME_RATE = 5  # what two face detectors on every frame leave room for on 2 cores
-# Full-field binned imx708 mode; None lets rpicam pick. For the imx477 (HQ
-# Camera) use "2028:1080", its full-width 16:9 mode.
+# Full-field binned imx708 mode; None lets rpicam pick. The picture keeps the
+# mode's shape, so the whole mode is shown: a mode of another shape than the
+# stream's gets black bars. For the imx477 (HQ Camera) use "2028:1520", its
+# full-field 4:3 mode; its 16:9 "2028:1080" leaves out the top and bottom 15%.
 SENSOR_MODE = "2304:1296"
 CAMERA_VFLIP = False
 CAMERA_HFLIP = False
+# Degrees clockwise to turn the picture, for a camera mounted on its side or
+# upside down: 0, 90, 180 or 270. Turned on its side, a 16:9 stream shows it
+# upright with black bars at the sides. 76zj's HQ camera: 270 (a quarter turn
+# anticlockwise), with SENSOR_MODE "2028:1520".
+CAMERA_ROTATION = 0
 TIMESTAMP_OVERLAY = True
 VIDEO_BITRATE = "1500k"
 
@@ -45,10 +52,10 @@ VIDEO_BITRATE = "1500k"
 # it off (an empty or unknown list refuses to stream).
 FACE_DETECTORS = ("centerface", "yunet")
 # deface's CenterFace (pip deface, see requirements-deface.txt)
-CENTERFACE_WIDTH = 640  # detector input width
+CENTERFACE_WIDTH = 640  # detector input width (its longer side, for a portrait picture)
 CENTERFACE_THRESHOLD = 0.2  # deface's default; lower blurs more
 # OpenCV YuNet
-FACE_DETECT_WIDTH = 960  # detector input width; larger finds smaller faces, costs CPU
+FACE_DETECT_WIDTH = 960  # the same for YuNet; larger finds smaller faces, costs CPU
 FACE_SCORE_THRESHOLD = 0.5  # lower blurs more (and more false positives)
 FACE_BOX_MARGIN = 0.6  # grow each face box by this fraction of its size
 FACE_HOLD_FRAMES = 8  # keep blurring a face this many frames after it was last seen

@@ -19,13 +19,23 @@ lite feeders). Nothing unblurred is ever
 written to ffmpeg: if a detector cannot load, the script exits before going
 live; if processing a frame fails, that frame is dropped.
 
+The camera's picture keeps the shape of its sensor mode, so nothing of the
+mode's field of view is cropped, and is turned by ``CAMERA_ROTATION`` for a
+camera mounted on its side. If its shape differs from the stream's (a 4:3
+mode, or a turned camera, in a 16:9 stream), it is shown whole, with black bars.
+
 Settings come from ``my_secrets.py`` next to this file; see
 ``my_secrets_example.py``. A Pi with more than one camera runs one stream per
 camera: ``picam-stream@<name>.service`` sets ``PICAM_INSTANCE=<name>``, which
 reads ``my_secrets_<name>.py`` instead and keeps that stream's broadcast state
 and snapshot apart from the others'.
+
+``device.py --preview out.jpg`` saves one frame exactly as it would be sent
+(turned, blurred, timestamped) and exits, without calling the Lambda. The
+camera must be free, so stop that camera's stream first.
 """
 
+import argparse
 import importlib
 import json
 import os
@@ -75,10 +85,15 @@ SENSOR_MODE = getattr(S, "SENSOR_MODE", "2304:1296")
 CAMERA_SENSOR = getattr(S, "CAMERA_SENSOR", None)
 CAMERA_VFLIP = getattr(S, "CAMERA_VFLIP", False)
 CAMERA_HFLIP = getattr(S, "CAMERA_HFLIP", False)
+# Degrees clockwise to turn the picture, for a camera mounted on its side or
+# upside down: 0, 90, 180 or 270. Done on the Pi, before face blurring, so
+# MASK_RECTS and STRICT_RECTS are fractions of the upright picture.
+CAMERA_ROTATION = getattr(S, "CAMERA_ROTATION", 0)
 TIMESTAMP_OVERLAY = getattr(S, "TIMESTAMP_OVERLAY", True)
 VIDEO_BITRATE = getattr(S, "VIDEO_BITRATE", "1500k")
 
-# Face detectors run on every frame; their boxes are pooled.
+# Face detectors run on every frame; their boxes are pooled. Each one sees a
+# copy of the picture scaled so its longer side is at most its *_WIDTH.
 FACE_DETECTORS = tuple(getattr(S, "FACE_DETECTORS", ("centerface", "yunet")))
 # deface's CenterFace. deface's own default threshold is 0.2: it is tuned to
 # blur anything that might be a face.
@@ -226,7 +241,7 @@ class CenterFaceDetector:
             raise SystemExit(f"deface is not installed ({e}); refusing to stream")
         if not Path(default_onnx_path).exists():
             raise SystemExit(f"CenterFace model missing: {default_onnx_path}; refusing to stream")
-        self.scale = min(1.0, CENTERFACE_WIDTH / width)
+        self.scale = min(1.0, CENTERFACE_WIDTH / max(width, height))
         self.size = (int(round(width * self.scale)), int(round(height * self.scale)))
         self.net = CenterFace(in_shape=self.size, backend="opencv")
         self.net(np.zeros((self.size[1], self.size[0], 3), np.uint8))  # fail here, not live
@@ -250,7 +265,7 @@ class YuNetDetector:
     def __init__(self, width, height):
         if not Path(FACE_MODEL).exists():
             raise SystemExit(f"Face model missing: {FACE_MODEL}; refusing to stream")
-        self.scale = min(1.0, FACE_DETECT_WIDTH / width)
+        self.scale = min(1.0, FACE_DETECT_WIDTH / max(width, height))
         self.size = (int(round(width * self.scale)), int(round(height * self.scale)))
         self.net = cv2.FaceDetectorYN.create(
             FACE_MODEL, "", self.size, FACE_SCORE_THRESHOLD, 0.3, 5000
@@ -402,6 +417,67 @@ class LatestFrame(threading.Thread):
             return cv2.cvtColor(yuv, cv2.COLOR_YUV2BGR_I420), self.seq
 
 
+ROTATIONS = {0: None, 90: cv2.ROTATE_90_CLOCKWISE, 180: cv2.ROTATE_180,
+             270: cv2.ROTATE_90_COUNTERCLOCKWISE}  # fmt: skip
+
+
+class View:
+    """Where the camera's picture goes in the out_w x out_h frame sent.
+
+    libcamera crops a sensor mode to the shape of the size asked for, so the
+    camera is asked for the mode's own shape, which keeps its whole field of
+    view. The picture, after CAMERA_ROTATION, is the largest of that shape that
+    fits in the frame, and the rest of the frame is black. A mode with the
+    stream's own shape (2304:1296 in a 16:9 stream) fills the frame, as before.
+    """
+
+    def __init__(self, out_w, out_h):
+        turned = CAMERA_ROTATION in (90, 270)
+        m = re.match(r"(\d+):(\d+)", str(SENSOR_MODE or ""))
+        if m:
+            sw, sh = (int(m[2]), int(m[1])) if turned else (int(m[1]), int(m[2]))
+            if sw * out_h >= sh * out_w:  # as wide as the frame, or wider
+                pic = (out_w, min(out_h, 2 * round(out_w * sh / sw / 2)))
+            else:
+                pic = (min(out_w, 2 * round(out_h * sw / sh / 2)), out_h)
+        else:  # rpicam picks the mode, and libcamera crops it to fill the frame
+            pic = (out_w, out_h)
+        self.out, self.picture = (out_w, out_h), pic
+        # Ask for a width that is a multiple of 64, so that rpicam-vid's raw
+        # rows carry no padding and a frame is exactly width x height. The
+        # picture is scaled to its size after it is turned.
+        w, h = (pic[1], pic[0]) if turned else pic
+        cap_w = -(-w // 64) * 64
+        self.capture = (cap_w, 2 * round(cap_w * h / w / 2))
+        left, top = (out_w - pic[0]) // 2, (out_h - pic[1]) // 2
+        self.border = (top, out_h - pic[1] - top, left, out_w - pic[0] - left)
+
+    def turn(self, frame):
+        """The camera's frame, turned upright and scaled to the picture size."""
+        if ROTATIONS[CAMERA_ROTATION] is not None:
+            frame = cv2.rotate(frame, ROTATIONS[CAMERA_ROTATION])
+        if frame.shape[1::-1] != self.picture:
+            frame = cv2.resize(frame, self.picture, interpolation=cv2.INTER_AREA)
+        return frame
+
+    def place(self, picture):
+        """The frame to send: the picture, with black bars around it if needed."""
+        if not any(self.border):
+            return picture
+        return cv2.copyMakeBorder(picture, *self.border, cv2.BORDER_CONSTANT, value=(0, 0, 0))
+
+
+def render(frame, view, blur):
+    """A camera frame -> (the frame to send, face boxes found). It raises if
+    anything fails, so that a frame that was not blurred is never sent."""
+    picture = view.turn(frame)
+    faces = blur(picture)
+    out = view.place(picture)
+    if TIMESTAMP_OVERLAY:
+        draw_timestamp(out)
+    return out, faces
+
+
 def wait_for_camera():
     """Block until libcamera lists the camera; return its index, or None for
     rpicam's default when CAMERA_SENSOR is None.
@@ -480,14 +556,14 @@ def draw_timestamp(frame):
                 (255, 255, 255), thick, cv2.LINE_AA)  # fmt: skip
 
 
-def stream_once(state, width, height, blur, index=None):
+def stream_once(state, view, blur, index=None):
     """Run one camera -> blur -> ffmpeg session until something exits."""
     # Buffered stdout, so read(n) returns a whole frame rather than whatever
     # the pipe holds. The camera's own log goes to the journal.
-    cam = subprocess.Popen(camera_cmd(width, height, index), stdout=subprocess.PIPE)
-    enc = subprocess.Popen(ffmpeg_cmd(state["ffmpeg_url"], width, height),
+    cam = subprocess.Popen(camera_cmd(*view.capture, index), stdout=subprocess.PIPE)
+    enc = subprocess.Popen(ffmpeg_cmd(state["ffmpeg_url"], *view.out),
                            stdin=subprocess.PIPE)  # fmt: skip
-    reader = LatestFrame(cam.stdout, width, height)
+    reader = LatestFrame(cam.stdout, *view.capture)
     reader.start()
     seq, n, faces, t0, slow = 0, 0, 0, time.monotonic(), 0.0
     last_snap = last_beat = 0.0
@@ -499,12 +575,11 @@ def stream_once(state, width, height, blur, index=None):
                 break
             t = time.monotonic()
             try:
-                faces += blur(frame)
+                frame, found = render(frame, view, blur)
             except Exception as e:  # never send a frame that was not blurred
                 print(f"Frame dropped, blur failed: {e}", flush=True)
                 continue
-            if TIMESTAMP_OVERLAY:
-                draw_timestamp(frame)
+            faces += found
             slow = max(slow, time.monotonic() - t)
             enc.stdin.write(frame.tobytes())
             n += 1
@@ -537,27 +612,56 @@ def stream_once(state, width, height, blur, index=None):
                 p.kill()
 
 
-def main():
+def preview(path, view, blur, index=None):
+    """Save one frame to path, made exactly as the stream makes the frames it
+    sends, and return. Never calls the Lambda. The camera must be free."""
+    cam = subprocess.Popen(camera_cmd(*view.capture, index), stdout=subprocess.PIPE)
+    reader = LatestFrame(cam.stdout, *view.capture)
+    reader.start()
+    try:
+        seq = 0
+        for _ in range(3 * FRAME_RATE):  # about 3 s, for exposure and white balance
+            frame, seq = reader.get(seq, timeout=15)
+            if frame is None:
+                raise SystemExit("No frames from the camera; is its stream still running?")
+        frame, faces = render(frame, view, blur)
+        cv2.imwrite(path, frame)
+        print(f"Saved {path}: {faces} face boxes ({blur.summary()})", flush=True)
+    finally:
+        cam.terminate()
+        try:
+            cam.wait(timeout=10)
+        except subprocess.TimeoutExpired:
+            cam.kill()
+
+
+def main(preview_path=None):
     if RESOLUTION not in RESOLUTION_MAP:
         raise SystemExit(f"Invalid RESOLUTION {RESOLUTION!r}")
     if not isinstance(FRAME_RATE, int) or FRAME_RATE <= 0:
         raise SystemExit(f"Invalid FRAME_RATE {FRAME_RATE!r}")
-    width, height = RESOLUTION_MAP[RESOLUTION]
+    if CAMERA_ROTATION not in ROTATIONS:
+        raise SystemExit(f"Invalid CAMERA_ROTATION {CAMERA_ROTATION!r}: use 0, 90, 180 or 270")
+    view = View(*RESOLUTION_MAP[RESOLUTION])
     cv2.setNumThreads(CV_THREADS)
-    blur = FaceBlur(width, height)  # load before going live: fail closed
-    print(f"{INSTANCE or 'picam-stream'}: {RESOLUTION} {width}x{height} @ {FRAME_RATE} fps, "
-          f"camera {CAMERA_SENSOR or 'default'}, sensor mode {SENSOR_MODE or 'auto'}, "
-          f"face detection: {blur.describe()}, {len(MASK_RECTS)} fixed masks",
+    blur = FaceBlur(*view.picture)  # load before going live: fail closed
+    print(f"{INSTANCE or 'picam-stream'}: {RESOLUTION} {view.out[0]}x{view.out[1]} @ "
+          f"{FRAME_RATE} fps, camera {CAMERA_SENSOR or 'default'}, sensor mode "
+          f"{SENSOR_MODE or 'auto'} captured at {view.capture[0]}x{view.capture[1]}, "
+          f"turned {CAMERA_ROTATION} degrees to a {view.picture[0]}x{view.picture[1]} "
+          f"picture, face detection: {blur.describe()}, {len(MASK_RECTS)} fixed masks",
           flush=True)  # fmt: skip
 
     signal.signal(signal.SIGTERM, lambda *_: sys.exit(0))
     index = wait_for_camera()
+    if preview_path:
+        return preview(preview_path, view, blur, index)
     state = create_broadcast()
     quick = 0
     while True:
         print("Starting stream", flush=True)
         t = time.monotonic()
-        stream_once(state, width, height, blur, index)
+        stream_once(state, view, blur, index)
         if state["reused"]:
             # A broadcast gone back to that keeps failing within a minute was
             # probably ended (in YouTube Studio, say): forget it, and exit so
@@ -574,5 +678,10 @@ def main():
 
 
 if __name__ == "__main__":
+    ap = argparse.ArgumentParser(description="PiPER cell livestream with face blurring.")
+    ap.add_argument("--preview", metavar="JPG", type=os.path.abspath,
+                    help="save one frame as it would be sent and exit, without calling "
+                         "the Lambda (stop this camera's stream first)")  # fmt: skip
+    args = ap.parse_args()  # before the chdir, so a relative path is the caller's
     os.chdir(HERE)
-    main()
+    main(args.preview)
