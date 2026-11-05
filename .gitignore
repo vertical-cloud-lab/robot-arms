@@ -221,8 +221,11 @@ latex/byu-coi-plan.pdf
 # Handed to whoever flashes the device; never committed.
 my_secrets.py
 **/my_secrets.py
+**/my_secrets_*.py
+!**/my_secrets_example.py
 broadcast.json
 **/broadcast.json
+**/broadcast-*.json
 
 # Local Claude Code settings — plaintext credentials in an "env" block.
 # The global ~/.config/git/ignore also covers this, but that does not survive

@@ -106,6 +106,29 @@ restart then goes back to the same YouTube broadcast, so people's links keep wor
 longer stop it makes a new broadcast. It never touches CAN, the relay or the arm. No
 watchdog timer and no reboot cron on either Pi: those reboot the Pi, which would kill an arm run.
 
+**76zj streams both gripper cameras, unlisted** (since 2026-11-05 00:42 UTC), as
+`picam-stream@wide.service` (`PiPER arm gripper wide cam`, the `imx708_wide`) and
+`picam-stream@hq.service` (`PiPER arm gripper HQ cam`, the `imx477`). They move with the arm,
+so they have no masks or strict rects, only face blurring, and they are unlisted because the
+wide one looks into the lab. Stop and start each one separately; its still is
+`/tmp/picam-stream-<wide|hq>-latest.jpg`. Changes made on 76zj by the fifth #61 run
+(2026-11-05, 00:36 to 00:44 UTC), after sgbaird reflashed its SD card on 2026-11-04:
+
+- `~/picam-stream/` (mode 700): `device.py`, the YuNet model, `requirements*.txt`, and a `venv`
+  (`--system-site-packages`; opencv-python-headless 5.0.0.93 from PyPI and deface 1.5.0
+  `--no-deps --require-hashes`, with the system's numpy 2.2.4 and requests 2.32.3). ffmpeg
+  7.1.5 was already installed; nothing came from apt.
+- `~/picam-stream/my_secrets_wide.py` and `my_secrets_hq.py` (mode 600, hold the Lambda URL),
+  written straight there. The staging copy `~/picam-stream-src/` has no settings files, so
+  `install.sh` from it never overwrites them.
+- `/etc/systemd/system/picam-stream@.service` (template; `CPUQuota=200%`, `Nice=10`,
+  `OOMScoreAdjust=500` per instance) and `picam-stream.service` (installed, disabled).
+  `picam-stream@wide` and `picam-stream@hq` are enabled. They write
+  `~/picam-stream/broadcast-<name>.json` (mode 600, holds the stream key).
+- `config.txt` is unchanged: `camera_auto_detect=1` found both cameras at boot.
+- `/tmp/preview.py` (copy of no repo file; it ran each camera for 20 frames through `FaceBlur`
+  before going live and saved only blurred frames) was deleted afterwards.
+
 Changes made on both Pis from [PR #40](https://github.com/vertical-cloud-lab/robot-arms/pull/40)
 (2026-11-04, 23:08 to 23:13 UTC), so a restart no longer ends the broadcast:
 
@@ -179,7 +202,11 @@ Changes made on eufi (the first #61 run, same day):
   from 18:00 to 20:06 UTC, then stopped and disabled until the third run re-enabled it (above).
 
 **The first camera Pi (`rpi-5-76zj`) as found** (read-only check on 2026-10-21,
-[#33](https://github.com/vertical-cloud-lab/robot-arms/issues/33); nothing on it was changed):
+[#33](https://github.com/vertical-cloud-lab/robot-arms/issues/33); nothing on it was changed).
+sgbaird flashed a fresh SD card for it on 2026-11-04 (same image and credentials), after it had
+been offline since 2026-10-30. On 2026-11-05 it had the same OS, kernel, Tailscale SSH access
+and Wi-Fi, a 5 A supply, an active cooler, and **two cameras on the gripper**: `imx708_wide` and
+`imx477` (HQ Camera), both found by `camera_auto_detect=1`. The rest of this list is from 2026-10-21:
 
 - **Hardware and OS.** Raspberry Pi 5 Model B Rev 1.1, 8 GB RAM, 32 GB microSD (21 GB free),
   2 GB zram swap. Raspberry Pi OS with desktop, 64-bit (image 2026-10-06, Debian 13.7 trixie),

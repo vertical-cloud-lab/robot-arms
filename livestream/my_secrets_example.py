@@ -1,5 +1,7 @@
 # Copy to my_secrets.py (mode 600) next to device.py. device.py reads it only
-# at start, so restart picam-stream.service after editing.
+# at start, so restart picam-stream.service after editing. On a Pi with more
+# than one camera, copy it to my_secrets_<name>.py for each camera instead, set
+# CAMERA_SENSOR in each, and run picam-stream@<name>.service for each.
 
 # The lab's streaming Lambda (vertical-cloud-lab/streamingLambda). Its URL is
 # the LAMBDA_FUNCTION_URL secret of vertical-cloud-lab/robot-arms.
@@ -13,16 +15,26 @@ LAMBDA_FUNCTION_URL = "https://<id>.lambda-url.<region>.on.aws/"
 # another's titles. The cell's cameras use:
 # - mpzy (front-left post): "PiPER arm front cam"
 # - eufi (back post):       "PiPER arm back cam"
-# Never use plain "PiPER arm": its "end" would end both of those.
+# - 76zj (gripper):         "PiPER arm gripper wide cam" (my_secrets_wide.py)
+#                           "PiPER arm gripper HQ cam" (my_secrets_hq.py)
+# Never use plain "PiPER arm": its "end" would end all of those.
 CAM_NAME = "picam"
 WORKFLOW_NAME = "PiPER arm front cam"
 
-# "private", "unlisted" or "public".
+# "private", "unlisted" or "public". The cell cameras are public; 76zj's
+# gripper cameras are unlisted, since they move and can look into the lab.
 PRIVACY_STATUS = "public"
+
+# The camera, by the sensor name `rpicam-hello --list-cameras` prints, or None
+# for the first camera. Set it on a Pi with two cameras (76zj: "imx708_wide"
+# and "imx477"): libcamera renumbers them when one is missing.
+CAMERA_SENSOR = None
 
 RESOLUTION = "720p"  # 144p, 240p, 360p, 480p, 720p, 1080p
 FRAME_RATE = 5  # what two face detectors on every frame leave room for on 2 cores
-SENSOR_MODE = "2304:1296"  # full-field binned imx708 mode; None lets rpicam pick
+# Full-field binned imx708 mode; None lets rpicam pick. For the imx477 (HQ
+# Camera) use "2028:1080", its full-width 16:9 mode.
+SENSOR_MODE = "2304:1296"
 CAMERA_VFLIP = False
 CAMERA_HFLIP = False
 TIMESTAMP_OVERLAY = True
@@ -64,10 +76,14 @@ STRICT_RECTS = []
 # STRICT_THRESHOLDS = {"centerface": 0.6, "yunet": 0.7}
 
 CV_THREADS = 2  # OpenCV threads; the streaming Pi also drives the arm
-SNAPSHOT_PATH = "/tmp/picam-stream-latest.jpg"  # last frame sent, every SNAPSHOT_SEC
+# Last frame sent, every SNAPSHOT_SEC. Defaults to /tmp/picam-stream-latest.jpg,
+# or /tmp/picam-stream-<name>-latest.jpg for picam-stream@<name>.service, so
+# leave it unset on a Pi with two streams.
+# SNAPSHOT_PATH = "/tmp/picam-stream-latest.jpg"
 SNAPSHOT_SEC = 30
 # A restart goes back to the broadcast that was live, keeping its link, if a
 # frame went out less than this many seconds before; 0 always starts a new one.
 # The broadcast and its stream key are kept in BROADCAST_STATE (mode 600).
 BROADCAST_REUSE_SEC = 600
-# BROADCAST_STATE = "/home/<user>/picam-stream/broadcast.json"
+# BROADCAST_STATE = "/home/<user>/picam-stream/broadcast.json"  (broadcast-<name>.json
+# for picam-stream@<name>.service)

@@ -3,7 +3,8 @@
 The cell streams to the *BYU VCL Hardware Streams* YouTube channel through the lab's streaming
 Lambda ([`vertical-cloud-lab/streamingLambda`](https://github.com/vertical-cloud-lab/streamingLambda)),
 like the byu-vcl stream cams. **Both of the cell's fixed cameras stream, publicly** (since
-2026-11-03 22:48 UTC). A restart of a Pi's service goes back to the broadcast that was live, so
+2026-11-03 22:48 UTC), and **both gripper cameras on 76zj stream, unlisted** (since 2026-11-05
+00:42 UTC; see [Gripper cameras](#gripper-cameras-two-streams-on-76zj)). A restart of a Pi's service goes back to the broadcast that was live, so
 its link keeps working, if a frame went out less than 10 minutes before (`BROADCAST_REUSE_SEC`).
 After a longer stop, or a change to `WORKFLOW_NAME` or `PRIVACY_STATUS`, a start ends that
 camera's broadcast and makes a new one, so each camera's playlist is its stable link:
@@ -12,6 +13,8 @@ camera's broadcast and makes a new one, so each camera's playlist is its stable 
 | --- | --- | --- | --- | --- |
 | mpzy | Camera Module 3 Wide, front-left post, looking into the cell | `PiPER arm front cam` | [*PiPER arm front cam Livestreams Playlist*](https://www.youtube.com/playlist?list=PLEplFHLNPMWo) | none |
 | eufi | imx708 wide (the one `camera.json` calibrates), back-right post, looking diagonally across the cell | `PiPER arm back cam` | [*PiPER arm back cam Livestreams Playlist*](https://www.youtube.com/playlist?list=PLf8bu3tmddbw) | two, over the lab |
+| 76zj | Camera Module 3 Wide (`imx708_wide`) on the gripper, `picam-stream@wide` | `PiPER arm gripper wide cam` | [*PiPER arm gripper wide cam Livestreams Playlist*](https://www.youtube.com/playlist?list=PLRPgT4muESmY) (unlisted) | none: it moves |
+| 76zj | HQ Camera (`imx477`) on the gripper, `picam-stream@hq` | `PiPER arm gripper HQ cam` | [*PiPER arm gripper HQ cam Livestreams Playlist*](https://www.youtube.com/playlist?list=PLFzagkscTGCM) (unlisted) | none: it moves |
 
 Broadcasts are titled *&lt;WORKFLOW_NAME&gt; stream picam, &lt;UTC time&gt;*. mpzy's camera sees
 only the printer, the arm, the tool rack, the backdrop and the wall. eufi's looks towards the open
@@ -27,9 +30,47 @@ the first playlist whose title contains it, making `<WORKFLOW_NAME> Livestreams 
 the broadcast's privacy if there is none. So no Pi's name may appear in another's titles. The
 first broadcasts (unlisted, 2026-11-03 18:00 to 22:48 UTC) used plain `PiPER arm` and are in the
 [*PiPER arm Livestreams Playlist*](https://www.youtube.com/playlist?list=PLAoVUnZkte3E). **Never
-use plain `PiPER arm` again**, since its `end` would end both cameras' broadcasts. A camera that
-moves keeps its name; a new one (76zj's, say) needs a name of its own, such as `PiPER arm gripper
-cam`. A new name makes a new playlist on its first start.
+use plain `PiPER arm` again**, since its `end` would end every camera's broadcast. A camera that
+moves keeps its name; a new one needs a name of its own that neither contains nor is contained in
+another's (`PiPER arm gripper` would end both gripper streams). A new name makes a new
+playlist on its first start, with that broadcast's privacy.
+
+## Gripper cameras: two streams on 76zj
+
+76zj (Pi 5, 8 GB, active cooler) has two cameras on the gripper: a Camera Module 3 Wide
+(`imx708_wide`) and an HQ Camera (`imx477`). Each has its own stream, from one install:
+`picam-stream@wide.service` and `picam-stream@hq.service`, instances of the template unit
+[`picam-stream@.service`](picam-stream@.service). The instance name picks the settings file,
+`~/picam-stream/my_secrets_wide.py` or `my_secrets_hq.py`, and keeps each stream's
+`broadcast-<name>.json` and `/tmp/picam-stream-<name>-latest.jpg` apart. Each settings file names
+its camera by sensor (`CAMERA_SENSOR = "imx708_wide"` or `"imx477"`), not by index, because
+libcamera renumbers the cameras when one is missing. A stream whose camera isn't there waits for
+it and leaves YouTube alone. The HQ stream uses the imx477's 2028×1080 mode (16:9, full width).
+
+| As sent, 2026-11-05: wide | HQ |
+| --- | --- |
+| ![The wide gripper camera's view](../docs/images/picam-piper-stream-76zj-wide-2026-11-05.jpg) | ![The HQ gripper camera's view](../docs/images/picam-piper-stream-76zj-hq-2026-11-05.jpg) |
+
+- **No fixed masks or strict rects.** These cameras move with the arm, so nothing stays put in
+  their view. Face blurring with both detectors covers the whole frame. The wide camera looks
+  across the table into the lab (door, sink, benches), which is why both streams are
+  **unlisted** rather than public like the cell cameras: anyone with the link can watch, but they
+  aren't listed on the channel. To make one public, set `PRIVACY_STATUS = "public"` in its
+  settings file and restart it. That starts a new broadcast with a new link, and the playlist
+  keeps the privacy it was made with (unlisted) until someone changes it in YouTube Studio.
+- **The HQ camera is out of focus.** Its C/CS-mount lens is focused by hand. As of 2026-11-05 the
+  picture is a blur of colours with nothing recognisable in it.
+- **Load.** Two streams fill the Pi's 4 cores (each stream about 1.8 cores, at its
+  `CPUQuota=200%`), so each sends 3.2 to 3.5 distinct frames a second of the 5 requested; ffmpeg
+  repeats frames to keep 5 fps. With the fan running at about 5000 rpm the SoC sat at 60 °C,
+  unthrottled. 76zj doesn't drive the arm, so nothing else needs those cores. For more frames,
+  stop one stream.
+- **In the wide view, CenterFace marks a dark patch under the bench at the far left** (above the
+  white PVC tee) as a face, so a small block there is pixelated while the gripper is at rest.
+
+**First broadcasts.** The wide stream's first broadcast (`vLmLXshOKYg`, about a minute) missed its
+playlist because of a temporary YouTube error (`409 SERVICE_UNAVAILABLE` from `playlistItems`),
+so it was ended and the stream restarted with a new one, which made it in.
 
 ### mpzy's camera is loaded explicitly, not auto-detected
 
@@ -137,19 +178,26 @@ On the Pi, from a copy of this directory with a `my_secrets.py` (from
 the same name):
 
 ```bash
-./install.sh                      # ffmpeg, ~/picam-stream/{device.py,venv (+deface),my_secrets.py}, the unit
+./install.sh                      # ffmpeg, ~/picam-stream/{device.py,venv (+deface),my_secrets*.py}, the units
 sudo systemctl enable --now picam-stream.service
 ```
 
-`device.py` reads `my_secrets.py` only at start: `sudo systemctl restart picam-stream.service`
-after an edit. That goes back to the same broadcast unless the edit changed `WORKFLOW_NAME` or
-`PRIVACY_STATUS`.
+On a Pi with more than one camera, write one `my_secrets_<name>.py` per camera instead (letters,
+digits and `_` in the name; set `CAMERA_SENSOR` in each) and start
+`picam-stream@<name>.service` for each. `install.sh` copies every `my_secrets*.py` it finds next
+to it except the example, and installs both units.
+
+`device.py` reads its settings only at start: `sudo systemctl restart picam-stream.service` (or
+`picam-stream@<name>.service`) after an edit. That goes back to the same broadcast unless the edit
+changed `WORKFLOW_NAME` or `PRIVACY_STATUS`.
 
 ## The camera is held by the stream
 
 libcamera gives a camera to one process at a time, so anything else that opens a streaming Pi's
-camera (run recordings like #54's on mpzy, `piper_vision.py` or calibration stills on eufi) fails
-while the stream runs.
+camera (run recordings like #54's on mpzy, `piper_vision.py` or calibration stills on eufi, the
+gripper cameras on 76zj) fails while the stream runs. On 76zj each camera has its own unit, so
+stop only the one you need: `picam-stream@wide.service` or `picam-stream@hq.service`, and its
+still is `/tmp/picam-stream-wide-latest.jpg` or `/tmp/picam-stream-hq-latest.jpg`.
 
 **For a still, don't stop the stream.** The last frame sent, faces already pixelated, is in
 `/tmp/picam-stream-latest.jpg`, refreshed every 30 s:

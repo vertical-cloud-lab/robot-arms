@@ -20,11 +20,16 @@ written to ffmpeg: if a detector cannot load, the script exits before going
 live; if processing a frame fails, that frame is dropped.
 
 Settings come from ``my_secrets.py`` next to this file; see
-``my_secrets_example.py``.
+``my_secrets_example.py``. A Pi with more than one camera runs one stream per
+camera: ``picam-stream@<name>.service`` sets ``PICAM_INSTANCE=<name>``, which
+reads ``my_secrets_<name>.py`` instead and keeps that stream's broadcast state
+and snapshot apart from the others'.
 """
 
+import importlib
 import json
 import os
+import re
 import shutil
 import signal
 import subprocess
@@ -37,9 +42,13 @@ import cv2
 import numpy as np
 import requests
 
-import my_secrets as S
-
 HERE = Path(__file__).resolve().parent
+
+INSTANCE = os.environ.get("PICAM_INSTANCE", "")
+if INSTANCE and not re.fullmatch(r"[A-Za-z0-9_]+", INSTANCE):
+    raise SystemExit(f"PICAM_INSTANCE {INSTANCE!r}: use letters, digits and _ only")
+S = importlib.import_module(f"my_secrets_{INSTANCE}" if INSTANCE else "my_secrets")
+SUFFIX = f"-{INSTANCE}" if INSTANCE else ""
 
 RESOLUTION_MAP = {
     "144p": (256, 144),
@@ -60,6 +69,10 @@ PRIVACY_STATUS = getattr(S, "PRIVACY_STATUS", "private")
 RESOLUTION = getattr(S, "RESOLUTION", "720p")
 FRAME_RATE = getattr(S, "FRAME_RATE", 10)
 SENSOR_MODE = getattr(S, "SENSOR_MODE", "2304:1296")
+# Which camera, by the sensor name `rpicam-hello --list-cameras` prints
+# ("imx708_wide", "imx477", ...). None takes the first. On a Pi with two
+# cameras, name it: the index of a camera shifts if the other one is missing.
+CAMERA_SENSOR = getattr(S, "CAMERA_SENSOR", None)
 CAMERA_VFLIP = getattr(S, "CAMERA_VFLIP", False)
 CAMERA_HFLIP = getattr(S, "CAMERA_HFLIP", False)
 TIMESTAMP_OVERLAY = getattr(S, "TIMESTAMP_OVERLAY", True)
@@ -91,7 +104,7 @@ MASK_RECTS = getattr(S, "MASK_RECTS", [])
 CV_THREADS = getattr(S, "CV_THREADS", 2)
 # Every SNAPSHOT_SEC, the last frame sent (already blurred) is saved here, so
 # what goes out can be checked over SSH without opening YouTube.
-SNAPSHOT_PATH = getattr(S, "SNAPSHOT_PATH", "/tmp/picam-stream-latest.jpg")
+SNAPSHOT_PATH = getattr(S, "SNAPSHOT_PATH", f"/tmp/picam-stream{SUFFIX}-latest.jpg")
 SNAPSHOT_SEC = getattr(S, "SNAPSHOT_SEC", 30)
 # A restart (stopping the stream to use the camera, a code update, a crash, a
 # reboot) goes back to the broadcast that was live, so its link keeps working,
@@ -99,7 +112,7 @@ SNAPSHOT_SEC = getattr(S, "SNAPSHOT_SEC", 30)
 # broadcasts with enableAutoStop off, so YouTube keeps them live through the
 # gap. Older than that, it ends that broadcast and starts a new one as before.
 # The file holds the stream key, so only its owner can read it. 0 turns it off.
-BROADCAST_STATE = Path(getattr(S, "BROADCAST_STATE", HERE / "broadcast.json"))
+BROADCAST_STATE = Path(getattr(S, "BROADCAST_STATE", HERE / f"broadcast{SUFFIX}.json"))
 BROADCAST_REUSE_SEC = getattr(S, "BROADCAST_REUSE_SEC", 600)
 # Exists once systemd-timesyncd has set the clock since boot.
 CLOCK_SYNCED = Path("/run/systemd/timesync/synchronized")
@@ -390,7 +403,8 @@ class LatestFrame(threading.Thread):
 
 
 def wait_for_camera():
-    """Block until libcamera lists a camera.
+    """Block until libcamera lists the camera; return its index, or None for
+    rpicam's default when CAMERA_SENSOR is None.
 
     Called before the Lambda is touched, so a Pi that boots without its camera
     (a loose ribbon, or a reboot the firmware's auto-detect missed) neither ends
@@ -406,19 +420,28 @@ def wait_for_camera():
             out = r.stdout + r.stderr
         except subprocess.TimeoutExpired:
             out = ""
-        if "Available cameras" in out:
-            return
-        print("No camera found; checking again in 60 s", flush=True)
+        if CAMERA_SENSOR is None:
+            if "Available cameras" in out:
+                return None
+        else:
+            # Lines like "1 : imx477 [4056x3040 12-bit RGGB] (/base/...)".
+            for index, sensor in re.findall(r"^\s*(\d+) : (\S+) \[", out, re.M):
+                if sensor == CAMERA_SENSOR:
+                    print(f"Camera {index} is the {sensor}", flush=True)
+                    return int(index)
+        print(f"No {CAMERA_SENSOR or 'camera'} found; checking again in 60 s", flush=True)
         time.sleep(60)
 
 
-def camera_cmd(width, height):
+def camera_cmd(width, height, index=None):
     cmd = shutil.which("rpicam-vid") or shutil.which("libcamera-vid")
     if not cmd:
         raise SystemExit("rpicam-vid not found")
     args = [cmd, "--nopreview", "-t", "0", "--flush", "--codec", "yuv420",
             "--width", str(width), "--height", str(height),
             "--framerate", str(FRAME_RATE)]  # fmt: skip
+    if index is not None:
+        args += ["--camera", str(index)]
     if SENSOR_MODE:
         args += ["--mode", SENSOR_MODE]
     if CAMERA_VFLIP:
@@ -457,11 +480,11 @@ def draw_timestamp(frame):
                 (255, 255, 255), thick, cv2.LINE_AA)  # fmt: skip
 
 
-def stream_once(state, width, height, blur):
+def stream_once(state, width, height, blur, index=None):
     """Run one camera -> blur -> ffmpeg session until something exits."""
     # Buffered stdout, so read(n) returns a whole frame rather than whatever
     # the pipe holds. The camera's own log goes to the journal.
-    cam = subprocess.Popen(camera_cmd(width, height), stdout=subprocess.PIPE)
+    cam = subprocess.Popen(camera_cmd(width, height, index), stdout=subprocess.PIPE)
     enc = subprocess.Popen(ffmpeg_cmd(state["ffmpeg_url"], width, height),
                            stdin=subprocess.PIPE)  # fmt: skip
     reader = LatestFrame(cam.stdout, width, height)
@@ -522,18 +545,19 @@ def main():
     width, height = RESOLUTION_MAP[RESOLUTION]
     cv2.setNumThreads(CV_THREADS)
     blur = FaceBlur(width, height)  # load before going live: fail closed
-    print(f"{RESOLUTION} {width}x{height} @ {FRAME_RATE} fps, sensor mode "
-          f"{SENSOR_MODE or 'auto'}, face detection: {blur.describe()}, "
-          f"{len(MASK_RECTS)} fixed masks", flush=True)  # fmt: skip
+    print(f"{INSTANCE or 'picam-stream'}: {RESOLUTION} {width}x{height} @ {FRAME_RATE} fps, "
+          f"camera {CAMERA_SENSOR or 'default'}, sensor mode {SENSOR_MODE or 'auto'}, "
+          f"face detection: {blur.describe()}, {len(MASK_RECTS)} fixed masks",
+          flush=True)  # fmt: skip
 
     signal.signal(signal.SIGTERM, lambda *_: sys.exit(0))
-    wait_for_camera()
+    index = wait_for_camera()
     state = create_broadcast()
     quick = 0
     while True:
         print("Starting stream", flush=True)
         t = time.monotonic()
-        stream_once(state, width, height, blur)
+        stream_once(state, width, height, blur, index)
         if state["reused"]:
             # A broadcast gone back to that keeps failing within a minute was
             # probably ended (in YouTube Studio, say): forget it, and exit so
