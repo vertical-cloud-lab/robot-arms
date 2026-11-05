@@ -1,0 +1,2025 @@
+{
+ "date": "2026-11-05 (UTC); 2026-11-04 evening, Utah time",
+ "issue": "https://github.com/vertical-cloud-lab/robot-arms/issues/66",
+ "method": "curl on camera Pi 2, rate-capped at 200 kB/s, over Tailscale SSH from the CI runner (Amazon blocks CI IP ranges); HTML parsed on the runner. Search results are the first page, in Amazon's order; 'sponsored' marks ads.",
+ "amazon_searches": {
+  "usb c female to female adapter 240w": [
+   {
+    "asin": "B0FFGX72JK",
+    "title": "USBC Female to Female Adapter (3 Pack), 240W/40Gbps/8k USB C Coupler",
+    "price": "$7.99",
+    "rating": "4.5",
+    "reviews": "172",
+    "sponsored": true
+   },
+   {
+    "asin": "B0F2MN9V5Q",
+    "title": "240W USB C Female to Female Adapter 2 Pack, USB C to USB C Coupler Extender",
+    "price": "$6.49",
+    "rating": "4.5",
+    "reviews": "186",
+    "sponsored": true
+   },
+   {
+    "asin": "B0CTT1FJL6",
+    "title": "240W USB C Coupler (2 Pack), USB Type C Female to Female Adapter Extender Compatible with Thunderbolt 4/3 Support up to 240W Charging, 40Gbps Data Tra",
+    "price": "$6.99",
+    "rating": "4.3",
+    "reviews": "884",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F8C55Y1S",
+    "title": "240W for USB C Thunderbolt 5 Coupler Female to Female 2Pack, 120Gbps Bandwidth, 80Gbps, Dual 8K, 4K 540Hz, Triple 4K 144Hz for Thunderbolt 5/4, iPhone",
+    "price": "$29.99",
+    "rating": "4.1",
+    "reviews": "56",
+    "sponsored": false
+   },
+   {
+    "asin": "B0GR3PK2JN",
+    "title": "3 Pack USB C Coupler, USB Type C Female to Female Adapter Extender Compatible with Thunderbolt 4/3 Support up to 240W Charging, 40Gbps Data Transfer a",
+    "price": "$6.99",
+    "rating": "4.4",
+    "reviews": "90",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BRCMGJS3",
+    "title": "240W USB C Coupler (2 Pack), USB C Female to Female Adapter Extender, Support up to 240W Charging, 40Gbps Data Transfer, 8K@60Hz Video, Compatible wit",
+    "price": "$7.59",
+    "rating": "4.4",
+    "reviews": "682",
+    "sponsored": false
+   },
+   {
+    "asin": "B0GK7G54ZS",
+    "title": "pzoz USB C Female to Female Adapter, USB4 Coupler, 240W PD 3.1 40Gbps",
+    "price": "$9.99",
+    "rating": "4.2",
+    "reviews": "22",
+    "sponsored": true
+   },
+   {
+    "asin": "B0F7QWT92N",
+    "title": "Hagibis 240W 80Gbps 8K@60Hz USB C Adapter, USB-C Female to Female Adapter, USB4 Connecter for Thunderbolt 5/4/3, Laptop, Switch, Dock, Mac, Tablet, iP",
+    "price": "$5.99",
+    "rating": "4.2",
+    "reviews": "63",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F2MN9V5Q",
+    "title": "240W USB C Female to Female Adapter 2 Pack, USB C to USB C Coupler Extender",
+    "price": "$6.49",
+    "rating": "4.5",
+    "reviews": "186",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CSVGGLH9",
+    "title": "ELUTENG 3 Pack Coupler 240W USB C to USB C Connector Female to Female Adapter 40Gbps Type C Extender Adapter Video Display for TV PC Laptop Tablet Pho",
+    "price": "$6.99",
+    "rating": "4.6",
+    "reviews": "249",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F6CLLKSR",
+    "title": "240W USB C Coupler 2-Pack, USB C Female to Female Adapter [80Gbps/240W PD/8K@60Hz] Type C Extender Adapter Support Thunderbolt 5/4 for iPhone 15, MacB",
+    "price": "$8.69",
+    "rating": "4.3",
+    "reviews": "69",
+    "sponsored": false
+   },
+   {
+    "asin": "B0HCKQB45N",
+    "title": "USB-C Female to Female Adapter 3 Pack,100W PD USB-C 3.2 (Black)",
+    "price": "$8.99",
+    "rating": "",
+    "reviews": "",
+    "sponsored": true
+   },
+   {
+    "asin": "B0GS9JPQQ3",
+    "title": "Meliya 3 Pack USB C Coupler, 240W USB C Female to Female Adapter Extender Compatible for Thunderbolt 4/3 Support up to 240W Fast Charging & 40Gbps Dat",
+    "price": "$6.89",
+    "rating": "4.0",
+    "reviews": "14",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F9FMB54W",
+    "title": "Duttek 80Gbps USB C Female to Female Adapter 2Pack, | 8K 240W Only for USB4/Thunderbolt 4/5 Cables, USB C Coupler for MacBook, iPhone 15/16, Steam Dec",
+    "price": "$9.52",
+    "rating": "4.3",
+    "reviews": "113",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F83YJFB3",
+    "title": "Danfetsoy 240W USB C Coupler, 80Gbps USB C Female to Female Adapter Thunderbolt 5 Type C Coupler Support 240W Power Delivery & 80Gbps Data & 8K@60Hz V",
+    "price": "$8.89",
+    "rating": "4.5",
+    "reviews": "22",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F7XHYYBX",
+    "title": "5 Pack 240W/40Gbps/8K USB C Coupler,USB C Female to Female Adapter",
+    "price": "$13.99",
+    "rating": "4.3",
+    "reviews": "37",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FZ7VLXGB",
+    "title": "USB-C Female to Female Adapter, with Silicone Strap, 2 Pieces",
+    "price": "$13.99",
+    "rating": "4.2",
+    "reviews": "22",
+    "sponsored": true
+   },
+   {
+    "asin": "B0G6D6VJJ7",
+    "title": "PD 240W USB C Female to Female Adapter,80Gbps USB C Coupler",
+    "price": "$7.99",
+    "rating": "4.3",
+    "reviews": "15",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BVV979GR",
+    "title": "USB4 Type C Female to Female 240W Power 40Gbps Data 8K Video Extender Adapter for NS Phone Laptop",
+    "price": "$7.99",
+    "rating": "4.2",
+    "reviews": "11",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CD7HK9CQ",
+    "title": "CY Adapter USB4 Type C Female to Female Extension 240W Power 40Gbps Data 8K Video Extender Adapter",
+    "price": "$8.99",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   }
+  ],
+  "usb c coupler female to female 40gbps": [
+   {
+    "asin": "B0FFGX72JK",
+    "title": "USBC Female to Female Adapter (3 Pack), 240W/40Gbps/8k USB C Coupler",
+    "price": "$7.99",
+    "rating": "4.5",
+    "reviews": "172",
+    "sponsored": true
+   },
+   {
+    "asin": "B0F8C55Y1S",
+    "title": "240W for USB C Thunderbolt 5 Coupler Female to Female 2Pack, 120Gbps Bandwidth, 80Gbps, Dual 8K, 4K 540Hz, Triple 4K 144Hz for Thunderb",
+    "price": "$29.99",
+    "rating": "4.1",
+    "reviews": "56",
+    "sponsored": true
+   },
+   {
+    "asin": "B0CTT1FJL6",
+    "title": "240W USB C Coupler (2 Pack), USB Type C Female to Female Adapter Extender Compatible with Thunderbolt 4/3 Support up to 240W Charging, 40Gbps Data Tra",
+    "price": "$6.99",
+    "rating": "4.3",
+    "reviews": "884",
+    "sponsored": false
+   },
+   {
+    "asin": "B0D7YXYWV2",
+    "title": "100W USB C Female to Female Adapter (2 Pack), USB Type C Coupler Extender",
+    "price": "$5.99",
+    "rating": "4.3",
+    "reviews": "480",
+    "sponsored": false
+   },
+   {
+    "asin": "B0GTQCZ9NT",
+    "title": "3 Pack USB C Female to Female Adapter, USB C Coupler",
+    "price": "$6.49",
+    "rating": "4.0",
+    "reviews": "49",
+    "sponsored": false
+   },
+   {
+    "asin": "B0HJZKW2VY",
+    "title": "Meliya 4 Pack USB C Coupler, USB Type C Female to Female Adapter Extender Compatible with Thunderbolt 4/3 Support up to 240W Charging, 40Gbps Data Tra",
+    "price": "$8.99",
+    "rating": "5.0",
+    "reviews": "3",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CDKKN2XH",
+    "title": "USB C trapezoidal Jack USB 3.1 Type-C Female to Female trapezoidal Plug Socket Coupler Adapter for wall Panel Socket Panel Connection (",
+    "price": "$16.00",
+    "rating": "5.0",
+    "reviews": "4",
+    "sponsored": true
+   },
+   {
+    "asin": "B0CWV1DGHJ",
+    "title": "Duttek USB C Coupler 40Gbps, PD140W and 8K@60Hz Video Display, USB C Female to Female Adapter, Type C to Type C for Thunderbolt 4/3, MacBook Pro/Air, ",
+    "price": "$7.53",
+    "rating": "4.3",
+    "reviews": "402",
+    "sponsored": false
+   },
+   {
+    "asin": "B0GS9JPQQ3",
+    "title": "Meliya 3 Pack USB C Coupler, 240W USB C Female to Female Adapter Extender Compatible for Thunderbolt 4/3 Support up to 240W Fast Charging & 40Gbps Dat",
+    "price": "$6.89",
+    "rating": "4.0",
+    "reviews": "14",
+    "sponsored": false
+   },
+   {
+    "asin": "B0GR3PK2JN",
+    "title": "3 Pack USB C Coupler, USB Type C Female to Female Adapter Extender Compatible with Thunderbolt 4/3 Support up to 240W Charging, 40Gbps Data Transfer a",
+    "price": "$6.99",
+    "rating": "4.4",
+    "reviews": "90",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BRCMGJS3",
+    "title": "240W USB C Coupler (2 Pack), USB C Female to Female Adapter Extender, Support up to 240W Charging, 40Gbps Data Transfer, 8K@60Hz Video, Compatible wit",
+    "price": "$7.59",
+    "rating": "4.4",
+    "reviews": "682",
+    "sponsored": false
+   },
+   {
+    "asin": "B0GK7G54ZS",
+    "title": "pzoz USB C Female to Female Adapter, USB4 Coupler, 240W PD 3.1 40Gbps",
+    "price": "$9.99",
+    "rating": "4.2",
+    "reviews": "22",
+    "sponsored": true
+   },
+   {
+    "asin": "B0DGD3MS6R",
+    "title": "Duttek 240W USB C Female to Female Adapter, 40Gbps USB C Coupler, 8K@60Hz Video Display for Switch, Tablet, iPad, MacBook, Thunderbolt 4/3 (2Pack)",
+    "price": "$5.92",
+    "rating": "3.4",
+    "reviews": "31",
+    "sponsored": false
+   },
+   {
+    "asin": "B0GK6RQ2HX",
+    "title": "Danfetsoy 4-Pack USB C Female to Female Adapter, 100W USB C Coupler Female to Female Type C Extender, 40Gbps Data USB4 Thunderbolt 4 Connector with 8K",
+    "price": "$9.98",
+    "rating": "3.8",
+    "reviews": "7",
+    "sponsored": false
+   },
+   {
+    "asin": "B0D5CYNP93",
+    "title": "USB C Female to Female Adapter, USB C Coupler USB Type C Extender Connector",
+    "price": "$4.98",
+    "rating": "4.6",
+    "reviews": "202",
+    "sponsored": false
+   },
+   {
+    "asin": "B0GX9RYJVX",
+    "title": "Meliya USB C Coupler, USB Type C Female to Female Adapter Extender Compatible with Thunderbolt 4/3 Support up to 240W Charging, 40Gbps Data Transfer a",
+    "price": "$6.99",
+    "rating": "4.9",
+    "reviews": "7",
+    "sponsored": false
+   },
+   {
+    "asin": "B0HFHXV5PT",
+    "title": "5Pack USB C Female to Female Adapter, 40Gbps/240W/8K USB C Coupler",
+    "price": "$12.99",
+    "rating": "5.0",
+    "reviews": "1",
+    "sponsored": true
+   },
+   {
+    "asin": "B0BRCQ5J8H",
+    "title": "QIANRENON USB4.0 C Female 90 Degree Angle Adapter Coupler 240W 40Gbps Type C 4.0 Female to Female Right Angle Connector Extender, LED Indicator 8K Aud",
+    "price": "$11.99",
+    "rating": "3.3",
+    "reviews": "2",
+    "sponsored": false
+   },
+   {
+    "asin": "B0HFHXV5PT",
+    "title": "5Pack USB C Female to Female Adapter, 40Gbps/240W/8K USB C Coupler",
+    "price": "$12.99",
+    "rating": "5.0",
+    "reviews": "1",
+    "sponsored": false
+   },
+   {
+    "asin": "B0DB8SS5RS",
+    "title": "USB3.1Dual Type-C Threaded Fixed Recessed PanelMountFemaleAdapter",
+    "price": "$9.83",
+    "rating": "3.8",
+    "reviews": "15",
+    "sponsored": false
+   }
+  ],
+  "usb c 90 degree adapter male to female 240w": [
+   {
+    "asin": "B0D1V2BFQ1",
+    "title": "0.8FT Right Angle USB C 3.2 Gen2 Extension Cable,20Gbps 240W Male to Female",
+    "price": "$9.99",
+    "rating": "4.4",
+    "reviews": "795",
+    "sponsored": true
+   },
+   {
+    "asin": "B0CC2DM8T9",
+    "title": "Basesailor USB C 90 Degree Right Angle Adapter 3Pack,40Gbps Type C Extender",
+    "price": "$9.99",
+    "rating": "4.6",
+    "reviews": "1,384",
+    "sponsored": true
+   },
+   {
+    "asin": "B0CNGFZ1JD",
+    "title": "Silkland 40Gbps USB C 90 Degree Right Angle Adapter 2 Pack, 240W USB4",
+    "price": "$9.99",
+    "rating": "4.7",
+    "reviews": "1,124",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BRCN4FKB",
+    "title": "USB C Right Angle Adapter 240W (2-Pack), 90 Degree USB C Adapter, USBC 90 Degree Male to Female Connector Support 40Gbps Data Transfer, 8K@60Hz Video ",
+    "price": "$8.89",
+    "rating": "4.6",
+    "reviews": "278",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FNCT8NS7",
+    "title": "UGREEN 90 Degree USB C Adapter 3 Pack, Right Angle Male to Female Converter",
+    "price": "$9.99",
+    "rating": "4.7",
+    "reviews": "744",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CNVM1P1D",
+    "title": "CableCreation 90 Degree USB C Adapter 2-Pack, Right Angle USB C Adapter",
+    "price": "$9.99",
+    "rating": "4.3",
+    "reviews": "247",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CNVKQ586",
+    "title": "CableCreation Right Angle USB C Adapter 2-Pack, USB C 90 Degree Adapter",
+    "price": "$9.98",
+    "rating": "4.6",
+    "reviews": "232",
+    "sponsored": true
+   },
+   {
+    "asin": "B0CNGJTKNK",
+    "title": "Silkland 40Gbps USB C 90 Degree Right Angle Adapter 2 Pack, 240W USB4",
+    "price": "$9.99",
+    "rating": "4.7",
+    "reviews": "1,124",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BRCNMRVK",
+    "title": "USB C Right Angle Adapter PD 240W for Thunderbolt 4/3, Right Angle 90 Degree USB C Male to Female Extender USB 4.0 L Shape Connector with 8K@60Hz Vide",
+    "price": "$8.89",
+    "rating": "4.5",
+    "reviews": "221",
+    "sponsored": false
+   },
+   {
+    "asin": "B0GWQ6S4BX",
+    "title": "Silkland 40Gbps USB C 90 Degree Right Angle Adapter 2 Pack, 240W USB4",
+    "price": "$11.99",
+    "rating": "4.7",
+    "reviews": "1,124",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F841V1ZN",
+    "title": "Danfetsoy USB C Right Angle Adapter 80Gbps, Right Angle USB C Adapter 240W, White 90 Degree Type-C Male to Female Extension Extender for Tablet, Lapto",
+    "price": "$8.69",
+    "rating": "5.0",
+    "reviews": "9",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CXPTG15X",
+    "title": "90 Degree USB4 USB C Extension Cable, 1.6FT with Thunderbolt 4 Cable",
+    "price": "$13.99",
+    "rating": "4.2",
+    "reviews": "127",
+    "sponsored": true
+   },
+   {
+    "asin": "B0D26633TB",
+    "title": "8 Pack USB C Adapter 240W 40Gbps 8K 60Hz, 90 Degree Right Angle, Straight, U Shape, Female to Male, Female to Female USB C Extender for Steam Deck, RO",
+    "price": "$12.98",
+    "rating": "4.3",
+    "reviews": "50",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FHNXD5RT",
+    "title": "CableCreation 90 Degree USB C Adapter 2 Pack, Right Angle USB C Adapter",
+    "price": "$9.99",
+    "rating": "4.5",
+    "reviews": "32",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H25PLNWJ",
+    "title": "Kuulaa 240W USB C 90 Degree Right Angle Adapter 3 Pack, [8K 60Hz, 240W 40Gbps] Male to Female Adapter Extender Compatible Thunderbolt 4 for Steam Deck",
+    "price": "$5.99",
+    "rating": "5.0",
+    "reviews": "11",
+    "sponsored": false
+   },
+   {
+    "asin": "B0B77CJD7T",
+    "title": "JSAUX 90 Degree USB C to USB C Adapter 2-Pack, 240W 40Gbps, Gray",
+    "price": "$8.99",
+    "rating": "4.7",
+    "reviews": "2,902",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FHPJW69S",
+    "title": "CableCreation 90 Degree USB C Adapter 2 Pack, Right Angle USB C 80Gbps 240W",
+    "price": "$9.99",
+    "rating": "4.6",
+    "reviews": "20",
+    "sponsored": true
+   },
+   {
+    "asin": "B0F6CRKK8M",
+    "title": "80Gbps 90 Degree USB C Adapter 2 Pack, Right Angle USB C Adapter, 240W, 8K@60Hz, Type C Male to Female Connector Support Thunderbolt 5/4 for iPhone 15",
+    "price": "$8.89",
+    "rating": "4.4",
+    "reviews": "48",
+    "sponsored": false
+   },
+   {
+    "asin": "B0B77J7D1R",
+    "title": "JSAUX 90 Degree USB C Male to Female Adapter 2-Pack, 100W 40Gbps",
+    "price": "$9.99",
+    "rating": "4.7",
+    "reviews": "2,902",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FLNZD32M",
+    "title": "DEWALT 240W 90-Degree USB-C Adapter (2 Styles), Right Angle USB C",
+    "price": "$19.99",
+    "rating": "4.6",
+    "reviews": "30",
+    "sponsored": false
+   }
+  ],
+  "right angle usb c adapter male to female": [
+   {
+    "asin": "B0CC2DM8T9",
+    "title": "Basesailor USB C 90 Degree Right Angle Adapter 3Pack,40Gbps Type C Extender",
+    "price": "$9.99",
+    "rating": "4.6",
+    "reviews": "1,384",
+    "sponsored": true
+   },
+   {
+    "asin": "B0D1V2BFQ1",
+    "title": "0.8FT Right Angle USB C 3.2 Gen2 Extension Cable,20Gbps 240W Male to Female",
+    "price": "$9.99",
+    "rating": "4.4",
+    "reviews": "795",
+    "sponsored": true
+   },
+   {
+    "asin": "B0FNCT8NS7",
+    "title": "UGREEN 90 Degree USB C Adapter 3 Pack, Right Angle Male to Female Converter",
+    "price": "$9.99",
+    "rating": "4.7",
+    "reviews": "744",
+    "sponsored": false
+   },
+   {
+    "asin": "B0B2NJ3P3L",
+    "title": "AreMe 90 Degree USB-C Male to Female Adapter 2 Pack, Metallic Purple",
+    "price": "$4.99",
+    "rating": "4.5",
+    "reviews": "2,690",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CNGFZ1JD",
+    "title": "Silkland 40Gbps USB C 90 Degree Right Angle Adapter 2 Pack, 240W USB4",
+    "price": "$9.99",
+    "rating": "4.7",
+    "reviews": "1,124",
+    "sponsored": false
+   },
+   {
+    "asin": "B0B77J7D1R",
+    "title": "JSAUX 90 Degree USB C Male to Female Adapter 2-Pack, 100W 40Gbps",
+    "price": "$9.99",
+    "rating": "4.7",
+    "reviews": "2,902",
+    "sponsored": false
+   },
+   {
+    "asin": "B0G2LH5G5G",
+    "title": "USB C 90 Degree Adapter 3Pack,PD 100W 40Gbps Right Angle Extender",
+    "price": "$9.99",
+    "rating": "4.6",
+    "reviews": "1,248",
+    "sponsored": true
+   },
+   {
+    "asin": "B0CC2DM8T9",
+    "title": "Basesailor USB C 90 Degree Right Angle Adapter 3Pack,40Gbps Type C Extender",
+    "price": "$9.99",
+    "rating": "4.6",
+    "reviews": "1,384",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FPWRQXQ4",
+    "title": "2pack 90 Degree USB C Extension Cable, Usb2.0 C Male to Female Adapter, 4inch/10cm Short Right Angle USB Male to Female Cable, Only Compatible with Po",
+    "price": "$8.99",
+    "rating": "3.7",
+    "reviews": "61",
+    "sponsored": false
+   },
+   {
+    "asin": "B09FJVZ3GK",
+    "title": "AGVEE 90 Degree USB-C Male to USB-C Female Angled Adapter",
+    "price": "$9.99",
+    "rating": "4.5",
+    "reviews": "901",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CJMKN19Y",
+    "title": "90 Degree Right Angle USB C Adapter (2 Pack), USB Type-C Male to Female Extender Connector, 40Gbps, 8K@60Hz Compatible with MacBook Pro/Air, iPhone 15",
+    "price": "$5.99",
+    "rating": "4.6",
+    "reviews": "108",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H9QC3PY8",
+    "title": "4 Pack 90 Degree USB C Adapter,240W/40Gbps,Right Angle USBC Adapter",
+    "price": "$9.99",
+    "rating": "4.9",
+    "reviews": "25",
+    "sponsored": true
+   },
+   {
+    "asin": "B0CWD7PT6L",
+    "title": "AreMe 2 Pack 90 Degree Right Angle USB C Male to Female Adapter, White",
+    "price": "$5.99",
+    "rating": "4.4",
+    "reviews": "49",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BBW8JKJX",
+    "title": "USB C to USB 3.0 Adapter 90 Degree (3 Pack), USB-A 3.0 Female to USB-C 3.1 Male Right Angle OTG Adapter Compatible with MacBook Pro, iPhone 17/16/15, ",
+    "price": "$6.79",
+    "rating": "4.3",
+    "reviews": "681",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BNMCMYNF",
+    "title": "USB C 90 Degree Adapter (2 Pack), Up and Down Right Angle L Shape USB Type C Male to Female Connector for Steam Deck, ROG Ally, MacBook, Tablet, Phone",
+    "price": "$5.99",
+    "rating": "4.5",
+    "reviews": "1,472",
+    "sponsored": false
+   },
+   {
+    "asin": "B0HCZ68245",
+    "title": "90 Degree USB C Adapter, 4 Pack Right Angle Type-C Male to Female Converter | 40Gbps, 100W, 8K 60Hz, Compatible for Steam Deck, ROG Ally, Switch 2, Ma",
+    "price": "$7.99",
+    "rating": "3.9",
+    "reviews": "38",
+    "sponsored": false
+   },
+   {
+    "asin": "B0HCC5C4VN",
+    "title": "ELUTENG USB C Extension Adapter 2Pack 90 Degree Right Angle Type C Extender",
+    "price": "$20.69",
+    "rating": "4.3",
+    "reviews": "5",
+    "sponsored": true
+   },
+   {
+    "asin": "B0FHNXD5RT",
+    "title": "CableCreation 90 Degree USB C Adapter 2 Pack, Right Angle USB C Adapter",
+    "price": "$9.99",
+    "rating": "4.5",
+    "reviews": "32",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CF9Q98MV",
+    "title": "Duttek Right Angle USB C to USB A Adapter 120W 10Gbps, 90 Degree USB A to C Adapter, Type C Female to Type A Male Converter Fast Charging Compatible w",
+    "price": "$8.82",
+    "rating": "4.5",
+    "reviews": "129",
+    "sponsored": false
+   },
+   {
+    "asin": "B0D7L8P1T7",
+    "title": "90 Degree USB C Adapter 2 Pack, Right Angle Male to Female Converter",
+    "price": "$5.99",
+    "rating": "4.5",
+    "reviews": "81",
+    "sponsored": false
+   }
+  ],
+  "charuco calibration board": [
+   {
+    "asin": "B0HL4CC3ML",
+    "title": "ChArUco Calibration Board, Aluminum Substrate, Machine Vision",
+    "price": "$171.32",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B08172689J",
+    "title": "Check Board Calibrator Lens Focus Calibration Chart Checkerboard Pattern Calibrating PET Or Aluminium Oxide Chess Board 18×18 (100×100)",
+    "price": "$63.98",
+    "rating": "",
+    "reviews": "",
+    "sponsored": true
+   },
+   {
+    "asin": "B0HL4L4D5B",
+    "title": "ChArUco Calibration Board, Aluminum Substrate, Machine Vision",
+    "price": "$1,614.59",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0HL459PT7",
+    "title": "ChArUco Calibration Board, Aluminum Substrate, Machine Vision",
+    "price": "$853.26",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0HL3HY8S3",
+    "title": "ChArUco Calibration Board, Aluminum Substrate, Machine Vision",
+    "price": "$231.08",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0HL4N11SG",
+    "title": "ChArUco Calibration Board, Aluminum Substrate, Machine Vision",
+    "price": "$622.16",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BNQ2MXLT",
+    "title": "Chessboard Calibrator Lens Test Target Focus Calibration Chart Camera Distortion Correction Pattern Checker Oxidized Aluminum on Glass ",
+    "price": "$358.00",
+    "rating": "",
+    "reviews": "",
+    "sponsored": true
+   },
+   {
+    "asin": "B08172689J",
+    "title": "Check Board Calibrator Lens Focus Calibration Chart Checkerboard Pattern Calibrating PET Or Aluminium Oxide Chess Board 18×18 (100×100), Aluminium Oxi",
+    "price": "$63.98",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0HL49QMJS",
+    "title": "ChArUco Calibration Board, Aluminum Substrate, Machine Vision",
+    "price": "$331.54",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0HL3NX5KD",
+    "title": "ChArUco Calibration Board, Aluminum Substrate, Machine Vision",
+    "price": "$305.79",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0HL4DDKT3",
+    "title": "ChArUco Calibration Board, Aluminum Substrate, Machine Vision",
+    "price": "$433.40",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0HL4CC3ML",
+    "title": "ChArUco Calibration Board, Aluminum Substrate, Machine Vision",
+    "price": "$171.32",
+    "rating": "",
+    "reviews": "",
+    "sponsored": true
+   },
+   {
+    "asin": "B0BNQ2MXLT",
+    "title": "Chessboard Calibrator Lens Test Target Focus Calibration Chart Camera Distortion Correction Pattern Checker Oxidized Aluminum on Glass Base 18 Rows 18",
+    "price": "$358.00",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0GQ3HRVH1",
+    "title": "Creality Original Calibration Board for 3D Scanner,",
+    "price": "$119.00",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H6SB6478",
+    "title": "Glass Checkerboard Calibration Board Chrome Coated 0.59\"-4.65\" OpenCV Vision Target 1pcs Q20-15-0.1-Precision±0.5μm",
+    "price": "$23.89",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H6SD8959",
+    "title": "Glass Checkerboard Calibration Board Chrome Coated 0.59\"-4.65\" OpenCV Vision Target 1pcs Q20-28-1.0-Precision±0.5μm",
+    "price": "$27.63",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H6SBNLG1",
+    "title": "Glass Checkerboard Calibration Board Chrome Coated 0.59\"-4.65\" OpenCV Vision Target 1pcs Q20-60-2.5-Precision±0.5μm",
+    "price": "$64.16",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0HH6PP6VZ",
+    "title": "Chrome Glass Checkerboard Calibration Board for OpenCV Q20-15-0.1",
+    "price": "$76.99",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CHH626W2",
+    "title": "Datacolor SpyderCheckr Video Color Checker & Color Grading Card",
+    "price": "$127.96",
+    "rating": "4.4",
+    "reviews": "61",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FMJFPTVG",
+    "title": "Datacolor SpyderExpress Monitor Calibrator & Screen Color Calibrator",
+    "price": "$119.00",
+    "rating": "4.2",
+    "reviews": "200",
+    "sponsored": true
+   }
+  ],
+  "aruco marker calibration board": [
+   {
+    "asin": "B0HL4CC3ML",
+    "title": "ChArUco Calibration Board, Aluminum Substrate, Machine Vision",
+    "price": "$171.32",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B08172689J",
+    "title": "Check Board Calibrator Lens Focus Calibration Chart Checkerboard Pattern Calibrating PET Or Aluminium Oxide Chess Board 18×18 (100×100)",
+    "price": "$63.98",
+    "rating": "",
+    "reviews": "",
+    "sponsored": true
+   },
+   {
+    "asin": "B0HL3HY8S3",
+    "title": "ChArUco Calibration Board, Aluminum Substrate, Machine Vision",
+    "price": "$231.08",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0HL4N11SG",
+    "title": "ChArUco Calibration Board, Aluminum Substrate, Machine Vision",
+    "price": "$622.16",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B08172689J",
+    "title": "Check Board Calibrator Lens Focus Calibration Chart Checkerboard Pattern Calibrating PET Or Aluminium Oxide Chess Board 18×18 (100×100), Aluminium Oxi",
+    "price": "$63.98",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H6SB6478",
+    "title": "Glass Checkerboard Calibration Board Chrome Coated 0.59\"-4.65\" OpenCV Vision Target 1pcs Q20-15-0.1-Precision±0.5μm",
+    "price": "$23.89",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0D17B4YRD",
+    "title": "8 Pack ADAS Calibration Tool Floor Markers, Reusable Rubber Squares",
+    "price": "$109.00",
+    "rating": "5.0",
+    "reviews": "2",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H6SD8959",
+    "title": "Glass Checkerboard Calibration Board Chrome Coated 0.59\"-4.65\" OpenCV Vision Target 1pcs Q20-28-1.0-Precision±0.5μm",
+    "price": "$27.63",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B08172JHHT",
+    "title": "Lens Focus Calibration Chart Film Pattern Calibrating PET Or Aluminium Oxide Chess Board 18×18 (50×50), Aluminium Oxide",
+    "price": "$37.98",
+    "rating": "1.0",
+    "reviews": "1",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BNQ2MXLT",
+    "title": "Chessboard Calibrator Lens Test Target Focus Calibration Chart Camera Distortion Correction Pattern Checker Oxidized Aluminum on Glass Base 18 Rows 18",
+    "price": "$358.00",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H6SBNLG1",
+    "title": "Glass Checkerboard Calibration Board Chrome Coated 0.59\"-4.65\" OpenCV Vision Target 1pcs Q20-60-2.5-Precision±0.5μm",
+    "price": "$64.16",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H6S3L6J1",
+    "title": "Glass Checkerboard Calibration Board Chrome Coated 0.59\"-4.65\" OpenCV Vision Target 1pcs Q20-20-0.75-Precision±0.5μm",
+    "price": "$26.19",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H72FC1GH",
+    "title": "OpenCV Chessboard Calibration Board Aluminum & Glass Reticle 12x9 Grid Vision Target 0.98\"-31.5\" 1pcs Q12-100-6（Glass）",
+    "price": "$44.60",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0816Z6TT1",
+    "title": "Lens Focus Calibration Chart Film Pattern Calibrating PET Or Aluminium Oxide Chess Board (12×9(200×200), PET)",
+    "price": "$31.98",
+    "rating": "1.0",
+    "reviews": "1",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H72LCG35",
+    "title": "OpenCV Chessboard Calibration Board Aluminum & Glass Reticle 12x9 Grid Vision Target 0.98\"-31.5\" 1pcs Q12-290-20（Glass）",
+    "price": "$112.39",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H667DBDQ",
+    "title": "Calibration Plate Glass Sheet, Optical Calibration Plate, Round Reflective Dot Correction Sheet, Test Calibration Card for Machine Vision, 1PCS (100 *",
+    "price": "$48.00",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FKGHKTG2",
+    "title": "Creality 3D Scaner Calibration Board for Ferret/Otter Series, High-Precision & High Hardness & High Quality, for More Precise Scanning with The 3D Sca",
+    "price": "$39.99",
+    "rating": "3.9",
+    "reviews": "4",
+    "sponsored": false
+   },
+   {
+    "asin": "B0HBMJ344B",
+    "title": "Guide Steuerpimpel Fits Dual Turntables 1219 1229 1229Q 701, 15 Pack Set",
+    "price": "$11.59",
+    "rating": "3.8",
+    "reviews": "3",
+    "sponsored": true
+   },
+   {
+    "asin": "B0GYSY78N7",
+    "title": "2pcs MGN12 150mm Linear Sliding Rail Guide with MGN12H Sliding Block",
+    "price": "$23.99",
+    "rating": "5.0",
+    "reviews": "5",
+    "sponsored": true
+   },
+   {
+    "asin": "B0B8S92G1T",
+    "title": "Turntable Cartridge Alignment Protractor Mat, Anti-Sliding LP Vinyl Record Pickup Calibration Plate Distance Gauge Protractor Adjustmen",
+    "price": "$20.88",
+    "rating": "4.5",
+    "reviews": "45",
+    "sponsored": true
+   }
+  ],
+  "camera calibration board checkerboard": [
+   {
+    "asin": "B08172689J",
+    "title": "Check Board Calibrator Lens Focus Calibration Chart Checkerboard Pattern Calibrating PET Or Aluminium Oxide Chess Board 18×18 (100×100)",
+    "price": "$63.98",
+    "rating": "",
+    "reviews": "",
+    "sponsored": true
+   },
+   {
+    "asin": "B0BNQ2MXLT",
+    "title": "Chessboard Calibrator Lens Test Target Focus Calibration Chart Camera Distortion Correction Pattern Checker Oxidized Aluminum on Glass ",
+    "price": "$358.00",
+    "rating": "",
+    "reviews": "",
+    "sponsored": true
+   },
+   {
+    "asin": "B08172689J",
+    "title": "Check Board Calibrator Lens Focus Calibration Chart Checkerboard Pattern Calibrating PET Or Aluminium Oxide Chess Board 18×18 (100×100), Aluminium Oxi",
+    "price": "$63.98",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F74H3G4T",
+    "title": "Diffuse Reflection Plastic Calibrator Checkerboard Pattern 9 * 12 (70 * 70mm)",
+    "price": "$40.98",
+    "rating": "4.0",
+    "reviews": "1",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H6SB6478",
+    "title": "Glass Checkerboard Calibration Board Chrome Coated 0.59\"-4.65\" OpenCV Vision Target 1pcs Q20-15-0.1-Precision±0.5μm",
+    "price": "$23.89",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FT7LMYCR",
+    "title": "360 Car Camera Calibration Mats, Calibration Grid Cloth for Auto 3D Degree Panoramic Bird's-Eye DVR System (3D)",
+    "price": "$69.80",
+    "rating": "5.0",
+    "reviews": "4",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FC6KW62X",
+    "title": "ARTIBETTER Camera Focus Calibration Card Lens Test Chart Color Wheel Chart for CCTV Installation Alignment Indoor Outdoor Use 15.7 X 12",
+    "price": "$17.99",
+    "rating": "5.0",
+    "reviews": "2",
+    "sponsored": true
+   },
+   {
+    "asin": "B0G46WQTHZ",
+    "title": "Auto 360 Car Camera Calibration Mats, Diagnostic Grid Cloth Tools for Panoramic Bird's-Eye Vehicle Backup DVR System, 3D",
+    "price": "$59.80",
+    "rating": "5.0",
+    "reviews": "2",
+    "sponsored": false
+   },
+   {
+    "asin": "B0G46TS68D",
+    "title": "360 Car Camera Calibration Mats, Auto Diagnostic Grid Cloth Tools for Panoramic Bird's-Eye Vehicle Backup DVR System, E + A",
+    "price": "$39.90",
+    "rating": "4.6",
+    "reviews": "8",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H6SD8959",
+    "title": "Glass Checkerboard Calibration Board Chrome Coated 0.59\"-4.65\" OpenCV Vision Target 1pcs Q20-28-1.0-Precision±0.5μm",
+    "price": "$27.63",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0816ZCYW2",
+    "title": "Lens Calibrater Focus Calibration Chart Film Calibrating PET Chess Board Pattern 12×9 (150×150)",
+    "price": "$22.98",
+    "rating": "1.0",
+    "reviews": "1",
+    "sponsored": false
+   },
+   {
+    "asin": "B095C74BY3",
+    "title": "Small Grey White Balance Card 18% and Grey Reference Reflector Board with Carrying Bag Photography Card Custom Calibration Camera Check",
+    "price": "$13.98",
+    "rating": "4.4",
+    "reviews": "122",
+    "sponsored": true
+   },
+   {
+    "asin": "B0H6S529CZ",
+    "title": "Glass Checkerboard Calibration Board Chrome Coated 0.59\"-4.65\" OpenCV Vision Target 1pcs Q20-15-0.5-Precision±0.5μm",
+    "price": "$23.89",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H6SBNLG1",
+    "title": "Glass Checkerboard Calibration Board Chrome Coated 0.59\"-4.65\" OpenCV Vision Target 1pcs Q20-60-2.5-Precision±0.5μm",
+    "price": "$64.16",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H6KNPN8J",
+    "title": "Film Checkerboard Calibration Target Flexible Transparent Test Chart 1.97\"-19.69\" 1pcs Q37-200-200×200mm",
+    "price": "$25.30",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BNQ2MXLT",
+    "title": "Chessboard Calibrator Lens Test Target Focus Calibration Chart Camera Distortion Correction Pattern Checker Oxidized Aluminum on Glass Base 18 Rows 18",
+    "price": "$358.00",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H6S529CZ",
+    "title": "Glass Checkerboard Calibration Board Chrome Coated 0.59\"-4.65\" OpenCV Vision Target 1pcs Q20-15-0.5-Precision±0.5μm",
+    "price": "$23.89",
+    "rating": "",
+    "reviews": "",
+    "sponsored": true
+   },
+   {
+    "asin": "B081719KKK",
+    "title": "Lens Focus Calibration Chart Film Pattern Calibrating PET Chess Board Pattern 12×9 (50×50)",
+    "price": "$20.98",
+    "rating": "1.0",
+    "reviews": "1",
+    "sponsored": false
+   },
+   {
+    "asin": "B0973HSH3V",
+    "title": "Calibrite ColorChecker Passport Photo 2 Portable Color Calibration Kit for Photo and Video, 4 Target Set for White Balance, Exposure and Camera Profil",
+    "price": "$119.00",
+    "rating": "4.3",
+    "reviews": "761",
+    "sponsored": false
+   },
+   {
+    "asin": "B0973KMBN2",
+    "title": "Calibrite ColorChecker Video Color Target w/White Balance Reference for Video Production, Vectorscope and Waveform Optimized Layout with Skin Tones an",
+    "price": "$149.00",
+    "rating": "4.1",
+    "reviews": "223",
+    "sponsored": false
+   }
+  ],
+  "apriltag board": [
+   {
+    "asin": "B0F7RCFLGF",
+    "title": "Custom Metal Sign Outdoor - 24x18 Inches Personalized with Text, Logo & Image, Reflective & Glow in the Dark Option - Rust Free .040 Al",
+    "price": "$45.79",
+    "rating": "4.1",
+    "reviews": "9",
+    "sponsored": true
+   },
+   {
+    "asin": "B0CJ394L31",
+    "title": "24 x 30 Inch White Felt Letter Board, Wall-Mounted Restaurant Menu Board",
+    "price": "$65.99",
+    "rating": "4.4",
+    "reviews": "70",
+    "sponsored": false
+   },
+   {
+    "asin": "B0C137JKLD",
+    "title": "Felt Letter Board 12x16 Inch Rustic Wood Frame,Pre Cut & Sorted 725 Letters with Stand, Dark Grey Changeable Letter Boards Message Board Sign, Classro",
+    "price": "$29.99",
+    "rating": "4.8",
+    "reviews": "9,608",
+    "sponsored": false
+   },
+   {
+    "asin": "B0DWSMHBJL",
+    "title": "Large All Black Felt Letter Board | 24\"x30\" Classy Black Frame with 953 White Letters, Emojis & Characters | Premium Changeable Sign Boards for Price ",
+    "price": "$78.99",
+    "rating": "4.4",
+    "reviews": "70",
+    "sponsored": false
+   },
+   {
+    "asin": "B07RWBG83Q",
+    "title": "Cappuccino Felt Letter Board Back to School Sign with Rustic Wood White Frame - Farmhouse Letter Board Sign with Stand - Baby Announcement 10x10 Felt ",
+    "price": "$26.95",
+    "rating": "4.7",
+    "reviews": "3,040",
+    "sponsored": false
+   },
+   {
+    "asin": "B0GY71PYN7",
+    "title": "Cordless LED Noted Board with 14 Colors, Led Drawing Board Christmas Gift",
+    "price": "$35.99",
+    "rating": "5.0",
+    "reviews": "6",
+    "sponsored": true
+   },
+   {
+    "asin": "B0HH3HMXTH",
+    "title": "LED Drawing Board, 13.7\" x 10\" Acrylic Dry Erase Board with 4 Lighting Modes & 7 LED Colors, Reusable Light-Up Message Board for Drawin",
+    "price": "$16.99",
+    "rating": "4.6",
+    "reviews": "16",
+    "sponsored": true
+   },
+   {
+    "asin": "B0H5VZYQ1X",
+    "title": "Acrylic Film Clapboard 12x10 in, Dry Erase Movie Clapper Board with Wooden Handle, with Magnetic Blackboard Eraser and 2 Pens, Loud Cle",
+    "price": "$15.98",
+    "rating": "3.6",
+    "reviews": "5",
+    "sponsored": true
+   },
+   {
+    "asin": "B0FT35JPJK",
+    "title": "Magnetic Business Hours Sign, Changeable Store Hours Board for Glass Door",
+    "price": "$48.99",
+    "rating": "4.2",
+    "reviews": "26",
+    "sponsored": true
+   },
+   {
+    "asin": "B0H868T2VQ",
+    "title": "Rechargeable LED Drawing Board for Kids, Light Up Doodle Board",
+    "price": "$23.99",
+    "rating": "4.8",
+    "reviews": "16",
+    "sponsored": true
+   },
+   {
+    "asin": "B0GXJ45CNK",
+    "title": "LED Note Board with12+4 Color Light Modes,14.2\"x11\" Led Drawing Board, for Home/Office/DParty& Gifts, Acrylic Magnetic Whiteboard LED D",
+    "price": "$25.99",
+    "rating": "4.0",
+    "reviews": "14",
+    "sponsored": true
+   },
+   {
+    "asin": "B0FND9M9QC",
+    "title": "Lumiboard Led Drawing Board, LED Note Board with Colors, Light Up Acrylic Message Board,12\" x 8\" Light Up Clear Board, Acrylic Dry Eras",
+    "price": "$20.99",
+    "rating": "3.2",
+    "reviews": "44",
+    "sponsored": true
+   },
+   {
+    "asin": "B0B72BTPX2",
+    "title": "SCRIBBLEDO XY Axis Coordinate Graph Lap Boards 11x14 for Classroom Math Set",
+    "price": "$9.99",
+    "rating": "4.6",
+    "reviews": "227",
+    "sponsored": true
+   }
+  ],
+  "aruco mat": [
+   {
+    "asin": "B0G46TS68D",
+    "title": "360 Car Camera Calibration Mats, Auto Diagnostic Grid Cloth Tools for Panoramic Bird's-Eye Vehicle Backup DVR System, E + A",
+    "price": "$39.90",
+    "rating": "4.6",
+    "reviews": "8",
+    "sponsored": false
+   },
+   {
+    "asin": "B07PXJVVQJ",
+    "title": "35.4×15.7\" Reptile Carpet Coconut Fiber Substrate Large Lizard Cage Mat Coco Fiber Liner Snake Bedding Natual Coconut Fiber Carpet for ",
+    "price": "$14.98",
+    "rating": "4.4",
+    "reviews": "1,079",
+    "sponsored": true
+   },
+   {
+    "asin": "B0DFH9QMC3",
+    "title": "Puja Asana Sitting Mat for Pooja Room Ashan Home Mandir Kusha Korai Sabai Grass Asan for Prayer Yoga religious (Asan 18X18) Pack Of 4",
+    "price": "$23.99",
+    "rating": "3.0",
+    "reviews": "3",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CWNDF8PY",
+    "title": "VIVOSUN Coco Coir Liner 12 x 80 in, 100% Natural Coconut Fiber Mat",
+    "price": "$15.99",
+    "rating": "4.2",
+    "reviews": "119",
+    "sponsored": true
+   },
+   {
+    "asin": "B0G3F6TVZN",
+    "title": "OLANLY Front Door Mat Outside Entrance, Waterproof Heavy-Duty Doormat",
+    "price": "$16.99",
+    "rating": "4.6",
+    "reviews": "2,705",
+    "sponsored": true
+   },
+   {
+    "asin": "B08CHMFQGX",
+    "title": "KAF Home Coir Doormat with Heavy-Duty, Weather Resistant, Non-Slip PVC Backing | 17 by 30 Inches, 0.6 Inch Pile Height | Perfect for In",
+    "price": "$19.99",
+    "rating": "4.7",
+    "reviews": "2,893",
+    "sponsored": true
+   },
+   {
+    "asin": "B0DB57GJK6",
+    "title": "Entrance Door Mat Large 24 x 36 Inch Entry Way Doormat Front Door Rugs Outdoors Heavy Duty Welcome Mat Non Slip Rubber Back Low Profile",
+    "price": "$44.99",
+    "rating": "4.6",
+    "reviews": "1,200",
+    "sponsored": true
+   },
+   {
+    "asin": "B0D9W723H4",
+    "title": "OLANLY Front Door Mat Outside 47x23, All-Season Heavy-Duty Rubber Doormat",
+    "price": "$49.98",
+    "rating": "4.3",
+    "reviews": "13,424",
+    "sponsored": true
+   },
+   {
+    "asin": "B0CLL7XWZT",
+    "title": "Sturdy Front Door Mat, Absorbent Muddy Dirt Resist Welcome Door Mats Outdoor Indoor, Stain and Fade Resistant, Non-Slip Backing Entry M",
+    "price": "$12.99",
+    "rating": "4.6",
+    "reviews": "3,799",
+    "sponsored": true
+   },
+   {
+    "asin": "B0CQ4FF87W",
+    "title": "Coco Liner Roll, 16 x 40 Inch Coconut Fiber Liners for Planter Window Box Flower Basket, Natural Coco Coir Sheet Coco Mats for Animal P",
+    "price": "$9.99",
+    "rating": "4.6",
+    "reviews": "442",
+    "sponsored": true
+   },
+   {
+    "asin": "B0DNMTGJPY",
+    "title": "Color&Geometry Ultra-Thin Indoor Door Mat Entrance, 24\"x36\" Heather Khaki",
+    "price": "$38.99",
+    "rating": "4.6",
+    "reviews": "1,416",
+    "sponsored": true
+   }
+  ],
+  "robot arm calibration mat": [
+   {
+    "asin": "B0G46TS68D",
+    "title": "360 Car Camera Calibration Mats, Auto Diagnostic Grid Cloth Tools for Panoramic Bird's-Eye Vehicle Backup DVR System, E + A",
+    "price": "$39.90",
+    "rating": "4.6",
+    "reviews": "8",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FLJHB75T",
+    "title": "STREBITO Soldering Mat Electronics Mat Silicone Repair Mat 17.7''x11.8''",
+    "price": "$18.99",
+    "rating": "4.8",
+    "reviews": "835",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FH8CPXP7",
+    "title": "AI Robotic Arm Kit with Servo Motors – LeRobot SO-ARM101 Pro Low-Cost (Without 3D Printed Parts) | 6-DOF, Open-Source, Compatible with ",
+    "price": "$360.00",
+    "rating": "4.0",
+    "reviews": "11",
+    "sponsored": true
+   },
+   {
+    "asin": "B0HC6GBPD9",
+    "title": "Robotic Arm Embodied AI VLA Model Imitation Learning & Arduino Programming",
+    "price": "$379.99",
+    "rating": "",
+    "reviews": "",
+    "sponsored": true
+   },
+   {
+    "asin": "B0DC65P39H",
+    "title": "Sillbird Robot Building Kit with Remote Control STEM Gift for Boys Age 8-14",
+    "price": "$59.99",
+    "rating": "4.7",
+    "reviews": "968",
+    "sponsored": true
+   }
+  ],
+  "charuco board": [
+   {
+    "asin": "B0F252KQP1",
+    "title": "Charcuterie Board Set Bamboo with Cheese Knives and Bowls, Large Wooden Serving Platter for Entertaining, Housewarming and Wedding Gift",
+    "price": "$46.89",
+    "rating": "4.6",
+    "reviews": "68",
+    "sponsored": true
+   },
+   {
+    "asin": "B0B91C19MZ",
+    "title": "The Wedding Party Store Personalized Premium Charcuterie Cheese Board Tray Set with Spreader Utensil Tools with Any Name (Bamboo - Name",
+    "price": "$29.99",
+    "rating": "4.5",
+    "reviews": "44",
+    "sponsored": true
+   },
+   {
+    "asin": "B0GTX1QHPW",
+    "title": "Premium Acacia Charcuterie Board Set, Hosting Essentials, Cheese Platter, Marble-Style Insert, Drawer, 4 Stainless Steel Charcuterie Ut",
+    "price": "$41.90",
+    "rating": "4.7",
+    "reviews": "30",
+    "sponsored": true
+   },
+   {
+    "asin": "B07P5JSMXG",
+    "title": "Large Acacia Wood Charcuterie Board Set with 3 Removable Ceramic Bowls & Serving Utensils - Housewarming, Wedding, Bridal Shower, Home ",
+    "price": "$65.99",
+    "rating": "4.6",
+    "reviews": "388",
+    "sponsored": true
+   },
+   {
+    "asin": "B0HL4CC3ML",
+    "title": "ChArUco Calibration Board, Aluminum Substrate, Machine Vision",
+    "price": "$171.32",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   },
+   {
+    "asin": "B09SHH8CJY",
+    "title": "Zhanmai 4 Pcs Folding Blank Game Board 18 x 18 Inch, 4 Folds",
+    "price": "$23.99",
+    "rating": "4.7",
+    "reviews": "61",
+    "sponsored": false
+   },
+   {
+    "asin": "B08999CT7H",
+    "title": "Magnetic Ludo Board Game Set for Kids and Adults - 9.84 Inches",
+    "price": "$9.99",
+    "rating": "4.5",
+    "reviews": "246",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CZ4BPRTF",
+    "title": "Ilyapa Prize Drop Board, 27.5x41 In - Penny Drop Game, Chalkboard Sign",
+    "price": "$160.99",
+    "rating": "4.4",
+    "reviews": "44",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FVF1YFXS",
+    "title": "Charcuterie Board & Cutting Board for Kitchen – Acacia Wood Butcher Block with Juice Grooves & Handles, Large 16.5\"x11.6\" Serving Tray, Gift Box Inclu",
+    "price": "$23.99",
+    "rating": "4.1",
+    "reviews": "18",
+    "sponsored": false
+   },
+   {
+    "asin": "B099PJW6MG",
+    "title": "Ludo Magnetic Folding Travel Board Game Set - 9.75 Inches",
+    "price": "$9.99",
+    "rating": "4.7",
+    "reviews": "859",
+    "sponsored": false
+   },
+   {
+    "asin": "B00003G4JR",
+    "title": "Carrom Board Game Set — Large Board Games for Adults & Children — Over 85 Board Games for Family Game Night — All in One Board Game Set",
+    "price": "$139.99",
+    "rating": "4.5",
+    "reviews": "2,180",
+    "sponsored": false
+   },
+   {
+    "asin": "B0GSJ3T7ZS",
+    "title": "Solid Wood Ludo and Snake and Ladder Board Game Set -11.82 inches, Classic Board Game 2 in 1.Ludo Game Set.Snake and Ladder Game Set.",
+    "price": "$19.99",
+    "rating": "4.2",
+    "reviews": "28",
+    "sponsored": false
+   },
+   {
+    "asin": "B09DYNYXYS",
+    "title": "Ludo Game Board Set -9.5”, Magnetic Folding Travel Classic Strategy Game (Rounded Corner)",
+    "price": "$9.99",
+    "rating": "4.6",
+    "reviews": "407",
+    "sponsored": false
+   },
+   {
+    "asin": "B0DX4WCBND",
+    "title": "GoodCook Touch Charcuterie Grazing Board Acacia Construction with Design Grooves, 17 x 10-Inch",
+    "price": "$17.80",
+    "rating": "4.7",
+    "reviews": "91",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FW9LHP4N",
+    "title": "Checkered Cutting Board, Wooden Cutting Boards for Kitchen",
+    "price": "$22.99",
+    "rating": "4.2",
+    "reviews": "158",
+    "sponsored": false
+   },
+   {
+    "asin": "B0D5YPZBYV",
+    "title": "12x16 inch Double Sided Chalkboard and Felt Letter Board with Stand - Reversible Wooden Frame Easel for Menu, Announcements, Home, Office, Cafe, Resta",
+    "price": "$27.99",
+    "rating": "4.2",
+    "reviews": "88",
+    "sponsored": false
+   },
+   {
+    "asin": "B0DS64YQ44",
+    "title": "KNK Golden Carrom Board – Antique Indoor Game Approved by Carrom Federation (20mm, Champion)",
+    "price": "$299.00",
+    "rating": "3.9",
+    "reviews": "4",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CZ9578DJ",
+    "title": "Cuitáxi Mexican Bingo Game for 10 Players Made in Mexico - Mexican Bingo Mexicano - Juegos de mesa en español - Spanish Board Games",
+    "price": "$9.99",
+    "rating": "4.6",
+    "reviews": "141",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FMK3GHXD",
+    "title": "Acacia Wood Cutting Board with Handle, 2-in-1 Reversible Charcuterie Board & Chopping Board, Large 17\"x13\" Chalkboard Edge Serving Board for Meat & Ch",
+    "price": "$29.99",
+    "rating": "4.8",
+    "reviews": "88",
+    "sponsored": false
+   },
+   {
+    "asin": "B07BB6TCL8",
+    "title": "Totally Bamboo Destination Puerto Rico Cutting Board with Engraved Map Art",
+    "price": "$29.99",
+    "rating": "",
+    "reviews": "",
+    "sponsored": false
+   }
+  ]
+ },
+ "amazon_product_pages": {
+  "B0B2NJ3P3L": {
+   "url": "https://www.amazon.com/dp/B0B2NJ3P3L",
+   "title": "AreMe 90 Degree USB-C Male to Female Adapter 2 Pack, Metallic Purple",
+   "price": "$4.99",
+   "rating": "4.5",
+   "ratings": "2,690",
+   "ships_from": "Amazon",
+   "sold_by": "AreMe",
+   "item_dimensions": "0.79 x 0.51 x 0.31 inches",
+   "variants": {
+    "B0CQH341PF": [
+     "Silver"
+    ],
+    "B0CQH2RSH6": [
+     "Grey"
+    ],
+    "B0CQH48YFQ": [
+     "Black"
+    ],
+    "B0B2NJ3P3L": [
+     "Metallic Purple"
+    ]
+   },
+   "bullets": [
+    "[Please Note] Doesn't fit when you have a case, cover or skin on the Steam Deck or Phones.",
+    "[90 degree right angle data transmission] this 90 degree adapter allows the cable to have a suitable extension direction, which can avoid the wear of the cable and the input port of the device, prolong the service life, and support charging and data transmission.",
+    "[High speed charging and data transmission] The USB C adapter can realize the maximum 5V/3A-20V/5A, 100W USB power delivery, providing your device with the fastest possible charging. Provides data transmission speeds up to 40 Gbps.",
+    "[8K Video Output]The USB C adapter support 4K@60Hz even 8K video output. You can enjoy charging, audio, video and transfer data on the trip, at home, and in the office.",
+    "[Small and portable] Ultra thin size, ultra compact design, durable aluminum shell, fine appearance details and strict quality inspection standards.",
+    "[Plug and play] This adapter does not require additional drivers and software. The perfect solution for USB-C allows you to connect USB C hubs, docking stations, USB C headphones, or other USB C devices."
+   ]
+  },
+  "B0B77CJD7T": {
+   "url": "https://www.amazon.com/dp/B0B77CJD7T",
+   "title": "JSAUX 90 Degree USB C to USB C Adapter 2-Pack, 240W 40Gbps, Gray",
+   "price": "$8.99",
+   "rating": "4.7",
+   "ratings": "2,902",
+   "ships_from": "Amazon",
+   "sold_by": "JS Digital US",
+   "item_dimensions": "0.8 x 0.8 x 0.4 inches",
+   "variants": {
+    "B0D41P81NL": [
+     "Right Angle-4 Pack",
+     "Grey"
+    ],
+    "B0B77CJD7T": [
+     "Right Angle-2 Pack",
+     "Grey"
+    ],
+    "B0HD9RFXFM": [
+     "Flat Right Angle-4 Pack",
+     "Grey"
+    ],
+    "B0FJRRK6B6": [
+     "Right Angle-2 Pack",
+     "Blue&Orange"
+    ],
+    "B0B77J7D1R": [
+     "Flat Right Angle-2 Pack",
+     "Grey"
+    ]
+   },
+   "bullets": [
+    "Right-Angle Design for Better Cable Protection: The 90-degree USB C adapter redirects your cable for a cleaner setup, helping reduce strain on ports and connectors while making charging and docking more comfortable in tight spaces",
+    "Up to 240W Fast Charging: Supports up to 240W Power Delivery when used with a compatible charger and cable, so you can charge handheld consoles, phones, tablets, and laptops without sacrificing convenience",
+    "8K@60Hz Video Output: Supports clear and stable video output on compatible USB C devices and displays, making it easy to connect to a monitor, dock, or screen while keeping your cable route neat and unobtrusive",
+    "Up to 40Gbps Data Transfer: Built for high-speed USB C performance with up to 40Gbps transfer on compatible USB4 or Thunderbolt setups, ideal for fast file transfers, docking stations, and external storage use",
+    "Broad USB C Compatibility: Designed for Nintendo Switch 2, Steam Deck, ROG Ally, Nintendo Switch, MacBook Pro, iPhone 18 Pro/18 Pro Max, iPhone Duo, iPhone 15/16/17 series, Surface Book 2, Samsung Galaxy S26/S25/S24/S23, Google Pixel, iPad Pro/Air, and other USB C phones, tablets, laptops, and handheld gaming devices"
+   ]
+  },
+  "B0B77J7D1R": {
+   "url": "https://www.amazon.com/dp/B0B77J7D1R",
+   "title": "JSAUX 90 Degree USB C Male to Female Adapter 2-Pack, 100W 40Gbps",
+   "price": "$9.99",
+   "rating": "4.7",
+   "ratings": "2,902",
+   "ships_from": "Amazon",
+   "sold_by": "JS Digital US",
+   "item_dimensions": "0.8 x 0.8 x 0.4 inches",
+   "variants": {
+    "B0D41P81NL": [
+     "Right Angle-4 Pack",
+     "Grey"
+    ],
+    "B0B77CJD7T": [
+     "Right Angle-2 Pack",
+     "Grey"
+    ],
+    "B0HD9RFXFM": [
+     "Flat Right Angle-4 Pack",
+     "Grey"
+    ],
+    "B0FJRRK6B6": [
+     "Right Angle-2 Pack",
+     "Blue&Orange"
+    ],
+    "B0B77J7D1R": [
+     "Flat Right Angle-2 Pack",
+     "Grey"
+    ]
+   },
+   "bullets": [
+    "Left & Right 90 Degree Design: Includes two USB C adapters with left and right angle directions to help route cables more naturally, reduce strain on ports, and improve comfort when charging, docking, or gaming.",
+    "Up to 100W Fast Charging: Supports up to 100W Power Delivery with a compatible charger and cable, making it a practical fit for handhelds, phones, tablets, laptops, and other USB C devices.",
+    "Up to 40Gbps Data Transfer: Built for high-speed data on compatible USB4 or Thunderbolt setups, ideal for external SSDs, docks, and fast file transfers when paired with supported devices and cables.",
+    "Supports 4K@60Hz Video & Audio: Delivers stable video and audio pass-through on compatible USB C devices and displays, helping create a cleaner setup for monitors, docks, TVs, and VR accessories.",
+    "Broad USB C Compatibility: Designed for Nintendo Switch 2, Steam Deck, ROG Ally, Nintendo Switch, MacBook Pro, iPhone 18 Pro/18 Pro Max, iPhone Duo, iPhone 15/16/17 series, Surface Book 2, Samsung Galaxy S26/S25/S24/S23, Google Pixel, iPad Pro/Air, and other USB C phones, tablets, laptops, and handheld gaming devices"
+   ]
+  },
+  "B0BRCMGJS3": {
+   "url": "https://www.amazon.com/dp/B0BRCMGJS3",
+   "title": "240W USB C Coupler (2 Pack), USB C Female to Female Adapter Extender, Support up to 240W Charging, 40Gbps Data Transfer, 8K@60Hz Video, Compatible with iPad, MacBook, Thunderbolt 4/3",
+   "price": "$7.59",
+   "rating": "4.4",
+   "ratings": "682",
+   "ships_from": "Amazon",
+   "sold_by": "Poyiccot",
+   "item_dimensions": "",
+   "variants": {
+    "B0BRCNMRVK": [
+     "usb c adapter male to female 90 degree L shape"
+    ],
+    "B0BRCMGJS3": [
+     "usb c adapter female to female"
+    ],
+    "B0BRCN4FKB": [
+     "usb c adapter male to female right angle with LED"
+    ],
+    "B0BRCPXJ7C": [
+     "usb c adapter male to female up angle with LED"
+    ],
+    "B0B1ZRDTDT": [
+     "usb c extender 100W"
+    ]
+   },
+   "bullets": [
+    "【USB C Adapter Female to Female 】This USB C Coupler is used to join two shorter USB C cables together when you need to extend the length of a USB-C cable for fast charge, data transfer or video pass through.",
+    "【PD 240W & 8K Video Display 】This USB C female to female adapter can support Max 240W Fast Charging and 8K Video Display. Itcan realize the maximum 5V/3A-20V/5A, can provide a fully amount of power to satisfy your requirement of ipad and macbook or other usb c devices. When you use the USB4 Cable, it can support 8K@60Hz HD video & audio output, and it make your game or office have a more high-defi",
+    "【40Gbps Data Transfer】This USB Type C Coupler is conform to the USB4 adapter. Supports 40Gbps data transmission speed. Transfers movies, music and more in just seconds. Please noticed that the data transmission speed also depends on the USB devices and the cable support or not.",
+    "【USB C female to female Coupler】Mini-design, Easy to carry. Plug and play. with flexible buckle hole, easy to match with your lanyard and keychain. with unique LED Light design is perfectly to displaying the devices of charging status.",
+    "【Widely Compatible】 This USB C Extender is designed for most Type C devices, compatible for ipad, macbook, compatible for Thunderbolt 4/3, MacBook Pro, Chromebook, Surface Book, USB C hub, Google Pixel, Samsung Galaxy S22/S21/S20/S10, Note 20/10, LG G5/G6, and so on.",
+    "【Please Attension】 For compatibility with the USB-C protocol, you may need to reverse the orientation of the cable plug so that the lights does light up and power is going through."
+   ]
+  },
+  "B0CNGFZ1JD": {
+   "url": "https://www.amazon.com/dp/B0CNGFZ1JD",
+   "title": "Silkland 40Gbps USB C 90 Degree Right Angle Adapter 2 Pack, 240W USB4",
+   "price": "$9.99",
+   "rating": "4.7",
+   "ratings": "1,124",
+   "ships_from": "Amazon",
+   "sold_by": "Silkland-US",
+   "item_dimensions": "",
+   "variants": {
+    "B0GFLNQMDV": [
+     "Right Angle-80Gbps"
+    ],
+    "B0GWQ6S4BX": [
+     "Combo-40Gbps"
+    ],
+    "B0CNGJTKNK": [
+     "Right Angle-40Gbps"
+    ],
+    "B0CNGFZ1JD": [
+     "90 Degree-40Gbps"
+    ],
+    "B0GFKMFMGY": [
+     "90 Degree-80Gbps"
+    ]
+   },
+   "bullets": [
+    "【90 Degree Full Function USB C Adapter】Supports the latest USB4 standard for up to 40Gbps of bandwidth, 8K video support, and up to 240W Fast charging; Support USB PD 3.1 Extended Power Range (EPR) including 140W, 180W and 240W. Your productivity is easily doubled. *Warm Tip: For the best fit, please make sure the USB-C port is fully exposed; thick or bulky cases may affect compatibility.",
+    "【Reliable Quality】Made from high-quality, scratch-resistant aluminum alloy, delicate metal frame. get excellent wear resistance and heat dissipation. Non-Slip Design for easier insertion and removal.",
+    "【Small and portable】Ultra thin size, ultra compact design, a petite physique that matches the minimalist design of your modern laptops. Coming with a slim figure that won't block the port next to the one it's plugged into.",
+    "【Compatibility】Widely work with most usb c, thunderbolt 4/3 devices. Compatibilit for ROG Ally, Steam Deck, Switch, MacBook Pro, Quest 3 VR headset, Surface Book 2, iPhone 18/17/16/15, Samsung Galaxy S23/S22/S21, Note 20/10, Google Pixel, ChromeBook, etc.",
+    "【Excellence Customer Support】If you experience any issues or cable failure, simply reach out to our dedicated customer service team. We provide a prompt response within 18 hours, providing you with the necessary technical support to resolve any concerns."
+   ]
+  },
+  "B0CNGJTKNK": {
+   "url": "https://www.amazon.com/dp/B0CNGJTKNK",
+   "title": "Silkland 40Gbps USB C 90 Degree Right Angle Adapter 2 Pack, 240W USB4",
+   "price": "$9.99",
+   "rating": "4.7",
+   "ratings": "1,124",
+   "ships_from": "Amazon",
+   "sold_by": "Silkland-US",
+   "item_dimensions": "",
+   "variants": {
+    "B0GFLNQMDV": [
+     "Right Angle-80Gbps"
+    ],
+    "B0GWQ6S4BX": [
+     "Combo-40Gbps"
+    ],
+    "B0CNGJTKNK": [
+     "Right Angle-40Gbps"
+    ],
+    "B0CNGFZ1JD": [
+     "90 Degree-40Gbps"
+    ],
+    "B0GFKMFMGY": [
+     "90 Degree-80Gbps"
+    ]
+   },
+   "bullets": [
+    "【90 Degree Full Function USB C Adapter】Supports the latest USB4 standard for up to 40Gbps of bandwidth, 8K video support, and up to 240W Fast charging; Support USB PD 3.1 Extended Power Range (EPR) including 140W, 180W and 240W. Your productivity is easily doubled. *Warm Tip: For the best fit, please make sure the USB-C port is fully exposed; thick or bulky cases may affect compatibility.",
+    "【Reliable Quality】Made from high-quality, scratch-resistant aluminum alloy, delicate metal frame. get excellent wear resistance and heat dissipation. Non-Slip Design for easier insertion and removal.",
+    "【Small and portable】Ultra thin size, ultra compact design, a petite physique that matches the minimalist design of your modern laptops. Coming with a slim figure that won't block the port next to the one it's plugged into.",
+    "【Compatibility】Widely work with most usb c, thunderbolt 4/3 devices. Compatibilit for ROG Ally, Steam Deck, Switch, MacBook Pro, Quest 3 VR headset, Surface Book 2, iPhone 18/17/16/15, Samsung Galaxy S23/S22/S21, Note 20/10, Google Pixel, ChromeBook, etc.",
+    "【Excellence Customer Support】If you experience any issues or cable failure, simply reach out to our dedicated customer service team. We provide a prompt response within 18 hours, providing you with the necessary technical support to resolve any concerns."
+   ]
+  },
+  "B0CSVGGLH9": {
+   "url": "https://www.amazon.com/dp/B0CSVGGLH9",
+   "title": "ELUTENG 3 Pack Coupler 240W USB C to USB C Connector Female to Female Adapter 40Gbps Type C Extender Adapter Video Display for TV PC Laptop Tablet Phone and More Devices",
+   "price": "$6.99",
+   "rating": "4.6",
+   "ratings": "249",
+   "ships_from": "Amazon",
+   "sold_by": "ELUTENG Direct",
+   "item_dimensions": "",
+   "variants": {
+    "B07S6B5X76": [
+     "USB Type A"
+    ],
+    "B0CSVGGLH9": [
+     "USB Type C"
+    ]
+   },
+   "bullets": [
+    "【USB Type C Repeater】This USB C connector supports the connection of two Type-C data cables and provides a cable extension function: Use the USB Type C female conversion adapter, two USB 4.0 data cables (or two USB 4.0 devices, with line-in connections at both ends of the repeater) at a speed that must also reach a transfer rate of 40 Gbps). Easily connects and acts as an extension cable; backward",
+    "【40Gbps High-Speed Transmission and 8K@60Hz Video Output】This USB C to USB C adapter adopting the latest Type-C 3.2 technology, USB4.0 up to 40Gbps Thunderbolt 3 high-speed data transmission, up to 4 times the speed of USB3.1 (theoretically feasible, depending on the actual situation), and 8k high-speed file transfer for video output. Supports USB 3.1, 1.1 and USB 2.0 devices. Fast transfer of fil",
+    "【Note】The USB C female to female adapter can only be used in one direction. If it is inserted incorrectly, it will not charge or transfer data. Solution: Unplug the USB cable from the USB C to USB C conversion connector, and then rotate the plug 180°.",
+    "【Compact and Easy to Use】The USB C coupler is lightweight and easy to carry, can be easily put into a pocket or small bag, easy to use, plug and play. The shell is made of aluminum alloy, wear-resistant, heat-resistant and durable, allowing you to safely and securely charge USB-C devices.",
+    "【Wide Compatibility】The USB C female is compatible with MacBook Pro, LG G5 V20, Samsung Galaxy S8, Galaxy S9 (Plus), Google Nexus 6P, Google Pixel, ChromeBook, Nintendo Switch, LG G5, LG G6, LG V20, Nexus 5X, Lumia 950 Lumia 950XL, Huawei P50, Huawei P9, the new Nokia N1 tablet and many other phones and tablets."
+   ]
+  },
+  "B0CTT1FJL6": {
+   "url": "https://www.amazon.com/dp/B0CTT1FJL6",
+   "title": "240W USB C Coupler (2 Pack), USB Type C Female to Female Adapter Extender Compatible with Thunderbolt 4/3 Support up to 240W Charging, 40Gbps Data Transfer and 8K@60Hz Video",
+   "price": "$6.99",
+   "rating": "4.3",
+   "ratings": "884",
+   "ships_from": "Amazon",
+   "sold_by": "AuviPal",
+   "item_dimensions": "0.75 x 0.5 x 0.32 inches",
+   "variants": {
+    "B0CTT1FJL6": [
+     "Female to Female"
+    ],
+    "B0B8X6H96S": [
+     "Female to Male"
+    ],
+    "B0CTT1BPQ8": [
+     "Male to Male"
+    ]
+   },
+   "bullets": [
+    "Versatile Usage: Extend the length of your USB-C cable by joining two shorter cables for fast charging, data transfer, or seamless video and audio pass-through. Perfect for when a single cable isn’t enough.",
+    "USB4 Performance: Fully compliant with the USB4 standard while offering backward compatibility. Supports up to 240W power delivery, 40Gbps data transfer, and 8K@60Hz video output, ensuring top performance with no compromises.",
+    "Superior Build Quality: Crafted with a premium aluminum alloy housing for enhanced durability and reliability. Compact, lightweight, and easy to carry, with USB-C female ports rigorously tested for 10,000+ plug-and-unplug cycles.",
+    "Built-in Signal Indicator: Equipped with a sleek LED signal indicator, this USB-C coupler keeps you informed of its working status at a glance, ensuring reliable performance and ultimate convenience for your connections.",
+    "Plug-and-Play Simplicity: No drivers or software required—just plug it in and use it instantly. Designed for ultimate convenience and ease of use.",
+    "Important Note: Ensure your USB-C cables support video transmission when using this coupler for video pass-through. If the connection doesn’t work initially, try reversing the orientation of the cable’s plug to ensure proper functionality, as USB-C protocols depend on connector orientation."
+   ]
+  },
+  "B0CWV1DGHJ": {
+   "url": "https://www.amazon.com/dp/B0CWV1DGHJ",
+   "title": "Duttek USB C Coupler 40Gbps, PD140W and 8K@60Hz Video Display, USB C Female to Female Adapter, Type C to Type C for Thunderbolt 4/3, MacBook Pro/Air, iPad, Laptop, Phones (2Pack)",
+   "price": "$7.53",
+   "rating": "4.3",
+   "ratings": "402",
+   "ships_from": "Amazon",
+   "sold_by": "Duttek",
+   "item_dimensions": "1.97 x 0.79 x 0.39 inches",
+   "variants": {
+    "B0BX33LDF8": [
+     "USB C Male to Female",
+     "Grey"
+    ],
+    "B0CWV6YP7D": [
+     "USB C Male to Male",
+     "White"
+    ],
+    "B0BW5G5XMK": [
+     "USB C Male to Male",
+     "Grey"
+    ],
+    "B0CWV1DGHJ": [
+     "USB C Female to Female",
+     "White"
+    ],
+    "B0CWTNSP4X": [
+     "Right Angle USB C",
+     "White"
+    ],
+    "B0CWTWGNZL": [
+     "Male to Female",
+     "White"
+    ],
+    "B0CWTTZ4B5": [
+     "Middle Angle USB C",
+     "White"
+    ]
+   },
+   "bullets": [
+    "USB C Coupler: It enables maximum 140W fast charging with PD, Faster than a normal 100W. allowing you to quickly power your devices in a short time. Additionally, the USB-C female to female adapter supports bandwidth sharing, providing simultaneous data, video, and power transmission.",
+    "USB C female to female adapter, with its fully functional Type-C physical interface, supports up to 40Gbps lightning-fast data transfer speed. You can quickly complete file transfers and transmit large capacity data in a short amount of time. It is the perfect solution to meet your connection needs.",
+    "USB C female to USB C female enhances your audio and video experience. It supports 8k@60Hz transmission, allowing you to enjoy ultra-high resolutions and realistic visual details with minimal loss, ensuring a truly immersive experience where scenes come to life, increasing presence. It is also backward compatible with 4K@120Hz and 2K@120Hz.",
+    "USB C Adapter Coupler: Compatible with Thunderbolt 3, Thunderbolt 4, tablets, mobile hard drive enclosures, docking stations, and more. This USB 4.0 adapter is backwards compatible with USB 3.2, USB 3.1, and lower standards, providing a versatile solution for all your connectivity needs.",
+    "USB C to USB C Adapter : A perfect combination of portability and durability. Its compact design ensures it won't block adjacent ports, while its rugged construction ensures long-term use. With its user-friendly design, it can be inserted without checking orientation, making it very convenient to use."
+   ]
+  },
+  "B0FNCT8NS7": {
+   "url": "https://www.amazon.com/dp/B0FNCT8NS7",
+   "title": "UGREEN 90 Degree USB C Adapter 3 Pack, Right Angle Male to Female Converter",
+   "price": "$9.99",
+   "rating": "4.7",
+   "ratings": "744",
+   "ships_from": "Amazon",
+   "sold_by": "UGREEN GROUP LIMITED",
+   "item_dimensions": "0.83 x 0.47 x 0.24 inches",
+   "variants": {},
+   "bullets": [
+    "90° Space-Saving Design: The right angle design helps reduce cable bending and minimizes stress on ports, preventing damage from repeated plugging, pulling, or tight spaces. Perfect for handheld gaming, laptops on desks, or devices used while charging",
+    "240W Fast Charging: Supports up to 240W USB-C Power Delivery (PD 3.1 ), ensuring fast, safe, and stable charging for high-power laptops, gaming consoles, tablets, and smartphones across different scenarios",
+    "40Gbps USB4 Speed: With USB4 and Thunderbolt compatibility, enjoy blazing-fast 40Gbps data transfer. Easily handle large game files, 8K videos, and backups when connected to external SSDs, docking stations, or high-speed peripherals",
+    "8K Display & Durable Build: Supports up to 8K@60Hz ultra HD output for crisp visuals on monitors or TVs. Built with premium aluminum alloy for better heat dissipation, scratch resistance, and durability, tested for 10,000+ plug cycles",
+    "Compatibility: Widely work with most usb c, thunderbolt 4/3 devices. Compatibilit for ROG Ally, Steam Deck, Switch, MacBook Pro, Quest 3 VR headset, Surface Book 2, iPhone 15/15 Plus/15 Pro/15 Pro Max, Samsung Galaxy S23/S22/S21, Note 20/10, Google Pixel, ChromeBook, etc"
+   ]
+  },
+  "B0GWQ6S4BX": {
+   "url": "https://www.amazon.com/dp/B0GWQ6S4BX",
+   "title": "Silkland 40Gbps USB C 90 Degree Right Angle Adapter 2 Pack, 240W USB4",
+   "price": "$11.99",
+   "rating": "4.7",
+   "ratings": "1,124",
+   "ships_from": "Amazon",
+   "sold_by": "Silkland-US",
+   "item_dimensions": "0.2 x 0.5 x 0.7 inches",
+   "variants": {
+    "B0GFLNQMDV": [
+     "Right Angle-80Gbps"
+    ],
+    "B0GWQ6S4BX": [
+     "Combo-40Gbps"
+    ],
+    "B0CNGJTKNK": [
+     "Right Angle-40Gbps"
+    ],
+    "B0CNGFZ1JD": [
+     "90 Degree-40Gbps"
+    ],
+    "B0GFKMFMGY": [
+     "90 Degree-80Gbps"
+    ]
+   },
+   "bullets": [
+    "【90 Degree Full Function USB C Adapter】Supports the latest USB4 standard for up to 40Gbps of bandwidth, 8K video support, and up to 240W Fast charging; Support USB PD 3.1 Extended Power Range (EPR) including 140W, 180W and 240W. Your productivity is easily doubled. *Warm Tip: For the best fit, please make sure the USB-C port is fully exposed; thick or bulky cases may affect compatibility.",
+    "【Reliable Quality】Made from high-quality, scratch-resistant aluminum alloy, delicate metal frame. get excellent wear resistance and heat dissipation. Non-Slip Design for easier insertion and removal.",
+    "【Small and portable】Ultra thin size, ultra compact design, a petite physique that matches the minimalist design of your modern laptops. Coming with a slim figure that won't block the port next to the one it's plugged into.",
+    "【Compatibility】Widely work with most usb c, thunderbolt 4/3 devices. Compatibilit for ROG Ally, Steam Deck, Switch, MacBook Pro, Quest 3 VR headset, Surface Book 2, iPhone 18/17/16/15, Samsung Galaxy S23/S22/S21, Note 20/10, Google Pixel, ChromeBook, etc.",
+    "【Excellence Customer Support】If you experience any issues or cable failure, simply reach out to our dedicated customer service team. We provide a prompt response within 18 hours, providing you with the necessary technical support to resolve any concerns."
+   ]
+  }
+ },
+ "other_vendors": {
+  "andymark_am-5750": {
+   "url": "https://andymark.com/products/am-calibration-board",
+   "title": "ChArUCo Calibration Board",
+   "sku": "am-5750",
+   "price_usd": 51.0,
+   "available": true,
+   "description": "Description Specifications Documentation This ChArUCo calibration board is designed to get you the maximum amount of accuracy out of your vision system. Using a standard calibration process (with specifications of the board written on the board itself for convenience), improve your Limelight, PhotonVision, or custom AprilTag detection accuracy significantly in just a few minutes with this board. This Calibration board is printed using a dye sublimation process on 0.040” aluminum sheets with a matte finish. Length: 11 in. [279 mm] Material: Aluminum Thickness: 0.04 in. [1 mm] Width: 8.5 in. [216 mm]",
+   "reviews_on_page": "none (Judge.me average 0.00)"
+  },
+  "calib.io_charuco-targets": {
+   "url": "https://calib.io/products/charuco-targets",
+   "currency": "USD (store set to United States)",
+   "variants": [
+    {
+     "id": 9400442716207,
+     "title": "200x150 / Coarse / Aluminium/LDPE",
+     "sku": "CCT200150C",
+     "price": "133.00",
+     "shipping_grams": 300
+    },
+    {
+     "id": 9400454774831,
+     "title": "200x150 / Fine / Aluminium/LDPE",
+     "sku": "CCT200150F",
+     "price": "133.00",
+     "shipping_grams": 180
+    },
+    {
+     "id": 9400454807599,
+     "title": "300x200 / Coarse / Aluminium/LDPE",
+     "sku": "CCT300200C",
+     "price": "138.00",
+     "shipping_grams": 400
+    },
+    {
+     "id": 9400454840367,
+     "title": "300x200 / Fine / Aluminium/LDPE",
+     "sku": "CCT300200F",
+     "price": "138.00",
+     "shipping_grams": 400
+    },
+    {
+     "id": 9400454873135,
+     "title": "400x300 / Coarse / Aluminium/LDPE",
+     "sku": "CCT400300C",
+     "price": "154.00",
+     "shipping_grams": 900
+    },
+    {
+     "id": 9400454905903,
+     "title": "400x300 / Fine / Aluminium/LDPE",
+     "sku": "CCT400300F",
+     "price": "154.00",
+     "shipping_grams": 900
+    },
+    {
+     "id": 9400454938671,
+     "title": "600x400 / Coarse / Aluminium/LDPE",
+     "sku": "CCT600400C",
+     "price": "233.00",
+     "shipping_grams": 1700
+    },
+    {
+     "id": 9400454971439,
+     "title": "600x400 / Fine / Aluminium/LDPE",
+     "sku": "CCT600400F",
+     "price": "233.00",
+     "shipping_grams": 1700
+    },
+    {
+     "id": 9400455004207,
+     "title": "800x600 / Coarse / Aluminium/LDPE",
+     "sku": "CCT800600C",
+     "price": "313.00",
+     "shipping_grams": 3400
+    },
+    {
+     "id": 9400455036975,
+     "title": "800x600 / Fine / Aluminium/LDPE",
+     "sku": "CCT800600F",
+     "price": "313.00",
+     "shipping_grams": 3400
+    },
+    {
+     "id": 40014846001219,
+     "title": "75x50 / Fine / Ceramic",
+     "sku": "CCT075050F",
+     "price": "505.00",
+     "shipping_grams": 300
+    },
+    {
+     "id": 40014846033987,
+     "title": "100x75 / Fine / Ceramic",
+     "sku": "CCT100075F",
+     "price": "780.00",
+     "shipping_grams": 300
+    },
+    {
+     "id": 40014846066755,
+     "title": "150x100 / Fine / Ceramic",
+     "sku": "CCT150100F",
+     "price": "1049.00",
+     "shipping_grams": 300
+    }
+   ],
+   "patterns_from_image_names": {
+    "200x150": "9x12, 15 mm, DICT_5X5",
+    "300x200": "9x14, 20 mm, DICT_5X5",
+    "400x300": "9x12, 30 mm, DICT_5X5",
+    "800x600": "9x12, 60 mm, DICT_5X5"
+   },
+   "lead_time": "made to order, ~10 business days, then shipped; US orders DDP (duties paid at checkout)",
+   "droid_shopping_list": "https://github.com/droid-dataset/droid/blob/33ae6a6/docs/hardware-setup/shopping-list.md (Charuco Board, $114, variant 9400454807599 = 300x200 / Coarse / Aluminium/LDPE)"
+  }
+ }
+}
