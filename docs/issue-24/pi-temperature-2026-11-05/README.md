@@ -25,7 +25,8 @@ streams ran.
 Each Pi's blurring runs on two threads per stream, and each stream is capped at 2 cores
 (`CPUQuota=200%`), so blurring uses all it is allowed. Over the 16 hours before, the streams'
 2-minute log lines show 4.9–5.0 frames a second all night on mpzy, and on eufi too except from
-05:42 to 06:37 UTC, when its `ffmpeg` kept losing the connection to YouTube.
+05:42 to 06:37 UTC: its stream stalled, then `ffmpeg` exited every few seconds after each start
+until about 06:37.
 
 **76zj rebooted just before this.** It dropped off Tailscale at 18:41:18 UTC and booted again at
 18:51:05 UTC; nothing in this run restarted it. Its journal only covers the current boot, so it
