@@ -2,9 +2,10 @@
 
 The cell streams to the *BYU VCL Hardware Streams* YouTube channel through the lab's streaming
 Lambda ([`vertical-cloud-lab/streamingLambda`](https://github.com/vertical-cloud-lab/streamingLambda)),
-like the byu-vcl stream cams. **Both of the cell's fixed cameras stream, publicly** (since
-2026-11-03 22:48 UTC), and **both gripper cameras on 76zj stream, unlisted** (since 2026-11-05
-00:42 UTC; see [Gripper cameras](#gripper-cameras-two-streams-on-76zj)). A restart of a Pi's service goes back to the broadcast that was live, so
+like the byu-vcl stream cams. **All four cameras stream publicly, with faces blurred on the Pi**:
+the cell's two fixed cameras since 2026-11-03 22:48 UTC, and the two gripper cameras on 76zj since
+2026-11-05 02:05 UTC (unlisted from 00:42 UTC; see
+[Gripper cameras](#gripper-cameras-two-streams-on-76zj)). A restart of a Pi's service goes back to the broadcast that was live, so
 its link keeps working, if a frame went out less than 10 minutes before (`BROADCAST_REUSE_SEC`).
 After a longer stop, or a change to `WORKFLOW_NAME` or `PRIVACY_STATUS`, a start ends that
 camera's broadcast and makes a new one, so each camera's playlist is its stable link:
@@ -13,8 +14,8 @@ camera's broadcast and makes a new one, so each camera's playlist is its stable 
 | --- | --- | --- | --- | --- |
 | mpzy | Camera Module 3 Wide, front-left post, looking into the cell | `PiPER arm front cam` | [*PiPER arm front cam Livestreams Playlist*](https://www.youtube.com/playlist?list=PLEplFHLNPMWo) | none |
 | eufi | imx708 wide (the one `camera.json` calibrates), back-right post, looking diagonally across the cell | `PiPER arm back cam` | [*PiPER arm back cam Livestreams Playlist*](https://www.youtube.com/playlist?list=PLf8bu3tmddbw) | two, over the lab |
-| 76zj | Camera Module 3 Wide (`imx708_wide`) on the gripper, `picam-stream@wide` | `PiPER arm gripper wide cam` | [*PiPER arm gripper wide cam Livestreams Playlist*](https://www.youtube.com/playlist?list=PLRPgT4muESmY) (unlisted) | none: it moves |
-| 76zj | HQ Camera (`imx477`) on the gripper, `picam-stream@hq` | `PiPER arm gripper HQ cam` | [*PiPER arm gripper HQ cam Livestreams Playlist*](https://www.youtube.com/playlist?list=PLFzagkscTGCM) (unlisted) | none: it moves |
+| 76zj | Camera Module 3 Wide (`imx708_wide`) on the gripper, `picam-stream@wide` | `PiPER arm gripper wide cam` | [*PiPER arm gripper wide cam Livestreams Playlist*](https://www.youtube.com/playlist?list=PLRPgT4muESmY) (the playlist is unlisted) | none: it moves |
+| 76zj | HQ Camera (`imx477`) on the gripper, `picam-stream@hq` | `PiPER arm gripper HQ cam` | [*PiPER arm gripper HQ cam Livestreams Playlist*](https://www.youtube.com/playlist?list=PLFzagkscTGCM) (the playlist is unlisted) | none: it moves |
 
 Broadcasts are titled *&lt;WORKFLOW_NAME&gt; stream picam, &lt;UTC time&gt;*. mpzy's camera sees
 only the printer, the arm, the tool rack, the backdrop and the wall. eufi's looks towards the open
@@ -61,11 +62,44 @@ thirds of the sensor, turned 90°.
 
 - **No fixed masks or strict rects.** These cameras move with the arm, so nothing stays put in
   their view. Face blurring with both detectors covers the whole frame. The wide camera looks
-  across the table into the lab (door, sink, benches), which is why both streams are
-  **unlisted** rather than public like the cell cameras: anyone with the link can watch, but they
-  aren't listed on the channel. To make one public, set `PRIVACY_STATUS = "public"` in its
-  settings file and restart it. That starts a new broadcast with a new link, and the playlist
-  keeps the privacy it was made with (unlisted) until someone changes it in YouTube Studio.
+  across the table into the lab (door, sink, benches), which is why both streams started out
+  **unlisted**.
+- **Public since 2026-11-05 02:05 UTC.** sgbaird approved that on the condition that face blurring
+  is active, which was checked first (see the next bullet). `PRIVACY_STATUS = "public"` in both
+  settings files, and each restart ended the unlisted broadcast and started a public one:
+  `ruxhMLJqZh0` (wide) and `f2l5Qgu7Dik` (HQ). **The two playlists are still unlisted.** The
+  Lambda sets a playlist's privacy only when it makes the playlist (here, with the first,
+  unlisted broadcasts) and can't change it, and no token in this repo can either. Anyone with a
+  playlist link can open it, but it isn't listed on the channel until someone with access to
+  the channel changes its visibility in YouTube Studio. The broadcasts in them are public.
+- **Face blurring checked before going public** (2026-11-05, 02:01 to 02:07 UTC):
+  - Both streams had started with both detectors loaded, and each 2-minute log line showed boxes
+    from both. Someone was working at a bench in view of both cameras, and the wide stream
+    reported 700 boxes in two minutes.
+  - In the frames sent at 02:07 UTC, after the switch, that person's head is pixelated in both
+    views. Those frames aren't committed, because they show a person.
+  - **Known-face test.** The 1927 Solvay conference photo (public domain, 29 faces) went through
+    the installed `device.py`'s `FaceBlur` on 76zj, once with each stream's settings, letterboxed
+    into that stream's picture:
+
+    | Settings | Photo width (faces across) | Boxes (CenterFace + YuNet) | Faces pixelated |
+    | --- | --- | --- | --- |
+    | wide, 1280×720 picture | 994 px (about 25 px) | 36 + 30 | all 29 |
+    | wide | 596 px (about 15 px) | 21 + 29 | 28 of 29: one in the back row was missed |
+    | HQ, 540×720 picture | 540 px (about 14 px) | 36 + 31 | all 29 |
+    | HQ | 324 px (about 8 px) | 14 + 0 | fewer than half |
+
+    ![The group photo through the HQ stream's settings, all faces pixelated](../docs/images/face-blur-test-solvay-1927-hq-2026-11-05.jpg)
+
+    So very small faces, people far from the camera, are the limit. The wide stream's detectors
+    see the picture at half (CenterFace) and three-quarter (YuNet) scale, and missed one face at
+    about 15 px. The HQ stream's see it at nearly full size, and caught every face at about
+    14 px but fewer than half at about 8 px.
+- **What face blurring doesn't cover.** It finds faces, not people. At 02:01 UTC, before the
+  switch, the HQ stream showed the same person from behind: out of focus, and not pixelated,
+  because the back of a head isn't a face to either detector. Bodies, clothes and screens in
+  view aren't blurred either. On eufi, fixed masks cover the part of the view that looks into
+  the lab, but the gripper cameras move, so they have none.
 - **The HQ camera's focus.** Its C/CS-mount lens is focused by hand. When the stream started
   (2026-11-05 00:42 UTC) the picture was a blur; by 01:20 UTC someone had focused it.
 - **Load.** Two streams fill the Pi's 4 cores (each stream about 1.8 cores, at its

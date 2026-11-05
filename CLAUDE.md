@@ -106,11 +106,13 @@ restart then goes back to the same YouTube broadcast, so people's links keep wor
 longer stop it makes a new broadcast. It never touches CAN, the relay or the arm. No
 watchdog timer and no reboot cron on either Pi: those reboot the Pi, which would kill an arm run.
 
-**76zj streams both gripper cameras, unlisted** (since 2026-11-05 00:42 UTC), as
-`picam-stream@wide.service` (`PiPER arm gripper wide cam`, the `imx708_wide`) and
+**76zj streams both gripper cameras, publicly** (since 2026-11-05 02:05 UTC; unlisted from
+00:42 UTC), as `picam-stream@wide.service` (`PiPER arm gripper wide cam`, the `imx708_wide`) and
 `picam-stream@hq.service` (`PiPER arm gripper HQ cam`, the `imx477`). They move with the arm,
-so they have no masks or strict rects, only face blurring, and they are unlisted because the
-wide one looks into the lab. The HQ camera is mounted on its side, so its stream turns the
+so they have no masks or strict rects, only face blurring. They started unlisted because the wide
+one looks into the lab. sgbaird then approved public "as long as face blurring is active", so
+**keep both detectors on for every public stream**. Their two playlists are still unlisted (the
+Lambda can't change a playlist's privacy). The HQ camera is mounted on its side, so its stream turns the
 picture upright (`CAMERA_ROTATION = 270`) and uses the full-sensor 2028×1520 mode, with black
 bars at the sides. Stop and start each one separately; its still is
 `/tmp/picam-stream-<wide|hq>-latest.jpg`. Changes made on 76zj by the fifth #61 run
@@ -148,6 +150,22 @@ shows the whole sensor, upright (the HQ camera is mounted on its side):
   it went back to its broadcast, `bK-Dzzfh9gs`, so the link didn't change.
 - mpzy and eufi weren't touched. They still run the PR #40 `device.py`, which behaves the same
   as this one for them.
+
+Changes made on 76zj by the seventh #61 run (2026-11-05, 02:02 to 02:07 UTC), to make both
+gripper streams public:
+
+- Before anything changed, a known-face test: `/tmp/facetest.py` (a copy of no repo file) ran the
+  installed `device.py`'s `FaceBlur`, with each stream's settings, on a public-domain group photo
+  (`/tmp/solvay.jpg`). It wrote only blurred frames, to `/tmp/facetest/`. They were copied off,
+  and then the frames, script and photo were deleted.
+- `~/picam-stream/my_secrets_wide.py` and `my_secrets_hq.py`: `PRIVACY_STATUS = "unlisted"` →
+  `"public"`, with a comment. The previous files are `my_secrets_<wide|hq>.py.bak-2026-11-05-public`
+  (mode 600).
+- `picam-stream@wide` was restarted at 02:04:36 UTC and `picam-stream@hq` at 02:05:05 UTC. Since the
+  privacy had changed, each one ended its unlisted broadcast and started a public one:
+  `ruxhMLJqZh0` (wide, replacing `Z7DO_7wrgVo`) and `f2l5Qgu7Dik` (HQ, replacing `bK-Dzzfh9gs`).
+  Both went into their existing playlists. The wide stream now runs the current `device.py`.
+- mpzy and eufi weren't touched; they were already public.
 
 Changes made on both Pis from [PR #40](https://github.com/vertical-cloud-lab/robot-arms/pull/40)
 (2026-11-04, 23:08 to 23:13 UTC), so a restart no longer ends the broadcast:

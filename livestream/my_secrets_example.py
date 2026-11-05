@@ -21,8 +21,9 @@ LAMBDA_FUNCTION_URL = "https://<id>.lambda-url.<region>.on.aws/"
 CAM_NAME = "picam"
 WORKFLOW_NAME = "PiPER arm front cam"
 
-# "private", "unlisted" or "public". The cell cameras are public; 76zj's
-# gripper cameras are unlisted, since they move and can look into the lab.
+# "private", "unlisted" or "public". All four cameras are public, with face
+# blurring on every frame (76zj's gripper cameras since 2026-11-05; they were
+# unlisted at first, since they move and can look into the lab).
 PRIVACY_STATUS = "public"
 
 # The camera, by the sensor name `rpicam-hello --list-cameras` prints, or None
