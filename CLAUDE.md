@@ -173,20 +173,31 @@ it was asked (#25). Check in this order:
 3. Only after that, ask someone at the arm for the physical steps: a power cycle, or checking
    the 24 V supply and the cable breakout.
 
-**Look through the camera before any motion.** The table cameras on eufi (back) and mpzy
-(front) stream publicly through `picam-stream.service`
-([#61](https://github.com/vertical-cloud-lab/robot-arms/issues/61)). The stream holds each
-camera, so `rpicam-still` on them fails while it runs. **Never stop a stream, or reboot its Pi,
-to get a frame.** Instead, copy the frame each stream last sent (faces already pixelated,
-refreshed every 30 s). `scripts/table_camera_frames.sh OUTDIR` does that for every table
-camera, and only takes an `rpicam-still` on a Pi where no stream is running (76zj):
+**Look through the camera before any motion.** All four PiPER cameras stream publicly
+([#61](https://github.com/vertical-cloud-lab/robot-arms/issues/61)). The table cameras on eufi
+(back) and mpzy (front) each use `picam-stream.service`. The two gripper cameras on 76zj use one
+instance each of a template unit: `picam-stream@wide.service` and `picam-stream@hq.service`. So on
+76zj, `picam-stream.service` is disabled and inactive even while both its streams run, which once
+made a run here report the gripper cams as not streaming. List the streams with
+`systemctl list-units 'picam-stream*'`. A stream holds its camera, so `rpicam-still` on that camera
+fails while the stream runs. **Never stop a stream, or reboot its Pi, to get a frame.** Instead,
+copy the frame each stream last sent (faces already pixelated, refreshed every 30 s):
+`/tmp/picam-stream-latest.jpg` on eufi and mpzy, `/tmp/picam-stream-<wide|hq>-latest.jpg` on
+76zj. `scripts/table_camera_frames.sh OUTDIR` does that for every stream, and only takes an
+`rpicam-still` on a Pi where no stream is running:
 
 ```bash
 ssh … 'cat /tmp/picam-stream-latest.jpg' > cam_now.jpg
 ```
 
+**Watch links.** The live broadcast's video ID is `video_id` in `~/picam-stream/broadcast.json`
+(`broadcast-<wide|hq>.json` on 76zj). That file also holds the stream key, so read that one field
+and never `cat` it. A restart within 10 minutes keeps the ID. Each camera's playlist, listed in
+[#61's `livestream/README.md`](https://github.com/vertical-cloud-lab/robot-arms/blob/d5ba8f7/livestream/README.md),
+is the link that never changes.
+
 Work that needs a camera itself, such as `piper_camera_check.py --go` (which records with
-`rpicam-vid`), stops that Pi's stream first and must start it again within 10 minutes. The
+`rpicam-vid`), stops that camera's stream first and must start it again within 10 minutes. The
 restart then goes back to the same YouTube broadcast, so people's links keep working; after a
 longer stop it opens a new one.
 
