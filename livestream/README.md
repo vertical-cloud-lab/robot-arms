@@ -55,7 +55,7 @@ stream. Until then it used the 16:9 2028×1080 mode, which leaves out the top an
 the sensor, and libcamera trimmed another 3% off each side to fit 16:9. So it showed about two
 thirds of the sensor, turned 90°.
 
-| As sent, 2026-11-05: wide | HQ, upright, whole sensor (preview through the stream's code, 01:28 UTC) |
+| As sent, 2026-11-05: wide | HQ, upright, whole sensor (01:31 UTC) |
 | --- | --- |
 | ![The wide gripper camera's view](../docs/images/picam-piper-stream-76zj-wide-2026-11-05.jpg) | ![The HQ gripper camera's view, upright](../docs/images/picam-piper-stream-76zj-hq-upright-2026-11-05.jpg) |
 
@@ -72,7 +72,10 @@ thirds of the sensor, turned 90°.
   `CPUQuota=200%`), so each sends 3.2 to 3.5 distinct frames a second of the 5 requested; ffmpeg
   repeats frames to keep 5 fps. With the fan running at about 5000 rpm the SoC sat at 60 °C,
   unthrottled. 76zj doesn't drive the arm, so nothing else needs those cores. For more frames,
-  stop one stream.
+  stop one stream. Since the HQ stream shows the whole sensor (half as much area again as
+  before), CenterFace, the slower detector, runs on 480×640 instead of 640×360. That is a third
+  more pixels, for about the same detail per face. YuNet runs on 540×720 instead of 960×540.
+  The HQ stream now sends about 2.9 frames a second, against 3.2 before.
 - **In the wide view, CenterFace marks a dark patch under the bench at the far left** (above the
   white PVC tee) as a face, so a small block there is pixelated while the gripper is at rest.
 
