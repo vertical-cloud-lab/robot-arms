@@ -1,0 +1,115 @@
+{
+ "params": {
+  "base_z_mm": 0.0,
+  "side_clear": 1.5,
+  "lift_deg": 8.0,
+  "top_margin": 2.0,
+  "floor_gap": 4.0,
+  "min_engage": 8.0,
+  "max_engage": 16.0,
+  "x_near": -80.0,
+  "x_far": -180.0,
+  "wall_outer": 32.0,
+  "tunnel_half": 26.0,
+  "deck_thick": 5.0,
+  "chamfer": 3.0,
+  "foot_out": 16.0,
+  "foot_thick": 6.0,
+  "screw_d": 4.6,
+  "window_x": [
+   -148.0,
+   -100.0
+  ],
+  "window_z": [
+   14.0,
+   70.0
+  ],
+  "no_checks": false,
+  "no_render": false
+ },
+ "size_mm": {
+  "x": 100.0,
+  "y": 96.0,
+  "z": 108.30279541015625
+ },
+ "print": {
+  "standing_on": "far (-x) end, nothing else touches the bed",
+  "height_mm": 100.0,
+  "footprint_mm": [
+   108.30279541015625,
+   96.0
+  ],
+  "overhang_area_mm2_over_45deg": 0.0,
+  "steepest_downward_face_deg_from_vertical": 44.999932804510614,
+  "volume_cm3": 187.72544438263316
+ },
+ "walls": {
+  "x_mm": [
+   -180.0,
+   -80.0
+  ],
+  "inner_y_mm": 22.0,
+  "rise_past_beam_at_rest_mm": [
+   16.0,
+   12.1
+  ],
+  "top_above_table_mm": [
+   101.6,
+   106.4
+  ],
+  "top_slope_deg_up_toward_elbow": -2.7,
+  "beam_underside_slope_deg_at_rest": -5.0
+ },
+ "deck": {
+  "gap_to_beam_at_rest_mm": 4.0,
+  "gap_to_beam_at_home_mm": 6.8,
+  "tunnel_mm": {
+   "width": 52.0,
+   "height": 76.6
+  }
+ },
+ "measure_before_printing": {
+  "what": "table to the underside of the upper arm, arm at home (J2 = 0), at x = -150 mm (about the middle of the AgileX label)",
+  "model_mm": 93.5
+ },
+ "checks": {
+  "home": 2.930209676437594,
+  "rest": 1.69129731781548,
+  "j2_lift_min": 1.69129731781548,
+  "j1_sweep": {
+   "folded, J2 at lift_deg": {
+    "min_mm": -6.673529465663535,
+    "min_at_j1": -144.0,
+    "touch_j1": [
+     -150.0,
+     -147.0,
+     -144.0,
+     -141.0,
+     -138.0,
+     -135.0
+    ]
+   },
+   "READY (J2 15, J3 -15, J5 25)": {
+    "min_mm": 11.794989641180019,
+    "min_at_j1": -27.0,
+    "touch_j1": []
+   }
+  },
+  "j1_play_deg": 0.4774537773095774,
+  "j2_free_deg": 7.0,
+  "random_poses": {
+   "valid": 437,
+   "touch_seat": 1,
+   "touching": [
+    [
+     -142.4,
+     92.7,
+     -3.4,
+     82.7,
+     -69.9,
+     -112.3
+    ]
+   ]
+  }
+ }
+}
