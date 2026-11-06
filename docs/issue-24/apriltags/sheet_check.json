@@ -1,6 +1,30 @@
 {
  "pages": [
   {
+   "size_mm": 150,
+   "ids_expected": [
+    4
+   ],
+   "ids_found": [
+    4
+   ],
+   "ids_match": true,
+   "measured_side_mm_min": 150.02,
+   "measured_side_mm_max": 150.02
+  },
+  {
+   "size_mm": 150,
+   "ids_expected": [
+    5
+   ],
+   "ids_found": [
+    5
+   ],
+   "ids_match": true,
+   "measured_side_mm_min": 150.02,
+   "measured_side_mm_max": 150.02
+  },
+  {
    "size_mm": 100,
    "ids_expected": [
     0,

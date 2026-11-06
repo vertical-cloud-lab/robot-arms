@@ -5,6 +5,8 @@
     python scripts/apriltag_tools.py detect IMAGE... [--size-mm 100] [--annotate-dir DIR]
     python scripts/apriltag_tools.py simulate   # how small / how tilted a tag can be at 1280x720
     python scripts/apriltag_tools.py figures    # tag contact sheet and the detectability figure
+    python scripts/apriltag_tools.py placement  # zone markers on the two stream frames in docs/issue-24/apriltags/frames/
+    python scripts/apriltag_tools.py handeye-selftest   # eye-to-hand recipe on synthetic poses with a known answer
 
 Family: tag36h11 (IDs 0-586). The bit patterns are the official AprilRobotics/apriltag-imgs PNGs
 (10x10 px: a 1-px white quiet zone around an 8x8 block, which is a 1-px black border plus 6x6 data
@@ -33,6 +35,7 @@ F_1280 = 1964.0 * 1280 / 4608  # 545.6 px at the 1280 x 720 the livestreams use
 
 # What goes on the print sheets: (title, black-square size in mm, IDs).
 SHEETS = [
+    ("Large workspace tags, 150 mm (far from the camera)", 150, [4, 5]),
     ("Workspace tags, 100 mm", 100, [0, 1, 2, 3]),
     ("Mid-size tags, 50 mm", 50, list(range(10, 19))),
     ("Small tags, 25 mm", 25, list(range(30, 54))),
@@ -97,11 +100,14 @@ def make_sheets(pdf_path, page_w=215.9, page_h=279.4):
     margin, gap, label_h, head_h, foot_h = 10.0, 4.0, 5.0, 14.0, 16.0
     for title, size, ids in SHEETS:
         foot = size * 1.25  # black square plus the 1-cell white quiet zone on every side
-        landscape = size >= 100
-        w, h = (page_h, page_w) if landscape else (page_w, page_h)
-        cols = int((w - 2 * margin + gap) // (foot + gap))
-        rows = int((h - 2 * margin - head_h - foot_h + gap) // (foot + gap + label_h))
-        per_page = cols * rows
+        best = None
+        for landscape in (False, True):  # whichever orientation holds more tags
+            w, h = (page_h, page_w) if landscape else (page_w, page_h)
+            cols = int((w - 2 * margin + gap) // (foot + gap))
+            rows = int((h - 2 * margin - head_h - foot_h + gap) // (foot + gap + label_h))
+            if best is None or cols * rows > best[0]:
+                best = (cols * rows, landscape, w, h, cols, rows)
+        per_page, landscape, w, h, cols, rows = best
         assert per_page >= 1, f"{size} mm tag does not fit on the page"
         for start in range(0, len(ids), per_page):
             chunk = ids[start:start + per_page]
@@ -339,6 +345,92 @@ def cmd_simulate(args):
          "rows": rows}, indent=1) + "\n")
 
 
+# ------------------------------------------------------------------ placement figure
+
+# Hand-placed from the two 2026-11-06 stream frames (1280x720, docs/issue-24/apriltags/frames/):
+# (kind, label, x, y). Approximate: the table's contents move, so these are areas, not coordinates.
+ZONES = {
+    "eufi_back_2026-11-06.jpg": [
+        ("A", "A", 594, 412), ("W", "W", 600, 545), ("W", "W", 850, 640), ("W", "W", 250, 600),
+        ("S", "S", 420, 335), ("S", "S", 497, 420), ("X", (600, 20, 1140, 170), 0, 0)],
+    "mpzy_front_2026-11-06.jpg": [
+        ("A", "A", 652, 392), ("W", "W", 885, 482), ("W", "W", 935, 640), ("W", "W", 975, 410),
+        ("S", "S", 490, 488), ("S", "S", 640, 445), ("X", (110, 20, 1000, 160), 0, 0)],
+}
+KIND_STYLE = {"A": "#009E73", "W": "#0072B2", "S": "#D55E00", "X": "#555555"}
+
+
+def cmd_placement(args):
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    import cv2
+
+    fig, axs = plt.subplots(1, 2, figsize=(16, 4.95))
+    titles = {"eufi_back_2026-11-06.jpg": "eufi, back camera (Module 3 Wide), stream frame 2026-11-06 01:43 UTC",
+              "mpzy_front_2026-11-06.jpg": "mpzy, front camera (Module 3 Wide), stream frame 2026-11-06 01:43 UTC"}
+    for ax, (name, zones) in zip(axs, ZONES.items()):
+        img = cv2.cvtColor(cv2.imread(str(OUT / "frames" / name)), cv2.COLOR_BGR2RGB)
+        ax.imshow(img)
+        for kind, label, x, y in zones:
+            col = KIND_STYLE[kind]
+            if kind == "X":
+                x0, y0, x1, y1 = label
+                ax.add_patch(plt.Rectangle((x0, y0), x1 - x0, y1 - y0, fc=col, ec=col, alpha=0.22, hatch="//"))
+                ax.text((x0 + x1) / 2, (y0 + y1) / 2, "curtains: no tags", ha="center", va="center", color="white",
+                        fontsize=11, bbox=dict(boxstyle="round", fc=col, ec="none", alpha=0.85))
+                continue
+            ax.add_patch(plt.Circle((x, y), 19, fc=col, ec="white", lw=2, alpha=0.95))
+            ax.text(x, y, label, ha="center", va="center", color="white", fontsize=9.5, fontweight="bold")
+        ax.set_title(titles[name], fontsize=10)
+        ax.set_xlim(0, 1280); ax.set_ylim(720, 0); ax.axis("off")
+    fig.suptitle("Where tags could go (approximate areas, drawn by hand on the stream frames; no tags are placed yet)", fontsize=11)
+    fig.tight_layout(rect=(0, 0.045, 1, 1))
+    fig.text(0.5, 0.012, "A = arm base     W = workspace tag, flat on the topper (100-150 mm)     "
+             "S = station tag on a rack, plate or holder (25-50 mm)     hatched = canvas curtains",
+             ha="center", fontsize=10.5)
+    fig.savefig(OUT / "placement_zones.jpg", dpi=110, pil_kwargs={"quality": 88})
+    print("wrote", OUT / "placement_zones.jpg")
+
+
+# ------------------------------------------------------------------ hand-eye self-test
+
+
+def cmd_handeye_selftest(args):
+    """Check the eye-to-hand recipe on synthetic poses with a known answer: a FIXED camera, a tag on the
+    gripper. Feed cv2.calibrateHandEye the INVERTED gripper poses (base->gripper) with the tag-in-camera
+    poses, and the 'cam2gripper' it returns is the camera's pose in the robot base frame (cam2base)."""
+    import cv2
+
+    rng = np.random.default_rng(3)
+
+    def T(R, t):
+        M = np.eye(4)
+        M[:3, :3], M[:3, 3] = R, t
+        return M
+
+    def rv(v):
+        return cv2.Rodrigues(np.asarray(v, float))[0]
+
+    def rot_err_deg(Ra, Rb):
+        return float(np.degrees(np.arccos(np.clip((np.trace(Ra.T @ Rb) - 1) / 2, -1, 1))))
+
+    T_B_C = T(rv([2.2, 0.1, -0.3]), [0.9, -0.6, 0.5])    # truth: fixed camera -> base
+    T_G_T = T(rv([0.3, -0.2, 0.5]), [0.02, 0.01, 0.05])  # truth: tag -> gripper
+    for noise_px_deg, label in [(0.0, "no noise"), (0.5, "0.5 deg / 2 mm noise on every tag pose")]:
+        Rg, tg, Rt, tt = [], [], [], []
+        for _ in range(args.poses):
+            T_B_G = T(rv(rng.uniform(-1, 1, 3)), rng.uniform([0.2, -0.3, 0.1], [0.5, 0.3, 0.4]))  # gripper -> base
+            T_C_T = np.linalg.inv(T_B_C) @ T_B_G @ T_G_T  # the tag as the camera sees it
+            if noise_px_deg:
+                T_C_T = T_C_T @ T(rv(np.radians(rng.normal(0, noise_px_deg, 3))), rng.normal(0, 0.002, 3))
+            T_G_B = np.linalg.inv(T_B_G)  # base -> gripper
+            Rg.append(T_G_B[:3, :3]); tg.append(T_G_B[:3, 3:]); Rt.append(T_C_T[:3, :3]); tt.append(T_C_T[:3, 3:])
+        R, t = cv2.calibrateHandEye(Rg, tg, Rt, tt, method=cv2.CALIB_HAND_EYE_PARK)
+        print(f"{label}: {args.poses} poses -> camera-in-base error {rot_err_deg(R, T_B_C[:3, :3]):.3f} deg, "
+              f"{np.linalg.norm(t.ravel() - T_B_C[:3, 3]) * 1000:.2f} mm")
+
+
 # ------------------------------------------------------------------ figures
 
 
@@ -426,6 +518,10 @@ def main():
     s = sub.add_parser("simulate")
     s.add_argument("--trials", type=int, default=24)
     s.set_defaults(fn=cmd_simulate)
+    sub.add_parser("placement").set_defaults(fn=cmd_placement)
+    h = sub.add_parser("handeye-selftest")
+    h.add_argument("--poses", type=int, default=20)
+    h.set_defaults(fn=cmd_handeye_selftest)
     sub.add_parser("figures").set_defaults(fn=cmd_figures)
     args = ap.parse_args()
     args.fn(args)
