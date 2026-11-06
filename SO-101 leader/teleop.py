@@ -233,7 +233,7 @@ class Session:
     def __init__(self, proc):
         self.proc = proc
         self.hello = self.ready = self.state = self.bye = None
-        self.rtt = []
+        self.rtt, self.rtt_all, self.age_all = [], [], []
         self.log = queue.Queue()
         self.lock = threading.Lock()
         self.wlock = threading.Lock()
@@ -246,8 +246,11 @@ class Session:
             try:
                 if kind == "@S":
                     self.state = json.loads(rest)
+                    if self.state.get("tpc") and self.state["ph"] == "follow":
+                        self.age_all.append(time.time() - self.state["tpc"])
                 elif kind == "@P":
                     self.rtt = (self.rtt + [time.time() - float(rest)])[-20:]
+                    self.rtt_all.append(self.rtt[-1])
                 elif kind == "@HELLO":
                     self.hello = json.loads(rest)
                     self.log.put(f"follower started: {rest}")
@@ -454,6 +457,13 @@ def main():
         sess.proc.kill()
     rc = sess.proc.returncode
     bye = sess.bye or {}
+    for name, xs in (("ping round trip", sess.rtt_all),
+                     ("newest command's age at the Pi's state report", sess.age_all)):
+        if xs:
+            xs = sorted(xs)
+            print(f"{name}: median {xs[len(xs) // 2] * 1000:.0f} ms, "
+                  f"95th percentile {xs[int(0.95 * (len(xs) - 1))] * 1000:.0f} ms, "
+                  f"max {xs[-1] * 1000:.0f} ms (n={len(xs)})")
     print(f"\nsession over: follower {bye.get('why', '?')}; exit {rc}")
     if rc != 0 and not args.dry_run:
         print("The relay stays on unless the arm was parked (arm_power.py says why above). "
