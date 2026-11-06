@@ -413,13 +413,13 @@ def main():
         if q5 is not None:
             seq += 1
             g = "nan" if grip is None else f"{grip:.1f}"
-            ok = sess.send(f"T {seq} {time.time():.3f} {int(bool(dm))} "
+            ok = sess.send(f"T {seq} {time.time():.4f} {int(bool(dm))} "
                            + " ".join(f"{v:.2f}" for v in q5) + f" {g}")
             if not ok:
                 msg = "can't write to the Pi"
         if now - t_ping >= 1.0:
             t_ping = now
-            sess.send(f"P {time.time():.3f}")
+            sess.send(f"P {time.time():.4f}")
         if now - t_ui >= 0.05:
             t_ui = now
             st = sess.state or {}

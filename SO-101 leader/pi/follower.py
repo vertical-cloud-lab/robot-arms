@@ -160,6 +160,7 @@ class Follower:
         env = parse_envelope(args.envelope)
         self.env_named = env
         self.grip0 = None
+        self.gripper_used = False
         self.enabled_once = False
 
     # ---------------------------------------------------------------- helpers
@@ -367,6 +368,7 @@ class Follower:
             if engaged and target[5] is not None:
                 g = min(max(target[5], 0.0), a.grip_max_mm)
                 grip_sp += max(-a.grip_mm_s * dt, min(a.grip_mm_s * dt, g - grip_sp))
+                self.gripper_used = True
                 piper.GripperCtrl(round(grip_sp * 1000), round(a.grip_effort_nm * 1000), 0x01, 0)
             if now - last_state >= 1.0 / a.state_hz:
                 last_state = now
@@ -412,7 +414,7 @@ class Follower:
         say(f"finishing ({why}): back to READY, then park")
         self.send(UD.hold_here(piper, self.ua), self.ua.speed)
         q = UD.joints_deg(piper)
-        if self.grip0 is not None:
+        if self.gripper_used:  # back to the stroke it started with
             piper.GripperCtrl(round(self.grip0 * 1000), round(a.grip_effort_nm * 1000), 0x01, 0)
         if max(abs(x - y) for x, y in zip(q, self.ready)) > self.ua.tol_deg:
             z0 = self.low_z(q)
@@ -427,7 +429,10 @@ class Follower:
         self.move(self.home, "down to home", self.hang)
         q = UD.joints_deg(piper)
         low = self.lv([*self.land, *q[3:]])
-        self.move(low, "land on the rest", None, deg_s=2.0)
+        try:  # as Up_and_Down.py: a snag in the last 2 deg still lowers and disables there
+            self.move(low, "land on the rest", None, deg_s=2.0)
+        except Stop as e:
+            say(f"landing stopped ({e}); lowering the gripper and disabling here")
         UD.lower_gripper(piper, UD.joints_deg(piper), self.rest_j5, self.ua)
         self.disable()
         self.phase = "parked"
