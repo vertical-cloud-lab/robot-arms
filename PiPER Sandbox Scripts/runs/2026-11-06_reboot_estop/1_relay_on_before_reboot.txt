@@ -1,0 +1,17 @@
+Fri Nov  6 02:39:27 UTC 2026
+relay ON at 2026-11-06T02:39:29Z
+arm talking 2.9 s after the relay switched on
+arm joints (deg): [  -1.90,   -1.87,    1.92,   -0.69,   23.00,   69.16]
+motors enabled:   [False, False, False, False, False, False] 
+arm status 0, ctrl mode 0, err code 0
+parked: NO, so the power must stay on:
+  J6 is at 69.2 deg, outside home's -95 to -45
+exit 0
+arm joints (deg): [  -1.90,   -1.87,    1.92,   -0.69,   23.00,   69.16]
+motors enabled:   [False, False, False, False, False, False] 
+arm status 0, ctrl mode 0, err code 0
+parked: NO, so the power must stay on:
+  J6 is at 69.2 deg, outside home's -95 to -45
+check exit 1
+17: op dh pd | hi // GPIO17 = output
+Fri Nov  6 02:39:36 UTC 2026

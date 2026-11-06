@@ -83,6 +83,72 @@ services only when necessary and verify the arm is healthy end to end afterwards
 failures as failures. Changes made on the Pi (systemd units, udev rules, cron, config) do not
 live in this repo, so record them here so they can be reproduced.
 
+**The arm's power goes through an IoT Relay II on `rpi-5-mpzy` (#57, #59, PR #60).** The
+USB-CAN adapter is on mpzy, so mpzy drives the arm (#54). The relay's `+` is on mpzy's header
+pin 11 (GPIO17) and its `−` on pin 9 (GND), with the arm's brick in a normally-OFF outlet
+(`docs/wiring/`). GPIO17 high means the arm has power. At boot GPIO17 is unclaimed and pulled
+down, so the arm stays off until something switches it on.
+- **Run every program that talks to the arm through the protocol:**
+  `~/piper-venv/bin/python ~/arm_power.py run -- ~/piper-venv/bin/python ~/<program> …`
+  (`PiPER Sandbox Scripts/arm_power.py`).
+  - It switches the relay on and waits for the arm to talk on `can0`, then runs the program.
+  - It switches the relay off only if the program exits 0 **and** the arm reports itself
+    parked: all six motors disabled, nothing moving, every joint inside `arm_home.json`'s
+    ranges.
+  - Otherwise the relay stays on and it prints why: the PiPER has no brakes, so cutting power
+    with the arm held up drops it. Park the arm (`Up_and_Down.py --park --go`), then run
+    `arm_power.py off`, which makes the same check.
+  - `status` and `check` are read-only. `off --force` is only for a person at the arm who can
+    see it resting, or after the E-stop.
+- **The home pose lives in `PiPER Sandbox Scripts/arm_home.json`, not in the code.** It is
+  #54's rest with J6 between −95° and −45°: the gripper Pi to the side, with Up_and_Down.py
+  parking it at −52°. Update the file (and the copy on mpzy) when new parts change the pose.
+- **A program run under the protocol must exit 0 only once it has left the arm parked and
+  disabled.** `Up_and_Down.py` does: 0 after it lands and disables, 1 after any stop.
+- **The relay can't protect against mpzy itself.** A reboot or power loss on mpzy pulls GPIO17
+  low and cuts the arm's power, whatever the arm is doing. Keep mpzy on the relay's always-on
+  outlet or its own supply, and don't reboot it with the motors enabled. A crash of
+  `arm_power.py` leaves the pin, and so the power, as it was.
+- **First hardware test, 2026-11-03** (`PiPER Sandbox Scripts/runs/2026-11-03_relay/`):
+  - Before switching anything, GPIO17 was free and pulled down, and the arm was silent with
+    the relay off.
+  - `on`: the arm talked 2.1 s after GPIO17 went high, with all motors disabled.
+  - `off` refused while J6 was −22.8°, turned back by hand after #54.
+  - Two `run -- Up_and_Down.py --go --cycles 1` runs ended parked. The relay went off and the
+    arm was silent 1.4 s later both times. One run started with the relay already on and the
+    other from off.
+  - A read-only program run from off powered the arm up and down with no motion.
+  - Drops at disable were J2 0.76°/0.64° and J3 0.75°/0.86°, more than #54's run 4.
+  - The arm's J3 reading moved about 0.4° across a power cycle.
+  - The reboot and E-stop checks came later (2026-11-06, below).
+- **Changes made on mpzy that day:**
+  - `can0` brought up by hand (still not persistent; see #54's notes).
+  - `~/arm_power.py` and `~/arm_home.json` added.
+  - `~/arm_power.log` (one line per switch or refusal) and `~/arm_power_runs/` (each run's
+    program output) created by the script.
+  - `~/relay_test/` holds the run traces.
+  - GPIO17 is left as an output driven low (`op dl`) until the next reboot.
+- **Changes made on eufi that day:** `~/relay_test/`, with a still and two MJPEG recordings of
+  the arm.
+- **Reboot and E-stop checks, 2026-11-06** (`PiPER Sandbox Scripts/runs/2026-11-06_reboot_estop/`):
+  - **Reboot: passed.** With the relay on and the arm disabled at rest, `systemctl reboot`
+    on mpzy cut the arm's power. mpzy was back in 42 s with GPIO17 `no pd | --` (unclaimed,
+    pulled down), so the relay was off and the arm silent once `can0` was up again. After a
+    reboot `can0` is down, the adapter is present, and `arm_power.py` refuses until it's up.
+  - **E-stop: not done yet.** No one was at the arm. The relay was on for 18 min with the arm
+    talking the whole time. To run it, a person presses the E-stop with the relay on:
+    `arm_power.py status` should then say "relay on but the arm is silent", and the arm
+    should talk again on release.
+  - J6 read +69° (−52° on 11-03), so the gripper had been turned by hand. That put it
+    outside `arm_home.json`, so `off` refused with all motors disabled and the arm visibly
+    resting on mpzy's camera. The relay went off with `off --force`.
+  - mpzy's camera is now detected (`imx708_wide`). `picam-stream.service` holds it and saves
+    a face-blurred frame to `/tmp/picam-stream-latest.jpg` every 30 s. Read that file rather
+    than stopping the stream for `rpicam-still`.
+- **Changes made on mpzy on 2026-11-06:** one reboot; `can0` brought up by hand again; the
+  updated `~/arm_power.py` copied over (it now says when the link is down, not missing). GPIO17
+  is left as output-low until the next reboot.
+
 The PiPER cell's fixed cameras get their own Pis: `CAM_PI_HOSTNAME`, tagged `tag:rpi-5-76zj`
 (login `CAM_PI_USERNAME`, sudo password `CAM_PI_PASSWORD`), and `CAM2_PI_HOSTNAME`, tagged
 `tag:rpi-5-mpzy` (`CAM2_PI_USERNAME`, `CAM2_PI_PASSWORD`). They do not drive the arm, but the

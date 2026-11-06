@@ -1,0 +1,26 @@
+Fri Nov  6 02:59:18 UTC 2026
+arm joints (deg): [  -1.90,   -1.87,    1.92,   -0.69,   23.01,   69.14]
+motors enabled:   [False, False, False, False, False, False] 
+arm status 0, ctrl mode 0, err code 0
+parked: NO, so the power must stay on:
+  J6 is at 69.1 deg, outside home's -95 to -45
+refused: relay stays on
+off exit 1
+arm joints (deg): [  -1.90,   -1.87,    1.92,   -0.69,   23.01,   69.14]
+motors enabled:   [False, False, False, False, False, False] 
+arm status 0, ctrl mode 0, err code 0
+parked: NO, so the power must stay on:
+  J6 is at 69.1 deg, outside home's -95 to -45
+reasons: [  J6 is at 69.1 deg, outside home's -95 to -45]
+only J6 roll out of range, all disabled: forcing
+--force: not checking that the arm is parked
+relay OFF at 2026-11-06T02:59:22Z (forced)
+arm silent 1.9 s after the relay switched off: power is off
+force exit 0
+17: op dl pd | lo // GPIO17 = output
+2026-11-06T02:39:34Z on: arm talking after 2.9 s, enabled [False, False, False, False, False, False]
+2026-11-06T02:41:23Z relay ON (GPIO17 high)
+2026-11-06T02:41:29Z on: arm talking after 3.1 s, enabled [False, False, False, False, False, False]
+2026-11-06T02:59:20Z off refused: J6 is at 69.1 deg, outside home's -95 to -45
+2026-11-06T02:59:22Z relay OFF (GPIO17 low)
+2026-11-06T02:59:24Z off (forced): arm silent after 1.9 s

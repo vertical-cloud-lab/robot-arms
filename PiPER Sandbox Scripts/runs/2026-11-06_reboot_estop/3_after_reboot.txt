@@ -1,0 +1,20 @@
+Fri Nov  6 02:40:37 UTC 2026
+2026-11-05 19:40:11
+can0             DOWN           <NOARP,ECHO> 
+17: no    pd | -- // GPIO17 = none
+relay: off  (17: no    pd | -- // GPIO17 = none)
+can: can0 is down: plug the USB-CAN adapter into this Pi, then `sudo ip link set can0 type can bitrate 1000000 && sudo ip link set can0 up`
+home pose: #54 rest with the gripper rolled toward the side (2026-11-03)
+--- bringing can0 up
+ok
+state UP
+state ERROR-ACTIVE
+bitrate 1000000
+relay: off  (17: no    pd | -- // GPIO17 = none)
+can: can0 up, ERROR-ACTIVE, 1000000 bit/s
+home pose: #54 rest with the gripper rolled toward the side (2026-11-03)
+arm: silent (no joint feedback)
+Available cameras
+-----------------
+0 : imx708_wide [4608x2592 10-bit RGGB] (/base/axi/pcie@1000120000/rp1/i2c@88000/imx708@1a)
+Fri Nov  6 02:40:40 UTC 2026

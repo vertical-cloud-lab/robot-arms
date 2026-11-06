@@ -1,0 +1,4 @@
+02:39:49.409
+17: op dh pd | hi // GPIO17 = output
+ssh exit 0
+02:39:50
