@@ -1,0 +1,210 @@
+{
+ "hfov_deg": 99.1,
+ "vfov_deg": 66.8,
+ "reach": {
+  "max_radius_from_J1_m": 0.766,
+  "max_height_above_plywood_m": 0.889,
+  "volume_m3": 1.138,
+  "plywood_reachable_pct": 92.9
+ },
+ "layouts": {
+  "edges": {
+   "cameras": {
+    "front": {
+     "kind": "post",
+     "tilt_deg": 30.0,
+     "lens_above_plywood_mm": 372,
+     "lens_xy_mm": [
+      -9,
+      518
+     ],
+     "distance_to_J1_mm": 638,
+     "closest_fingertip_to_post_mm": -13,
+     "closest_fingertip_to_lens_mm": 7
+    },
+    "right": {
+     "kind": "post",
+     "tilt_deg": 30.0,
+     "lens_above_plywood_mm": 372,
+     "lens_xy_mm": [
+      -518,
+      -9
+     ],
+     "distance_to_J1_mm": 638,
+     "closest_fingertip_to_post_mm": -12,
+     "closest_fingertip_to_lens_mm": 55
+    },
+    "top": {
+     "kind": "crossbar",
+     "tilt_deg": 0.0,
+     "lens_above_plywood_mm": 1204,
+     "lens_xy_mm": [
+      0,
+      11
+     ],
+     "distance_to_J1_mm": 1204,
+     "closest_fingertip_to_lens_mm": 315
+    }
+   },
+   "coverage": {
+    "front": {
+     "reach_pct": 41.9,
+     "plywood_pct": 74.4
+    },
+    "right": {
+     "reach_pct": 43.4,
+     "plywood_pct": 74.4
+    },
+    "top": {
+     "reach_pct": 88.4,
+     "plywood_pct": 100.0
+    },
+    "any": {
+     "reach_pct": 91.2,
+     "plywood_pct": 100.0
+    },
+    "two_or_more": {
+     "reach_pct": 51.3,
+     "plywood_pct": 92.1
+    }
+   },
+   "coverage_work_zone": {
+    "front": {
+     "reach_pct": 70.0,
+     "plywood_pct": 74.4
+    },
+    "right": {
+     "reach_pct": 73.2,
+     "plywood_pct": 74.4
+    },
+    "top": {
+     "reach_pct": 97.0,
+     "plywood_pct": 100.0
+    },
+    "any": {
+     "reach_pct": 99.2,
+     "plywood_pct": 100.0
+    },
+    "two_or_more": {
+     "reach_pct": 86.2,
+     "plywood_pct": 92.1
+    }
+   }
+  },
+  "corners": {
+   "cameras": {
+    "front": {
+     "kind": "post",
+     "tilt_deg": 30.0,
+     "lens_above_plywood_mm": 372,
+     "lens_xy_mm": [
+      -543,
+      530
+     ],
+     "distance_to_J1_mm": 845,
+     "closest_fingertip_to_post_mm": 46,
+     "closest_fingertip_to_lens_mm": 35
+    },
+    "right": {
+     "kind": "post",
+     "tilt_deg": 30.0,
+     "lens_above_plywood_mm": 372,
+     "lens_xy_mm": [
+      -530,
+      -543
+     ],
+     "distance_to_J1_mm": 845,
+     "closest_fingertip_to_post_mm": 46,
+     "closest_fingertip_to_lens_mm": 35
+    },
+    "top": {
+     "kind": "rail",
+     "tilt_deg": 65.0,
+     "lens_above_plywood_mm": 1175,
+     "lens_xy_mm": [
+      605,
+      0
+     ],
+     "distance_to_J1_mm": 1322,
+     "closest_fingertip_to_lens_mm": 449
+    }
+   },
+   "coverage": {
+    "front": {
+     "reach_pct": 55.9,
+     "plywood_pct": 94.5
+    },
+    "right": {
+     "reach_pct": 56.0,
+     "plywood_pct": 94.5
+    },
+    "top": {
+     "reach_pct": 92.7,
+     "plywood_pct": 100.0
+    },
+    "any": {
+     "reach_pct": 92.7,
+     "plywood_pct": 100.0
+    },
+    "two_or_more": {
+     "reach_pct": 61.6,
+     "plywood_pct": 100.0
+    }
+   },
+   "coverage_work_zone": {
+    "front": {
+     "reach_pct": 91.7,
+     "plywood_pct": 94.5
+    },
+    "right": {
+     "reach_pct": 91.9,
+     "plywood_pct": 94.5
+    },
+    "top": {
+     "reach_pct": 100.0,
+     "plywood_pct": 100.0
+    },
+    "any": {
+     "reach_pct": 100.0,
+     "plywood_pct": 100.0
+    },
+    "two_or_more": {
+     "reach_pct": 98.4,
+     "plywood_pct": 100.0
+    }
+   }
+  }
+ },
+ "cradles": {
+  "vertical": {
+   "connector_overlaps_cradle_mm3": 0.0,
+   "standoff_to_connector_mm": 0.98,
+   "connector_to_plate_mm": 0.84,
+   "plate_starts_in_from_connector_edge_mm": 6.3,
+   "hits_clamp_or_pipe_mm3_by_tilt": {
+    "-45": 0.0,
+    "-30": 0.0,
+    "-15": 0.0,
+    "0": 0.0,
+    "15": 0.0,
+    "30": 0.0,
+    "45": 0.0
+   }
+  },
+  "horizontal": {
+   "connector_overlaps_cradle_mm3": 0.0,
+   "standoff_to_connector_mm": 0.98,
+   "connector_to_plate_mm": 0.84,
+   "plate_starts_in_from_connector_edge_mm": 6.3,
+   "hits_clamp_or_pipe_mm3_by_tilt": {
+    "-45": 0.0,
+    "-30": 0.0,
+    "-15": 0.0,
+    "0": 0.0,
+    "15": 0.0,
+    "30": 0.0,
+    "45": 0.0
+   }
+  }
+ }
+}
