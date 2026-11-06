@@ -739,12 +739,16 @@ def main():
         ctypes.windll.winmm.timeBeginPeriod(1)  # 1 ms sleeps and key polls, not 15.6 ms
 
     back_at = None if args.auto is None else max(0.0, args.auto - 3.0)
-    leader = FakeLeader(back_at) if args.fake_leader else Leader(args.port)
-    mapping = None if args.fake_leader else Mapping(args)
-    if not args.fake_leader:
-        q, g = mapping.piper(leader.read())
-        print("leader now ->", dict(zip(PIPER, [round(v, 1) for v in q])),
-              "gripper", "--" if g is None else f"{g:.0f} mm")
+    try:
+        leader = FakeLeader(back_at) if args.fake_leader else Leader(args.port)
+        mapping = None if args.fake_leader else Mapping(args)
+        if not args.fake_leader:
+            q, g = mapping.piper(leader.read())
+            print("leader now ->", dict(zip(PIPER, [round(v, 1) for v in q])),
+                  "gripper", "--" if g is None else f"{g:.0f} mm")
+    except Exception as e:  # noqa: BLE001  e.g. no such port, or the leader unpowered
+        sys.exit(f"leader on {args.port}: {e}\nIs it plugged in and powered, and is that its "
+                 "port (--port)? Nothing was started on the Pi. --check tests the leader alone.")
 
     cv2 = None
     if args.auto is None:

@@ -157,9 +157,7 @@ def test_camera_keeps_only_the_newest_frame():
     except ImportError:
         print("skipped: needs opencv-python and numpy")
         return
-    spec = importlib.util.spec_from_file_location("teleop", TELEOP)
-    teleop = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(teleop)
+    teleop = load_teleop()
     cam = teleop.Camera(cmd=[sys.executable, "-c", FAKE_CAMERA])
     cam.proc.wait(timeout=30)
     t0 = time.time()
@@ -168,6 +166,67 @@ def test_camera_keeps_only_the_newest_frame():
     frame, age, n = cam.latest()
     assert frame is not None and 1 <= n <= 40, n
     assert abs(int(frame.mean()) - 5 * 39) <= 2, frame.mean()  # the last frame sent
+
+
+def load_teleop():
+    spec = importlib.util.spec_from_file_location("teleop", TELEOP)
+    teleop = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(teleop)
+    return teleop
+
+
+def test_leader_reads_a_simulated_bus():
+    """teleop.Leader against a simulated Feetech bus on a pseudo-terminal: SYNC READ, a lost
+    reply filled in without giving up SYNC READ, and an adapter that never answers it."""
+    if os.name == "nt":
+        print("skipped: needs a pseudo-terminal (Linux or macOS)")
+        return
+    import pty
+    import tty
+
+    pos = {1: 2047, 2: 1000, 3: 3000, 4: 2100, 5: 1500, 6: 2500}
+    mode = {"drop": 0, "no_sync": False}
+
+    def chk(b):
+        return (~sum(b)) & 0xFF
+
+    def status(sid):
+        body = [sid, 4, 0, pos[sid] & 0xFF, pos[sid] >> 8]
+        return bytes([0xFF, 0xFF, *body, chk(body)])
+
+    master, slave = pty.openpty()
+    tty.setraw(master)
+    tty.setraw(slave)
+
+    def bus():
+        buf = b""
+        while True:
+            buf += os.read(master, 256)
+            while True:
+                i = buf.find(b"\xff\xff")
+                if i < 0 or len(buf) < i + 4 or len(buf) < i + 4 + buf[i + 3]:
+                    break
+                pkt, buf = buf[i:i + 4 + buf[i + 3]], buf[i + 4 + buf[i + 3]:]
+                assert chk(pkt[2:-1]) == pkt[-1]
+                if pkt[4] == 0x82 and not mode["no_sync"]:
+                    ids = [s for s in pkt[7:-1] if not (s == 4 and mode["drop"])]
+                    mode["drop"] = max(0, mode["drop"] - 1)
+                    os.write(master, b"".join(status(s) for s in ids))
+                elif pkt[4] == 0x02:
+                    os.write(master, status(pkt[2]))
+
+    threading.Thread(target=bus, daemon=True).start()
+    teleop = load_teleop()
+    want = [pos[i] for i in range(1, 7)]
+    leader = teleop.Leader(os.ttyname(slave))
+    assert leader.read() == want
+    mode["drop"] = 1  # servo 4's reply to one SYNC READ is lost
+    assert leader.read() == want and leader.use_sync
+    mode["no_sync"] = True
+    other = teleop.Leader(os.ttyname(slave))
+    for _ in range(4):
+        got = other.read()
+    assert got == want and not other.use_sync
 
 
 if __name__ == "__main__":
