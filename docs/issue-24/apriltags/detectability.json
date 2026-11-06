@@ -1,0 +1,407 @@
+{
+ "note": "tag36h11, pupil-apriltags (AprilTag 3, quad_decimate 1), 1280x720, pinhole f=545.6 px, no lens distortion, known intrinsics, blur sigma 0.8 px, noise sigma 3/255, JPEG q85, textured light background. Best case: real accuracy also depends on calibration, print scale and flatness.",
+ "frontal_px_definition": "width in px of the 8-cell black square if it faced the camera at that distance",
+ "tilt_definition": "angle between the tag's normal and the line of sight to its centre; random tilt axis and roll",
+ "rows": [
+  {
+   "frontal_px": 10,
+   "tilt_deg": 0,
+   "trials": 24,
+   "detected": 0,
+   "rate": 0.0,
+   "normal_err_deg_median": null,
+   "normal_err_deg_p90": null,
+   "position_err_pct_median": null
+  },
+  {
+   "frontal_px": 10,
+   "tilt_deg": 30,
+   "trials": 24,
+   "detected": 0,
+   "rate": 0.0,
+   "normal_err_deg_median": null,
+   "normal_err_deg_p90": null,
+   "position_err_pct_median": null
+  },
+  {
+   "frontal_px": 10,
+   "tilt_deg": 50,
+   "trials": 24,
+   "detected": 0,
+   "rate": 0.0,
+   "normal_err_deg_median": null,
+   "normal_err_deg_p90": null,
+   "position_err_pct_median": null
+  },
+  {
+   "frontal_px": 10,
+   "tilt_deg": 65,
+   "trials": 24,
+   "detected": 0,
+   "rate": 0.0,
+   "normal_err_deg_median": null,
+   "normal_err_deg_p90": null,
+   "position_err_pct_median": null
+  },
+  {
+   "frontal_px": 10,
+   "tilt_deg": 75,
+   "trials": 24,
+   "detected": 0,
+   "rate": 0.0,
+   "normal_err_deg_median": null,
+   "normal_err_deg_p90": null,
+   "position_err_pct_median": null
+  },
+  {
+   "frontal_px": 14,
+   "tilt_deg": 0,
+   "trials": 24,
+   "detected": 22,
+   "rate": 0.9166666666666666,
+   "normal_err_deg_median": 4.4041329012291595,
+   "normal_err_deg_p90": 11.7734184877093,
+   "position_err_pct_median": 2.764042377720836
+  },
+  {
+   "frontal_px": 14,
+   "tilt_deg": 30,
+   "trials": 24,
+   "detected": 5,
+   "rate": 0.20833333333333334,
+   "normal_err_deg_median": 1.2098683480620993,
+   "normal_err_deg_p90": 59.12548513990744,
+   "position_err_pct_median": 3.640250685298859
+  },
+  {
+   "frontal_px": 14,
+   "tilt_deg": 50,
+   "trials": 24,
+   "detected": 0,
+   "rate": 0.0,
+   "normal_err_deg_median": null,
+   "normal_err_deg_p90": null,
+   "position_err_pct_median": null
+  },
+  {
+   "frontal_px": 14,
+   "tilt_deg": 65,
+   "trials": 24,
+   "detected": 0,
+   "rate": 0.0,
+   "normal_err_deg_median": null,
+   "normal_err_deg_p90": null,
+   "position_err_pct_median": null
+  },
+  {
+   "frontal_px": 14,
+   "tilt_deg": 75,
+   "trials": 24,
+   "detected": 0,
+   "rate": 0.0,
+   "normal_err_deg_median": null,
+   "normal_err_deg_p90": null,
+   "position_err_pct_median": null
+  },
+  {
+   "frontal_px": 20,
+   "tilt_deg": 0,
+   "trials": 24,
+   "detected": 24,
+   "rate": 1.0,
+   "normal_err_deg_median": 5.4807294789829335,
+   "normal_err_deg_p90": 11.670335456505253,
+   "position_err_pct_median": 1.1243633692743946
+  },
+  {
+   "frontal_px": 20,
+   "tilt_deg": 30,
+   "trials": 24,
+   "detected": 24,
+   "rate": 1.0,
+   "normal_err_deg_median": 0.6019099504538277,
+   "normal_err_deg_p90": 1.3805308356366959,
+   "position_err_pct_median": 1.6468339467042026
+  },
+  {
+   "frontal_px": 20,
+   "tilt_deg": 50,
+   "trials": 24,
+   "detected": 24,
+   "rate": 1.0,
+   "normal_err_deg_median": 0.7122855036942277,
+   "normal_err_deg_p90": 1.1969158856923001,
+   "position_err_pct_median": 1.700149580744293
+  },
+  {
+   "frontal_px": 20,
+   "tilt_deg": 65,
+   "trials": 24,
+   "detected": 0,
+   "rate": 0.0,
+   "normal_err_deg_median": null,
+   "normal_err_deg_p90": null,
+   "position_err_pct_median": null
+  },
+  {
+   "frontal_px": 20,
+   "tilt_deg": 75,
+   "trials": 24,
+   "detected": 0,
+   "rate": 0.0,
+   "normal_err_deg_median": null,
+   "normal_err_deg_p90": null,
+   "position_err_pct_median": null
+  },
+  {
+   "frontal_px": 28,
+   "tilt_deg": 0,
+   "trials": 24,
+   "detected": 24,
+   "rate": 1.0,
+   "normal_err_deg_median": 3.144042217594915,
+   "normal_err_deg_p90": 6.639806405597009,
+   "position_err_pct_median": 0.2274497963801425
+  },
+  {
+   "frontal_px": 28,
+   "tilt_deg": 30,
+   "trials": 24,
+   "detected": 24,
+   "rate": 1.0,
+   "normal_err_deg_median": 0.31778879790758013,
+   "normal_err_deg_p90": 0.5456111678571073,
+   "position_err_pct_median": 0.3916479969772852
+  },
+  {
+   "frontal_px": 28,
+   "tilt_deg": 50,
+   "trials": 24,
+   "detected": 24,
+   "rate": 1.0,
+   "normal_err_deg_median": 0.6243374613159814,
+   "normal_err_deg_p90": 0.7194188272455504,
+   "position_err_pct_median": 0.46448014900250767
+  },
+  {
+   "frontal_px": 28,
+   "tilt_deg": 65,
+   "trials": 24,
+   "detected": 23,
+   "rate": 0.9583333333333334,
+   "normal_err_deg_median": 0.6139077249068583,
+   "normal_err_deg_p90": 0.8135933889139644,
+   "position_err_pct_median": 0.7358176623901228
+  },
+  {
+   "frontal_px": 28,
+   "tilt_deg": 75,
+   "trials": 24,
+   "detected": 1,
+   "rate": 0.041666666666666664,
+   "normal_err_deg_median": 0.20175438853419628,
+   "normal_err_deg_p90": 0.20175438853419628,
+   "position_err_pct_median": 1.16810379052789
+  },
+  {
+   "frontal_px": 40,
+   "tilt_deg": 0,
+   "trials": 24,
+   "detected": 24,
+   "rate": 1.0,
+   "normal_err_deg_median": 2.0240641881199872,
+   "normal_err_deg_p90": 4.330558082225279,
+   "position_err_pct_median": 0.06778088578176235
+  },
+  {
+   "frontal_px": 40,
+   "tilt_deg": 30,
+   "trials": 24,
+   "detected": 24,
+   "rate": 1.0,
+   "normal_err_deg_median": 0.1750787643974912,
+   "normal_err_deg_p90": 0.2885098178600153,
+   "position_err_pct_median": 0.06245679947297269
+  },
+  {
+   "frontal_px": 40,
+   "tilt_deg": 50,
+   "trials": 24,
+   "detected": 24,
+   "rate": 1.0,
+   "normal_err_deg_median": 0.2202936525335754,
+   "normal_err_deg_p90": 0.30423277540520866,
+   "position_err_pct_median": 0.1010436296238982
+  },
+  {
+   "frontal_px": 40,
+   "tilt_deg": 65,
+   "trials": 24,
+   "detected": 24,
+   "rate": 1.0,
+   "normal_err_deg_median": 0.3784653974471216,
+   "normal_err_deg_p90": 0.5771936075636079,
+   "position_err_pct_median": 0.20146088920016403
+  },
+  {
+   "frontal_px": 40,
+   "tilt_deg": 75,
+   "trials": 24,
+   "detected": 17,
+   "rate": 0.7083333333333334,
+   "normal_err_deg_median": 0.41982886583431933,
+   "normal_err_deg_p90": 0.5700121338144714,
+   "position_err_pct_median": 0.7289050840200711
+  },
+  {
+   "frontal_px": 56,
+   "tilt_deg": 0,
+   "trials": 24,
+   "detected": 24,
+   "rate": 1.0,
+   "normal_err_deg_median": 1.0891355866505232,
+   "normal_err_deg_p90": 2.4537967301091648,
+   "position_err_pct_median": 0.08437571410819145
+  },
+  {
+   "frontal_px": 56,
+   "tilt_deg": 30,
+   "trials": 24,
+   "detected": 24,
+   "rate": 1.0,
+   "normal_err_deg_median": 0.16181521572708868,
+   "normal_err_deg_p90": 0.30145717181723425,
+   "position_err_pct_median": 0.07908188029194194
+  },
+  {
+   "frontal_px": 56,
+   "tilt_deg": 50,
+   "trials": 24,
+   "detected": 24,
+   "rate": 1.0,
+   "normal_err_deg_median": 0.06939302352946561,
+   "normal_err_deg_p90": 0.17154652951213356,
+   "position_err_pct_median": 0.08866956953390465
+  },
+  {
+   "frontal_px": 56,
+   "tilt_deg": 65,
+   "trials": 24,
+   "detected": 24,
+   "rate": 1.0,
+   "normal_err_deg_median": 0.20808984356596888,
+   "normal_err_deg_p90": 0.24539625031637455,
+   "position_err_pct_median": 0.17179437513609025
+  },
+  {
+   "frontal_px": 56,
+   "tilt_deg": 75,
+   "trials": 24,
+   "detected": 24,
+   "rate": 1.0,
+   "normal_err_deg_median": 0.4157572793484543,
+   "normal_err_deg_p90": 0.4733762856310926,
+   "position_err_pct_median": 0.17250750708683205
+  },
+  {
+   "frontal_px": 80,
+   "tilt_deg": 0,
+   "trials": 24,
+   "detected": 24,
+   "rate": 1.0,
+   "normal_err_deg_median": 0.6191110258321956,
+   "normal_err_deg_p90": 1.4312686372530488,
+   "position_err_pct_median": 0.09660015673260268
+  },
+  {
+   "frontal_px": 80,
+   "tilt_deg": 30,
+   "trials": 24,
+   "detected": 24,
+   "rate": 1.0,
+   "normal_err_deg_median": 0.107483612610845,
+   "normal_err_deg_p90": 0.15875575517601154,
+   "position_err_pct_median": 0.07281705803757016
+  },
+  {
+   "frontal_px": 80,
+   "tilt_deg": 50,
+   "trials": 24,
+   "detected": 24,
+   "rate": 1.0,
+   "normal_err_deg_median": 0.04809527731590737,
+   "normal_err_deg_p90": 0.07633088600013448,
+   "position_err_pct_median": 0.09540858358166884
+  },
+  {
+   "frontal_px": 80,
+   "tilt_deg": 65,
+   "trials": 24,
+   "detected": 24,
+   "rate": 1.0,
+   "normal_err_deg_median": 0.06231645230774304,
+   "normal_err_deg_p90": 0.09420315130544536,
+   "position_err_pct_median": 0.10268260738627455
+  },
+  {
+   "frontal_px": 80,
+   "tilt_deg": 75,
+   "trials": 24,
+   "detected": 24,
+   "rate": 1.0,
+   "normal_err_deg_median": 0.19494602272033473,
+   "normal_err_deg_p90": 0.2367781031705217,
+   "position_err_pct_median": 0.2224979005858695
+  },
+  {
+   "frontal_px": 120,
+   "tilt_deg": 0,
+   "trials": 24,
+   "detected": 24,
+   "rate": 1.0,
+   "normal_err_deg_median": 0.2619483684281212,
+   "normal_err_deg_p90": 0.39179931509371874,
+   "position_err_pct_median": 0.12856158971334508
+  },
+  {
+   "frontal_px": 120,
+   "tilt_deg": 30,
+   "trials": 24,
+   "detected": 24,
+   "rate": 1.0,
+   "normal_err_deg_median": 0.059281867199858715,
+   "normal_err_deg_p90": 0.10289988792906543,
+   "position_err_pct_median": 0.1304808928068676
+  },
+  {
+   "frontal_px": 120,
+   "tilt_deg": 50,
+   "trials": 24,
+   "detected": 24,
+   "rate": 1.0,
+   "normal_err_deg_median": 0.028382628944036065,
+   "normal_err_deg_p90": 0.0545113038086149,
+   "position_err_pct_median": 0.12474804205238785
+  },
+  {
+   "frontal_px": 120,
+   "tilt_deg": 65,
+   "trials": 24,
+   "detected": 24,
+   "rate": 1.0,
+   "normal_err_deg_median": 0.0280639749016464,
+   "normal_err_deg_p90": 0.051176859677932056,
+   "position_err_pct_median": 0.1298131288275266
+  },
+  {
+   "frontal_px": 120,
+   "tilt_deg": 75,
+   "trials": 24,
+   "detected": 24,
+   "rate": 1.0,
+   "normal_err_deg_median": 0.05959995578183069,
+   "normal_err_deg_p90": 0.08257082863970115,
+   "position_err_pct_median": 0.157196022774783
+  }
+ ]
+}

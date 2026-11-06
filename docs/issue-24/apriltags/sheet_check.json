@@ -1,0 +1,118 @@
+{
+ "pages": [
+  {
+   "size_mm": 100,
+   "ids_expected": [
+    0,
+    1
+   ],
+   "ids_found": [
+    0,
+    1
+   ],
+   "ids_match": true,
+   "measured_side_mm_min": 100.01,
+   "measured_side_mm_max": 100.02
+  },
+  {
+   "size_mm": 100,
+   "ids_expected": [
+    2,
+    3
+   ],
+   "ids_found": [
+    2,
+    3
+   ],
+   "ids_match": true,
+   "measured_side_mm_min": 100.01,
+   "measured_side_mm_max": 100.02
+  },
+  {
+   "size_mm": 50,
+   "ids_expected": [
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+   ],
+   "ids_found": [
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+   ],
+   "ids_match": true,
+   "measured_side_mm_min": 50.0,
+   "measured_side_mm_max": 50.03
+  },
+  {
+   "size_mm": 25,
+   "ids_expected": [
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53
+   ],
+   "ids_found": [
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53
+   ],
+   "ids_match": true,
+   "measured_side_mm_min": 25.0,
+   "measured_side_mm_max": 25.02
+  }
+ ]
+}
