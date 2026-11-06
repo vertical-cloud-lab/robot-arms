@@ -132,9 +132,13 @@ def can_state(channel):
 def can_ready(channel):
     oper, state, rate = can_state(channel)
     if oper not in ("up", "unknown"):
-        return False, (f"{channel} is {oper}: plug the USB-CAN adapter into this Pi, then "
-                       f"`sudo ip link set {channel} type can bitrate 1000000 && "
-                       f"sudo ip link set {channel} up`")
+        # After every reboot or replug can0 exists but is down (it isn't brought up at boot).
+        return False, (f"{channel} is {oper}: "
+                       + ("plug the USB-CAN adapter into this Pi, then " if oper == "missing"
+                          else "the adapter is there but the link isn't up (it never is after "
+                               "a reboot or replug): ")
+                       + f"`sudo ip link set {channel} type can bitrate 1000000 && "
+                         f"sudo ip link set {channel} up`")
     if state == "BUS-OFF":
         return False, (f"{channel} is BUS-OFF: `sudo ip link set {channel} down`, then bring "
                        "it up again")

@@ -120,8 +120,7 @@ down, so the arm stays off until something switches it on.
   - A read-only program run from off powered the arm up and down with no motion.
   - Drops at disable were J2 0.76°/0.64° and J3 0.75°/0.86°, more than #54's run 4.
   - The arm's J3 reading moved about 0.4° across a power cycle.
-  - **Not yet tested:** that rebooting mpzy leaves the relay off, and that the E-stop still
-    cuts the arm's power with the relay on.
+  - The reboot and E-stop checks came later (2026-11-06, below).
 - **Changes made on mpzy that day:**
   - `can0` brought up by hand (still not persistent; see #54's notes).
   - `~/arm_power.py` and `~/arm_home.json` added.
@@ -131,6 +130,24 @@ down, so the arm stays off until something switches it on.
   - GPIO17 is left as an output driven low (`op dl`) until the next reboot.
 - **Changes made on eufi that day:** `~/relay_test/`, with a still and two MJPEG recordings of
   the arm.
+- **Reboot and E-stop checks, 2026-11-06** (`PiPER Sandbox Scripts/runs/2026-11-06_reboot_estop/`):
+  - **Reboot: passed.** With the relay on and the arm disabled at rest, `systemctl reboot`
+    on mpzy cut the arm's power. mpzy was back in 42 s with GPIO17 `no pd | --` (unclaimed,
+    pulled down), so the relay was off and the arm silent once `can0` was up again. After a
+    reboot `can0` is down, the adapter is present, and `arm_power.py` refuses until it's up.
+  - **E-stop: not done yet.** No one was at the arm. The relay was on for 18 min with the arm
+    talking the whole time. To run it, a person presses the E-stop with the relay on:
+    `arm_power.py status` should then say "relay on but the arm is silent", and the arm
+    should talk again on release.
+  - J6 read +69° (−52° on 11-03), so the gripper had been turned by hand. That put it
+    outside `arm_home.json`, so `off` refused with all motors disabled and the arm visibly
+    resting on mpzy's camera. The relay went off with `off --force`.
+  - mpzy's camera is now detected (`imx708_wide`). `picam-stream.service` holds it and saves
+    a face-blurred frame to `/tmp/picam-stream-latest.jpg` every 30 s. Read that file rather
+    than stopping the stream for `rpicam-still`.
+- **Changes made on mpzy on 2026-11-06:** one reboot; `can0` brought up by hand again; the
+  updated `~/arm_power.py` copied over (it now says when the link is down, not missing). GPIO17
+  is left as output-low until the next reboot.
 
 The PiPER cell's fixed cameras get their own Pis: `CAM_PI_HOSTNAME`, tagged `tag:rpi-5-76zj`
 (login `CAM_PI_USERNAME`, sudo password `CAM_PI_PASSWORD`), and `CAM2_PI_HOSTNAME`, tagged
