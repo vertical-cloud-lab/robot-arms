@@ -1,0 +1,39 @@
+{
+ "width": 4608,
+ "height": 2592,
+ "K": [
+  [
+   1964.0,
+   0.0,
+   2304.0
+  ],
+  [
+   0.0,
+   1964.0,
+   1296.0
+  ],
+  [
+   0.0,
+   0.0,
+   1.0
+  ]
+ ],
+ "dist": [
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0
+ ],
+ "rvec": [
+  0.945385,
+  2.112847,
+  -1.374958
+ ],
+ "tvec": [
+  -44.737,
+  148.384,
+  899.584
+ ],
+ "note": "back-right corner (wall side, the end the arm faces), high enough to see over the shelf (nominal, from the CAD; calibrate after mounting)"
+}

@@ -1,0 +1,39 @@
+{
+ "width": 4608,
+ "height": 2592,
+ "K": [
+  [
+   1964.0,
+   0.0,
+   2304.0
+  ],
+  [
+   0.0,
+   1964.0,
+   1296.0
+  ],
+  [
+   0.0,
+   0.0,
+   1.0
+  ]
+ ],
+ "dist": [
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0
+ ],
+ "rvec": [
+  0.0,
+  3.141593,
+  0.0
+ ],
+ "tvec": [
+  -300.0,
+  -100.0,
+  1202.0
+ ],
+ "note": "1.2 m above the table, on a boom from the back-left corner, looking straight down with the image's long side along the wall (nominal, from the CAD; calibrate after mounting)"
+}

@@ -1,0 +1,124 @@
+{
+ "pairs": {
+  "best one-Pi pair": [
+   "right end y-450 z150",
+   "right end y+450 z150"
+  ],
+  "best pair, no cable limit": [
+   "room edge x+600 z150",
+   "right end y+450 z300"
+  ]
+ },
+ "overheads": {
+  "A: straight down, 1.2 m": {
+   "position_mm": [
+    0,
+    -75,
+    1200
+   ],
+   "sees_fingertips_pct": 70.5,
+   "best one-Pi pair": {
+    "seen_by_2plus_pct": 93.5,
+    "seen_by_any_pct": 99.8,
+    "median_err_mm": 1.05,
+    "within_1mm_pct": 36.8,
+    "within_2mm_pct": 92.2
+   },
+   "best pair, no cable limit": {
+    "seen_by_2plus_pct": 94.2,
+    "seen_by_any_pct": 99.5,
+    "median_err_mm": 1.12,
+    "within_1mm_pct": 25.8,
+    "within_2mm_pct": 93.8
+   }
+  },
+  "straight down, 1.5 m": {
+   "position_mm": [
+    0,
+    -75,
+    1500
+   ],
+   "sees_fingertips_pct": 78.2,
+   "best one-Pi pair": {
+    "seen_by_2plus_pct": 96.5,
+    "seen_by_any_pct": 100.0,
+    "median_err_mm": 1.14,
+    "within_1mm_pct": 24.8,
+    "within_2mm_pct": 95.2
+   },
+   "best pair, no cable limit": {
+    "seen_by_2plus_pct": 97.2,
+    "seen_by_any_pct": 100.0,
+    "median_err_mm": 1.17,
+    "within_1mm_pct": 9.0,
+    "within_2mm_pct": 96.8
+   }
+  },
+  "tilted 20 deg from the room side": {
+   "position_mm": [
+    0,
+    -480,
+    1150
+   ],
+   "sees_fingertips_pct": 72.5,
+   "best one-Pi pair": {
+    "seen_by_2plus_pct": 93.0,
+    "seen_by_any_pct": 99.8,
+    "median_err_mm": 1.05,
+    "within_1mm_pct": 35.5,
+    "within_2mm_pct": 91.8
+   },
+   "best pair, no cable limit": {
+    "seen_by_2plus_pct": 93.8,
+    "seen_by_any_pct": 99.5,
+    "median_err_mm": 1.1,
+    "within_1mm_pct": 23.0,
+    "within_2mm_pct": 93.0
+   }
+  },
+  "tilted 30 deg from the room side": {
+   "position_mm": [
+    0,
+    -650,
+    1050
+   ],
+   "sees_fingertips_pct": 73.5,
+   "best one-Pi pair": {
+    "seen_by_2plus_pct": 92.8,
+    "seen_by_any_pct": 99.8,
+    "median_err_mm": 1.05,
+    "within_1mm_pct": 37.2,
+    "within_2mm_pct": 90.5
+   },
+   "best pair, no cable limit": {
+    "seen_by_2plus_pct": 93.0,
+    "seen_by_any_pct": 99.5,
+    "median_err_mm": 1.09,
+    "within_1mm_pct": 20.2,
+    "within_2mm_pct": 92.5
+   }
+  },
+  "tilted 25 deg from the door end": {
+   "position_mm": [
+    -520,
+    -75,
+    1100
+   ],
+   "sees_fingertips_pct": 64.0,
+   "best one-Pi pair": {
+    "seen_by_2plus_pct": 94.8,
+    "seen_by_any_pct": 100.0,
+    "median_err_mm": 1.19,
+    "within_1mm_pct": 19.8,
+    "within_2mm_pct": 93.2
+   },
+   "best pair, no cable limit": {
+    "seen_by_2plus_pct": 98.0,
+    "seen_by_any_pct": 100.0,
+    "median_err_mm": 1.22,
+    "within_1mm_pct": 4.2,
+    "within_2mm_pct": 96.2
+   }
+  }
+ }
+}

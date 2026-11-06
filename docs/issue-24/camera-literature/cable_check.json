@@ -1,0 +1,2076 @@
+{
+ "note": "Simulated with the digital twin; 1 px noise at 2304x1296; side cameras aim at (100, 0, 150); A is the overhead camera at (0, -75, 1200) looking straight down.",
+ "cable_model": "fits if |dx|+|dy|+|dz| between the cameras <= 2 x (500 - 50) = 900 mm (Pi between them)",
+ "n_poses": 400,
+ "n_side_spots": 102,
+ "n_pairs": 5151,
+ "reference": {
+  "A + B + taped (2026-10-14 plan)": {
+   "seen_by_2plus_pct": 88.8,
+   "seen_by_any_pct": 98.5,
+   "median_err_mm": 1.02,
+   "within_1mm_pct": 43.0,
+   "within_2mm_pct": 88.2
+  },
+  "A + B": {
+   "seen_by_2plus_pct": 59.8,
+   "seen_by_any_pct": 98.0,
+   "median_err_mm": 1.23,
+   "within_1mm_pct": 6.8,
+   "within_2mm_pct": 59.8
+  },
+  "A only": {
+   "seen_by_2plus_pct": 0.0,
+   "seen_by_any_pct": 70.5,
+   "median_err_mm": null,
+   "within_1mm_pct": 0.0,
+   "within_2mm_pct": 0.0
+  }
+ },
+ "per_camera": {
+  "A overhead": {
+   "position_mm": [
+    0,
+    -75,
+    1200
+   ],
+   "fingertips_seen_pct": 70.5
+  },
+  "room edge x-600 z150": {
+   "position_mm": [
+    -600,
+    -774,
+    150
+   ],
+   "fingertips_seen_pct": 69.5
+  },
+  "room edge x-450 z150": {
+   "position_mm": [
+    -450,
+    -774,
+    150
+   ],
+   "fingertips_seen_pct": 68.0
+  },
+  "room edge x-300 z150": {
+   "position_mm": [
+    -300,
+    -774,
+    150
+   ],
+   "fingertips_seen_pct": 67.0
+  },
+  "room edge x+300 z150": {
+   "position_mm": [
+    300,
+    -774,
+    150
+   ],
+   "fingertips_seen_pct": 74.2
+  },
+  "room edge x+450 z150": {
+   "position_mm": [
+    450,
+    -774,
+    150
+   ],
+   "fingertips_seen_pct": 79.8
+  },
+  "room edge x+600 z150": {
+   "position_mm": [
+    600,
+    -774,
+    150
+   ],
+   "fingertips_seen_pct": 85.5
+  },
+  "right end y-600 z150": {
+   "position_mm": [
+    745,
+    -600,
+    150
+   ],
+   "fingertips_seen_pct": 88.8
+  },
+  "left end y-600 z150": {
+   "position_mm": [
+    -745,
+    -600,
+    150
+   ],
+   "fingertips_seen_pct": 71.8
+  },
+  "right end y-450 z150": {
+   "position_mm": [
+    745,
+    -450,
+    150
+   ],
+   "fingertips_seen_pct": 87.2
+  },
+  "left end y-450 z150": {
+   "position_mm": [
+    -745,
+    -450,
+    150
+   ],
+   "fingertips_seen_pct": 68.8
+  },
+  "right end y-300 z150": {
+   "position_mm": [
+    745,
+    -300,
+    150
+   ],
+   "fingertips_seen_pct": 86.2
+  },
+  "left end y-300 z150": {
+   "position_mm": [
+    -745,
+    -300,
+    150
+   ],
+   "fingertips_seen_pct": 66.2
+  },
+  "right end y+300 z150": {
+   "position_mm": [
+    745,
+    300,
+    150
+   ],
+   "fingertips_seen_pct": 86.2
+  },
+  "left end y+300 z150": {
+   "position_mm": [
+    -745,
+    300,
+    150
+   ],
+   "fingertips_seen_pct": 68.0
+  },
+  "right end y+450 z150": {
+   "position_mm": [
+    745,
+    450,
+    150
+   ],
+   "fingertips_seen_pct": 87.5
+  },
+  "left end y+450 z150": {
+   "position_mm": [
+    -745,
+    450,
+    150
+   ],
+   "fingertips_seen_pct": 67.0
+  },
+  "room-right corner z150": {
+   "position_mm": [
+    705,
+    -774,
+    150
+   ],
+   "fingertips_seen_pct": 87.5
+  },
+  "room-left corner z150": {
+   "position_mm": [
+    -705,
+    -774,
+    150
+   ],
+   "fingertips_seen_pct": 71.5
+  },
+  "room edge x-600 z300": {
+   "position_mm": [
+    -600,
+    -774,
+    300
+   ],
+   "fingertips_seen_pct": 66.2
+  },
+  "room edge x-450 z300": {
+   "position_mm": [
+    -450,
+    -774,
+    300
+   ],
+   "fingertips_seen_pct": 66.2
+  },
+  "room edge x-300 z300": {
+   "position_mm": [
+    -300,
+    -774,
+    300
+   ],
+   "fingertips_seen_pct": 68.8
+  },
+  "room edge x-150 z300": {
+   "position_mm": [
+    -150,
+    -774,
+    300
+   ],
+   "fingertips_seen_pct": 68.5
+  },
+  "room edge x+0 z300": {
+   "position_mm": [
+    0,
+    -774,
+    300
+   ],
+   "fingertips_seen_pct": 68.5
+  },
+  "room edge x+150 z300": {
+   "position_mm": [
+    150,
+    -774,
+    300
+   ],
+   "fingertips_seen_pct": 70.0
+  },
+  "room edge x+300 z300": {
+   "position_mm": [
+    300,
+    -774,
+    300
+   ],
+   "fingertips_seen_pct": 74.8
+  },
+  "room edge x+450 z300": {
+   "position_mm": [
+    450,
+    -774,
+    300
+   ],
+   "fingertips_seen_pct": 81.2
+  },
+  "room edge x+600 z300": {
+   "position_mm": [
+    600,
+    -774,
+    300
+   ],
+   "fingertips_seen_pct": 84.5
+  },
+  "right end y-600 z300": {
+   "position_mm": [
+    745,
+    -600,
+    300
+   ],
+   "fingertips_seen_pct": 88.2
+  },
+  "left end y-600 z300": {
+   "position_mm": [
+    -745,
+    -600,
+    300
+   ],
+   "fingertips_seen_pct": 66.8
+  },
+  "right end y-450 z300": {
+   "position_mm": [
+    745,
+    -450,
+    300
+   ],
+   "fingertips_seen_pct": 86.5
+  },
+  "left end y-450 z300": {
+   "position_mm": [
+    -745,
+    -450,
+    300
+   ],
+   "fingertips_seen_pct": 64.8
+  },
+  "right end y-300 z300": {
+   "position_mm": [
+    745,
+    -300,
+    300
+   ],
+   "fingertips_seen_pct": 85.2
+  },
+  "left end y-300 z300": {
+   "position_mm": [
+    -745,
+    -300,
+    300
+   ],
+   "fingertips_seen_pct": 65.0
+  },
+  "right end y+300 z300": {
+   "position_mm": [
+    745,
+    300,
+    300
+   ],
+   "fingertips_seen_pct": 86.2
+  },
+  "left end y+300 z300": {
+   "position_mm": [
+    -745,
+    300,
+    300
+   ],
+   "fingertips_seen_pct": 63.5
+  },
+  "right end y+450 z300": {
+   "position_mm": [
+    745,
+    450,
+    300
+   ],
+   "fingertips_seen_pct": 87.2
+  },
+  "left end y+450 z300": {
+   "position_mm": [
+    -745,
+    450,
+    300
+   ],
+   "fingertips_seen_pct": 63.7
+  },
+  "room-right corner z300": {
+   "position_mm": [
+    705,
+    -774,
+    300
+   ],
+   "fingertips_seen_pct": 86.2
+  },
+  "room-left corner z300": {
+   "position_mm": [
+    -705,
+    -774,
+    300
+   ],
+   "fingertips_seen_pct": 68.5
+  },
+  "room edge x-600 z450": {
+   "position_mm": [
+    -600,
+    -774,
+    450
+   ],
+   "fingertips_seen_pct": 67.0
+  },
+  "room edge x-450 z450": {
+   "position_mm": [
+    -450,
+    -774,
+    450
+   ],
+   "fingertips_seen_pct": 66.5
+  },
+  "room edge x-300 z450": {
+   "position_mm": [
+    -300,
+    -774,
+    450
+   ],
+   "fingertips_seen_pct": 65.8
+  },
+  "room edge x-150 z450": {
+   "position_mm": [
+    -150,
+    -774,
+    450
+   ],
+   "fingertips_seen_pct": 67.5
+  },
+  "room edge x+0 z450": {
+   "position_mm": [
+    0,
+    -774,
+    450
+   ],
+   "fingertips_seen_pct": 70.2
+  },
+  "room edge x+150 z450": {
+   "position_mm": [
+    150,
+    -774,
+    450
+   ],
+   "fingertips_seen_pct": 72.8
+  },
+  "room edge x+300 z450": {
+   "position_mm": [
+    300,
+    -774,
+    450
+   ],
+   "fingertips_seen_pct": 76.0
+  },
+  "room edge x+450 z450": {
+   "position_mm": [
+    450,
+    -774,
+    450
+   ],
+   "fingertips_seen_pct": 81.2
+  },
+  "room edge x+600 z450": {
+   "position_mm": [
+    600,
+    -774,
+    450
+   ],
+   "fingertips_seen_pct": 83.0
+  },
+  "right end y-600 z450": {
+   "position_mm": [
+    745,
+    -600,
+    450
+   ],
+   "fingertips_seen_pct": 87.0
+  },
+  "left end y-600 z450": {
+   "position_mm": [
+    -745,
+    -600,
+    450
+   ],
+   "fingertips_seen_pct": 66.5
+  },
+  "right end y-450 z450": {
+   "position_mm": [
+    745,
+    -450,
+    450
+   ],
+   "fingertips_seen_pct": 86.0
+  },
+  "left end y-450 z450": {
+   "position_mm": [
+    -745,
+    -450,
+    450
+   ],
+   "fingertips_seen_pct": 65.8
+  },
+  "right end y-300 z450": {
+   "position_mm": [
+    745,
+    -300,
+    450
+   ],
+   "fingertips_seen_pct": 86.5
+  },
+  "left end y-300 z450": {
+   "position_mm": [
+    -745,
+    -300,
+    450
+   ],
+   "fingertips_seen_pct": 63.2
+  },
+  "right end y-150 z450": {
+   "position_mm": [
+    745,
+    -150,
+    450
+   ],
+   "fingertips_seen_pct": 87.8
+  },
+  "left end y-150 z450": {
+   "position_mm": [
+    -745,
+    -150,
+    450
+   ],
+   "fingertips_seen_pct": 62.0
+  },
+  "right end y+0 z450": {
+   "position_mm": [
+    745,
+    0,
+    450
+   ],
+   "fingertips_seen_pct": 87.8
+  },
+  "left end y+0 z450": {
+   "position_mm": [
+    -745,
+    0,
+    450
+   ],
+   "fingertips_seen_pct": 60.2
+  },
+  "right end y+150 z450": {
+   "position_mm": [
+    745,
+    150,
+    450
+   ],
+   "fingertips_seen_pct": 86.0
+  },
+  "left end y+150 z450": {
+   "position_mm": [
+    -745,
+    150,
+    450
+   ],
+   "fingertips_seen_pct": 60.0
+  },
+  "right end y+300 z450": {
+   "position_mm": [
+    745,
+    300,
+    450
+   ],
+   "fingertips_seen_pct": 85.0
+  },
+  "left end y+300 z450": {
+   "position_mm": [
+    -745,
+    300,
+    450
+   ],
+   "fingertips_seen_pct": 59.2
+  },
+  "right end y+450 z450": {
+   "position_mm": [
+    745,
+    450,
+    450
+   ],
+   "fingertips_seen_pct": 86.0
+  },
+  "left end y+450 z450": {
+   "position_mm": [
+    -745,
+    450,
+    450
+   ],
+   "fingertips_seen_pct": 64.8
+  },
+  "room-right corner z450": {
+   "position_mm": [
+    705,
+    -774,
+    450
+   ],
+   "fingertips_seen_pct": 85.5
+  },
+  "room-left corner z450": {
+   "position_mm": [
+    -705,
+    -774,
+    450
+   ],
+   "fingertips_seen_pct": 66.0
+  },
+  "room edge x-600 z650": {
+   "position_mm": [
+    -600,
+    -774,
+    650
+   ],
+   "fingertips_seen_pct": 66.0
+  },
+  "room edge x-450 z650": {
+   "position_mm": [
+    -450,
+    -774,
+    650
+   ],
+   "fingertips_seen_pct": 66.0
+  },
+  "room edge x-300 z650": {
+   "position_mm": [
+    -300,
+    -774,
+    650
+   ],
+   "fingertips_seen_pct": 64.2
+  },
+  "room edge x-150 z650": {
+   "position_mm": [
+    -150,
+    -774,
+    650
+   ],
+   "fingertips_seen_pct": 69.5
+  },
+  "room edge x+0 z650": {
+   "position_mm": [
+    0,
+    -774,
+    650
+   ],
+   "fingertips_seen_pct": 70.5
+  },
+  "room edge x+150 z650": {
+   "position_mm": [
+    150,
+    -774,
+    650
+   ],
+   "fingertips_seen_pct": 73.0
+  },
+  "room edge x+300 z650": {
+   "position_mm": [
+    300,
+    -774,
+    650
+   ],
+   "fingertips_seen_pct": 75.8
+  },
+  "room edge x+450 z650": {
+   "position_mm": [
+    450,
+    -774,
+    650
+   ],
+   "fingertips_seen_pct": 79.5
+  },
+  "room edge x+600 z650": {
+   "position_mm": [
+    600,
+    -774,
+    650
+   ],
+   "fingertips_seen_pct": 83.0
+  },
+  "right end y-600 z650": {
+   "position_mm": [
+    745,
+    -600,
+    650
+   ],
+   "fingertips_seen_pct": 85.2
+  },
+  "left end y-600 z650": {
+   "position_mm": [
+    -745,
+    -600,
+    650
+   ],
+   "fingertips_seen_pct": 66.0
+  },
+  "right end y-450 z650": {
+   "position_mm": [
+    745,
+    -450,
+    650
+   ],
+   "fingertips_seen_pct": 85.8
+  },
+  "left end y-450 z650": {
+   "position_mm": [
+    -745,
+    -450,
+    650
+   ],
+   "fingertips_seen_pct": 65.2
+  },
+  "right end y-300 z650": {
+   "position_mm": [
+    745,
+    -300,
+    650
+   ],
+   "fingertips_seen_pct": 84.8
+  },
+  "left end y-300 z650": {
+   "position_mm": [
+    -745,
+    -300,
+    650
+   ],
+   "fingertips_seen_pct": 60.5
+  },
+  "right end y-150 z650": {
+   "position_mm": [
+    745,
+    -150,
+    650
+   ],
+   "fingertips_seen_pct": 85.5
+  },
+  "left end y-150 z650": {
+   "position_mm": [
+    -745,
+    -150,
+    650
+   ],
+   "fingertips_seen_pct": 59.2
+  },
+  "right end y+0 z650": {
+   "position_mm": [
+    745,
+    0,
+    650
+   ],
+   "fingertips_seen_pct": 86.8
+  },
+  "left end y+0 z650": {
+   "position_mm": [
+    -745,
+    0,
+    650
+   ],
+   "fingertips_seen_pct": 56.2
+  },
+  "right end y+150 z650": {
+   "position_mm": [
+    745,
+    150,
+    650
+   ],
+   "fingertips_seen_pct": 87.0
+  },
+  "left end y+150 z650": {
+   "position_mm": [
+    -745,
+    150,
+    650
+   ],
+   "fingertips_seen_pct": 58.2
+  },
+  "right end y+300 z650": {
+   "position_mm": [
+    745,
+    300,
+    650
+   ],
+   "fingertips_seen_pct": 87.0
+  },
+  "left end y+300 z650": {
+   "position_mm": [
+    -745,
+    300,
+    650
+   ],
+   "fingertips_seen_pct": 60.5
+  },
+  "right end y+450 z650": {
+   "position_mm": [
+    745,
+    450,
+    650
+   ],
+   "fingertips_seen_pct": 84.5
+  },
+  "left end y+450 z650": {
+   "position_mm": [
+    -745,
+    450,
+    650
+   ],
+   "fingertips_seen_pct": 62.5
+  },
+  "room-right corner z650": {
+   "position_mm": [
+    705,
+    -774,
+    650
+   ],
+   "fingertips_seen_pct": 85.0
+  },
+  "room-left corner z650": {
+   "position_mm": [
+    -705,
+    -774,
+    650
+   ],
+   "fingertips_seen_pct": 65.2
+  },
+  "wall x-600 z650": {
+   "position_mm": [
+    -600,
+    586,
+    650
+   ],
+   "fingertips_seen_pct": 62.7
+  },
+  "wall x-300 z650": {
+   "position_mm": [
+    -300,
+    586,
+    650
+   ],
+   "fingertips_seen_pct": 63.0
+  },
+  "wall x+300 z650": {
+   "position_mm": [
+    300,
+    586,
+    650
+   ],
+   "fingertips_seen_pct": 73.8
+  },
+  "wall x+600 z650": {
+   "position_mm": [
+    600,
+    586,
+    650
+   ],
+   "fingertips_seen_pct": 81.0
+  },
+  "wall x-600 z800": {
+   "position_mm": [
+    -600,
+    586,
+    800
+   ],
+   "fingertips_seen_pct": 63.0
+  },
+  "wall x-300 z800": {
+   "position_mm": [
+    -300,
+    586,
+    800
+   ],
+   "fingertips_seen_pct": 65.0
+  },
+  "wall x+0 z800": {
+   "position_mm": [
+    0,
+    586,
+    800
+   ],
+   "fingertips_seen_pct": 65.2
+  },
+  "wall x+300 z800": {
+   "position_mm": [
+    300,
+    586,
+    800
+   ],
+   "fingertips_seen_pct": 74.5
+  },
+  "wall x+600 z800": {
+   "position_mm": [
+    600,
+    586,
+    800
+   ],
+   "fingertips_seen_pct": 81.2
+  },
+  "B (2026-10-14)": {
+   "position_mm": [
+    800,
+    100,
+    420
+   ],
+   "fingertips_seen_pct": 87.2
+  },
+  "taped (2026-10-13)": {
+   "position_mm": [
+    182,
+    -755,
+    33
+   ],
+   "fingertips_seen_pct": 75.0
+  }
+ },
+ "best_pairs": [
+  {
+   "cameras": [
+    "room edge x+600 z150",
+    "right end y+450 z300"
+   ],
+   "straight_mm": 1242,
+   "manhattan_mm": 1519,
+   "angle_at_target_deg": 92.0,
+   "azimuth_gap_deg": 83.4,
+   "seen_by_2plus_pct": 94.2,
+   "seen_by_any_pct": 99.5,
+   "median_err_mm": 1.12,
+   "within_1mm_pct": 25.8,
+   "within_2mm_pct": 93.8,
+   "fits_two_500mm_cables": false
+  },
+  {
+   "cameras": [
+    "right end y-600 z150",
+    "right end y+450 z300"
+   ],
+   "straight_mm": 1061,
+   "manhattan_mm": 1200,
+   "angle_at_target_deg": 78.1,
+   "azimuth_gap_deg": 70.0,
+   "seen_by_2plus_pct": 95.0,
+   "seen_by_any_pct": 99.8,
+   "median_err_mm": 1.07,
+   "within_1mm_pct": 32.8,
+   "within_2mm_pct": 93.5,
+   "fits_two_500mm_cables": false
+  },
+  {
+   "cameras": [
+    "right end y-600 z150",
+    "right end y+450 z450"
+   ],
+   "straight_mm": 1092,
+   "manhattan_mm": 1350,
+   "angle_at_target_deg": 78.6,
+   "azimuth_gap_deg": 70.0,
+   "seen_by_2plus_pct": 94.8,
+   "seen_by_any_pct": 99.8,
+   "median_err_mm": 1.08,
+   "within_1mm_pct": 32.5,
+   "within_2mm_pct": 93.5,
+   "fits_two_500mm_cables": false
+  },
+  {
+   "cameras": [
+    "right end y-450 z150",
+    "right end y+450 z450"
+   ],
+   "straight_mm": 949,
+   "manhattan_mm": 1200,
+   "angle_at_target_deg": 71.2,
+   "azimuth_gap_deg": 62.3,
+   "seen_by_2plus_pct": 94.8,
+   "seen_by_any_pct": 99.8,
+   "median_err_mm": 1.05,
+   "within_1mm_pct": 40.0,
+   "within_2mm_pct": 93.5,
+   "fits_two_500mm_cables": false
+  },
+  {
+   "cameras": [
+    "room edge x+600 z300",
+    "right end y+450 z300"
+   ],
+   "straight_mm": 1233,
+   "manhattan_mm": 1369,
+   "angle_at_target_deg": 90.3,
+   "azimuth_gap_deg": 83.4,
+   "seen_by_2plus_pct": 94.0,
+   "seen_by_any_pct": 99.8,
+   "median_err_mm": 1.12,
+   "within_1mm_pct": 29.2,
+   "within_2mm_pct": 93.5,
+   "fits_two_500mm_cables": false
+  },
+  {
+   "cameras": [
+    "room edge x+600 z150",
+    "right end y+450 z150"
+   ],
+   "straight_mm": 1233,
+   "manhattan_mm": 1369,
+   "angle_at_target_deg": 92.0,
+   "azimuth_gap_deg": 83.4,
+   "seen_by_2plus_pct": 93.8,
+   "seen_by_any_pct": 99.0,
+   "median_err_mm": 1.11,
+   "within_1mm_pct": 19.5,
+   "within_2mm_pct": 93.5,
+   "fits_two_500mm_cables": false
+  },
+  {
+   "cameras": [
+    "right end y-450 z150",
+    "right end y+450 z300"
+   ],
+   "straight_mm": 912,
+   "manhattan_mm": 1050,
+   "angle_at_target_deg": 70.2,
+   "azimuth_gap_deg": 62.3,
+   "seen_by_2plus_pct": 94.8,
+   "seen_by_any_pct": 99.8,
+   "median_err_mm": 1.04,
+   "within_1mm_pct": 39.5,
+   "within_2mm_pct": 93.2,
+   "fits_two_500mm_cables": false
+  },
+  {
+   "cameras": [
+    "right end y-600 z300",
+    "right end y+450 z300"
+   ],
+   "straight_mm": 1050,
+   "manhattan_mm": 1050,
+   "angle_at_target_deg": 76.4,
+   "azimuth_gap_deg": 70.0,
+   "seen_by_2plus_pct": 94.8,
+   "seen_by_any_pct": 99.8,
+   "median_err_mm": 1.06,
+   "within_1mm_pct": 35.2,
+   "within_2mm_pct": 93.2,
+   "fits_two_500mm_cables": false
+  },
+  {
+   "cameras": [
+    "room edge x+600 z150",
+    "right end y+450 z450"
+   ],
+   "straight_mm": 1269,
+   "manhattan_mm": 1669,
+   "angle_at_target_deg": 91.9,
+   "azimuth_gap_deg": 83.4,
+   "seen_by_2plus_pct": 93.8,
+   "seen_by_any_pct": 99.8,
+   "median_err_mm": 1.13,
+   "within_1mm_pct": 25.8,
+   "within_2mm_pct": 93.2,
+   "fits_two_500mm_cables": false
+  },
+  {
+   "cameras": [
+    "right end y+450 z150",
+    "room edge x+600 z300"
+   ],
+   "straight_mm": 1242,
+   "manhattan_mm": 1519,
+   "angle_at_target_deg": 92.0,
+   "azimuth_gap_deg": 83.4,
+   "seen_by_2plus_pct": 93.5,
+   "seen_by_any_pct": 99.2,
+   "median_err_mm": 1.12,
+   "within_1mm_pct": 23.5,
+   "within_2mm_pct": 93.2,
+   "fits_two_500mm_cables": false
+  },
+  {
+   "cameras": [
+    "room-right corner z150",
+    "right end y+450 z300"
+   ],
+   "straight_mm": 1234,
+   "manhattan_mm": 1414,
+   "angle_at_target_deg": 86.9,
+   "azimuth_gap_deg": 78.8,
+   "seen_by_2plus_pct": 94.5,
+   "seen_by_any_pct": 99.8,
+   "median_err_mm": 1.13,
+   "within_1mm_pct": 23.0,
+   "within_2mm_pct": 93.0,
+   "fits_two_500mm_cables": false
+  },
+  {
+   "cameras": [
+    "right end y-600 z300",
+    "right end y+450 z450"
+   ],
+   "straight_mm": 1061,
+   "manhattan_mm": 1200,
+   "angle_at_target_deg": 75.3,
+   "azimuth_gap_deg": 70.0,
+   "seen_by_2plus_pct": 94.5,
+   "seen_by_any_pct": 99.8,
+   "median_err_mm": 1.08,
+   "within_1mm_pct": 34.0,
+   "within_2mm_pct": 93.0,
+   "fits_two_500mm_cables": false
+  },
+  {
+   "cameras": [
+    "right end y+450 z300",
+    "room-right corner z300"
+   ],
+   "straight_mm": 1225,
+   "manhattan_mm": 1264,
+   "angle_at_target_deg": 85.4,
+   "azimuth_gap_deg": 78.8,
+   "seen_by_2plus_pct": 94.5,
+   "seen_by_any_pct": 100.0,
+   "median_err_mm": 1.14,
+   "within_1mm_pct": 24.5,
+   "within_2mm_pct": 93.0,
+   "fits_two_500mm_cables": false
+  },
+  {
+   "cameras": [
+    "right end y+450 z150",
+    "room-right corner z150"
+   ],
+   "straight_mm": 1225,
+   "manhattan_mm": 1264,
+   "angle_at_target_deg": 86.9,
+   "azimuth_gap_deg": 78.8,
+   "seen_by_2plus_pct": 94.2,
+   "seen_by_any_pct": 99.2,
+   "median_err_mm": 1.13,
+   "within_1mm_pct": 16.0,
+   "within_2mm_pct": 93.0,
+   "fits_two_500mm_cables": false
+  },
+  {
+   "cameras": [
+    "room edge x+600 z300",
+    "right end y+450 z450"
+   ],
+   "straight_mm": 1242,
+   "manhattan_mm": 1519,
+   "angle_at_target_deg": 88.6,
+   "azimuth_gap_deg": 83.4,
+   "seen_by_2plus_pct": 93.8,
+   "seen_by_any_pct": 99.8,
+   "median_err_mm": 1.13,
+   "within_1mm_pct": 29.2,
+   "within_2mm_pct": 93.0,
+   "fits_two_500mm_cables": false
+  },
+  {
+   "cameras": [
+    "right end y-600 z150",
+    "right end y+450 z150"
+   ],
+   "straight_mm": 1050,
+   "manhattan_mm": 1050,
+   "angle_at_target_deg": 77.8,
+   "azimuth_gap_deg": 70.0,
+   "seen_by_2plus_pct": 94.2,
+   "seen_by_any_pct": 99.5,
+   "median_err_mm": 1.08,
+   "within_1mm_pct": 27.3,
+   "within_2mm_pct": 92.8,
+   "fits_two_500mm_cables": false
+  },
+  {
+   "cameras": [
+    "right end y+450 z150",
+    "right end y-600 z300"
+   ],
+   "straight_mm": 1061,
+   "manhattan_mm": 1200,
+   "angle_at_target_deg": 78.0,
+   "azimuth_gap_deg": 70.0,
+   "seen_by_2plus_pct": 94.2,
+   "seen_by_any_pct": 99.2,
+   "median_err_mm": 1.07,
+   "within_1mm_pct": 32.5,
+   "within_2mm_pct": 92.8,
+   "fits_two_500mm_cables": false
+  },
+  {
+   "cameras": [
+    "right end y+450 z150",
+    "room-right corner z300"
+   ],
+   "straight_mm": 1234,
+   "manhattan_mm": 1414,
+   "angle_at_target_deg": 86.9,
+   "azimuth_gap_deg": 78.8,
+   "seen_by_2plus_pct": 94.0,
+   "seen_by_any_pct": 99.5,
+   "median_err_mm": 1.14,
+   "within_1mm_pct": 18.8,
+   "within_2mm_pct": 92.8,
+   "fits_two_500mm_cables": false
+  },
+  {
+   "cameras": [
+    "room-right corner z300",
+    "right end y+450 z450"
+   ],
+   "straight_mm": 1234,
+   "manhattan_mm": 1414,
+   "angle_at_target_deg": 84.0,
+   "azimuth_gap_deg": 78.8,
+   "seen_by_2plus_pct": 94.2,
+   "seen_by_any_pct": 100.0,
+   "median_err_mm": 1.15,
+   "within_1mm_pct": 24.5,
+   "within_2mm_pct": 92.5,
+   "fits_two_500mm_cables": false
+  },
+  {
+   "cameras": [
+    "room-right corner z150",
+    "right end y+450 z450"
+   ],
+   "straight_mm": 1261,
+   "manhattan_mm": 1564,
+   "angle_at_target_deg": 87.1,
+   "azimuth_gap_deg": 78.8,
+   "seen_by_2plus_pct": 94.0,
+   "seen_by_any_pct": 100.0,
+   "median_err_mm": 1.15,
+   "within_1mm_pct": 22.8,
+   "within_2mm_pct": 92.5,
+   "fits_two_500mm_cables": false
+  },
+  {
+   "cameras": [
+    "room edge x+600 z150",
+    "right end y+300 z150"
+   ],
+   "straight_mm": 1084,
+   "manhattan_mm": 1219,
+   "angle_at_target_deg": 82.1,
+   "azimuth_gap_deg": 74.2,
+   "seen_by_2plus_pct": 93.8,
+   "seen_by_any_pct": 99.0,
+   "median_err_mm": 1.07,
+   "within_1mm_pct": 30.2,
+   "within_2mm_pct": 92.5,
+   "fits_two_500mm_cables": false
+  },
+  {
+   "cameras": [
+    "right end y+300 z150",
+    "room-right corner z150"
+   ],
+   "straight_mm": 1075,
+   "manhattan_mm": 1114,
+   "angle_at_target_deg": 76.9,
+   "azimuth_gap_deg": 69.6,
+   "seen_by_2plus_pct": 94.5,
+   "seen_by_any_pct": 99.2,
+   "median_err_mm": 1.09,
+   "within_1mm_pct": 25.0,
+   "within_2mm_pct": 92.2,
+   "fits_two_500mm_cables": false
+  },
+  {
+   "cameras": [
+    "right end y-450 z150",
+    "right end y+450 z150"
+   ],
+   "straight_mm": 900,
+   "manhattan_mm": 900,
+   "angle_at_target_deg": 69.8,
+   "azimuth_gap_deg": 62.3,
+   "seen_by_2plus_pct": 93.5,
+   "seen_by_any_pct": 99.8,
+   "median_err_mm": 1.05,
+   "within_1mm_pct": 36.8,
+   "within_2mm_pct": 92.2,
+   "fits_two_500mm_cables": true
+  },
+  {
+   "cameras": [
+    "right end y+300 z150",
+    "room edge x+600 z300"
+   ],
+   "straight_mm": 1094,
+   "manhattan_mm": 1369,
+   "angle_at_target_deg": 82.2,
+   "azimuth_gap_deg": 74.2,
+   "seen_by_2plus_pct": 93.5,
+   "seen_by_any_pct": 99.2,
+   "median_err_mm": 1.07,
+   "within_1mm_pct": 35.0,
+   "within_2mm_pct": 92.0,
+   "fits_two_500mm_cables": false
+  },
+  {
+   "cameras": [
+    "room edge x+600 z150",
+    "right end y+300 z300"
+   ],
+   "straight_mm": 1094,
+   "manhattan_mm": 1369,
+   "angle_at_target_deg": 82.3,
+   "azimuth_gap_deg": 74.2,
+   "seen_by_2plus_pct": 93.2,
+   "seen_by_any_pct": 98.8,
+   "median_err_mm": 1.05,
+   "within_1mm_pct": 38.0,
+   "within_2mm_pct": 92.0,
+   "fits_two_500mm_cables": false
+  }
+ ],
+ "best_fitting_pairs": [
+  {
+   "cameras": [
+    "right end y-450 z150",
+    "right end y+450 z150"
+   ],
+   "straight_mm": 900,
+   "manhattan_mm": 900,
+   "angle_at_target_deg": 69.8,
+   "azimuth_gap_deg": 62.3,
+   "seen_by_2plus_pct": 93.5,
+   "seen_by_any_pct": 99.8,
+   "median_err_mm": 1.05,
+   "within_1mm_pct": 36.8,
+   "within_2mm_pct": 92.2,
+   "fits_two_500mm_cables": true
+  },
+  {
+   "cameras": [
+    "right end y-600 z300",
+    "right end y+300 z300"
+   ],
+   "straight_mm": 900,
+   "manhattan_mm": 900,
+   "angle_at_target_deg": 66.6,
+   "azimuth_gap_deg": 60.8,
+   "seen_by_2plus_pct": 94.0,
+   "seen_by_any_pct": 99.0,
+   "median_err_mm": 1.04,
+   "within_1mm_pct": 40.5,
+   "within_2mm_pct": 91.8,
+   "fits_two_500mm_cables": true
+  },
+  {
+   "cameras": [
+    "right end y-450 z300",
+    "right end y+450 z300"
+   ],
+   "straight_mm": 900,
+   "manhattan_mm": 900,
+   "angle_at_target_deg": 68.4,
+   "azimuth_gap_deg": 62.3,
+   "seen_by_2plus_pct": 93.5,
+   "seen_by_any_pct": 99.8,
+   "median_err_mm": 1.02,
+   "within_1mm_pct": 43.0,
+   "within_2mm_pct": 91.8,
+   "fits_two_500mm_cables": true
+  },
+  {
+   "cameras": [
+    "right end y-600 z150",
+    "right end y+300 z150"
+   ],
+   "straight_mm": 900,
+   "manhattan_mm": 900,
+   "angle_at_target_deg": 67.9,
+   "azimuth_gap_deg": 60.8,
+   "seen_by_2plus_pct": 94.5,
+   "seen_by_any_pct": 99.5,
+   "median_err_mm": 1.07,
+   "within_1mm_pct": 32.5,
+   "within_2mm_pct": 91.5,
+   "fits_two_500mm_cables": true
+  },
+  {
+   "cameras": [
+    "right end y-300 z150",
+    "right end y+450 z300"
+   ],
+   "straight_mm": 765,
+   "manhattan_mm": 900,
+   "angle_at_target_deg": 60.4,
+   "azimuth_gap_deg": 53.1,
+   "seen_by_2plus_pct": 93.8,
+   "seen_by_any_pct": 100.0,
+   "median_err_mm": 1.03,
+   "within_1mm_pct": 41.0,
+   "within_2mm_pct": 91.0,
+   "fits_two_500mm_cables": true
+  },
+  {
+   "cameras": [
+    "right end y-450 z450",
+    "right end y+450 z450"
+   ],
+   "straight_mm": 900,
+   "manhattan_mm": 900,
+   "angle_at_target_deg": 64.6,
+   "azimuth_gap_deg": 62.3,
+   "seen_by_2plus_pct": 92.0,
+   "seen_by_any_pct": 99.5,
+   "median_err_mm": 1.05,
+   "within_1mm_pct": 39.2,
+   "within_2mm_pct": 90.8,
+   "fits_two_500mm_cables": true
+  },
+  {
+   "cameras": [
+    "right end y-450 z150",
+    "right end y+300 z300"
+   ],
+   "straight_mm": 765,
+   "manhattan_mm": 900,
+   "angle_at_target_deg": 60.6,
+   "azimuth_gap_deg": 53.1,
+   "seen_by_2plus_pct": 93.5,
+   "seen_by_any_pct": 99.2,
+   "median_err_mm": 1.02,
+   "within_1mm_pct": 43.5,
+   "within_2mm_pct": 90.5,
+   "fits_two_500mm_cables": true
+  },
+  {
+   "cameras": [
+    "right end y-450 z150",
+    "right end y+300 z150"
+   ],
+   "straight_mm": 750,
+   "manhattan_mm": 750,
+   "angle_at_target_deg": 59.8,
+   "azimuth_gap_deg": 53.1,
+   "seen_by_2plus_pct": 93.5,
+   "seen_by_any_pct": 99.8,
+   "median_err_mm": 1.05,
+   "within_1mm_pct": 36.8,
+   "within_2mm_pct": 90.2,
+   "fits_two_500mm_cables": true
+  },
+  {
+   "cameras": [
+    "right end y-300 z150",
+    "right end y+450 z150"
+   ],
+   "straight_mm": 750,
+   "manhattan_mm": 750,
+   "angle_at_target_deg": 59.8,
+   "azimuth_gap_deg": 53.1,
+   "seen_by_2plus_pct": 92.8,
+   "seen_by_any_pct": 99.8,
+   "median_err_mm": 1.03,
+   "within_1mm_pct": 37.5,
+   "within_2mm_pct": 90.2,
+   "fits_two_500mm_cables": true
+  },
+  {
+   "cameras": [
+    "right end y+300 z150",
+    "right end y-450 z300"
+   ],
+   "straight_mm": 765,
+   "manhattan_mm": 900,
+   "angle_at_target_deg": 60.4,
+   "azimuth_gap_deg": 53.1,
+   "seen_by_2plus_pct": 92.5,
+   "seen_by_any_pct": 99.5,
+   "median_err_mm": 1.03,
+   "within_1mm_pct": 41.5,
+   "within_2mm_pct": 90.0,
+   "fits_two_500mm_cables": true
+  },
+  {
+   "cameras": [
+    "right end y-600 z450",
+    "right end y+300 z450"
+   ],
+   "straight_mm": 900,
+   "manhattan_mm": 900,
+   "angle_at_target_deg": 63.0,
+   "azimuth_gap_deg": 60.8,
+   "seen_by_2plus_pct": 92.0,
+   "seen_by_any_pct": 99.0,
+   "median_err_mm": 1.06,
+   "within_1mm_pct": 37.5,
+   "within_2mm_pct": 90.0,
+   "fits_two_500mm_cables": true
+  },
+  {
+   "cameras": [
+    "right end y-450 z300",
+    "right end y+300 z300"
+   ],
+   "straight_mm": 750,
+   "manhattan_mm": 750,
+   "angle_at_target_deg": 58.6,
+   "azimuth_gap_deg": 53.1,
+   "seen_by_2plus_pct": 92.0,
+   "seen_by_any_pct": 99.2,
+   "median_err_mm": 1.0,
+   "within_1mm_pct": 45.2,
+   "within_2mm_pct": 89.5,
+   "fits_two_500mm_cables": true
+  },
+  {
+   "cameras": [
+    "right end y-450 z300",
+    "right end y+300 z450"
+   ],
+   "straight_mm": 765,
+   "manhattan_mm": 900,
+   "angle_at_target_deg": 58.2,
+   "azimuth_gap_deg": 53.1,
+   "seen_by_2plus_pct": 91.8,
+   "seen_by_any_pct": 99.5,
+   "median_err_mm": 1.02,
+   "within_1mm_pct": 43.8,
+   "within_2mm_pct": 89.2,
+   "fits_two_500mm_cables": true
+  },
+  {
+   "cameras": [
+    "right end y-300 z300",
+    "right end y+450 z450"
+   ],
+   "straight_mm": 765,
+   "manhattan_mm": 900,
+   "angle_at_target_deg": 57.8,
+   "azimuth_gap_deg": 53.1,
+   "seen_by_2plus_pct": 91.8,
+   "seen_by_any_pct": 99.2,
+   "median_err_mm": 1.02,
+   "within_1mm_pct": 42.5,
+   "within_2mm_pct": 89.2,
+   "fits_two_500mm_cables": true
+  },
+  {
+   "cameras": [
+    "right end y-450 z150",
+    "right end y+150 z450"
+   ],
+   "straight_mm": 671,
+   "manhattan_mm": 900,
+   "angle_at_target_deg": 52.4,
+   "azimuth_gap_deg": 42.5,
+   "seen_by_2plus_pct": 93.5,
+   "seen_by_any_pct": 99.2,
+   "median_err_mm": 1.02,
+   "within_1mm_pct": 44.0,
+   "within_2mm_pct": 89.0,
+   "fits_two_500mm_cables": true
+  },
+  {
+   "cameras": [
+    "right end y-300 z300",
+    "right end y+450 z300"
+   ],
+   "straight_mm": 750,
+   "manhattan_mm": 750,
+   "angle_at_target_deg": 58.6,
+   "azimuth_gap_deg": 53.1,
+   "seen_by_2plus_pct": 91.2,
+   "seen_by_any_pct": 99.8,
+   "median_err_mm": 1.02,
+   "within_1mm_pct": 43.5,
+   "within_2mm_pct": 89.0,
+   "fits_two_500mm_cables": true
+  },
+  {
+   "cameras": [
+    "right end y+300 z300",
+    "right end y-450 z450"
+   ],
+   "straight_mm": 765,
+   "manhattan_mm": 900,
+   "angle_at_target_deg": 57.8,
+   "azimuth_gap_deg": 53.1,
+   "seen_by_2plus_pct": 90.5,
+   "seen_by_any_pct": 99.0,
+   "median_err_mm": 1.01,
+   "within_1mm_pct": 44.2,
+   "within_2mm_pct": 89.0,
+   "fits_two_500mm_cables": true
+  },
+  {
+   "cameras": [
+    "right end y-300 z150",
+    "right end y+300 z450"
+   ],
+   "straight_mm": 671,
+   "manhattan_mm": 900,
+   "angle_at_target_deg": 53.6,
+   "azimuth_gap_deg": 43.9,
+   "seen_by_2plus_pct": 92.2,
+   "seen_by_any_pct": 99.8,
+   "median_err_mm": 1.0,
+   "within_1mm_pct": 45.8,
+   "within_2mm_pct": 88.5,
+   "fits_two_500mm_cables": true
+  },
+  {
+   "cameras": [
+    "right end y-450 z450",
+    "right end y+300 z450"
+   ],
+   "straight_mm": 750,
+   "manhattan_mm": 750,
+   "angle_at_target_deg": 55.2,
+   "azimuth_gap_deg": 53.1,
+   "seen_by_2plus_pct": 90.8,
+   "seen_by_any_pct": 98.8,
+   "median_err_mm": 1.04,
+   "within_1mm_pct": 41.2,
+   "within_2mm_pct": 88.5,
+   "fits_two_500mm_cables": true
+  },
+  {
+   "cameras": [
+    "right end y+450 z150",
+    "right end y-300 z300"
+   ],
+   "straight_mm": 765,
+   "manhattan_mm": 900,
+   "angle_at_target_deg": 60.6,
+   "azimuth_gap_deg": 53.1,
+   "seen_by_2plus_pct": 90.5,
+   "seen_by_any_pct": 99.5,
+   "median_err_mm": 1.01,
+   "within_1mm_pct": 44.2,
+   "within_2mm_pct": 88.5,
+   "fits_two_500mm_cables": true
+  },
+  {
+   "cameras": [
+    "right end y-300 z150",
+    "right end y+300 z300"
+   ],
+   "straight_mm": 618,
+   "manhattan_mm": 750,
+   "angle_at_target_deg": 50.9,
+   "azimuth_gap_deg": 43.9,
+   "seen_by_2plus_pct": 93.0,
+   "seen_by_any_pct": 99.2,
+   "median_err_mm": 1.02,
+   "within_1mm_pct": 43.0,
+   "within_2mm_pct": 88.2,
+   "fits_two_500mm_cables": true
+  },
+  {
+   "cameras": [
+    "right end y-600 z300",
+    "right end y+150 z450"
+   ],
+   "straight_mm": 765,
+   "manhattan_mm": 900,
+   "angle_at_target_deg": 55.2,
+   "azimuth_gap_deg": 50.2,
+   "seen_by_2plus_pct": 93.8,
+   "seen_by_any_pct": 99.2,
+   "median_err_mm": 1.06,
+   "within_1mm_pct": 39.5,
+   "within_2mm_pct": 88.0,
+   "fits_two_500mm_cables": true
+  },
+  {
+   "cameras": [
+    "right end y+450 z300",
+    "right end y-300 z450"
+   ],
+   "straight_mm": 765,
+   "manhattan_mm": 900,
+   "angle_at_target_deg": 58.2,
+   "azimuth_gap_deg": 53.1,
+   "seen_by_2plus_pct": 89.8,
+   "seen_by_any_pct": 100.0,
+   "median_err_mm": 1.01,
+   "within_1mm_pct": 44.0,
+   "within_2mm_pct": 87.8,
+   "fits_two_500mm_cables": true
+  },
+  {
+   "cameras": [
+    "right end y-300 z450",
+    "right end y+450 z450"
+   ],
+   "straight_mm": 750,
+   "manhattan_mm": 750,
+   "angle_at_target_deg": 55.2,
+   "azimuth_gap_deg": 53.1,
+   "seen_by_2plus_pct": 90.2,
+   "seen_by_any_pct": 99.5,
+   "median_err_mm": 1.04,
+   "within_1mm_pct": 41.0,
+   "within_2mm_pct": 87.5,
+   "fits_two_500mm_cables": true
+  },
+  {
+   "cameras": [
+    "right end y+300 z150",
+    "right end y-300 z450"
+   ],
+   "straight_mm": 671,
+   "manhattan_mm": 900,
+   "angle_at_target_deg": 53.6,
+   "azimuth_gap_deg": 43.9,
+   "seen_by_2plus_pct": 90.0,
+   "seen_by_any_pct": 99.5,
+   "median_err_mm": 1.0,
+   "within_1mm_pct": 45.2,
+   "within_2mm_pct": 87.2,
+   "fits_two_500mm_cables": true
+  }
+ ],
+ "frontier": [
+  {
+   "max_manhattan_mm": 300,
+   "cameras": [
+    "right end y+300 z150",
+    "right end y+300 z450"
+   ],
+   "within_2mm_pct": 72.8,
+   "seen_by_2plus_pct": 88.8,
+   "median_err_mm": 1.09,
+   "straight_mm": 300,
+   "angle_at_target_deg": 22.9
+  },
+  {
+   "max_manhattan_mm": 400,
+   "cameras": [
+    "right end y+300 z150",
+    "right end y+300 z450"
+   ],
+   "within_2mm_pct": 72.8,
+   "seen_by_2plus_pct": 88.8,
+   "median_err_mm": 1.09,
+   "straight_mm": 300,
+   "angle_at_target_deg": 22.9
+  },
+  {
+   "max_manhattan_mm": 500,
+   "cameras": [
+    "right end y-150 z450",
+    "right end y+300 z450"
+   ],
+   "within_2mm_pct": 80.2,
+   "seen_by_2plus_pct": 89.0,
+   "median_err_mm": 1.07,
+   "straight_mm": 450,
+   "angle_at_target_deg": 34.8
+  },
+  {
+   "max_manhattan_mm": 600,
+   "cameras": [
+    "right end y-300 z300",
+    "right end y+300 z300"
+   ],
+   "within_2mm_pct": 87.0,
+   "seen_by_2plus_pct": 90.8,
+   "median_err_mm": 1.01,
+   "straight_mm": 600,
+   "angle_at_target_deg": 48.7
+  },
+  {
+   "max_manhattan_mm": 700,
+   "cameras": [
+    "right end y-300 z300",
+    "right end y+300 z300"
+   ],
+   "within_2mm_pct": 87.0,
+   "seen_by_2plus_pct": 90.8,
+   "median_err_mm": 1.01,
+   "straight_mm": 600,
+   "angle_at_target_deg": 48.7
+  },
+  {
+   "max_manhattan_mm": 800,
+   "cameras": [
+    "right end y-450 z150",
+    "right end y+300 z150"
+   ],
+   "within_2mm_pct": 90.2,
+   "seen_by_2plus_pct": 93.5,
+   "median_err_mm": 1.05,
+   "straight_mm": 750,
+   "angle_at_target_deg": 59.8
+  },
+  {
+   "max_manhattan_mm": 900,
+   "cameras": [
+    "right end y-450 z150",
+    "right end y+450 z150"
+   ],
+   "within_2mm_pct": 92.2,
+   "seen_by_2plus_pct": 93.5,
+   "median_err_mm": 1.05,
+   "straight_mm": 900,
+   "angle_at_target_deg": 69.8
+  },
+  {
+   "max_manhattan_mm": 1000,
+   "cameras": [
+    "right end y-450 z150",
+    "right end y+450 z150"
+   ],
+   "within_2mm_pct": 92.2,
+   "seen_by_2plus_pct": 93.5,
+   "median_err_mm": 1.05,
+   "straight_mm": 900,
+   "angle_at_target_deg": 69.8
+  },
+  {
+   "max_manhattan_mm": 1100,
+   "cameras": [
+    "right end y-450 z150",
+    "right end y+450 z300"
+   ],
+   "within_2mm_pct": 93.2,
+   "seen_by_2plus_pct": 94.8,
+   "median_err_mm": 1.04,
+   "straight_mm": 912,
+   "angle_at_target_deg": 70.2
+  },
+  {
+   "max_manhattan_mm": 1200,
+   "cameras": [
+    "right end y-600 z150",
+    "right end y+450 z300"
+   ],
+   "within_2mm_pct": 93.5,
+   "seen_by_2plus_pct": 95.0,
+   "median_err_mm": 1.07,
+   "straight_mm": 1061,
+   "angle_at_target_deg": 78.1
+  },
+  {
+   "max_manhattan_mm": 1300,
+   "cameras": [
+    "right end y-600 z150",
+    "right end y+450 z300"
+   ],
+   "within_2mm_pct": 93.5,
+   "seen_by_2plus_pct": 95.0,
+   "median_err_mm": 1.07,
+   "straight_mm": 1061,
+   "angle_at_target_deg": 78.1
+  },
+  {
+   "max_manhattan_mm": 1400,
+   "cameras": [
+    "right end y-600 z150",
+    "right end y+450 z300"
+   ],
+   "within_2mm_pct": 93.5,
+   "seen_by_2plus_pct": 95.0,
+   "median_err_mm": 1.07,
+   "straight_mm": 1061,
+   "angle_at_target_deg": 78.1
+  },
+  {
+   "max_manhattan_mm": 1500,
+   "cameras": [
+    "right end y-600 z150",
+    "right end y+450 z300"
+   ],
+   "within_2mm_pct": 93.5,
+   "seen_by_2plus_pct": 95.0,
+   "median_err_mm": 1.07,
+   "straight_mm": 1061,
+   "angle_at_target_deg": 78.1
+  },
+  {
+   "max_manhattan_mm": 1600,
+   "cameras": [
+    "room edge x+600 z150",
+    "right end y+450 z300"
+   ],
+   "within_2mm_pct": 93.8,
+   "seen_by_2plus_pct": 94.2,
+   "median_err_mm": 1.12,
+   "straight_mm": 1242,
+   "angle_at_target_deg": 92.0
+  },
+  {
+   "max_manhattan_mm": 1700,
+   "cameras": [
+    "room edge x+600 z150",
+    "right end y+450 z300"
+   ],
+   "within_2mm_pct": 93.8,
+   "seen_by_2plus_pct": 94.2,
+   "median_err_mm": 1.12,
+   "straight_mm": 1242,
+   "angle_at_target_deg": 92.0
+  },
+  {
+   "max_manhattan_mm": 1800,
+   "cameras": [
+    "room edge x+600 z150",
+    "right end y+450 z300"
+   ],
+   "within_2mm_pct": 93.8,
+   "seen_by_2plus_pct": 94.2,
+   "median_err_mm": 1.12,
+   "straight_mm": 1242,
+   "angle_at_target_deg": 92.0
+  },
+  {
+   "max_manhattan_mm": 1900,
+   "cameras": [
+    "room edge x+600 z150",
+    "right end y+450 z300"
+   ],
+   "within_2mm_pct": 93.8,
+   "seen_by_2plus_pct": 94.2,
+   "median_err_mm": 1.12,
+   "straight_mm": 1242,
+   "angle_at_target_deg": 92.0
+  },
+  {
+   "max_manhattan_mm": 2000,
+   "cameras": [
+    "room edge x+600 z150",
+    "right end y+450 z300"
+   ],
+   "within_2mm_pct": 93.8,
+   "seen_by_2plus_pct": 94.2,
+   "median_err_mm": 1.12,
+   "straight_mm": 1242,
+   "angle_at_target_deg": 92.0
+  },
+  {
+   "max_manhattan_mm": 2100,
+   "cameras": [
+    "room edge x+600 z150",
+    "right end y+450 z300"
+   ],
+   "within_2mm_pct": 93.8,
+   "seen_by_2plus_pct": 94.2,
+   "median_err_mm": 1.12,
+   "straight_mm": 1242,
+   "angle_at_target_deg": 92.0
+  },
+  {
+   "max_manhattan_mm": 2200,
+   "cameras": [
+    "room edge x+600 z150",
+    "right end y+450 z300"
+   ],
+   "within_2mm_pct": 93.8,
+   "seen_by_2plus_pct": 94.2,
+   "median_err_mm": 1.12,
+   "straight_mm": 1242,
+   "angle_at_target_deg": 92.0
+  },
+  {
+   "max_manhattan_mm": 2300,
+   "cameras": [
+    "room edge x+600 z150",
+    "right end y+450 z300"
+   ],
+   "within_2mm_pct": 93.8,
+   "seen_by_2plus_pct": 94.2,
+   "median_err_mm": 1.12,
+   "straight_mm": 1242,
+   "angle_at_target_deg": 92.0
+  },
+  {
+   "max_manhattan_mm": 2400,
+   "cameras": [
+    "room edge x+600 z150",
+    "right end y+450 z300"
+   ],
+   "within_2mm_pct": 93.8,
+   "seen_by_2plus_pct": 94.2,
+   "median_err_mm": 1.12,
+   "straight_mm": 1242,
+   "angle_at_target_deg": 92.0
+  },
+  {
+   "max_manhattan_mm": 2500,
+   "cameras": [
+    "room edge x+600 z150",
+    "right end y+450 z300"
+   ],
+   "within_2mm_pct": 93.8,
+   "seen_by_2plus_pct": 94.2,
+   "median_err_mm": 1.12,
+   "straight_mm": 1242,
+   "angle_at_target_deg": 92.0
+  },
+  {
+   "max_manhattan_mm": 2600,
+   "cameras": [
+    "room edge x+600 z150",
+    "right end y+450 z300"
+   ],
+   "within_2mm_pct": 93.8,
+   "seen_by_2plus_pct": 94.2,
+   "median_err_mm": 1.12,
+   "straight_mm": 1242,
+   "angle_at_target_deg": 92.0
+  }
+ ],
+ "by_angle": [
+  {
+   "angle_deg": [
+    0,
+    15
+   ],
+   "n_pairs": 292,
+   "median_within_2mm_pct": 53.4,
+   "best_within_2mm_pct": 68.2
+  },
+  {
+   "angle_deg": [
+    15,
+    30
+   ],
+   "n_pairs": 618,
+   "median_within_2mm_pct": 58.5,
+   "best_within_2mm_pct": 76.5
+  },
+  {
+   "angle_deg": [
+    30,
+    45
+   ],
+   "n_pairs": 593,
+   "median_within_2mm_pct": 67.0,
+   "best_within_2mm_pct": 85.5
+  },
+  {
+   "angle_deg": [
+    45,
+    60
+   ],
+   "n_pairs": 525,
+   "median_within_2mm_pct": 72.0,
+   "best_within_2mm_pct": 90.2
+  },
+  {
+   "angle_deg": [
+    60,
+    75
+   ],
+   "n_pairs": 548,
+   "median_within_2mm_pct": 76.2,
+   "best_within_2mm_pct": 93.5
+  },
+  {
+   "angle_deg": [
+    75,
+    90
+   ],
+   "n_pairs": 554,
+   "median_within_2mm_pct": 79.5,
+   "best_within_2mm_pct": 93.5
+  },
+  {
+   "angle_deg": [
+    90,
+    105
+   ],
+   "n_pairs": 565,
+   "median_within_2mm_pct": 82.2,
+   "best_within_2mm_pct": 93.8
+  },
+  {
+   "angle_deg": [
+    105,
+    120
+   ],
+   "n_pairs": 557,
+   "median_within_2mm_pct": 82.5,
+   "best_within_2mm_pct": 88.5
+  },
+  {
+   "angle_deg": [
+    120,
+    135
+   ],
+   "n_pairs": 486,
+   "median_within_2mm_pct": 83.0,
+   "best_within_2mm_pct": 88.5
+  },
+  {
+   "angle_deg": [
+    135,
+    150
+   ],
+   "n_pairs": 275,
+   "median_within_2mm_pct": 82.0,
+   "best_within_2mm_pct": 87.5
+  },
+  {
+   "angle_deg": [
+    150,
+    165
+   ],
+   "n_pairs": 110,
+   "median_within_2mm_pct": 79.3,
+   "best_within_2mm_pct": 86.0
+  },
+  {
+   "angle_deg": [
+    165,
+    180
+   ],
+   "n_pairs": 28,
+   "median_within_2mm_pct": 78.6,
+   "best_within_2mm_pct": 82.2
+  }
+ ]
+}

@@ -1,0 +1,358 @@
+{
+ "frame": "arm base frame, mm; x the way the arm faces at J1 = 0, y toward the wall, z up from the topper; J1 at the topper's centre",
+ "topper_mm": 1219.2,
+ "reach_from_J2_mm": 760.0,
+ "cameras": {
+  "front-right": {
+   "where": "front-right corner (room side, the end the arm faces)",
+   "post_centre_mm": [
+    564.6,
+    -564.6
+   ],
+   "post_length_mm": 500,
+   "lens_mm": [
+    540.7,
+    -538.1,
+    350.0
+   ],
+   "view_dir": [
+    -0.656,
+    0.726,
+    -0.206
+   ],
+   "post_yaw_deg": 132.1,
+   "from_J2_mm": 796,
+   "pitch_down_deg": 11.9,
+   "wedge_centre_height_mm": 352.9,
+   "target_mm": [
+    0.0,
+    60.0,
+    180.0
+   ]
+  },
+  "back-right": {
+   "where": "back-right corner (wall side, the end the arm faces), high enough to see over the shelf",
+   "post_centre_mm": [
+    564.6,
+    564.6
+   ],
+   "post_length_mm": 600,
+   "lens_mm": [
+    538.7,
+    541.4,
+    500.0
+   ],
+   "view_dir": [
+    -0.682,
+    -0.609,
+    -0.405
+   ],
+   "post_yaw_deg": -138.2,
+   "from_J2_mm": 852,
+   "pitch_down_deg": 23.9,
+   "wedge_centre_height_mm": 505.7,
+   "target_mm": [
+    0.0,
+    60.0,
+    180.0
+   ]
+  },
+  "overhead": {
+   "where": "1.2 m above the table, on a boom from the back-left corner, looking straight down with the image's long side along the wall",
+   "post_centre_mm": [
+    -564.6,
+    564.6
+   ],
+   "post_length_mm": 1200,
+   "lens_mm": [
+    -300.0,
+    100.0,
+    1202.0
+   ],
+   "view_dir": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "post_yaw_deg": -60.3,
+   "from_J2_mm": 1124,
+   "boom_from_post_axis_to_lens_mm": 535
+  }
+ },
+ "parts": {
+  "cam_case": {
+   "count": 3,
+   "what": "Camera Module 3 case, one per camera",
+   "size_mm": [
+    49.0,
+    29.5,
+    8.6
+   ],
+   "volume_cm3": 5.2
+  },
+  "wedge_front-right": {
+   "count": 1,
+   "what": "11.9 deg aim block for the front-right camera",
+   "size_mm": [
+    16.8,
+    76.0,
+    50.0
+   ],
+   "volume_cm3": 33.1
+  },
+  "foot_front-right": {
+   "count": 1,
+   "what": "foot for the front-right post",
+   "size_mm": [
+    90.0,
+    90.0,
+    56.0
+   ],
+   "volume_cm3": 74.4
+  },
+  "wedge_back-right": {
+   "count": 1,
+   "what": "23.9 deg aim block for the back-right camera",
+   "size_mm": [
+    19.9,
+    76.0,
+    50.0
+   ],
+   "volume_cm3": 32.9
+  },
+  "foot_back-right": {
+   "count": 1,
+   "what": "foot for the back-right post",
+   "size_mm": [
+    90.0,
+    90.0,
+    56.0
+   ],
+   "volume_cm3": 74.4
+  },
+  "foot_overhead": {
+   "count": 1,
+   "what": "foot for the overhead post",
+   "size_mm": [
+    90.0,
+    90.0,
+    76.0
+   ],
+   "volume_cm3": 87.0
+  },
+  "elbow_overhead": {
+   "count": 1,
+   "what": "post-to-boom elbow",
+   "size_mm": [
+    80.3,
+    30.5,
+    92.8
+   ],
+   "volume_cm3": 123.4
+  },
+  "spacer_overhead": {
+   "count": 1,
+   "what": "plate under the boom for the case",
+   "size_mm": [
+    76.0,
+    76.0,
+    8.0
+   ],
+   "volume_cm3": 35.5
+  },
+  "pi5_plate": {
+   "count": 3,
+   "what": "Raspberry Pi 5 carrier, one per post",
+   "size_mm": [
+    94.0,
+    64.0,
+    10.0
+   ],
+   "volume_cm3": 29.9
+  },
+  "ribbon_clip": {
+   "count": 8,
+   "what": "ribbon clip for the T-slot",
+   "size_mm": [
+    23.0,
+    8.2,
+    10.0
+   ],
+   "volume_cm3": 0.7
+  }
+ },
+ "outside_reach_by": {
+  "foot": {
+   "margin_mm": 10.5,
+   "at_mm": [
+    -544.0,
+    534.0,
+    15.0
+   ]
+  },
+  "post": {
+   "margin_mm": 34.9,
+   "at_mm": [
+    -551.0,
+    561.0,
+    6.0
+   ]
+  },
+  "wedge": {
+   "margin_mm": 44.8,
+   "at_mm": [
+    535.0,
+    -569.0,
+    315.0
+   ]
+  },
+  "case": {
+   "margin_mm": 39.6,
+   "at_mm": [
+    536.0,
+    -554.0,
+    337.0
+   ]
+  },
+  "camera": {
+   "margin_mm": 35.4,
+   "at_mm": [
+    539.0,
+    -541.0,
+    347.0
+   ]
+  },
+  "pi": {
+   "margin_mm": 47.6,
+   "at_mm": [
+    549.0,
+    -592.0,
+    134.0
+   ]
+  },
+  "elbow": {
+   "margin_mm": 542.3,
+   "at_mm": [
+    -544.0,
+    559.0,
+    1166.0
+   ]
+  },
+  "boom": {
+   "margin_mm": 375.3,
+   "at_mm": [
+    -269.0,
+    66.0,
+    1224.0
+   ]
+  },
+  "spacer": {
+   "margin_mm": 367.9,
+   "at_mm": [
+    -263.0,
+    90.0,
+    1216.0
+   ]
+  }
+ },
+ "scores": {
+  "n_poses": 300,
+  "pixel_noise_px": 1.0,
+  "per_camera": {
+   "front-right": 78.3,
+   "back-right": 82.3,
+   "overhead": 62.7,
+   "FL350": 64.0,
+   "FR500": 79.3,
+   "BR350": 84.0,
+   "OH-centre": 70.3
+  },
+  "layouts": [
+   {
+    "cameras": [
+     "overhead",
+     "front-right",
+     "back-right"
+    ],
+    "seen_by_2plus_pct": 88.7,
+    "seen_by_any_pct": 98.0,
+    "median_err_mm": 1.0,
+    "within_2mm_pct": 88.3
+   },
+   {
+    "cameras": [
+     "OH-centre",
+     "front-right",
+     "back-right"
+    ],
+    "seen_by_2plus_pct": 88.7,
+    "seen_by_any_pct": 98.3,
+    "median_err_mm": 0.96,
+    "within_2mm_pct": 88.3
+   },
+   {
+    "cameras": [
+     "overhead",
+     "front-right",
+     "BR350"
+    ],
+    "seen_by_2plus_pct": 90.7,
+    "seen_by_any_pct": 97.7,
+    "median_err_mm": 1.02,
+    "within_2mm_pct": 90.0
+   },
+   {
+    "cameras": [
+     "overhead",
+     "FR500",
+     "back-right"
+    ],
+    "seen_by_2plus_pct": 89.3,
+    "seen_by_any_pct": 98.7,
+    "median_err_mm": 0.99,
+    "within_2mm_pct": 89.3
+   },
+   {
+    "cameras": [
+     "overhead",
+     "front-right",
+     "FL350"
+    ],
+    "seen_by_2plus_pct": 78.0,
+    "seen_by_any_pct": 97.3,
+    "median_err_mm": 1.06,
+    "within_2mm_pct": 75.7
+   },
+   {
+    "cameras": [
+     "front-right",
+     "back-right"
+    ],
+    "seen_by_2plus_pct": 63.7,
+    "seen_by_any_pct": 97.0,
+    "median_err_mm": 1.07,
+    "within_2mm_pct": 63.0
+   },
+   {
+    "cameras": [
+     "overhead",
+     "front-right"
+    ],
+    "seen_by_2plus_pct": 45.7,
+    "seen_by_any_pct": 95.3,
+    "median_err_mm": 1.21,
+    "within_2mm_pct": 45.7
+   },
+   {
+    "cameras": [
+     "overhead",
+     "back-right"
+    ],
+    "seen_by_2plus_pct": 52.7,
+    "seen_by_any_pct": 92.3,
+    "median_err_mm": 1.15,
+    "within_2mm_pct": 52.7
+   }
+  ]
+ }
+}
