@@ -151,7 +151,7 @@ What you can do:
 | `follower.py` | arm Pi | The follower above; `teleop.py` copies it to `~/so101/` each session |
 | `requirements.txt` | your computer | `pyserial`, `numpy`, `opencv-python` |
 | `analysis/` | anywhere | `joint_map.py`: the SO-101 and PiPER joint layouts and the nominal map (`joint_map.json`, which `teleop.py` reads) |
-| `tests/test_dry_run.py` | anywhere | Snag, lost connection, Q refused far from READY, refusal off the rest, pose match to engage, a whole `teleop.py` session, the camera reader |
+| `tests/test_dry_run.py` | anywhere | Snag, lost connection, Q refused far from READY, refusal off the rest, pose match to engage, a whole `teleop.py` session, the leader protocol on a simulated Feetech bus, the camera reader |
 | [`../Arm Control/`](../Arm%20Control/) | arm Pi | Shared by every sandbox script: `Up_and_Down.py`, `arm_power.py` + `arm_home.json`, and `fake_piper.py` (the simulated arm) |
 
 **Test without the arm or the leader:**
@@ -181,6 +181,8 @@ python teleop.py --fake-leader --local --dry-run --auto 8
 - [ ] First supervised real-arm session: the A-key alignment, the joint signs, the current
       limits at full reach, and your gripper's range. Record the latency it prints here.
 - [ ] Video: the gripper Pi (76zj) has to be online, with nothing else holding its HQ camera.
+      The `rpicam-vid` options are checked against v1.13.0's `--help` on mpzy, but no
+      stream has run from a real camera yet.
 - [ ] Tailnet grants for the operator's computer to SSH to mpzy and 76zj.
 - [ ] Close PR #47 once this merges (its code is here now). PR #60 adds its own copy of
       `arm_power.py` and `arm_home.json` at `PiPER Sandbox Scripts/`; keep one copy, in
