@@ -190,6 +190,13 @@ print the hostname or any credential in comments, commits, or logs.
 ranges; the Pi's residential IP is not blocked. The Pi is on constrained Wi-Fi and may be
 running the arm, so rate-cap transfers (`curl --limit-rate`) and never run speed tests.
 
+**SO-101 teleop files on mpzy (PR #47).** At the start of each session,
+`SO-101 leader/teleop.py` copies `SO-101 leader/pi/` to `~/so101/` on mpzy over its SSH
+connection: `follower.py`, `Up_and_Down.py` and `fake_piper.py`. It then runs the follower
+through `arm_power.py run`. With `--dry-run` it runs the follower directly instead, against a
+simulated arm, and touches neither the relay nor `can0`. The first copy was a dry run from CI
+on 2026-11-06, and nothing else on mpzy changed. Delete `~/so101/` to undo it.
+
 ## Secret inventory
 
 Names and purposes only — **never** echo, grep, or print the values. Every secret below is

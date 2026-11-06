@@ -1,0 +1,5 @@
+# For teleop.py on the PC the leader is plugged into. Nothing needs installing on the Pi:
+# follower.py uses the piper_sdk venv that is already there (~/piper-venv).
+pyserial>=3.5
+numpy
+opencv-python
