@@ -1,0 +1,64 @@
+{
+ "what": "PiPER wrist camera mount with the O43 cradle, every printed part on one plate: bracket, pod, carrier, 4 Pi 5 spacers, 2 tag wedges",
+ "result": "still printing when this session handed over: layer 18 of 213, 27 %, 121 min left by the printer at 2026-10-13T20:07:26Z, for a finish near 22:08 UTC; no print error, HMS alert or temperature alarm in 872 status samples",
+ "asked_for": "https://github.com/vertical-cloud-lab/robot-arms/pull/10#issuecomment-6152645350 (jss265, 2026-10-13T18:43:04Z: 'make the print on the A1 mini. Use the black filament.')",
+ "printer": {
+  "model": "Bambu Lab A1 mini",
+  "nozzle": "0.4 mm stainless steel",
+  "firmware": "01.08.00.00",
+  "ams_lite": "00.00.08.15",
+  "mode": "Bambu cloud (not LAN-only), so LAN start and stop commands are refused"
+ },
+ "route": "route 1 of bambu/README.md (byu-vcl, branch claude/ot2-lid-camera-mount-20260925): bambu_print.py upload put the file on the SD card root over LAN through the arm Pi, and jss265 started it from the printer's touchscreen",
+ "source_project": {
+  "path": "piper-camera-mount/slice/piper_camera_mount_A1mini_PLA.3mf",
+  "md5": "173714ecbc05f29bf1a24c3b3ab68894",
+  "last_commit": "b6e2da0",
+  "plate_1_gcode_md5": "a5e5705f973ad6e42d313d37a12add39"
+ },
+ "sent_file": {
+  "name_on_sd_card": "piper_mount_A1mini_black.gcode.3mf",
+  "same_bytes_as": "the source project (MD5 173714ecbc05f29bf1a24c3b3ab68894): a copy under a .gcode.3mf name, so the CLI slice ran as committed and no GUI re-slice was involved",
+  "upload": "2,457,097 B in 15.4 s at about 18:55:40 UTC; read back over a fresh connection with a matching MD5"
+ },
+ "filament": {
+  "sliced": "Bambu PLA Basic @BBL A1M (GFA00), colour #000000, 85.84 g",
+  "loaded_from": "AMS Lite tray 2 (0-based), i.e. A3: Bambu PLA Basic GFA00, black 000000FF",
+  "evidence": "status at 2026-10-13T19:21:29Z: ams.tray_now = 2, ams.tray_tar = 2, stage 4 (changing filament)"
+ },
+ "start_options_seen": {
+  "timelapse": "disabled (ipcam.timelapse = disable)",
+  "start_sequence": "stage 4 filament change (19:21:29), 3 vibration sweep (19:22:13), 14 nozzle wipe (19:22:50), 54 (19:23:20), 1 bed levelling (19:23:50), 8 extrusion calibration (19:25:16), 0 printing (19:26:49)"
+ },
+ "estimates": {
+  "cli_total_time": "2h 47m 43s",
+  "cli_model_time": "2h 41m 44s",
+  "filament_g": 85.84,
+  "filament_m": 28.32,
+  "layers": 213,
+  "max_z_mm": 42.6,
+  "printer_remaining_at_start_min": 166
+ },
+ "go": {
+  "who": "jss265, at the printer",
+  "comment": "https://github.com/vertical-cloud-lab/robot-arms/pull/10#issuecomment-6153344629 ('Started', 2026-10-13T19:21:18Z)",
+  "holds_the_stop": "jss265, from the touchscreen or Bambu Handy; a LAN stop from CI would be refused with the printer on Bambu's cloud"
+ },
+ "timeline_utc": {
+  "request": "2026-10-13T18:43:04Z",
+  "preflight": "2026-10-13T18:48:11Z (HUMAN-DECISION: every automatic check passed; gantry parked high after a 435-layer job, plate looks empty)",
+  "frame_posted": "2026-10-13T18:49:58Z",
+  "uploaded_to_sd": "2026-10-13T18:55:40Z (about)",
+  "studio_login_code_requested": "2026-10-13T19:03:42Z (route 3, kept ready as the remote option; never used, and the code expired)",
+  "go_asked": "2026-10-13T19:04:21Z (option A: login code and 'plate clear'; option B: start at the printer and reply 'started')",
+  "started_reply": "2026-10-13T19:21:18Z (jss265: 'Started')",
+  "running_by": "2026-10-13T19:21:29Z (status read: RUNNING, job piper_mount_A1mini_black.gcode.3mf, tray 2)",
+  "layer_1": "2026-10-13T19:26:49Z",
+  "layer_2": "2026-10-13T19:34:14Z",
+  "layer_10": "2026-10-13T19:49:59Z",
+  "layer_18": "2026-10-13T20:05:32Z",
+  "handed_over": "2026-10-13T20:07:26Z (layer 18, 27 %, 121 min left; jss265 holds the stop)"
+ },
+ "studio_session": "Bambu Studio 02.08.02.61 ran on the runner for route 3 and loaded the project, but nothing was sent from it. It was closed at about 19:21, and its screen recording, which showed the login page, was deleted unpublished.",
+ "pace_vs_2026_10_08": "layers 2 to 18 took 31.3 min here and 30.9 min for the same plate on 2026-10-08 (12:53:56 to 13:24:50)"
+}

@@ -1,0 +1,101 @@
+{
+  "assumptions": "Copper at 20 C, VBUS and GND of the same gauge, both carrying the load current. A mated USB-C pair is taken as 20 mOhm (VBUS + GND). The Pi 5 flags under-voltage below 4.63 V, measured after its input fuse. A USB-C cable is allowed to drop 500 mV on VBUS plus 250 mV on GND at its rated current, so even a compliant cable can lose 0.75 V.",
+  "under-voltage (V)": 4.63,
+  "usb": [
+    {
+      "route": "Official 27 W supply alone: its 1.2 m, 17 AWG lead (too short to reach)",
+      "volts at the Pi": [
+        5.01,
+        4.95
+      ]
+    },
+    {
+      "route": "Official supply + 2 m USB-C extension (22 AWG, one more mated pair)",
+      "volts at the Pi": [
+        4.66,
+        4.37
+      ]
+    },
+    {
+      "route": "Official supply + 2 m 240 W (5 A) extension, if it really is 20 AWG",
+      "volts at the Pi": [
+        4.78,
+        4.57
+      ]
+    },
+    {
+      "route": "Official supply + 2 m extension of a thin 3 A cable (26 AWG)",
+      "volts at the Pi": [
+        4.18,
+        3.56
+      ]
+    },
+    {
+      "route": "5 A PD supply + one 3 m 5 A cable (20 AWG)",
+      "volts at the Pi": [
+        4.77,
+        4.55
+      ]
+    },
+    {
+      "route": "5 A PD supply + one 3 m 3 A cable (24 AWG)",
+      "volts at the Pi": [
+        4.31,
+        3.79
+      ]
+    },
+    {
+      "route": "iUniker 5.25 V / 4 A, 1.5 m lead (if 18 AWG) + 2 m 240 W extension (20 AWG)",
+      "volts at the Pi": [
+        4.9,
+        4.66
+      ]
+    },
+    {
+      "route": "Any PD charger's 5 V / 3 A profile (5.0 V) + a 3 m 240 W cable (20 AWG)",
+      "volts at the Pi": [
+        4.64,
+        4.39
+      ]
+    },
+    {
+      "route": "5 V / 2 A camera adapter with its 3 m USB-A to C cable (if 24 AWG)",
+      "volts at the Pi": [
+        4.17,
+        3.62
+      ]
+    }
+  ],
+  "buck": [
+    {
+      "supply (V)": 24.0,
+      "AWG": 22,
+      "volts at the converter": 23.78,
+      "lost (%)": 0.91
+    },
+    {
+      "supply (V)": 12.0,
+      "AWG": 22,
+      "volts at the converter": 11.56,
+      "lost (%)": 3.65
+    },
+    {
+      "supply (V)": 24.0,
+      "AWG": 26,
+      "volts at the converter": 23.45,
+      "lost (%)": 2.31
+    },
+    {
+      "route": "Any PD charger with a 12 V profile + one 3 m 240 W cable (20 AWG), PD step-down board at the Pi",
+      "supply (V)": 12.0,
+      "volts at the converter": 11.71,
+      "lost (%)": 2.39
+    },
+    {
+      "route": "Official supply's 12 V profile + 2 m 240 W extension (20 AWG), PD step-down board at the Pi",
+      "supply (V)": 12.0,
+      "volts at the converter": 11.72,
+      "lost (%)": 2.3
+    }
+  ]
+}

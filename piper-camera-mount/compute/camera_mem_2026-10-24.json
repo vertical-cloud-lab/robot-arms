@@ -1,0 +1,207 @@
+{
+  "date": "2026-10-24",
+  "what": "RAM taken by the wrist's two cameras, measured with compute/camera_mem.py on the lab's 8 GB Pi 5 (camera Pi 1, tag:rpi-5-76zj), which has the HQ Camera (imx477) and the Camera Module 3 Wide (imx708_wide) attached. No frames were written or sent: the Wide's H.264 went to /dev/null and HQ frames were dropped.",
+  "how": "Each case's MB is the drop in MemAvailable from before picamera2 was imported, sampled every 0.1 s. dmabufs_held is the exact size of the camera buffers the process holds (from /proc/self/fdinfo). The Pi runs the desktop, so MemAvailable also moves on its own: run 2 started with 272 MB less available than run 1 and reads lower than its own buffers plus RSS, so take the larger run.",
+  "software": {
+    "os": "Raspberry Pi OS (Debian 13 trixie), kernel 6.18.50+rpt-rpi-2712",
+    "python3-picamera2": "0.3.37-1",
+    "libcamera": "0.7.2+rpt20260817-1",
+    "opencv": "not installed (ModuleNotFoundError)"
+  },
+  "runs": [
+    {
+      "pi": "Raspberry Pi 5 Model B Rev 1.1",
+      "MemTotal_MB": 8062,
+      "MemAvailable_before_MB": 7552,
+      "opencv": "not installed (ModuleNotFoundError)",
+      "cameras": [
+        "imx477",
+        "imx708_wide"
+      ],
+      "picamera2_import_MB": 32,
+      "buffer_count": {
+        "hq_video": 6,
+        "wide_video": 6,
+        "hq_still": 1,
+        "wide_still": 1
+      },
+      "A_wide_720p30_h264_plus_hq_2028x1520": {
+        "MB": 314,
+        "process": {
+          "VmHWM": 180,
+          "VmRSS": 180,
+          "RssAnon": 96,
+          "RssFile": 84,
+          "RssShmem": 0
+        },
+        "dmabufs_held": {
+          "count": 116,
+          "MB": 118.0,
+          "by_exporter_MB": {
+            "system": 69.7,
+            "videobuf2_dma_contig": 48.3
+          }
+        },
+        "hq_fps": 29.0,
+        "cpu_cores": 0.52,
+        "apriltag_ms_per_frame": null,
+        "tags_seen": null
+      },
+      "A2_plus_one_12MP_hq_still": {
+        "MB": 399,
+        "process": {
+          "VmHWM": 305,
+          "VmRSS": 180,
+          "RssAnon": 96,
+          "RssFile": 84,
+          "RssShmem": 0
+        },
+        "dmabufs_held": {
+          "count": 116,
+          "MB": 118.0,
+          "by_exporter_MB": {
+            "system": 69.7,
+            "videobuf2_dma_contig": 48.3
+          }
+        },
+        "still_shape": [
+          3040,
+          4056,
+          3
+        ]
+      },
+      "B_both_full_12MP_rgb_at_once": {
+        "MB": 691,
+        "process": {
+          "VmHWM": 413,
+          "VmRSS": 344,
+          "RssAnon": 74,
+          "RssFile": 270,
+          "RssShmem": 0
+        },
+        "dmabufs_held": {
+          "count": 98,
+          "MB": 396.8,
+          "by_exporter_MB": {
+            "system": 92.9,
+            "videobuf2_dma_contig": 303.9
+          }
+        },
+        "pairs_captured": 3
+      }
+    },
+    {
+      "pi": "Raspberry Pi 5 Model B Rev 1.1",
+      "MemTotal_MB": 8062,
+      "MemAvailable_before_MB": 7280,
+      "opencv": "not installed (ModuleNotFoundError)",
+      "cameras": [
+        "imx477",
+        "imx708_wide"
+      ],
+      "picamera2_import_MB": 4,
+      "buffer_count": {
+        "hq_video": 6,
+        "wide_video": 6,
+        "hq_still": 1,
+        "wide_still": 1
+      },
+      "A_wide_720p30_h264_plus_hq_2028x1520": {
+        "MB": 103,
+        "process": {
+          "VmHWM": 180,
+          "VmRSS": 180,
+          "RssAnon": 96,
+          "RssFile": 84,
+          "RssShmem": 0
+        },
+        "dmabufs_held": {
+          "count": 116,
+          "MB": 118.0,
+          "by_exporter_MB": {
+            "system": 69.7,
+            "videobuf2_dma_contig": 48.3
+          }
+        },
+        "hq_fps": 29.7,
+        "cpu_cores": 0.51,
+        "apriltag_ms_per_frame": null,
+        "tags_seen": null
+      },
+      "A2_plus_one_12MP_hq_still": {
+        "MB": 139,
+        "process": {
+          "VmHWM": 305,
+          "VmRSS": 180,
+          "RssAnon": 96,
+          "RssFile": 84,
+          "RssShmem": 0
+        },
+        "dmabufs_held": {
+          "count": 116,
+          "MB": 118.0,
+          "by_exporter_MB": {
+            "system": 69.7,
+            "videobuf2_dma_contig": 48.3
+          }
+        },
+        "still_shape": [
+          3040,
+          4056,
+          3
+        ]
+      },
+      "B_both_full_12MP_rgb_at_once": {
+        "MB": 532,
+        "process": {
+          "VmHWM": 416,
+          "VmRSS": 347,
+          "RssAnon": 77,
+          "RssFile": 270,
+          "RssShmem": 0
+        },
+        "dmabufs_held": {
+          "count": 98,
+          "MB": 396.8,
+          "by_exporter_MB": {
+            "system": 92.9,
+            "videobuf2_dma_contig": 303.9
+          }
+        },
+        "pairs_captured": 3
+      }
+    }
+  ],
+  "exploratory_run": {
+    "note": "The same cases from an earlier draft of the script, whose baseline was taken after importing picamera2 (import cost 27 MB added back here).",
+    "A_MB": 258,
+    "A2_MB": 440,
+    "B_MB": 700,
+    "hq_fps": 29.0
+  },
+  "free_on_each_pi_today": {
+    "note": "Read-only /proc/meminfo and systemctl reads, 05:27 UTC. MemAvailable before anything ran.",
+    "arm Pi (tag:rpi-5-eufi)": {
+      "board": "Pi 5, 1 GB",
+      "MemTotal_MB": 991,
+      "MemAvailable_MB": 776,
+      "desktop": false,
+      "CmaTotal_MB": 64
+    },
+    "camera Pi 1 (tag:rpi-5-76zj)": {
+      "board": "Pi 5, 8 GB",
+      "MemTotal_MB": 8062,
+      "MemAvailable_MB": 7539,
+      "desktop": true,
+      "CmaTotal_MB": 64
+    },
+    "camera Pi 2 (tag:rpi-5-mpzy)": {
+      "board": "Pi 5, 1 GB",
+      "MemTotal_MB": 991,
+      "MemAvailable_MB": 574,
+      "desktop": true,
+      "CmaTotal_MB": 64
+    }
+  },
+  "lan": "All three Pis are on one Wi-Fi subnet. Camera Pi 1 pinged camera Pi 2 and the arm Pi with 0 % loss, about 7.5 ms average round trip (3 packets each). The tailnet policy doesn't let the Pis reach each other over Tailscale."
+}
