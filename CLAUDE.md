@@ -122,6 +122,21 @@ same rules apply: read-only first, and record every change made on them here.
   `avahi-daemon` on `:5353/udp`; `tailscaled` on `:41641/udp`, plus its peer API on the tailnet
   addresses. No camera stream, web UI or ROS.
 
+**The second camera Pi (`rpi-5-mpzy`) as found** (read-only check on 2026-10-21,
+[#36](https://github.com/vertical-cloud-lab/robot-arms/issues/36); nothing on it was changed).
+It is the first camera Pi's build, so the block above holds for it too, with `CAM2_PI_USERNAME`
+and `CAM2_PI_PASSWORD` in place of the `CAM_PI_*` names. The same non-root snapshot of both Pis
+agreed on all 1649 installed packages and their versions, the enabled system and user units,
+`/etc/systemd/system`, `config.txt`, `cmdline.txt`, sudoers, sshd and Raspberry Pi Connect
+settings, the listening ports, USB and cameras. It differs only in:
+
+- **1 GB of RAM, not 8 GB** (board revision `a04171`; the first camera Pi is `d04171`). With the
+  desktop running it had about 600 MiB available and was already using swap half an hour after
+  boot, so check memory before giving it a camera stream or an encoder.
+- **Swap, which scales with RAM.** Both Pis run `rpi-swap`'s zram with a `/var/swap` file as its
+  writeback device: 990 MiB of each here, 2 GiB of each on the first camera Pi. The smaller file
+  accounts for all of the disk difference (22 GB of the 32 GB microSD free here, 21 GB there).
+
 Everything below covers all three Pis unless it names one.
 
 **How CI gets on the tailnet.** `claude.yml`'s `Connect to Tailscale` step joins every session
@@ -183,8 +198,12 @@ ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new "$CAM2_PI_USERNAME@$CAM
 If SSH is refused (`tailnet policy does not permit you to SSH to this node`), the fix is a
 policy or tag change only the tailnet admin can make; report it and stop rather than working
 around it. sudo is password-gated, so feed the password over stdin so it never appears in a
-process list or shell history: `ssh … "sudo -S -p '' <cmd>" <<< "$ARM_PI_PASSWORD"`. Never
-print the hostname or any credential in comments, commits, or logs.
+process list, shell history or the Pi's journal (tailscaled logs each session's command there):
+`ssh … "sudo -S -p '' <cmd>" <<< "$ARM_PI_PASSWORD"`. Raspberry Pi OS sets
+`Defaults timestamp_type=global`, so for 15 minutes after any `sudo` by that user, from any
+session, `sudo -S` skips the prompt and leaves the password on stdin for `<cmd>` to read. Use
+`sudo -S -k -p ''` (always asks, leaves the cache alone) when `<cmd>` reads stdin, and to prove
+the password itself. Never print the hostname or any credential in comments, commits, or logs.
 
 **Using the Pi as a proxy.** Some vendor sites (and YouTube's player) block GitHub Actions IP
 ranges; the Pi's residential IP is not blocked. The Pi is on constrained Wi-Fi and may be
