@@ -1,0 +1,36 @@
+joints (deg): [   3.43,   -1.96,    2.40,    2.56,   22.96,   61.23]
+enabled: [False, False, False, False, False, False]
+time stamp:1791586825.2883284
+Hz:200.0
+Control Mode: CAN_CTRL(0x1)
+Arm Status: NORMAL(0x0)
+Mode Feed: MOVE_J(0x1)
+Teach Status: DISABLED(0x0)
+Motion Status: REACH_TARGET_POS_SUCCESSFULLY(0x0)
+Trajectory Num: 0
+Error Code: 0
+Error Status: 
+
+
+
+home (deg): [   3.43,    0.00,    0.00,    2.56,   22.96,   61.23]
+up   (deg): [   3.43,   25.00,  -25.00,    2.56,   22.96,   61.23]
+enabled in 0.11 s
+cycle 1/3: up
+  reached [   3.43,   25.00,  -25.00,    2.56,   22.96,   61.23] in 0.8 s
+cycle 1/3: down
+  reached [   3.43,    0.00,    0.00,    2.56,   22.96,   61.23] in 0.8 s
+cycle 2/3: up
+  reached [   3.43,   25.00,  -25.00,    2.56,   22.96,   61.23] in 0.8 s
+cycle 2/3: down
+  reached [   3.43,    0.00,    0.00,    2.56,   22.96,   61.23] in 0.8 s
+cycle 3/3: up
+  reached [   3.43,   25.00,  -25.00,    2.56,   22.96,   61.23] in 0.8 s
+cycle 3/3: down
+  reached [   3.43,    0.00,    0.00,    2.56,   22.96,   61.23] in 0.8 s
+returning home
+  reached [   3.43,    0.00,    0.00,    2.56,   22.96,   61.23] in 0.0 s
+disabled at home: [   3.43,    0.00,    0.00,    2.56,   22.99,   61.23]
+completed 3/3 cycles
+trace written to /tmp/run_trace.csv
+exit: 0
