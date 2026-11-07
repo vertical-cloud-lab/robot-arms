@@ -1,0 +1,41 @@
+start joints [  -3.91,   -1.89,    0.43,    0.00,   30.86,   64.03]  gripper 68.2 mm, 0.05 N*m; arm status NORMAL(0x0)
+arm plane J1 = 130.00 deg; tape centre at r = 360 mm, top at z = 109 mm
+fingertip = flange + 150 mm along the tool axis
+home       [  -3.91,   -1.89,    0.43,    0.00,   30.86,   64.03]   (parks at [  -3.91,    0.00,    0.00,    0.00,   30.86,   64.03])
+pregrasp   [ 130.00,   87.60,  -72.73,    0.00,   60.13,   65.56]   fingertips at z = 159 mm
+grasp      [ 130.00,   91.37,  -58.71,   -0.00,   42.35,   65.56]   fingertips at z = 81 mm
+vertical line: 78 IK points; streamed over 3.9 s at 15 %, fastest joint peaks at 8.7 deg/s (cap 25.0)
+return home: streamed over 6.0 s at 19 %, fastest joint peaks at 20.1 deg/s (cap 31.7)
+place: shelf top z = 0 mm from r = 300 mm; carry at fingertip z = 159 mm, out to r = 247 mm at J1 = 0.0 deg, release at fingertip z = 26 mm (roll 5 mm above the shelf)
+place path: 832 IK points; streamed over 41.5 s at 15 %, fastest joint peaks at 11.9 deg/s
+place      [   0.00,   75.17,  -27.62,   -0.00,   27.46,   65.56]
+home -> pregrasp (MOVE J): lowest point z = 103 mm (fingertip), closest above the roll 50 mm
+place path, up to the hover over the place: lowest point z = 159 mm (fingertip), closest above the roll 50 mm
+return home (streamed): lowest point z = 100 mm (fingertip), closest above the roll inf mm
+place path, release descent: lowest point z = 26 mm (fingertip), closest above the roll inf mm
+over the shelf (outside the final descent): lowest point 152 mm above its top
+descent drifts 0.02 mm sideways from the vertical
+recording /home/vcl/pick_tape_videos/test1.mjpeg
+enabled
+opening gripper to 65 mm
+  gripper at 65.4 mm
+to pregrasp
+  mark pregrasp at t = 6.5 s of the video
+descending over 3.9 s
+  settled at [ 130.06,   91.29,  -58.78,    0.00,   42.41,   65.58]: fingertips at r = 360 mm, z = 82 mm
+  mark descended at t = 11.4 s of the video
+closing with 1.00 N*m
+  fingers stopped at 15.2 mm, holding 4.90 N*m
+  target 3 mm inside the roll: 16.9 mm, holding 1.56 N*m
+  mark closed at t = 14.3 s of the video
+lifting to pregrasp height
+  holding at 16.9 mm, 1.56 N*m
+  mark lifted at t = 19.2 s of the video
+carrying it to the shelf over 41.5 s
+  settled at [   0.00,   75.09,  -27.70,    0.00,   27.45,   65.58]: fingertips at r = 248 mm, z = 27 mm
+  gripper at 64.2 mm
+  mark released at t = 64.6 s of the video
+rising off the shelf
+returning home over 6.0 s
+  quick stop: J2 0.00 -> -1.71, J3 0.00 -> 0.31 deg in 1.5 s; resetting
+disabled at home: [  -1.42,    2.20,   -2.95,    4.21,   -4.40,  -10.54]; arm status NORMAL(0x0), motors enabled [False, False, False, False, False, False]

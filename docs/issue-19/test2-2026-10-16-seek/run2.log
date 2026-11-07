@@ -1,0 +1,11 @@
+camera: frames flowing (20 in 0.9 s)
+start joints [  -3.91,   -2.18,    1.13,    0.00,   28.54,   64.23]  gripper 67.0 mm
+enabled; gripper at 61.3 mm
+at the look pose after 7.1 s; roll locked
+roll locked -3.84 s after the look pose: x = -301, y = 369 mm on the shelf
+over the roll: r = 478.6 mm, azimuth 128.91 deg (1306 frames refined it, 0 rejected, 40 with the arm in front); descending to z = 81 mm
+  settled at [ 128.83,  110.66,  -83.87,    0.00,   43.15,   65.50]: fingertips at r = 479 mm, z = 83 mm
+  fingers stopped at 0.5 mm, holding 0.20 N*m
+  no grip on the roll: not lifting
+  quick stop: J2 0.00 -> -1.71, J3 0.00 -> 0.46 deg in 1.5 s; resetting
+disabled at home: [  -1.41,    2.19,   -2.56,    4.19,   -5.20,  -10.50]; arm status NORMAL(0x0), motors enabled [False, False, False, False, False, False]
