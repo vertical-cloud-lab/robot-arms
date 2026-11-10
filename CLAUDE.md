@@ -222,7 +222,7 @@ sessions.
 | `EDISON_PLATFORM_API_KEY` | secret | Edison Scientific platform API. |
 | `HF_TOKEN` | secret | Hugging Face `byu-vcl` account, fine-grained read + write on its own repos (LeRobot datasets and policies). |
 | `ONSHAPE_ACCESS_KEY` / `ONSHAPE_SECRET_KEY` | secret | Onshape REST API key pair. Prefer these for anything the API can do; the PiPER mount lives in vcl-shared > 6DOF Robot Arm. |
-| `ONSHAPE_USERNAME` / `ONSHAPE_PASSWORD` | secret | Onshape login, for browser work only (WebGL canvas, so real pointer events on a display on a Pi). |
+| `ONSHAPE_USERNAME` / `ONSHAPE_PASSWORD` | secret | The lab's shared Onshape account (member privileges, no 2FA), for browser work. See [Onshape](#onshape-signing-in-through-the-browser-onshape_username--onshape_password). |
 | `H2D_IP` / `H2D_ACCESS_CODE` / `H2D_SERIAL` | secret | Bambu Lab H2D, LAN mode. On the lab LAN, not the tailnet: connect from the Pi. |
 | `A1_MINI_IP` / `A1_MINI_ACCESS_CODE` / `A1_MINI_SERIAL` | secret | The same for the A1 mini. |
 | `BAMBU_USERNAME` / `BAMBU_PASSWORD` / `BAMBU_TOTP_SEED` | environment secret | Bambu cloud login and its authenticator seed. Only in the `bambu-print` environment, for `claude-print.yml`; not in `claude.yml`. See [Printing on the lab's Bambu Lab printers](#printing-on-the-labs-bambu-lab-printers-claude-print). |
@@ -373,3 +373,68 @@ GH_TOKEN=$GH_READ_PAT_STAGING gh api "repos/sgbaird/agent-staging/contents/<path
 ## Zenodo
 
 `ZENODO_API_TOKEN` and `ZENODO_SANDBOX_API_TOKEN` can upload *and* publish; `ZENODO_BASE_URL` and `ZENODO_SANDBOX_BASE_URL` end in `/api`. Publishing mints a permanent DOI that only Zenodo support can remove, so test on the sandbox and publish only when asked. `zenodo_client`'s `ensure_zenodo` reads both tokens from env as named: [example](https://github.com/sparks-baird/matsci-opt-benchmarks/blob/c58cd80/notebooks/crabnet_hyperparameter/1.3-sgb-zenodo-upload.ipynb).
+
+## Onshape: signing in through the browser (`ONSHAPE_USERNAME` / `ONSHAPE_PASSWORD`)
+
+`ONSHAPE_USERNAME` and `ONSHAPE_PASSWORD` (job env in `.github/workflows/claude.yml`) are the
+login of the lab's shared Onshape account. It has member privileges in the lab's Onshape
+company, signs in with e-mail and password, and has no two-factor step (checked 2026-11-09).
+Use it to open, export (STL, STEP, Parasolid) or search lab documents that aren't public, such
+as a link someone posts in an issue. The same values are in every core VCL repo; set or rotate
+them in all of them together.
+
+The REST API key pair (`ONSHAPE_ACCESS_KEY` / `ONSHAPE_SECRET_KEY`) is still the first
+choice when it works. Since 2026-10-29 it has returned HTTP 402 "API limit exceeded", because
+the company has used up its yearly allowance
+([powder-doser PR 200](https://github.com/vertical-cloud-lab/powder-doser/pull/200#issuecomment-6596401552)).
+Until that resets, the browser is the only way to export a private document.
+
+**The route that works** is the one byu-vcl used on 2026-09-26
+([PR 234](https://github.com/vertical-cloud-lab/byu-vcl/pull/234#issuecomment-5842335279)):
+headed Chrome on a virtual display on the runner, with its traffic sent out through a lab Pi
+over an SSH SOCKS tunnel, so that Onshape sees the BYU network instead of a datacenter. Its
+rig script is on that PR's branch; fetch it pinned, into `/tmp`, never into this checkout:
+
+```bash
+B=https://raw.githubusercontent.com/vertical-cloud-lab/byu-vcl/49677cfff31a67765d9182c01765bfa994a7545d/ot2-overhead-camera/lid-mount/onshape
+mkdir -p /tmp/onshape-rig/record /tmp/onshape-rig/pi
+curl -fsSL "$B/record/rig.sh" -o /tmp/onshape-rig/record/rig.sh && chmod +x /tmp/onshape-rig/record/rig.sh
+curl -fsSL "$B/pi/xshot.py" -o /tmp/onshape-rig/pi/xshot.py
+PI_USER="$ARM_PI_USERNAME" PI_HOST="$ARM_PI_HOSTNAME" /tmp/onshape-rig/record/rig.sh start
+/tmp/onshape-rig/record/rig.sh check    # the tunnel's exit network (ASN and org only), and a screenshot of the display
+```
+
+`rig.sh start` brings up Xvfb on `:99`, the tunnel on `127.0.0.1:1080` and Chrome with DevTools
+on `127.0.0.1:9222`. Attach with Playwright's `chromium.connect_over_cdp("http://127.0.0.1:9222")`.
+
+The tunnel goes through the arm Pi (`ARM_PI_USERNAME` / `ARM_PI_HOSTNAME`). The Pi only relays
+traffic: nothing is installed or written on it. That Pi hasn't carried this tunnel before
+(byu-vcl used the CubXL Pi), so check that `rig.sh check` names BYU before signing in.
+
+Signing in ([`sign_in()` in `onshape_ui.py`](https://github.com/vertical-cloud-lab/byu-vcl/blob/49677cf/ot2-overhead-camera/lid-mount/onshape/onshape_ui.py#L255-L276), selectors checked live):
+
+1. Go to `https://cad.onshape.com/signin`. Click `input[name='username']`, type the e-mail and
+   click `button.continue-button`.
+2. Click `input[name='password']`, type the password and click `button.os-signin-button`.
+3. Wait up to 60 s for the URL to contain `/documents`.
+
+- **Read the values from the environment inside the script.** Never print them, pass them as
+  command-line arguments, or take a screenshot while the form is filled in. Only take
+  screenshots after you reach `/documents`.
+- **Stop at the first failure: don't retry in a loop.** That covers a reCAPTCHA, a code
+  prompt (`input[name='totpCode']`) and an error message. Take one screenshot, then report
+  what you saw. Repeated failed sign-ins can lock the account, and every repo uses it.
+- **To export,** use Onshape's own Export dialog (right-click the part or tab, then *Export*).
+  The browser saves the file, so set a download directory under `/tmp`. Driving that dialog
+  in headless Chrome worked on
+  [digital-alloy-lab PR 174](https://github.com/vertical-cloud-lab/digital-alloy-lab/pull/174#issuecomment-6532349145).
+- **Sketching and modelling are WebGL on a canvas.** DOM selectors don't reach the geometry,
+  so use pointer moves and drags at screen coordinates, with a screenshot between moves.
+  byu-vcl's `onshape_ui.py` has the techniques that worked.
+- **Keep sessions short.** Do only what the request needs. Onshape's terms forbid automated
+  access (§4(a)(ix)), so use the REST API whenever it can do the job.
+- **Only open Onshape in the tunnelled browser.** The tunnel relays everything the browser
+  loads, so any other site would reach the Pi's network too.
+- **Clean up every time:** sign out from Onshape's user menu (*Sign out*); after that,
+  `/documents` redirects to `/signin`. Then run `rig.sh stop`, which deletes the browser
+  profile. Never save cookies or storage state outside `/tmp`, and never commit them.
