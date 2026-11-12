@@ -201,6 +201,15 @@ copied three files, and the 02:41 UTC run added `arm_power.py` and `arm_home.jso
 else on mpzy changed. Delete `~/so101/` to undo it. Before that run, `~/arm_power.py`,
 `~/arm_home.json` and `~/Up_and_Down.py` matched the repo copies byte for byte.
 
+**jss265's SSH key on mpzy ([#72](https://github.com/vertical-cloud-lab/robot-arms/issues/72)).**
+On 2026-11-12 an `@claude` run created `~/.ssh` (mode 700) for the login user on mpzy, which
+had none, and put jss265's public key in `~/.ssh/authorized_keys` (mode 600):
+`ssh-ed25519 … joshu@Rufus_Magnus_IV`, fingerprint
+`SHA256:N/BdCX2MJoR9expykenRmaiJz3571GXprR822mxHL/k`. It is the file's only key. It works with
+OpenSSH on the LAN (`:22`); over the tailnet, `tcp:22` goes to Tailscale SSH, which ignores
+`authorized_keys` and follows the policy. Delete that line (or the file) to undo it. Nothing
+else changed.
+
 ## Secret inventory
 
 Names and purposes only — **never** echo, grep, or print the values. Every secret below is
