@@ -33,13 +33,34 @@ OFFICIAL = "https://raw.githubusercontent.com/AprilRobotics/apriltag-imgs/master
 # Camera Module 3 Wide as the repo's twin models it (piper_camera_fixtures.py: f = 1964 px at 4608 px).
 F_1280 = 1964.0 * 1280 / 4608  # 545.6 px at the 1280 x 720 the livestreams use
 
-# What goes on the print sheets: (title, black-square size in mm, IDs).
+# What goes on the print sheets: (title, black-square size in mm, IDs[, note printed under the header]).
 SHEETS = [
     ("Large workspace tags, 150 mm (far from the camera)", 150, [4, 5]),
     ("Workspace tags, 100 mm", 100, [0, 1, 2, 3]),
     ("Mid-size tags, 50 mm", 50, list(range(10, 19))),
     ("Small tags, 25 mm", 25, list(range(30, 54))),
+    # 10 mm: 55 px wide at 0.1 m and 27 px at 0.2 m in a 1280-px Module 3 Wide frame, so gripper cameras only
+    ("Tiny tags, 10 mm (close range only)", 10, list(range(60, 108)),
+     "Close range only: a gripper camera within about 0.25 m. Cells are 1.25 mm: cut midway between tags, "
+     "and measure the black square with calipers."),
 ]
+
+
+def make_detector(**kw):
+    """A pupil_apriltags Detector (tag36h11) that can be freed safely. pupil-apriltags 1.0.4.post11's
+    __del__ frees the tag family and then calls apriltag_detector_destroy(), which still walks the
+    detector's family list: a use-after-free that segfaulted this script on Python 3.14 (2026-11-12).
+    Detaching the families from the C detector first makes the order harmless."""
+    from pupil_apriltags import Detector
+
+    class _Detector(Detector):
+        def __del__(self):
+            if getattr(self, "tag_detector_ptr", None) is not None:
+                self.libc.apriltag_detector_clear_families.restype = None
+                self.libc.apriltag_detector_clear_families(self.tag_detector_ptr)
+            super().__del__()
+
+    return _Detector(**{"families": "tag36h11", "quad_decimate": 1.0, "refine_edges": True, **kw})
 
 
 def tag_bits(tag_id, tags_dir=TAGS_DIR):
@@ -92,13 +113,16 @@ def _ruler(c, x, y, length_mm):
 def make_sheets(pdf_path, page_w=215.9, page_h=279.4):
     """US Letter, portrait unless a tag is too wide for it. Returns the layout actually used."""
     from reportlab.lib.units import mm
+    from reportlab.pdfbase.pdfmetrics import stringWidth
     from reportlab.pdfgen import canvas
 
     c = canvas.Canvas(str(pdf_path), pagesize=(page_w * mm, page_h * mm))
     c.setTitle("AprilTag tag36h11 print sheets, PiPER cell (robot-arms #24)")
     layout = []
-    margin, gap, label_h, head_h, foot_h = 10.0, 4.0, 5.0, 14.0, 16.0
-    for title, size, ids in SHEETS:
+    margin, gap, label_h, foot_h = 10.0, 4.0, 5.0, 16.0
+    for title, size, ids, *note in SHEETS:
+        note = note[0] if note else ""
+        head_h = 19.0 if note else 14.0  # room for the note line
         foot = size * 1.25  # black square plus the 1-cell white quiet zone on every side
         best = None
         for landscape in (False, True):  # whichever orientation holds more tags
@@ -119,6 +143,8 @@ def make_sheets(pdf_path, page_w=215.9, page_h=279.4):
             c.drawString(margin * mm, (h - margin - 9) * mm,
                          "Print at 100 % / Actual size (no 'fit to page'). The white border (1 cell) is part of the tag; do not trim into it. "
                          "Measure the BLACK square, not the paper.")
+            if note:
+                c.drawString(margin * mm, (h - margin - 13.5) * mm, note)
             grid_w = cols * foot + (cols - 1) * gap
             x_start = (w - grid_w) / 2
             for i, tid in enumerate(chunk):
@@ -137,7 +163,10 @@ def make_sheets(pdf_path, page_w=215.9, page_h=279.4):
                         c.line(px * mm, (py + sy * 1) * mm, px * mm, (py + sy * 3) * mm)
                 c.setFillGray(0)
                 c.setFont("Helvetica", 7)
-                c.drawCentredString(cx * mm, (cy - foot / 2 - 4) * mm, f"tag36h11  ID {tid}  |  {size} mm")
+                label = f"tag36h11  ID {tid}  |  {size} mm"
+                if stringWidth(label, "Helvetica", 7) / mm > foot + gap - 2:  # would run into the next label
+                    label = f"ID {tid}"
+                c.drawCentredString(cx * mm, (cy - foot / 2 - 4) * mm, label)
             bar = 100 if size >= 100 else 50
             c.setStrokeGray(0)
             _ruler(c, margin, margin + 4, bar)
@@ -153,10 +182,7 @@ def make_sheets(pdf_path, page_w=215.9, page_h=279.4):
 def check_sheets(pdf_path, layout, dpi=300):
     """Rasterise the PDF, run the AprilTag detector on every page and compare size and IDs."""
     import fitz  # pymupdf
-    import cv2
-    from pupil_apriltags import Detector
-
-    det = Detector(families="tag36h11", quad_decimate=1.0, refine_edges=True)
+    det = make_detector()
     doc = fitz.open(str(pdf_path))
     report = []
     for page, spec in zip(doc, layout):
@@ -196,9 +222,8 @@ def cmd_sheet(args):
 
 def cmd_detect(args):
     import cv2
-    from pupil_apriltags import Detector
 
-    det = Detector(families="tag36h11", quad_decimate=1.0, refine_edges=True)
+    det = make_detector()
     for path in args.images:
         img = cv2.imread(path)
         if img is None:
@@ -303,11 +328,9 @@ def synth_frame(tex, size_m, frontal_px, tilt_deg, rng, W=1280, H=720, f=F_1280,
 
 
 def simulate(widths, tilts, trials, size_m=0.1, tag_id=7, seed=1):
-    from pupil_apriltags import Detector
-
     rng = np.random.default_rng(seed)
     tex = _texture(tag_bits(tag_id))
-    det = Detector(families="tag36h11", quad_decimate=1.0, refine_edges=True, nthreads=4)
+    det = make_detector(nthreads=4)
     cam = [F_1280, F_1280, 640.0, 360.0]
     rows = []
     for w in widths:
