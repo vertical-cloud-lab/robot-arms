@@ -24,7 +24,8 @@ also runs as is: it finds the shared files in ../Arm Control/.
    - a joint over its --max-current-a, or more than --lag-deg behind its setpoint, is a snag:
      the arm stops where it is and stays stopped until the deadman is released and re-engaged;
    - deadman released, or no fresh command for --stale-s: hold.
-3. Finish, on Q from the PC, stdin closing (SSH gone), or no command at all for --lost-s:
+3. Finish, on Q from the PC (from any pose), stdin closing (SSH gone), or no command at all
+   for --lost-s:
    back to READY at --return-deg-s, then down, land, lower the gripper and disable with
    Up_and_Down.py's code, set the firmware limits back and exit 0. arm_power.py then checks the
    arm is parked and switches the relay off. Anything that goes wrong on the way leaves the
@@ -140,13 +141,9 @@ class Link:
         with self.lock:
             return self.target, self.last_rx, self.quit, self.eof
 
-    def clear_quit(self):
-        with self.lock:
-            self.quit = None
-
 
 def parse_envelope(text):
-    env = {"J1": (-150, 150), "J2": (0, 180), "J3": (-170, 0), "J5": (-70, 70), "J6": (-120, 120)}
+    env = {"J1": (-150, 150), "J2": (0, 180), "J3": (-170, 0), "J5": (-70, 70), "J6": (-180, 180)}
     for part in text.split(","):
         name, _, rng = part.partition("=")
         lo, _, hi = rng.partition(":")
@@ -173,6 +170,7 @@ class Follower:
         self.env_named = env
         self.grip0 = None
         self.gripper_used = False
+        self.gripper_on = False  # switched on and staying on: only then does it follow
         self.enabled_once = False
 
     # ---------------------------------------------------------------- helpers
@@ -263,7 +261,7 @@ class Follower:
         self.enabled_once = True
         while True:
             self.send(q0, ua.speed)
-            if piper.EnablePiper():
+            if UD.enable_joints(piper):
                 break
             if time.time() - t0 > 5:
                 while piper.DisablePiper() and time.time() - t0 < 8:
@@ -272,7 +270,7 @@ class Follower:
                                  "nothing moved")
             time.sleep(0.01)
         self.phase = "rise"
-        say(f"enabled in {time.time() - t0:.2f} s; raising to READY")
+        say(f"enabled in {time.time() - t0:.2f} s; raising to READY ({self.gripper_note()})")
         if abs(q0[4] - self.start_pose[4]) > ua.tol_deg:
             try:
                 self.move(self.start_pose, "level the J5-J6 link")
@@ -283,9 +281,58 @@ class Follower:
         self.move(up0, "up", self.hang)
         if abs(q0[5] - a.park_j6_deg) > ua.tol_deg:
             self.move(self.ready, "roll the gripper to READY", self.hang)
+        if a.ready_grip_mm is not None:
+            self.open_gripper("open the gripper for READY")
+        if a.gripper:
+            self.switch_on_gripper()
+        say(f"at READY: {self.gripper_note()}")
         self.phase = "ready"
         emit("READY", {"ready": r1(self.ready), "q": r1(UD.joints_deg(piper))})
         return True
+
+    def gripper_note(self):
+        """The gripper's own report, for the log. Without --gripper it should stay off."""
+        g = self.piper.GetArmGripperMsgs().gripper_state
+        f = getattr(g, "foc_status", None)  # fake_piper has none
+        return f"gripper {g.grippers_angle / 1000:.1f} mm" + ("" if f is None else (
+            f", enabled {f.driver_enable_status}, homing {f.homing_status}, "
+            f"error {f.driver_error_status}, overcurrent {f.driver_overcurrent}"))
+
+    def switch_on_gripper(self, watch_s=3.0):
+        """--gripper, at READY: switch the gripper on holding where it is, so it doesn't jump,
+        then watch that it stays on. Only EnableArm(7) has ever set it closing and reopening
+        to find its zero, which the finger sleeves stall (2026-11-12); if it doesn't stay on,
+        the arm is teleoperated without it rather than switching it on again."""
+        a, piper = self.a, self.piper
+        hold = min(max(piper.GetArmGripperMsgs().gripper_state.grippers_angle / 1000, 0.0),
+                   a.grip_max_mm)
+        for _ in range(10):  # resent: a frame can be lost
+            piper.GripperCtrl(round(hold * 1000), round(a.grip_effort_nm * 1000), 0x01, 0)
+            time.sleep(0.05)
+        homed, t0 = False, time.time()
+        while time.time() - t0 < watch_s:
+            f = getattr(piper.GetArmGripperMsgs().gripper_state, "foc_status", None)
+            homed = homed or bool(f and f.homing_status)
+            time.sleep(0.05)
+        f = getattr(piper.GetArmGripperMsgs().gripper_state, "foc_status", None)  # none: fake
+        self.gripper_on = f is None or (f.driver_enable_status and not f.driver_error_status)
+        say(("gripper on, holding " if self.gripper_on else
+             "WARNING: the gripper didn't stay on, so it won't follow this session; it was at ")
+            + f"{hold:.1f} mm" + ("; it ran its zero-finding" if homed else ""))
+
+    def open_gripper(self, label, timeout_s=4.0):
+        """Gripper to --ready-grip-mm, wide: closed, the custom finger sleeves press together
+        and the gripper motor's current peaks."""
+        a, piper = self.a, self.piper
+        t0 = time.time()
+        while True:
+            piper.GripperCtrl(round(a.ready_grip_mm * 1000), round(a.grip_effort_nm * 1000),
+                              0x01, 0)
+            g = piper.GetArmGripperMsgs().gripper_state.grippers_angle / 1000
+            if abs(g - a.ready_grip_mm) <= 2.0 or time.time() - t0 > timeout_s:
+                break
+            time.sleep(0.05)
+        say(f"{label}: {g:.1f} mm (target {a.ready_grip_mm:g})")
 
     # ---------------------------------------------------------------- 2. follow
     def clamp(self, t5):
@@ -340,12 +387,7 @@ class Follower:
             t_last = now
             target, last_rx, quit_, eof = self.link.snapshot()
             if quit_:
-                far = max(abs(UD.joints_deg(piper)[i] - self.ready[i]) for i in DRIVEN)
-                if far <= a.return_max_deg:
-                    return quit_
-                self.link.clear_quit()
-                say(f"not finishing yet: the arm is {far:.0f} deg from READY on some joint "
-                    f"(limit {a.return_max_deg:g}). Bring it back near READY, then Q")
+                return quit_
             if eof:
                 return "the PC's connection closed"
             silent = now - (last_rx if last_rx is not None else t_start)
@@ -394,7 +436,7 @@ class Follower:
                 why_hold = f"snag: {why}. Let go of the deadman, then engage again"
                 say(why_hold)
             self.send(sp, a.speed)
-            if engaged and target[5] is not None:
+            if engaged and self.gripper_on and target[5] is not None:
                 g = min(max(target[5], 0.0), a.grip_max_mm)
                 grip_sp += max(-a.grip_mm_s * dt, min(a.grip_mm_s * dt, g - grip_sp))
                 self.gripper_used = True
@@ -438,8 +480,9 @@ class Follower:
         say(f"finishing ({why}): back to READY, then park")
         self.send(UD.hold_here(piper, self.ua), self.ua.speed)
         q = UD.joints_deg(piper)
-        if self.gripper_used:  # back to the stroke it started with
-            piper.GripperCtrl(round(self.grip0 * 1000), round(a.grip_effort_nm * 1000), 0x01, 0)
+        if self.gripper_used:  # open it, still in the air: left closed, it parks squeezed shut
+            wide = a.grip_max_mm if a.ready_grip_mm is None else a.ready_grip_mm
+            piper.GripperCtrl(round(wide * 1000), round(a.grip_effort_nm * 1000), 0x01, 0)
         if max(abs(x - y) for x, y in zip(q, self.ready)) > self.ua.tol_deg:
             z0 = self.low_z(q)
             for k in range(1, 41):
@@ -495,21 +538,28 @@ def main():
     ap.add_argument("--lag-deg", type=float, default=10.0)
     ap.add_argument("--max-current-a", default="3,7,6,2,4.5,1.5",
                     help="per-joint snag limits while following, J1..J6 (A)")
-    ap.add_argument("--envelope", default="J1=-60:60,J2=0:100,J3=-150:0,J5=-60:60,J6=-52:0",
-                    help="joint ranges while following (deg). J6 stays inside the roll the "
-                         "gripper Pi's cables allowed in #54 (jam at -55)")
+    # The ranges the arm was moved through by hand on 2026-11-12 (joint_watch.py), 1 deg in,
+    # inside its firmware's limits: J1 -156..154, J2 -2..188, J3 -174..2, J5 -75..76,
+    # J6 -54.9..188 (its cable stops it at -55; the firmware allows -180..180).
+    ap.add_argument("--envelope", default="J1=-150:150,J2=0:180,J3=-170:0,J5=-70:70,J6=-53.9:179",
+                    help="joint ranges while following (deg)")
     ap.add_argument("--floor-mm", type=float, default=40.0)
     ap.add_argument("--tool-mm", type=float, default=140.0, help="flange to fingertips")
-    ap.add_argument("--grip-max-mm", type=float, default=70.0)
+    ap.add_argument("--grip-max-mm", type=float, default=108.0,
+                    help="widest gripper command; the lab gripper reads 108.6 mm fully open")
     ap.add_argument("--grip-mm-s", type=float, default=80.0)
     ap.add_argument("--grip-effort-nm", type=float, default=1.0)
+    ap.add_argument("--gripper", action="store_true",
+                    help="switch the gripper on at READY and let it follow the leader's "
+                         "(teleop.py passes this unless --no-gripper); without it, never commanded")
+    ap.add_argument("--ready-grip-mm", type=float,
+                    help="open the gripper to this at READY and on the way back (default: "
+                         "leave it alone)")
     ap.add_argument("--lift-deg", type=float, default=20.0, help="READY: J2 up, J3 open by this")
     ap.add_argument("--park-j6-deg", type=float, default=-52.0)
     ap.add_argument("--land-above-deg", type=float, default=0.4)
     ap.add_argument("--j1-tol-deg", type=float, default=10.0)
     ap.add_argument("--return-deg-s", type=float, default=12.0)
-    ap.add_argument("--return-max-deg", type=float, default=25.0,
-                    help="Q is only accepted this close to READY (each joint)")
     ap.add_argument("--ud-speed", type=int, default=15, help="speed percent for start/park moves")
     ap.add_argument("--ud-deg-s", type=float, default=12.0, help="peak deg/s for start/park")
     ap.add_argument("--sim-obstacle", help=argparse.SUPPRESS)  # tests: "J,ANGLE,SIGN"
@@ -524,6 +574,9 @@ def main():
               (0.05 <= a.stale_s <= 1, "--stale-s must be 0.05-1"),
               (1 <= a.lost_s <= 60, "--lost-s must be 1-60"),
               (0 <= a.grip_effort_nm <= 2, "--grip-effort-nm must be 0-2"),
+              (0 < a.grip_max_mm <= 150, "--grip-max-mm must be 0-150"),
+              (a.ready_grip_mm is None or 0 <= a.ready_grip_mm <= a.grip_max_mm,
+               "--ready-grip-mm must be 0 to --grip-max-mm"),
               (0 < a.lift_deg <= 30, "--lift-deg must be in (0, 30]"),
               (1 <= a.return_deg_s <= 20, "--return-deg-s must be 1-20"),
               (1 <= a.ud_speed <= 30 and 1 <= a.ud_deg_s <= 20, "start/park speeds out of range"),

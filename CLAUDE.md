@@ -201,6 +201,18 @@ copied three files, and the 02:41 UTC run added `arm_power.py` and `arm_home.jso
 else on mpzy changed. Delete `~/so101/` to undo it. Before that run, `~/arm_power.py`,
 `~/arm_home.json` and `~/Up_and_Down.py` matched the repo copies byte for byte.
 
+**can0 follows the relay on mpzy (2026-11-12).** `arm_power.py` now brings `can0` up at
+1 Mbit/s just before the relay goes on and takes it down once the relay is off and the arm is
+silent. The repo copy was scp'd to `~/arm_power.py`; the previous one is
+`~/arm_power.py.bak-20261112`, which differed from the repo only in one error message. It needs
+`/etc/sudoers.d/arm-power-can` (root, mode 0440), which lets `vcl` run exactly
+`/usr/bin/ip link set can0 down`, `… up` and `… type can bitrate 1000000` without a password.
+The file's line is in `arm_power.py`'s docstring. Delete that file and restore the backup to
+undo it. `Arm Control/joint_watch.py`, run from `/tmp`, saved the hand-measured joint ranges
+to `~/joint_watch_runs/` the same night. mpzy's own `~/Up_and_Down.py` is still the
+2026-11-06 copy: it enables with `EnablePiper()`, which also enables the gripper and sets it
+closing onto its finger sleeves, so replace it with the repo copy before running it on its own.
+
 ## Secret inventory
 
 Names and purposes only — **never** echo, grep, or print the values. Every secret below is

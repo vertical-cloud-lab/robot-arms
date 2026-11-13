@@ -40,7 +40,7 @@ python teleop.py             # the real arm (see "Before a real run")
   shared files to `~/so101/` on the arm Pi and runs them in its existing `~/piper-venv`. The
   video comes from `rpicam-vid`, which ships with Raspberry Pi OS.
 - **Leader calibration.** If LeRobot calibrated the leader, `teleop.py` uses the newest file in
-  `~/.cache/huggingface/lerobot/calibration/teleoperators/so101_leader/` (or `--calib FILE`).
+  `~/.cache/huggingface/lerobot/calibration/teleoperators/so101_leader/` or `so_leader/` (or `--calib FILE`).
   That file, or `--gripper-range CLOSED,OPEN`, is also the only way the gripper gets mapped;
   without either, the PiPER's gripper is left alone.
 
@@ -60,12 +60,25 @@ arm.
 
 1. The arm rises off its rest to **READY**: J2 +20°, J3 −20°, the gripper level, J6 −52°.
 2. Line the leader up with it. The window shows each joint's difference from the arm, and the
-   video if a camera Pi is set.
+   video if a camera Pi is set. The video shows the camera's whole sensor: left to itself,
+   `rpicam-vid` picked a mode that reads only the middle of it, and the arm left the frame as
+   it rose. `--cam-mode auto` gives that choice back to `rpicam-vid`.
 3. **Hold SPACE to move**; let go to stop. On Windows the key is read directly, so it works
    whichever window has focus; elsewhere SPACE toggles.
-4. **Q** (within 25° of READY) parks the arm, and then the relay switches it off.
+4. **Q** (or Esc), from any pose: the arm goes back to READY by itself,
+   parks, and then the relay switches it off. The leader doesn't have to be near READY.
 5. **A** (while holding, SPACE released): with the leader in the arm's pose, take the
    difference as the leader's offsets. They are saved to `align.json`, which git ignores.
+6. **The gripper follows the leader's** (`--no-gripper` leaves it alone). It is switched on
+   at READY, holding where it is, and the log says whether it stayed on; if it didn't, the
+   session goes on without it. The start enables joints 1–6 one by one, not with
+   `EnablePiper()` ("all motors"): every start that used it set the gripper closing and
+   reopening to find its zero, the custom finger sleeves stalled it, and it switched itself
+   off (2026-11-12). Powering on alone, and enabling only joints 1–6, left it still.
+   `--ready-grip-mm` (a follower option, after `--`) opens it to a width at READY. Q opens it
+   wide before parking. This gripper reads 45.6 mm with the sleeves touching and 108.6 mm
+   fully open (moved by hand), not the stock 0–70 mm, so the leader's gripper maps onto
+   `--grip-min-mm 46` to `--grip-max-mm 108`.
 
 When the session ends, it prints its latency: the ping round trip, the newest command's age at
 the Pi, the leader's read time and the video's frame timing.
@@ -123,9 +136,13 @@ What you can do:
 **While following**
 - Nothing moves until SPACE is held **and** the leader is within 10° of the arm on every joint.
 - Targets are clamped to `--envelope`:
-  - J1 ±60°, J2 0–100°, J3 −150–0°, J5 ±60°;
-  - J6 −52–0°, because the gripper Pi's cables jammed at J6 −55° in #54;
+  - J1 ±150°, J2 0–180°, J3 −170–0°, J5 ±70°, J6 −53.9–179°: the ranges the arm was moved
+    through by hand (`../Arm Control/joint_watch.py`, 2026-11-12), 1° in, within the limits
+    its firmware reports (J6's are ±180°, not the SDK's documented ±120°). J6's low end is
+    where its cable stopped it;
   - J4 stays where it started.
+  - The window's **limit** row marks a joint the leader is asking to take past its range
+    (MAX or MIN): the arm stops there, which can look like a freeze.
 - Speed and acceleration are limited to 45°/s and 360°/s², in the capped
   `MotionCtrl_2(1, 1, 40, 0)` mode.
 - The gripper's lowest point can't go below 40 mm while descending.
@@ -151,8 +168,8 @@ What you can do:
 | `follower.py` | arm Pi | The follower above; `teleop.py` copies it to `~/so101/` each session |
 | `requirements.txt` | your computer | `pyserial`, `numpy`, `opencv-python` |
 | `analysis/` | anywhere | `joint_map.py`: the SO-101 and PiPER joint layouts and the nominal map (`joint_map.json`, which `teleop.py` reads) |
-| `tests/test_dry_run.py` | anywhere | Snag, lost connection, Q refused far from READY, refusal off the rest, pose match to engage, a whole `teleop.py` session, the leader protocol on a simulated Feetech bus, the camera reader |
-| [`../Arm Control/`](../Arm%20Control/) | arm Pi | Shared by every sandbox script: `Up_and_Down.py`, `arm_power.py` + `arm_home.json`, and `fake_piper.py` (the simulated arm) |
+| `tests/test_dry_run.py` | anywhere | Snag, lost connection, Q from far from READY, refusal off the rest, pose match to engage, the gripper left alone without `--gripper` and following with it, a whole `teleop.py` session, the leader protocol on a simulated Feetech bus, the camera reader |
+| [`../Arm Control/`](../Arm%20Control/) | arm Pi | Shared by every sandbox script: `Up_and_Down.py`, `arm_power.py` + `arm_home.json`, `joint_watch.py` (prints and saves the joints' ranges while the arm is moved by hand, listen-only), and `fake_piper.py` (the simulated arm) |
 
 **Test without the arm or the leader:**
 ```bash
@@ -178,11 +195,39 @@ python teleop.py --fake-leader --local --dry-run --auto 8
 
 ## Still to do
 
-- [ ] First supervised real-arm session: the A-key alignment, the joint signs, the current
-      limits at full reach, and your gripper's range. Record the latency it prints here.
-- [ ] Video: the gripper Pi (76zj) has to be online, with nothing else holding its HQ camera.
-      The `rpicam-vid` options are checked against v1.13.0's `--help` on mpzy, but no
-      stream has run from a real camera yet.
+- [x] First supervised real-arm sessions (2026-11-12, from Windows over Tailscale): the arm
+      and gripper followed the leader. Latency: SSH round trip 34 ms median (41 ms 95th
+      percentile), newest command 36 ms old at the Pi, leader read 1.1 ms, video frames
+      33 ms apart.
+
+**Calibration still to fix.** These were worked around to get teleop running, not fixed:
+
+- [ ] **Gripper zero and range.** With the custom finger sleeves on, the gripper reads
+      45.6 mm closed (sleeves touching) and 108.6 mm fully open, not 0–70 mm. The leader maps
+      onto that range through `--grip-min-mm 46` / `--grip-max-mm 108`, measured by hand once.
+      Re-measure with `../Arm Control/joint_watch.py`, which shows the gripper live, whenever
+      the sleeves change, or re-zero the gripper (`GripperCtrl(set_zero=0xAE)`) and go back
+      to the stock range.
+- [ ] **The gripper's zero-finding.** Enabling every motor (`EnablePiper()`, `EnableArm(7)`)
+      sets the gripper closing and reopening to find its zero, which the sleeves stall, and
+      it switches itself off. The scripts now enable joints 1–6 one by one and switch the
+      gripper on separately at READY, which hasn't triggered it. Whether it can be made to
+      home correctly with the sleeves on is open.
+- [ ] **J6's range and park pose.** J6 turns −54.8° to +188° by hand (its cable stops it at
+      −55°; the firmware allows ±180°), far from symmetric about 0. The park pose,
+      `arm_home.json`'s J6 −95 to −45, now sits at the cable stop. Decide where J6's zero and
+      park angle should be for the new camera and its cable, and update `arm_home.json`,
+      `--park-j6-deg` and `--envelope` together. With the motors off, J6 rolls freely, so
+      `arm_power.py off` refuses until it is rolled back to about −52°.
+- [ ] **The leader-to-PiPER joint map.** The nominal map comes from the SO-101 URDF and is
+      corrected per operator by the A key (`align.json`, not in git). The signs and offsets
+      haven't been checked joint by joint against the real arm, and the leader's own LeRobot
+      calibration is per computer.
+- [ ] **The cell camera's aim.** The video now uses mpzy's whole sensor, but the arm still
+      leaves the top of the frame when raised high: tilt or move the camera.
+- [ ] Video from the gripper: the gripper Pi (76zj) has to be online, with nothing else
+      holding its HQ camera. mpzy's own camera (the imx708 wide, which sees the cell) has
+      streamed into sessions since 2026-11-12, once its livestream was stopped.
 - [ ] Tailnet grants for the operator's computer to SSH to mpzy and 76zj.
 - [ ] Close PR #47 once this merges (its code is here now). PR #60 adds its own copy of
       `arm_power.py` and `arm_home.json` at `PiPER Sandbox Scripts/`; keep one copy, in

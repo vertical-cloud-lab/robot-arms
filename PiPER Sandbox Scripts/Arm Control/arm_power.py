@@ -16,8 +16,8 @@ script.
 
     arm_power.py status          what the relay, can0 and the arm report (read-only)
     arm_power.py check           exit 0 if the arm is parked, 1 if not (read-only)
-    arm_power.py on              relay on, then wait for the arm to talk on can0
-    arm_power.py off             relay off, only if the arm is parked
+    arm_power.py on              can0 up, relay on, then wait for the arm to talk on can0
+    arm_power.py off             relay off, only if the arm is parked, then can0 down
     arm_power.py run -- PROG [ARGS...]
         The protocol for every program that talks to the arm:
         1. power on if it's off;
@@ -34,8 +34,15 @@ is resting, or after the E-stop, when the arm can't report.
 
 Run it with the venv that has piper_sdk, so it can read the arm:
     ~/piper-venv/bin/python ~/arm_power.py status
-can0 must already be up at 1 Mbit/s; this script never configures it. While reading the
-arm it only listens: it opens the bus with piper_init=False, so it sends no frames.
+can0 goes up and down with the relay: `on` (and `run`, and `off` while the relay is on)
+brings it up at 1 Mbit/s first, and once the relay is off and the arm silent it goes down
+again. A failed power-off (the arm still up, or still talking) leaves it up, so the arm can
+still be read. `status` and `check` never touch it. That takes passwordless sudo for exactly
+these three commands, in /etc/sudoers.d/arm-power-can on the arm Pi:
+    vcl ALL=(root) NOPASSWD: /usr/bin/ip link set can0 down, /usr/bin/ip link set can0 up, \
+        /usr/bin/ip link set can0 type can bitrate 1000000
+While reading the arm it only listens: it opens the bus with piper_init=False, so it sends
+no frames.
 
 The relay pin keeps its level after this script exits (pinctrl writes the register), so a
 crash leaves the power as it was. A reboot or power loss on the Pi itself pulls GPIO17 low
@@ -67,6 +74,8 @@ EVENT_LOG = os.path.join(HOME, "arm_power.log")
 RUN_LOGS = os.path.join(HOME, "arm_power_runs")
 LOCK = "/tmp/arm_power.lock"
 PINCTRL = os.environ.get("ARM_POWER_PINCTRL", "pinctrl")
+IP = "/usr/bin/ip"  # the path the sudoers rule names
+BITRATE = 1000000
 PROBE = os.environ.get("ARM_POWER_PROBE")  # tests swap in a simulated arm here
 
 OK, REFUSED, BROKEN = 0, 1, 3  # exit codes (2 is argparse's usage error)
@@ -131,14 +140,50 @@ def can_state(channel):
 
 def can_ready(channel):
     oper, state, rate = can_state(channel)
+    if oper == "missing":
+        return False, f"{channel} is missing: plug the USB-CAN adapter into this Pi"
     if oper not in ("up", "unknown"):
-        return False, (f"{channel} is {oper}: plug the USB-CAN adapter into this Pi, then "
-                       f"`sudo ip link set {channel} type can bitrate 1000000 && "
+        return False, (f"{channel} is {oper}: `on`, `off` and `run` bring it up with the relay; "
+                       f"by hand, `sudo ip link set {channel} type can bitrate {BITRATE} && "
                        f"sudo ip link set {channel} up`")
     if state == "BUS-OFF":
         return False, (f"{channel} is BUS-OFF: `sudo ip link set {channel} down`, then bring "
                        "it up again")
     return True, f"{channel} {oper}, {state or '?'}, {rate or '?'} bit/s"
+
+
+def set_can(channel, up):
+    """Bring channel up at BITRATE (down first, since the bitrate only takes while it's down),
+    or take it down, through the sudoers rule in the docstring. None, or what went wrong."""
+    steps = [["down"], ["type", "can", "bitrate", str(BITRATE)], ["up"]] if up else [["down"]]
+    for step in steps:
+        cmd = [IP, "link", "set", channel, *step]
+        p = subprocess.run(["sudo", "-n", *cmd], capture_output=True, text=True)
+        if p.returncode:
+            return (f"`sudo {shlex.join(cmd)}` failed: {(p.stderr or p.stdout).strip()} "
+                    "(is /etc/sudoers.d/arm-power-can on this Pi? See the docstring)")
+    log_event(f"{channel} {'up' if up else 'down'}")
+    return None
+
+
+def can_up(channel):
+    """can_ready, after bringing channel up at BITRATE unless it already is."""
+    oper, state, rate = can_state(channel)
+    if oper != "missing" and not (oper in ("up", "unknown") and state != "BUS-OFF"
+                                  and rate == BITRATE):
+        err = set_can(channel, True)
+        if err:
+            return False, err
+        say(f"{channel} up at {BITRATE} bit/s")
+    return can_ready(channel)
+
+
+def can_down(channel):
+    """Take channel down once the relay is off. A failure only warns: the power is already off."""
+    if can_state(channel)[0] in ("missing", "down"):
+        return
+    err = set_can(channel, False)
+    say(f"WARNING: {channel} stays up: {err}" if err else f"{channel} down")
 
 
 def _probe(channel, window_s):
@@ -325,8 +370,8 @@ def wait_for_silence(a, timeout_s):
 
 
 def power_on(a, home):
-    ready, msg = can_ready(a.can)
-    if not ready and not a.no_can:
+    ready, msg = (True, "") if a.no_can else can_up(a.can)
+    if not ready:
         say("refused:", msg)
         log_event(f"on refused: {msg}")
         return REFUSED
@@ -355,6 +400,7 @@ def power_on(a, home):
             "Check the brick is in a normally-OFF outlet, the E-stop is released, and the "
             "CAN cable")
         log_event(f"on: no arm feedback in {a.boot_timeout_s:g} s, relay back off")
+        can_down(a.can)
         return BROKEN
     s = probe(a.can)
     say(f"arm talking {t:.1f} s after the relay switched on")
@@ -364,14 +410,15 @@ def power_on(a, home):
 
 
 def power_off(a, home, force=False):
-    ready, msg = can_ready(a.can)
     if not relay_is_on():
-        if ready and probe(a.can)["frames"]:
+        if can_ready(a.can)[0] and probe(a.can)["frames"]:
             say("relay is already off, but the arm still has power: its brick isn't on a "
                 "normally-OFF outlet, or + isn't on GPIO17")
             return BROKEN
         say("relay already off")
+        can_down(a.can)
         return OK
+    ready, msg = can_up(a.can)
     if not force:
         if not ready:
             say(f"refused: can't see the arm ({msg}), so I can't tell it's parked. "
@@ -400,6 +447,7 @@ def power_off(a, home, force=False):
         return BROKEN
     say(f"arm silent {t:.1f} s after the relay switched off: power is off")
     log_event(f"off{' (forced)' if force else ''}: arm silent after {t:.1f} s")
+    can_down(a.can)
     return OK
 
 
@@ -419,7 +467,7 @@ def cmd_run(a, home):
         raise SystemExit("run needs a program: arm_power.py run -- PROG [ARGS...]")
     signal.signal(signal.SIGHUP, signal.SIG_IGN)  # inherited by PROG: see the docstring
     with exclusive("arm_power run " + shlex.join(prog)):
-        ready, msg = can_ready(a.can)
+        ready, msg = can_up(a.can)
         if not ready:
             say("refused before switching anything:", msg)
             log_event(f"run refused: {msg}")

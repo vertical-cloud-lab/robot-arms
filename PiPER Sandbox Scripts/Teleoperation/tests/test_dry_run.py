@@ -93,20 +93,43 @@ def test_connection_loss_parks():
     assert rc == 0 and "connection closed" in bye["why"] and bye["phase"] == "parked", bye
 
 
-def test_far_from_ready_q_is_refused():
+def test_q_parks_from_far():
+    """Q finishes from any pose: the arm goes back to READY by itself, then parks."""
     r = Run()
     ready = r.wait_ready()
+    r.stream(ready, 0.5)  # engage
     far = [ready[0] + 40, *ready[1:]]
-    r.stream([ready[0] + 9, *ready[1:]], 0.2)
-    t0 = time.time()
-    while time.time() - t0 < 3:  # walk the target out to J1 +40 within the engage window
-        r.target([ready[0] + 9 + (time.time() - t0) * 15, *ready[1:]])
-        time.sleep(0.01)
-    r.stream(far, 1.0)
+    r.stream(far, 4.0)
+    assert abs(r.states()[-1]["q"][0] - far[0]) < 1, r.states()[-1]
+    r.stream(far, 0.2, deadman=False)
     r.p.stdin.write(b"Q\n")
-    r.stream(far, 0.5)
-    assert any("not finishing yet" in x for x in r.lines), "\n".join(r.lines[-20:])
-    r.stream(ready, 3.0)
+    rc, bye = r.bye()
+    assert rc == 0 and bye["phase"] == "parked", (rc, bye)
+
+
+def test_gripper_left_alone_by_default():
+    r = Run()
+    ready = r.wait_ready()
+    r.stream(ready, 1.0)  # engaged, but the leader's gripper target is ignored
+    for _ in range(50):
+        r.target(ready, grip="5.0")
+        time.sleep(0.01)
+    r.p.stdin.write(b"Q\n")
+    rc, bye = r.bye()
+    assert rc == 0 and bye["phase"] == "parked", bye
+    grips = {s["grip"] for s in r.states()}
+    assert len(grips) == 1, grips
+
+
+def test_gripper_follows_with_flag():
+    r = Run("--gripper")
+    ready = r.wait_ready()
+    assert any("gripper on, holding" in x for x in r.lines), "\n".join(r.lines[-20:])
+    r.stream(ready, 0.5)
+    for _ in range(100):
+        r.target(ready, grip="5.0")
+        time.sleep(0.01)
+    assert r.states()[-1]["grip"] < 10, r.states()[-1]
     r.p.stdin.write(b"Q\n")
     rc, bye = r.bye()
     assert rc == 0 and bye["phase"] == "parked", bye
