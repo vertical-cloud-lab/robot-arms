@@ -1,6 +1,7 @@
 """Fit checks for the low finger fixture and the tilt-lock slider (issue #42, round 3).
 
-    python fit_check.py          # about 3 min; prints interference volumes and gaps
+    python fit_check.py            # about 3 min; prints interference volumes and gaps
+    python fit_check.py --slider   # only the slider, its guide and the grippers on its knob
 
 * the fixture against the tap collar, solenoid and auger lying in it, and the gear's gap;
   the side webs' gap to the collar and solenoid;
@@ -124,7 +125,9 @@ def main():
         print(f"[{kind} in the fixture] lowest point z = {lowest(g):.2f};",
               hits(g, fixture + [("board", BOARD)], kind), "interference(s)")
 
-    # slider in / out
+
+
+def slider_checks():
     guide = [("guide", solid_of(H.pin_guide()))]
     plate = doser(["Mounting plate", "Baseplate", "Servo pinion (+X)", "Servo MG996R (+X)"]) + clips()
     seated = doser(["Auger", "Auger cap", "Stepper (NEMA 11)", "Stepper pinion"])   # in place while the slider moves
@@ -132,7 +135,8 @@ def main():
     slider = solid_of(H.pin_slider())
     post = solid_of(H.pin_slider().intersect(cq.Workplane("XY").box(20, 20, H.BAR_Z - G.TUBE_R - 0.5 - H.BAR_Z1, centered=(True, True, False))
                                              .translate((H.KNOB_U, 0, H.BAR_Z1))))
-    print("[guide] against the doser:", hits(guide, plate, "guide"), "interference(s)")
+    print("[guide] against the doser:", hits(guide, plate, "guide"), "interference(s);",
+          f"underside {guide[0][1].BoundingBox().zmin:.2f} mm above the board, {_min_dist(guide[0][1], plate[0][1]):.2f} mm from the mounting plate")
     for x, tag in ((H.PIN_X_IN, "in"), (H.PIN_X_OUT, "out (latched)")):
         sl = [("slider", slider.moved(loc(S.T((x, H.PIN_Y, 0.0)))))]
         print(f"[slider {tag}] doser:", hits(sl, plate, "slider"), "| guide:", hits(sl, guide, "slider"), "interference(s)")
@@ -154,4 +158,6 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    if "--slider" not in sys.argv[1:]:      # --slider: only the slider, guide and grippers on the knob
+        main()
+    slider_checks()

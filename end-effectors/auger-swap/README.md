@@ -13,11 +13,12 @@ it back through the collar and presses it into the doser. The auger is held by
 | **Alternative A, custom fingers**: minimal fingers on the gripper's own carriages + tilt-lock slider | the same cradle, built into the finger | the arm, with the same slider | **high** |
 | **Alternative B**: stock gripper + the same sleeves | the same sleeves | the arm; the doser's tilt servos hold the plate | high (sleeves), medium (sequence) |
 
-The finger fixture, sleeves, custom fingers, tilt-lock slider and Strategy 1 tool are high fidelity (rounds 2 to 5, [PR #44](https://github.com/vertical-cloud-lab/robot-arms/pull/44)):
+The finger fixture, sleeves, custom fingers, tilt-lock slider and Strategy 1 tool are high fidelity (rounds 2 to 6, [PR #44](https://github.com/vertical-cloud-lab/robot-arms/pull/44)):
 real fasteners, fits and print orientations, and built against the real parts (AgileX's own gripper STEP, the doser's STEP files).
 Round 3 made the fixture low and lean and replaced the steel pin with a printed slider that latches itself out (see below).
 Round 4 gave the fixture thin side webs and 45° lead-ins, and moved the slider's post to the middle of its knob, with a relief notch in each cradle's jaw.
 Round 5 turned the sleeves' countersinks into flat counterbores for socket head screws, deep enough that the heads sit below the surface.
+Round 6 cut the slider guide's stem off at the bottom of its tunnel box, so the guide is 15.5 mm tall instead of 27.75, with its screw tabs on its new underside.
 Strategy 2 is unchanged from round 1, except that it now lowers its carriage at the fixture as Strategy 1 does.
 
 ## The PiPER gripper's finger interface
@@ -146,6 +147,7 @@ two of them lining up on the fixture. Every move at the slider, the doser, the f
 
 ![tilt-lock slider, pushed in](renders/view_pin.png)
 ![latch, pulled out (section)](renders/view_pin_latch.png)
+![round 6 guide: no stem](renders/view_guide_low.png)
 
 | Custom fingers on the knob | Sleeves on the knob |
 |---|---|
@@ -153,10 +155,10 @@ two of them lining up on the fixture. Every move at the slider, the doser, the f
 
 Two PETG prints and two wood screws. They replace round 2's Ø8 steel pin, its housing, the M6 ball plunger and the clamp-on handle with its M3 pinch screw.
 
-| | Round 2 (pin) | Now (slider, rounds 3 and 4) |
+| | Round 2 (pin) | Now (slider, rounds 3, 4 and 6) |
 |---|---|---|
-| Printed volume (solid) | housing 25.5 + handle 24.9 = 50.4 cm³ | guide 7.7 + slider 15.5 = **23.2 cm³** (round 3: 21.2) |
-| On the board | 36 × 48 mm flange | **380 mm²**: a 6 mm web, 31 mm long, with two screw tabs |
+| Printed volume (solid) | housing 25.5 + handle 24.9 = 50.4 cm³ | guide 4.6 + slider 15.5 = **20.1 cm³** (round 4: 23.2) |
+| On the board | 36 × 48 mm flange | the box (14.5 × 31 mm) and two screw tabs, 12.25 mm above the board (see Guide) |
 | Bought parts | Ø8 h6 × 96 shaft, M6 ball plunger, M3 × 16 + nut, 2 × M4 screws | **2 × M4 countersunk wood screws** |
 | Holds itself out | ball detent (both ends) | **compliant latch** (out only) |
 | Knob | Ø25 bar 75 mm up, on a post *under* it | Ø25 tube 50 mm up, on a post at its middle; notched jaws straddle the post (round 3: a cup 47 mm up, held from its end) |
@@ -176,8 +178,15 @@ Two PETG prints and two wood screws. They replace round 2's Ø8 steel pin, its h
     The cradles are 0.10 mm from the knob, the notches 1.50 mm from the post, and the jaws 32.9 mm above the board.
   - **Height.** The knob is now at 50 mm (round 3: 47). Centred on the slider, the custom-finger gripper's finger plate passes 0.9 mm to the side of the 44T gear;
     at 47 mm it would have been only 0.2 mm above the gear's top. At 50 mm it is 3.2 mm above it, and 9.8 mm over the rear clip's lips (z 59.7).
-- **Guide.** A tunnel 0.25 mm a side over the bar, with a 3 mm roof, 3 mm walls and a 6 mm I-web underneath. Two tabs at the −X end take
-  2 × M4 countersunk wood screws, at that end because the floor's push lifts it. It prints base-down; the tunnel roof is an 8.5 mm bridge.
+- **Guide (round 6: no stem).** A box with a tunnel 0.25 mm a side over the bar, a 3 mm roof, 3 mm walls and a 2 mm floor. It is 15.5 mm tall
+  (round 4: 27.75, with a 6 mm I-web stem and its flare under the box) and 4.6 cm³ (7.7). Two 4 mm tabs at the −X end come straight out of the
+  box's underside, at the same x and y as before, with a 2 mm fillet to the box's sides, and take 2 × M4 countersunk wood screws, at that end
+  because the floor's push lifts it. It prints base-down; the tunnel roof is an 8.5 mm bridge.
+  - **What it stands on.** The bar can't come down with it: the floor's top is 14 mm above the board in powder-doser's model, and the tip has to
+    lie 0.5 mm over it to stop the plate tipping. So the guide's underside is **12.25 mm above the board**, and the tabs need a surface at that
+    height: a 1/2 in (12.7 mm) plywood or MDF strip under them works, with the tip then 0.95 mm over the floor. If the doser's floor sits lower on
+    the real rig, the same print goes straight onto the board.
+  - **Checked:** `fit_check.py --slider` gives 0 interferences with the doser, 4.0 mm from the guide to the mounting plate, and the grippers on the knob as before.
 - **Latch (holds the slider out against vibration).**
   - **The spring.** A 20 × 8 × 2 mm cantilever is cut into the top of the bar by a 1.5 mm slot. Its root is toward the knob, and its free end carries a 1.3 mm bump.
   - **Pulled out, it locks.** The bump springs up into a window in the guide's roof. Its −X face is a 40° ramp. Its +X face is undercut 15°, against a matching wall,
@@ -192,7 +201,7 @@ Two PETG prints and two wood screws. They replace round 2's Ø8 steel pin, its h
   All three are along the print layers, where PETG is good for about 45 MPa. The roof carries the ≈46 N reaction at about 5 MPa.
 - **Printing:** the slider stands on one end of the knob (`cad/stl/pin_slider.stl` is already turned), so the bar, latch beam and post are in the layer plane
   and the knob prints as an upright tube. The bar is at the knob's mid-length, 16 mm off the bed, so it **needs supports** under it (tree supports from the plate are enough).
-  The hub inside the knob bridges its Ø19 bore. The guide prints base-down with no supports.
+  The hub inside the knob bridges its Ø19 bore. The guide prints base-down with no supports (`pin_guide.stl` is already on its underside).
 - In the Alt A STEP files the slider is pushed in, with its latch beam drawn bent 1.05 mm under the roof.
 
 ## Strategy 1, high fidelity: two-servo tool with a Pi 5 and two cameras

@@ -18,6 +18,9 @@
   a Ø25 knob the cradles grip like the auger tube and a compliant latch (a cantilever in the
   bar) that clicks into a window in the guide's roof and holds the slider out. The bar's post
   meets the knob at its middle; ``post_relief`` notches both cradle versions' jaws for it.
+  Round 6 cut the guide off at the bottom of its tunnel box (no stem): its underside and
+  screw tabs are at GUIDE_BASE_Z, 12.25 mm above the board, so the bar stays 0.5 mm over
+  the floor.
 
 Sleeves and fingers are built in the STEP frame of agilex.py, for the +Z ("upper")
 finger; agilex.lower_of() turns them into the other finger's. Fixture and pin are in the
@@ -451,8 +454,10 @@ BUMP_H, BUMP_RAMP, BUMP_HOOK, BUMP_TOP = 1.3, 40.0, 15.0, 0.65
 # guide
 GUIDE_X = (38.0, 69.0)
 GUIDE_CLEAR, GUIDE_WALL, GUIDE_ROOF = 0.25, 3.0, 3.0
-WEB_HALF, WEB_Z = 3.0, 8.0        # I-section below the tunnel
-GUIDE_TAB = (38.0, 47.0)          # screw tabs at the -X end (the end the pin's load lifts)
+GUIDE_FLOOR = 2.0                 # under the tunnel; the guide's underside (round 5) is GUIDE_BASE_Z
+GUIDE_BASE_Z = BAR_Z0 - GUIDE_CLEAR - GUIDE_FLOOR   # 12.25: no stem below the tunnel any more
+GUIDE_TAB = (38.0, 47.0)          # screw tabs at the -X end (the end the pin's load lifts), as before
+GUIDE_TAB_T = 4.0
 GUIDE_SCREW_DY = 11.0
 PET_E, PET_MU = 2000.0, 0.3       # PETG, printed along the beam (MPa), PETG on PETG
 
@@ -523,16 +528,19 @@ def pin_slider(deflect: float = 0.0) -> cq.Workplane:
 
 
 def pin_guide() -> cq.Workplane:
-    """PETG print, base-down: a tunnel the slider's bar runs in (0.25 mm a side), an I-section
-    web under it, a roof with the latch window, and two M4 countersunk wood screws in tabs
-    at the -X end. In W (built in place)."""
+    """PETG print, base-down: a box with a tunnel the slider's bar runs in (0.25 mm a side),
+    a 2 mm floor under it, a roof with the latch window, and two M4 countersunk wood screws
+    in tabs at the -X end. Round 5 cut off the 12 mm I-section stem that stood the box on the
+    board: the guide's underside is now the floor's underside (GUIDE_BASE_Z, 12.25 mm above
+    the board in the doser model), and the tabs come out of the box there, flush with it,
+    at the same x and y as before. In W (built in place)."""
     x0, x1 = GUIDE_X
     c, wl, rf = GUIDE_CLEAR, GUIDE_WALL, GUIDE_ROOF
     ti, tz0, tz1 = BAR_W / 2 + c, BAR_Z0 - c, BAR_Z1 + c
     bo = ti + wl
     top = tz1 + rf
-    sec = [(-WEB_HALF, 0.0), (WEB_HALF, 0.0), (WEB_HALF, WEB_Z), (bo, WEB_Z + bo - WEB_HALF), (bo, top),
-           (-bo, top), (-bo, WEB_Z + bo - WEB_HALF), (-WEB_HALF, WEB_Z)]
+    zb = GUIDE_BASE_Z
+    sec = [(-bo, zb), (bo, zb), (bo, top), (-bo, top)]
     g = cq.Workplane("YZ").polyline(sec).close().extrude(x1 - x0).translate((x0, PIN_Y, 0))
     g = g.cut(cq.Workplane("XY").box(x1 - x0 + 2, 2 * ti, tz1 - tz0, centered=(False, True, False)).translate((x0 - 1, PIN_Y, tz0)))
     # window for the bump (latched position): -X edge chamfered to the bump's ramp, +X wall
@@ -549,12 +557,22 @@ def pin_guide() -> cq.Workplane:
     g = g.cut(cq.Workplane("XZ").polyline([(x1 - 1.2 / tr, tz1 - 0.01), (x1 + 0.01, tz1 - 0.01), (x1 + 0.01, tz1 + 1.2)])
               .close().extrude(ti, both=True).translate((0, PIN_Y, 0)))
     # screw tabs
-    tab = cq.Workplane("XY").box(GUIDE_TAB[1] - GUIDE_TAB[0], 2 * (GUIDE_SCREW_DY + 5.0), 4.0, centered=(False, True, False)) \
-        .translate((GUIDE_TAB[0], PIN_Y, 0)).edges("|Z").fillet(3.0)
+    tt = GUIDE_TAB_T
+    tab = cq.Workplane("XY").box(GUIDE_TAB[1] - GUIDE_TAB[0], 2 * (GUIDE_SCREW_DY + 5.0), tt, centered=(False, True, False)) \
+        .translate((GUIDE_TAB[0], PIN_Y, zb)).edges("|Z").fillet(3.0)
     g = g.union(tab)
+    # 2 mm 45 deg fillets where the tabs meet the box's sides (+X of them only: the -X face is
+    # the guide's mouth and stays flat)
+    for sy in (-1, 1):
+        y = PIN_Y + sy * bo
+        gus = cq.Workplane("YZ").polyline([(y, zb + tt - 0.01), (y + sy * 2.0, zb + tt - 0.01), (y, zb + tt + 2.0)]).close() \
+            .extrude(GUIDE_TAB[1] - GUIDE_TAB[0] - 3.0).translate((GUIDE_TAB[0], 0, 0))
+        g = g.union(gus)
+    # the tabs stand 2 mm higher than the tunnel's floor: clear the tunnel again through them
+    g = g.cut(cq.Workplane("XY").box(x1 - x0 + 2, 2 * ti, tz1 - tz0, centered=(False, True, False)).translate((x0 - 1, PIN_Y, tz0)))
     xs = sum(GUIDE_TAB) / 2
     for sy in (-1, 1):
-        g = g.cut(cs_hole(5.0, 4.5, 9.0).rotate((0, 0, 0), (1, 0, 0), 180).translate((xs, PIN_Y + sy * GUIDE_SCREW_DY, 4.0)))
+        g = g.cut(cs_hole(tt + 1.0, 4.5, 9.0).rotate((0, 0, 0), (1, 0, 0), 180).translate((xs, PIN_Y + sy * GUIDE_SCREW_DY, zb + tt)))
     return g
 
 

@@ -195,6 +195,36 @@ def pin():
            OUT / "view_pin_latch.png", labels=["pulled out: the latch holds it (section)", "bump in the roof window"])
 
 
+def guide_low():
+    """Round 5: the guide cut at the bottom of its tunnel box (no stem), tabs out of its new
+    underside. Left: the guide alone; right: a section on the slider's centre plane with the
+    board drawn in, so the height under the new underside shows."""
+    plate = doser_part("Mounting plate")
+    guide, slider = H.pin_guide(), H.pin_slider()
+    red, dred = (0.85, 0.22, 0.20), (0.98, 0.45, 0.35)
+    c = np.array([53.0, H.PIN_Y, 20.0])
+    left = [(guide, red, 1.0)]
+    cut = cq.Workplane("XY").box(200, 60, 100, centered=(True, False, True)).translate((60, H.PIN_Y - 60, 30))
+    board = cq.Workplane("XY").box(110, 60, 6, centered=(False, True, False)).translate((-20, H.PIN_Y, -6))
+    keep = cq.Workplane("XY").box(80, 60, 30, centered=(False, False, False)).translate((22, H.PIN_Y, -1))   # the floor's +X edge only
+    right = [(plate.cut(cut.val()).intersect(keep.val()), (0.62, 0.64, 0.68), 1.0), (guide.cut(cut), red, 1.0),
+             (slider.translate((H.PIN_X_IN, H.PIN_Y, 0)).cut(cut), dred, 1.0), (board.cut(cut), (0.80, 0.68, 0.50), 1.0)]
+    render(left, [(tuple(c + (70, -85, 60)), tuple(c), (0, 0, 1))], OUT / "_gl_a.png", size=(560, 500),
+           labels=["guide: no stem, tabs at its underside"])
+    c2 = np.array([52.0, H.PIN_Y, 16.0])
+    render(right, [(tuple(c2 + (0, -125, 0)), tuple(c2), (0, 0, 1))], OUT / "_gl_b.png", size=(720, 500),
+           labels=[f"section: tip 0.5 mm over the floor, underside {H.GUIDE_BASE_Z:.2f} mm above the board"])
+    from PIL import Image
+    a, b = Image.open(OUT / "_gl_a.png"), Image.open(OUT / "_gl_b.png")
+    im = Image.new("RGB", (a.width + b.width, max(a.height, b.height)), "white")
+    im.paste(a, (0, 0))
+    im.paste(b, (a.width, 0))
+    im.save(OUT / "view_guide_low.png")
+    (OUT / "_gl_a.png").unlink()
+    (OUT / "_gl_b.png").unlink()
+    print("->", (OUT / "view_guide_low.png").relative_to(HERE))
+
+
 def knob():
     """Both cradle versions closed on the slider's knob (pushed in), looking along the knob:
     the relief notches in the jaws straddle the post."""
@@ -227,6 +257,6 @@ def knob():
 
 
 if __name__ == "__main__":
-    which = sys.argv[1:] or ["fixture", "sleeves", "counterbores", "custom_fingers", "pin", "knob"]
+    which = sys.argv[1:] or ["fixture", "sleeves", "counterbores", "custom_fingers", "pin", "guide_low", "knob"]
     for w in which:
         globals()[w]()
