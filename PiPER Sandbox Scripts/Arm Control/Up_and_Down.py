@@ -69,9 +69,11 @@ import time
 MDEG = 1000  # piper_sdk joint units are 0.001 degree
 PERIOD_S = 0.02  # stream targets at 50 Hz
 STALE_S = 0.5  # joint feedback older than this means the arm stopped talking
-# Joint limits from piper_sdk's JointCtrl docstring. The SDK doesn't enforce them by default, and
-# the arm rests just outside J2's and J3's (about -2 and +2), so targets are clamped here.
-LIMITS = [(-150, 150), (0, 180), (-170, 0), (-100, 100), (-70, 70), (-120, 120)]
+# Joint limits from piper_sdk's JointCtrl docstring, except J6: the arm's firmware reports
+# -180..180 for it, not the docstring's -120..120 (2026-11-12). The SDK doesn't enforce them
+# by default, and the arm rests just outside J2's and J3's (about -2 and +2), so targets are
+# clamped here.
+LIMITS = [(-150, 150), (0, 180), (-170, 0), (-100, 100), (-70, 70), (-180, 180)]
 MAX_WIDEN_DEG = 4.0  # never move J2's lower or J3's upper firmware limit further than this
 
 # piper_sdk's DH table (C_PiperForwardKinematics, dh_is_offset=1): modified DH, mm and degrees.
@@ -164,6 +166,18 @@ def wait_for_feedback(piper, timeout_s=3.0):
 
 def clamp(q_deg):
     return [min(max(v, lo), hi) for v, (lo, hi) in zip(q_deg, LIMITS)]
+
+
+def enable_joints(piper):
+    """EnablePiper for joints 1-6 only: True once all six report enabled, so call it in a loop.
+    EnablePiper sends EnableArm(7), "all motors". Every teleop start that used it set the
+    gripper closing and reopening until the custom finger sleeves stalled it and it switched
+    itself off, while powering the arm on alone didn't (2026-11-12). The gripper is enabled
+    only by an explicit GripperCtrl."""
+    on = piper.GetArmEnableStatus()
+    for motor in range(1, 7):
+        piper.EnableArm(motor)
+    return all(on)
 
 
 def send(piper, target_deg, speed):
@@ -557,7 +571,7 @@ def main():
     t0 = time.time()
     while True:
         send(piper, q0, args.speed)
-        if piper.EnablePiper():
+        if enable_joints(piper):
             break
         if time.time() - t0 > 5:
             while piper.DisablePiper() and time.time() - t0 < 8:

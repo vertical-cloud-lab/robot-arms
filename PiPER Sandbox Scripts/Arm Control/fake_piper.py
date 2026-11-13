@@ -25,6 +25,7 @@ class FakePiper:
         self.rest = list(self.q)
         self.cmd = list(self.q)
         self.enabled = False
+        self.joints_on = set()
         self.speed = 10
         self.mode = None
         self.fw = {2: [0.0, 180.0], 3: [-170.0, 0.0]}  # firmware limits that can be widened
@@ -146,17 +147,23 @@ class FakePiper:
             self.frames_sent += 1
 
     def EnablePiper(self):
+        raise AssertionError("EnablePiper enables the gripper too: use Up_and_Down.enable_joints")
+
+    def EnableArm(self, motor_num=7, enable_flag=0x02):
+        if motor_num not in range(1, 7):
+            raise AssertionError(f"EnableArm({motor_num}) would enable the gripper too")
         with self.lock:
-            was = self.enabled
-            self.enabled = True
-            self.cmd = list(self.cmd)
-            return was
+            self.joints_on.add(motor_num)
+            if len(self.joints_on) == 6 and not self.enabled:
+                self.enabled = True
+                self.cmd = list(self.cmd)
 
     def DisablePiper(self):
         with self.lock:
             was = self.enabled
             if self.enabled:
                 self.enabled = False
+                self.joints_on = set()
                 if self.q[1] < 1.0 and self.q[2] > -1.0:  # near the rest: it settles onto it
                     drop = max(abs(self.q[1] - self.rest[1]), abs(self.q[2] - self.rest[2]))
                     self.q[1], self.q[2] = self.rest[1], self.rest[2]

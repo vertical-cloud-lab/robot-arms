@@ -43,11 +43,13 @@ Test without the arm or the leader:  --fake-leader --local --dry-run --auto 10
 import argparse
 import base64
 import collections
+import contextlib
 import io
 import json
 import math
 import os
 import queue
+import re
 import shlex
 import subprocess
 import sys
@@ -88,7 +90,7 @@ class Leader:
     def __init__(self, port, baud=1_000_000):
         import serial  # pyserial
 
-        self.ser = serial.Serial(port, baud, timeout=0.01)
+        self.ser = serial.Serial(port, baud, timeout=0.05)
         self.ser.reset_input_buffer()
         self.use_sync, self.sync_ok, self.sync_miss = True, 0, 0
 
@@ -161,7 +163,7 @@ class Mapping:
             self.align = json.load(open(ALIGN))["align_deg"]
             print(f"alignment from {ALIGN}: {[round(v, 1) for v in self.align]}")
         self.grip_range = args.gripper_range
-        self.grip_max = args.grip_max_mm
+        self.grip_min, self.grip_max = args.grip_min_mm, args.grip_max_mm
         self.grip_invert = args.gripper_invert
 
     def degrees(self, raw):
@@ -185,7 +187,8 @@ class Mapping:
         else:
             return None  # unknown range: leave the PiPER's gripper alone
         pct = min(max(pct, 0.0), 1.0)
-        return (1 - pct if self.grip_invert else pct) * self.grip_max
+        pct = 1 - pct if self.grip_invert else pct
+        return self.grip_min + pct * (self.grip_max - self.grip_min)
 
     def piper(self, raw):
         d = self.degrees(raw)
@@ -205,13 +208,13 @@ class Mapping:
 
 
 def default_calib():
+    """Newest leader calibration; older LeRobot saves under so101_leader, newer under so_leader."""
     base = os.path.join(os.path.expanduser("~"), ".cache", "huggingface", "lerobot",
-                        "calibration", "teleoperators", "so101_leader")
-    if os.path.isdir(base):
-        files = sorted((os.path.join(base, f) for f in os.listdir(base) if f.endswith(".json")),
-                       key=os.path.getmtime)
-        return files[-1] if files else None
-    return None
+                        "calibration", "teleoperators")
+    files = [os.path.join(base, d, f) for d in ("so101_leader", "so_leader")
+             if os.path.isdir(os.path.join(base, d))
+             for f in os.listdir(os.path.join(base, d)) if f.endswith(".json")]
+    return max(files, key=os.path.getmtime) if files else None
 
 
 class FakeLeader:
@@ -246,7 +249,8 @@ def bundle():
 
 
 def start_follower(args):
-    fargs = list(args.follower_args or [])
+    fargs = list(args.follower_args or []) + (
+        ["--gripper", "--grip-max-mm", f"{args.grip_max_mm:g}"] if args.gripper else [])
     if args.dry_run:
         fargs = ["--dry-run", *fargs]
     if args.local:
@@ -328,17 +332,61 @@ class Session:
 
 # ------------------------------------------------------------------ video
 
+def full_view_mode(listing, idx):
+    """From `rpicam-hello --list-cameras`: camera idx's smallest sensor mode that reads the
+    whole sensor, as (rpicam --mode string, width, height), or None."""
+    cam = full = bits = packed = best = None
+    for line in listing.splitlines():
+        m = re.match(r"\s*(\d+)\s*:\s*\S+\s*\[(\d+)x(\d+)", line)
+        if m:
+            cam, full = int(m.group(1)), (int(m.group(2)), int(m.group(3)))
+            continue
+        f = re.search(r"'[A-Z]+?(\d+)(_CSI2P)?'", line)
+        if f:
+            bits, packed = f.group(1), "P" if f.group(2) else "U"
+        for w, h, x, y, cw, ch in re.findall(
+                r"(\d+)x(\d+) \[[^\]]*?\((\d+), (\d+)\)/(\d+)x(\d+) crop\]", line):
+            w, h = int(w), int(h)
+            if (cam == idx and (int(x), int(y)) == (0, 0) and (int(cw), int(ch)) == full
+                    and (best is None or w * h < best[1] * best[2])):
+                best = (f"{w}:{h}:{bits}:{packed}", w, h)
+    return best
+
+
 def camera_cmd(args):
-    """ssh command that streams the camera Pi's HQ camera (imx477) as MJPEG on stdout."""
+    """ssh command that streams the camera Pi's HQ camera (imx477, else camera 0) as MJPEG on
+    stdout, showing the whole sensor. Left to itself, rpicam picks the sensor mode nearest the
+    output size, and for 960x540 on the imx708 that is 1536x864, which reads only the middle
+    2/3 of the sensor: the arm left the frame when it rose (2026-11-12)."""
     w, h = (int(v) for v in args.cam_size.lower().split("x"))
+    user = args.cam_user or args.user
     if args.cam_index.isdigit():
         pick = f"IDX={int(args.cam_index)}"
     else:  # the HQ camera's index, from the camera list; else camera 0
         pick = ("IDX=$(rpicam-hello --list-cameras 2>/dev/null | awk '/imx477/ {print $1; exit}'); "
                 "IDX=${IDX:-0}")
+    mode = "" if args.cam_mode == "auto" else args.cam_mode
+    if mode == "full":
+        mode = ""
+        try:
+            out = subprocess.run(ssh(args.cam_host, user, args.ssh_opt,
+                                     f"{pick}; echo IDX=$IDX; rpicam-hello --list-cameras 2>&1"),
+                                 capture_output=True, text=True, timeout=30).stdout
+            idx = re.search(r"^IDX=(\d+)", out, re.M)
+            found = idx and full_view_mode(out, int(idx.group(1)))
+        except (OSError, subprocess.SubprocessError):
+            found = None
+        if found:
+            mode, mw, mh = found
+            h = round(w * mh / mw / 2) * 2  # the mode's own aspect ratio: nothing cropped
+            print(f"camera: sensor mode {mode} (the whole sensor), video {w}x{h}", flush=True)
+        else:
+            print("camera: couldn't find a whole-sensor mode, so rpicam picks (it may crop)",
+                  flush=True)
     remote = (f"{pick}; exec rpicam-vid -t 0 -n --camera $IDX --codec mjpeg --width {w} "
-              f"--height {h} --framerate {args.cam_fps:g} -q {int(args.cam_quality)} --flush -o -")
-    return ssh(args.cam_host, args.cam_user or args.user, args.ssh_opt, remote)
+              f"--height {h} " + (f"--mode {mode} " if mode else "")
+              + f"--framerate {args.cam_fps:g} -q {int(args.cam_quality)} --flush -o -")
+    return ssh(args.cam_host, user, args.ssh_opt, remote)
 
 
 class Camera:
@@ -660,18 +708,50 @@ def fmt_row(label, vals):
     return f"{label:8s}" + "".join(f"{'--' if v is None else f'{v:7.1f}':>8s}" for v in vals)
 
 
+def at_limit(q5, hello):
+    """Per joint, "MAX" or "MIN" where the leader asks for more than the follower's envelope
+    allows: the arm stops there, which otherwise looks like a freeze."""
+    env = (hello or {}).get("envelope")
+    if not q5 or not env:
+        return [""] * 5
+    return ["MAX" if v > env[i][1] else "MIN" if v < env[i][0] else ""
+            for v, i in zip(q5, (0, 1, 2, 4, 5))]
+
+
+KEYS = [f"SPACE {'hold' if WINDOWS else 'toggle'}: move   A: align (SPACE released)   "
+        "Q/Esc: back to READY, park, quit"]
+RULE = "-" * 80
+
+
+def screen_height():
+    """Usable screen height in pixels (Windows), or None."""
+    if WINDOWS:
+        import ctypes
+
+        with contextlib.suppress(Exception):
+            return ctypes.windll.user32.GetSystemMetrics(17)  # SM_CYFULLSCREEN: minus taskbar
+    return None
+
+
 def show(cv2, frame, status):
+    """A fixed-size window: the text stays its size, and the video shrinks, keeping its aspect
+    ratio, until the whole window fits on the screen."""
     import numpy as np
 
+    panel = np.zeros((20 * len(status) + 10, 960, 3), np.uint8)
+    for i, text in enumerate(status):
+        cv2.putText(panel, str(text)[:120], (8, 20 * (i + 1)), cv2.FONT_HERSHEY_SIMPLEX, 0.45,
+                    (255, 255, 255), 1, cv2.LINE_AA)
+    img = panel
     if frame is not None:
         h, w = frame.shape[:2]
-        if w != 960:
-            frame = cv2.resize(frame, (960, int(960 * h / w)))
-    panel = np.zeros((22 * len(status) + 12, 960, 3), np.uint8)
-    for i, text in enumerate(status):
-        cv2.putText(panel, str(text)[:115], (8, 22 * (i + 1)), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
-                    (255, 255, 255), 1, cv2.LINE_AA)
-    img = panel if frame is None else np.vstack([frame, panel])
+        room = (screen_height() or 1000) - 40 - panel.shape[0]  # 40: the title bar
+        scale = min(960 / w, max(room, 120) / h)
+        fw, fh = int(w * scale), int(h * scale)
+        top = np.zeros((fh, 960, 3), np.uint8)
+        x = (960 - fw) // 2
+        top[:, x:x + fw] = cv2.resize(frame, (fw, fh), interpolation=cv2.INTER_AREA)
+        img = np.vstack([top, panel])
     cv2.imshow("SO-101 -> PiPER (hold SPACE to move, Q to park and quit)", img)
 
 
@@ -685,13 +765,20 @@ def main():
     ap.add_argument("--user", default=cfg.get("user"), help="login on the arm Pi")
     ap.add_argument("--ssh-opt", action="append", default=[], help="extra ssh option, repeatable")
     ap.add_argument("--pi-python", default="~/piper-venv/bin/python")
-    ap.add_argument("--calib", help="LeRobot so101_leader calibration JSON (default: newest in "
+    ap.add_argument("--calib", help="LeRobot so101_leader/so_leader calibration JSON (default: newest in "
                                     "~/.cache/huggingface/lerobot/calibration/...)")
     ap.add_argument("--no-align", action="store_true", help="ignore align.json")
     ap.add_argument("--gripper-range", type=lambda s: [float(v) for v in s.split(",")],
                     help="leader gripper counts CLOSED,OPEN (default: from the calibration)")
     ap.add_argument("--gripper-invert", action="store_true")
-    ap.add_argument("--grip-max-mm", type=float, default=70.0)
+    ap.add_argument("--gripper", action=argparse.BooleanOptionalAction, default=True,
+                    help="the PiPER's gripper follows the leader's (--no-gripper: never moved)")
+    # The lab PiPER's gripper reads 45.6 mm with its finger sleeves touching and 108.6 mm
+    # fully open (moved by hand, 2026-11-12), not the stock 0-70 mm.
+    ap.add_argument("--grip-min-mm", type=float, default=46.0,
+                    help="PiPER gripper reading for the leader closed (sleeves touching: 45.6)")
+    ap.add_argument("--grip-max-mm", type=float, default=108.0,
+                    help="PiPER gripper reading for the leader open, and on Q (fully open: 108.6)")
     ap.add_argument("--hz", type=float, default=200.0,
                     help="leader reads and commands per second (the follower runs at 200 too)")
     ap.add_argument("--cam-host", default=cfg.get("cam_host"),
@@ -700,7 +787,11 @@ def main():
                     help="login on the camera Pi (default: --user)")
     ap.add_argument("--cam-index", default=str(cfg.get("cam_index", "hq")),
                     help="rpicam camera number, or 'hq' for the HQ camera (imx477), else 0")
-    ap.add_argument("--cam-size", default=cfg.get("cam_size", "960x540"))
+    ap.add_argument("--cam-size", default=cfg.get("cam_size", "960x540"),
+                    help="video width x height; the height follows the sensor mode's shape")
+    ap.add_argument("--cam-mode", default=cfg.get("cam_mode", "full"),
+                    help='sensor mode: "full" (smallest that sees the whole sensor), "auto" '
+                         '(rpicam picks; it may crop) or an rpicam mode, W:H:BITS:P')
     ap.add_argument("--cam-fps", type=float, default=cfg.get("cam_fps", 30.0))
     ap.add_argument("--cam-quality", type=int, default=cfg.get("cam_quality", 60),
                     help="MJPEG quality 1-100: lower is less data on a slow link")
@@ -795,13 +886,15 @@ def main():
                   + (f"   video {'--' if age is None else f'{age * 1000:.0f} ms old'}"
                      if cam else ""),
                   f"{st.get('why') or ''}",
+                  *KEYS,
                   fmt_row("joint", []) + "".join(f"{j:>8s}" for j in PIPER),
                   fmt_row("leader", q5 or [None] * 5),
                   fmt_row("arm", arm5),
                   fmt_row("off by", diff),
+                  f"{'limit':8s}" + "".join(f"{v:>8s}" for v in at_limit(q5, sess.hello)),
                   f"gripper leader {'--' if grip is None else f'{grip:.0f}'} mm, "
                   f"arm {st.get('grip', '--')} mm   lowest point {st.get('z', '--')} mm",
-                  (cam.err if cam and cam.err else "") or msg or ctl.msg, *lines]
+                  (cam.err if cam and cam.err else "") or msg or ctl.msg, RULE, *lines]
         key = -1
         if cv2 is not None:
             show(cv2, frame, status)
@@ -819,7 +912,7 @@ def main():
             ctl.toggled = not ctl.toggled
         if key in (ord("q"), 27):
             sess.send("Q")
-            msg = "Q sent: the arm parks once it's near READY"
+            msg = "Q sent: the arm goes back to READY by itself, then parks"
         if key == ord("a") and not args.fake_leader and raw and sess.state:
             if st.get("ph") == "hold" and not dm:
                 msg = mapping.set_align(raw, arm5)

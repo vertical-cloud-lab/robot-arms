@@ -67,6 +67,7 @@ def load_module():
     m.LOCK = os.path.join(SIM, "arm_power.lock")
     m.can_state = lambda ch: (arm()["can"], "ERROR-ACTIVE", 1000000) if arm()["can"] != "missing" \
         else ("missing", None, None)
+    m.set_can = sim_set_can
     m.probe = sim_probe
     m.say = lambda *p: SAID.append(" ".join(str(x) for x in p))
     return m
@@ -80,9 +81,21 @@ def arm():
         return json.load(f)
 
 
+def sim_set_can(channel, up):
+    """The sudo'd `ip link set`: fails like a missing sudoers rule if the arm says sudo_fails."""
+    a = arm()
+    if a.get("sudo_fails"):
+        return "sudo: a password is required"
+    a["can"] = "up" if up else "down"
+    json.dump(a, open(ARM_FILE, "w"))
+    return None
+
+
 def sim_probe(channel, window_s=1.5):
     time.sleep(0.02)
     a = arm()
+    if a["can"] != "up":
+        a = dict(a, power="never")  # a down link hears nothing
     pin = json.load(open(PIN_FILE)) if os.path.exists(PIN_FILE) else {"level": "--", "since": 0}
     powered = {"relay": pin["level"] == "hi", "always": True, "never": False}[a["power"]]
     talking = powered and (a["power"] == "always" or time.time() - pin["since"] >= a["boot_s"])
@@ -221,9 +234,41 @@ def main():
             got = "refused" if "running" in str(e) else str(e)
     case("off refused while a run holds the lock", got, "refused", relay(m), "on")
 
-    # 16. the event log and the run log were written.
+    # 16. can0 goes up and down with the relay.
+    reset(can="down")
+    case("on brings can0 up first", m.cmd_on(args(), home), m.OK, relay(m), "on",
+         arm()["can"] == "up")
+    reset("hi")
+    case("off when parked takes can0 down", m.cmd_off(args(), home), m.OK, relay(m), "off",
+         arm()["can"] == "down")
+    reset(power="never")
+    case("on, arm silent -> can0 back down", m.cmd_on(args(), home), m.BROKEN, relay(m), "off",
+         arm()["can"] == "down")
+    reset()
+    case("off with the relay already off takes can0 down", m.cmd_off(args(), home), m.OK,
+         relay(m), "off", arm()["can"] == "down")
+    reset("hi", can="down")
+    case("off with the relay on brings can0 up to check", m.cmd_off(args(), home), m.OK,
+         relay(m), "off", arm()["can"] == "down")
+    reset("hi", can="down", enabled=[True] * 6)
+    case("off refused (not parked) leaves can0 up", m.cmd_off(args(), home), m.REFUSED,
+         relay(m), "on", arm()["can"] == "up")
+    reset(can="down")
+    rc = m.cmd_run(args(prog=["--", prog, "0"]), home)
+    case("run: can0 up, then down after", rc, m.OK, relay(m), "off",
+         arm()["can"] == "down" and arm()["relay_during_prog"] == "hi")
+    reset(can="down")
+    rc = m.cmd_run(args(prog=["--", prog, "1"]), home)
+    case("run: exit 1 -> can0 stays up with the relay", rc, 1, relay(m), "on",
+         arm()["can"] == "up")
+    reset(can="down", sudo_fails=True)
+    rc = m.cmd_run(args(prog=["--", prog, "0"]), home)
+    case("run refused when sudo can't bring can0 up", rc, m.REFUSED, relay(m), "off",
+         "relay_during_prog" not in arm())
+
+    # 17. the event log and the run log were written.
     logs = os.listdir(m.RUN_LOGS)
-    case("run logs written", len(logs) >= 3, True, relay(m), "on",
+    case("run logs written", len(logs) >= 3, True, relay(m), "off",
          os.path.getsize(m.EVENT_LOG) > 0)
 
     print(f"\n{sum(results)}/{len(results)} passed")
