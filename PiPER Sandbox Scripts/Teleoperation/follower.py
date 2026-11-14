@@ -12,11 +12,12 @@ also runs as is: it finds the shared files in ../Arm Control/.
 
 1. Start. The arm must be resting at home, motors off (nobody else driving it). Like
    Up_and_Down.py, and with its code: widen J2/J3's firmware limits to just past the rest,
-   enable, level the J5-J6 link, raise J2/J3 by --lift-deg and roll J6 to --park-j6-deg. That
-   is the READY pose.
+   enable, level the J5-J6 link, raise J2/J3 by --lift-deg, and roll J6 to --park-j6-deg and
+   J4 to --ready-j4-deg (centred). That is the READY pose.
 2. Follow. Nothing moves until the operator holds the deadman with the leader's mapped pose
    within --engage-deg of the arm's on every joint. Then:
-   - targets are clamped to --envelope; J4 (no SO-101 joint) stays where it started;
+   - targets are clamped to --envelope; J4 (no SO-101 joint) stays at READY's, unless
+     the PC jogs it (keys 1 and 2) at --j4-deg-s, within --j4-range;
    - a speed and acceleration limiter (--max-deg-s, --max-deg-s2) turns them into setpoints,
      streamed at --hz (200, the rate AgileX's own examples use) in the capped mode
      Up_and_Down.py uses, MotionCtrl_2(1, 1, --speed, 0);
@@ -92,7 +93,8 @@ class Link:
     def __init__(self, stream):
         self.lock = threading.Lock()
         self.fresh = threading.Event()
-        self.target = None  # (t_rx, seq, t_pc, deadman, [j1 j2 j3 j5 j6], grip or None)
+        # (t_rx, seq, t_pc, deadman, [j1 j2 j3 j5 j6], grip or None, J4 jog -1/0/1)
+        self.target = None
         self.last_rx = None
         self.quit = None
         self.eof = False
@@ -108,11 +110,12 @@ class Link:
                 now = time.monotonic()
                 with self.lock:
                     self.last_rx = now
-                if line[0] == "T" and len(line) == 10:
+                if line[0] == "T" and len(line) in (10, 11):
                     try:
                         seq, t_pc = int(line[1]), float(line[2])
                         q = [float(v) for v in line[4:9]]
                         grip = float(line[9])
+                        jog = max(-1, min(1, int(line[10]))) if len(line) == 11 else 0
                         if not all(math.isfinite(v) for v in q):
                             raise ValueError
                     except ValueError:
@@ -121,7 +124,7 @@ class Link:
                     with self.lock:
                         if self.target is None or seq > self.target[1]:
                             self.target = (now, seq, t_pc, line[3] == "1", q,
-                                           grip if math.isfinite(grip) else None)
+                                           grip if math.isfinite(grip) else None, jog)
                     self.fresh.set()
                 elif line[0] == "P":
                     emit("P", line[1] if len(line) > 1 else "")
@@ -169,7 +172,6 @@ class Follower:
         env = parse_envelope(args.envelope)
         self.env_named = env
         self.grip0 = None
-        self.gripper_used = False
         self.gripper_on = False  # switched on and staying on: only then does it follow
         self.enabled_once = False
 
@@ -224,16 +226,18 @@ class Follower:
             raise SystemExit("refused, nothing sent:\n  " + "\n  ".join(problems))
         self.q0 = q0
         self.rest_j5 = q0[4]
-        self.j4 = q0[3]
+        self.j4 = a.ready_j4_deg  # held there while following, until keys 1 and 2 move it
         self.start_pose = self.lv(q0)
-        self.ready = self.lv([q0[0], a.lift_deg, -a.lift_deg, q0[3], q0[4], a.park_j6_deg])
+        self.ready = self.lv([q0[0], a.lift_deg, -a.lift_deg, self.j4, q0[4], a.park_j6_deg])
         up0 = self.lv([q0[0], a.lift_deg, -a.lift_deg, *q0[3:]])
-        self.home = self.lv([q0[0], 0.0, 0.0, q0[3], q0[4], a.park_j6_deg])
+        self.home = self.lv([q0[0], 0.0, 0.0, a.ready_j4_deg, q0[4], a.park_j6_deg])
         self.land = [q0[0], min(q0[1] + a.land_above_deg, 0.0),
                      max(q0[2] - a.land_above_deg, 0.0)]
         widen = (min(q0[1] - 0.5, 0.0), max(q0[2] + 0.5, 0.0))
+        lo4, _, hi4 = a.j4_range.partition(":")  # widened to take in READY's, so no jump
+        self.j4_range = (min(float(lo4), self.j4), max(float(hi4), self.j4))
         self.envelope = [self.env_named["J1"], self.env_named["J2"], self.env_named["J3"],
-                         (self.j4, self.j4), self.env_named["J5"], self.env_named["J6"]]
+                         self.j4_range, self.env_named["J5"], self.env_named["J6"]]
         for i in DRIVEN:
             lo, hi = self.envelope[i]
             if not lo <= self.ready[i] <= hi:
@@ -279,7 +283,7 @@ class Follower:
                 raise
         self.hang = UD.hanging_current(piper, ua)
         self.move(up0, "up", self.hang)
-        if abs(q0[5] - a.park_j6_deg) > ua.tol_deg:
+        if max(abs(q0[5] - a.park_j6_deg), abs(q0[3] - self.j4)) > ua.tol_deg:
             self.move(self.ready, "roll the gripper to READY", self.hang)
         if a.ready_grip_mm is not None:
             self.open_gripper("open the gripper for READY")
@@ -342,7 +346,7 @@ class Follower:
     def limit(self, sp, v, goal, dt):
         a = self.a
         sp, v = list(sp), list(v)
-        for i in DRIVEN:
+        for i in range(6):  # J4 too: the jog moves its goal
             err = goal[i] - sp[i]
             v_des = math.copysign(min(a.max_deg_s, math.sqrt(2 * a.max_deg_s2 * abs(err))), err)
             vi = v[i] + max(-a.max_deg_s2 * dt, min(a.max_deg_s2 * dt, v_des - v[i]))
@@ -416,6 +420,10 @@ class Follower:
                     why_hold = f"leader is {off:.0f} deg from the arm; line it up"
             floor = False
             if engaged:
+                if target[6]:  # J4 jog: its goal moves, slowly, while the key is held
+                    lo, hi = self.j4_range
+                    self.j4 = min(max(self.j4 + target[6] * a.j4_deg_s * dt, lo), hi)
+                    goal[3] = self.j4
                 new_sp, new_v = self.limit(sp, v, goal, dt)
                 z_new = self.low_z(new_sp)
                 if z_new < a.floor_mm and z_new < self.low_z(sp) - 1e-6:
@@ -439,7 +447,6 @@ class Follower:
             if engaged and self.gripper_on and target[5] is not None:
                 g = min(max(target[5], 0.0), a.grip_max_mm)
                 grip_sp += max(-a.grip_mm_s * dt, min(a.grip_mm_s * dt, g - grip_sp))
-                self.gripper_used = True
                 piper.GripperCtrl(round(grip_sp * 1000), round(a.grip_effort_nm * 1000), 0x01, 0)
             if now - last_state >= 1.0 / a.state_hz:
                 last_state = now
@@ -480,9 +487,6 @@ class Follower:
         say(f"finishing ({why}): back to READY, then park")
         self.send(UD.hold_here(piper, self.ua), self.ua.speed)
         q = UD.joints_deg(piper)
-        if self.gripper_used:  # open it, still in the air: left closed, it parks squeezed shut
-            wide = a.grip_max_mm if a.ready_grip_mm is None else a.ready_grip_mm
-            piper.GripperCtrl(round(wide * 1000), round(a.grip_effort_nm * 1000), 0x01, 0)
         if max(abs(x - y) for x, y in zip(q, self.ready)) > self.ua.tol_deg:
             z0 = self.low_z(q)
             for k in range(1, 41):
@@ -543,7 +547,13 @@ def main():
     # J6 -54.9..188 (its cable stops it at -55; the firmware allows -180..180).
     ap.add_argument("--envelope", default="J1=-150:150,J2=0:180,J3=-170:0,J5=-70:70,J6=-53.9:179",
                     help="joint ranges while following (deg)")
-    ap.add_argument("--floor-mm", type=float, default=40.0)
+    ap.add_argument("--j4-range", default="-90:90",
+                    help="where keys 1 and 2 may jog J4 (deg; the SDK documents -100..100)")
+    ap.add_argument("--j4-deg-s", type=float, default=10.0, help="J4 jog speed")
+    ap.add_argument("--ready-j4-deg", type=float, default=0.0,
+                    help="J4 at READY, while following and parked: centred (it read +0.4 centred by "
+                         "eye, 2026-11-13)")
+    ap.add_argument("--floor-mm", type=float, default=5.0)
     ap.add_argument("--tool-mm", type=float, default=140.0, help="flange to fingertips")
     ap.add_argument("--grip-max-mm", type=float, default=108.0,
                     help="widest gripper command; the lab gripper reads 108.6 mm fully open")
@@ -553,7 +563,7 @@ def main():
                     help="switch the gripper on at READY and let it follow the leader's "
                          "(teleop.py passes this unless --no-gripper); without it, never commanded")
     ap.add_argument("--ready-grip-mm", type=float,
-                    help="open the gripper to this at READY and on the way back (default: "
+                    help="open the gripper to this at READY (default: "
                          "leave it alone)")
     ap.add_argument("--lift-deg", type=float, default=20.0, help="READY: J2 up, J3 open by this")
     ap.add_argument("--park-j6-deg", type=float, default=-52.0)

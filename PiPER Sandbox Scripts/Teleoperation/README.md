@@ -64,24 +64,69 @@ arm.
    `rpicam-vid` picked a mode that reads only the middle of it, and the arm left the frame as
    it rose. `--cam-mode auto` gives that choice back to `rpicam-vid`.
 3. **Hold SPACE to move**; let go to stop. On Windows the key is read directly, so it works
-   whichever window has focus; elsewhere SPACE toggles.
+   whichever window has focus; elsewhere SPACE toggles. **Ctrl+SPACE** (Windows) keeps it
+   moving with your hands free, through the leader leaving the arm's reach and coming back,
+   until SPACE is pressed again, which stops it at once. A snag still stops the arm: press
+   SPACE, then engage again. While it's moving, **hold 1 or 2** (Windows) to turn J4, which
+   the leader has no joint for, one way or the other at 10°/s, within ±90° (`--j4-deg-s`,
+   `--j4-range`). Q takes J4 back to 0° (centred), and it parks there.
 4. **Q** (or Esc), from any pose: the arm goes back to READY by itself,
    parks, and then the relay switches it off. The leader doesn't have to be near READY.
-5. **A** (while holding, SPACE released): with the leader in the arm's pose, take the
-   difference as the leader's offsets. They are saved to `align.json`, which git ignores.
-6. **The gripper follows the leader's** (`--no-gripper` leaves it alone). It is switched on
+5. **The gripper follows the leader's** (`--no-gripper` leaves it alone). It is switched on
    at READY, holding where it is, and the log says whether it stayed on; if it didn't, the
    session goes on without it. The start enables joints 1–6 one by one, not with
    `EnablePiper()` ("all motors"): every start that used it set the gripper closing and
    reopening to find its zero, the custom finger sleeves stalled it, and it switched itself
    off (2026-11-12). Powering on alone, and enabling only joints 1–6, left it still.
-   `--ready-grip-mm` (a follower option, after `--`) opens it to a width at READY. Q opens it
-   wide before parking. This gripper reads 45.6 mm with the sleeves touching and 108.6 mm
+   `--ready-grip-mm` (a follower option, after `--`) opens it to a width at READY. Q leaves it
+   where the leader had it. This gripper reads 45.6 mm with the sleeves touching and 108.6 mm
    fully open (moved by hand), not the stock 0–70 mm, so the leader's gripper maps onto
    `--grip-min-mm 46` to `--grip-max-mm 108`.
 
 When the session ends, it prints its latency: the ping round trip, the newest command's age at
 the Pi, the leader's read time and the video's frame timing.
+
+## Recording a session (for YouTube)
+
+```bash
+python teleop.py --record      # into recordings/<date_time>/ here; --record D:\videos for elsewhere
+```
+
+- **While you drive, it only saves bytes.** Every JPEG from the camera Pi is written as it
+  arrives, including the frames the window skipped, along with the window's text and when each
+  arrived. Nothing is decoded or encoded for the recording, nothing more crosses the network,
+  and the Pis do nothing new. A thread of its own does the writing, behind a queue that drops
+  rather than waits, so a slow disk can't hold up the window, the video or the commands.
+- **Once the arm has parked,** it makes two videos in that folder:
+  - `camera.mp4`, the camera alone;
+  - `window.mp4`, the video with the window's text under it, as you saw it.
+
+  Both are 1920 wide (YouTube streams a wider video at a higher bitrate) and run at the
+  camera's frame rate. With ffmpeg, making them takes 1.5–2 times the recording's length on a
+  4-core laptop. Ctrl-C skips this step, and `python teleop.py --render recordings/<date_time>`
+  makes them later. git ignores `recordings/`.
+- **H.264 needs ffmpeg on your computer,** not the Pis: `python -m pip install imageio-ffmpeg`
+  (it brings its own copy), or ffmpeg on PATH. `teleop.py` finds either by itself, and says
+  "H.264 by ffmpeg" as it starts the videos. Without it, OpenCV writes MPEG-4 Part 2, which
+  YouTube also takes.
+- **The session summary** adds the recording's frames, size, drops and disk-write times to the
+  latency lines. The recording takes as much disk as the stream brings in.
+- **Measured on 2026-11-13,** on a 4-core Windows laptop with the simulated arm and a stand-in
+  960x540, 30 fps camera, switching the recording on and off in 5 s blocks within each
+  session: the commands went out a median 5.02 ms apart either way, and long gaps were no more
+  common with it on (39 over 10 ms with it on, 44 with it off, of about 23,000 each).
+- **Keep the stream as it is.** A bigger `--cam-size` or `--cam-quality` would make a sharper
+  recording, but mpzy's camera shares that Pi's Wi-Fi with the commands. Don't record into a
+  folder that OneDrive, Google Drive or Dropbox uploads as it changes, either: the upload
+  competes with the commands on your network.
+- **A screen recorder** (OBS, or Xbox Game Bar's Win+Alt+R) works too, but it encodes while
+  you drive. Use the GPU's encoder (Quick Sync, NVENC or AMF) rather than x264, and compare the
+  session summary's latency with and without it.
+- **Upload from your computer,** where the videos are, to the BYU Vertical Cloud Lab channel
+  with [`youtube/`](../../youtube/README.md). It needs the upload token in
+  `YOUTUBE_UPLOAD_TOKEN_PICKLE_B64` (see that README). Uploads are private until sgbaird
+  publishes them. The camera sees the lab, so don't upload
+  anyone without their OK.
 
 ## Latency
 
@@ -135,17 +180,19 @@ What you can do:
 
 **While following**
 - Nothing moves until SPACE is held **and** the leader is within 10° of the arm on every joint.
-- Targets are clamped to `--envelope`:
-  - J1 ±150°, J2 0–180°, J3 −170–0°, J5 ±70°, J6 −53.9–179°: the ranges the arm was moved
-    through by hand (`../Arm Control/joint_watch.py`, 2026-11-12), 1° in, within the limits
-    its firmware reports (J6's are ±180°, not the SDK's documented ±120°). J6's low end is
-    where its cable stopped it;
-  - J4 stays where it started.
-  - The window's **limit** row marks a joint the leader is asking to take past its range
-    (MAX or MIN): the arm stops there, which can look like a freeze.
+- **The leader's whole range is the arm's whole range.** Each leader joint's calibrated range
+  (LeRobot's, end to end) is scaled onto the arm's: J1 ±150°, J2 0–180°, J3 −170–0°, J5 ±70°,
+  J6 −53.9–179° (`ARM_RANGE` in `teleop.py`). Those are the ranges the arm was moved through
+  by hand (`../Arm Control/joint_watch.py`, 2026-11-12), 1° in, within the limits its firmware
+  reports (J6's are ±180°, not the SDK's documented ±120°); J6's low end is where its cable
+  stopped it. So no part of the leader's travel is clipped. The follower still clamps to the
+  same ranges (`--envelope`, which `teleop.py` passes) as a backstop. J6's range isn't
+  centred on 0, so the leader's wrist roll at its middle is J6 +62.6°, and READY's −52° is
+  near one end of the leader's roll.
+  - J4 stays centred, at 0° (`--ready-j4-deg`), unless 1 or 2 turns it.
 - Speed and acceleration are limited to 45°/s and 360°/s², in the capped
   `MotionCtrl_2(1, 1, 40, 0)` mode.
-- The gripper's lowest point can't go below 40 mm while descending.
+- The gripper's lowest point can't go below 5 mm while descending.
 - **Snags stop the arm where it is:**
   - a joint over its current limit (A: 3, 7, 6, 2, 4.5, 1.5);
   - a joint more than 10° behind its setpoint.
@@ -164,11 +211,11 @@ What you can do:
 
 | File | Runs on | What |
 |---|---|---|
-| `teleop.py` | your computer | **The main script.** Reads the leader, runs the session over SSH, shows the status window and video, `--check` preflight |
+| `teleop.py` | your computer | **The main script.** Reads the leader, runs the session over SSH, shows the status window and video, `--check` preflight, `--record` |
 | `follower.py` | arm Pi | The follower above; `teleop.py` copies it to `~/so101/` each session |
 | `requirements.txt` | your computer | `pyserial`, `numpy`, `opencv-python` |
 | `analysis/` | anywhere | `joint_map.py`: the SO-101 and PiPER joint layouts and the nominal map (`joint_map.json`, which `teleop.py` reads) |
-| `tests/test_dry_run.py` | anywhere | Snag, lost connection, Q from far from READY, refusal off the rest, pose match to engage, the gripper left alone without `--gripper` and following with it, a whole `teleop.py` session, the leader protocol on a simulated Feetech bus, the camera reader |
+| `tests/test_dry_run.py` | anywhere | Snag, lost connection, Q from far from READY, refusal off the rest, pose match to engage, the gripper left alone without `--gripper` and following with it, a whole `teleop.py` session, the leader protocol on a simulated Feetech bus, the camera reader, the recording (every frame kept, both videos made) |
 | [`../Arm Control/`](../Arm%20Control/) | arm Pi | Shared by every sandbox script: `Up_and_Down.py`, `arm_power.py` + `arm_home.json`, `joint_watch.py` (prints and saves the joints' ranges while the arm is moved by hand, listen-only), and `fake_piper.py` (the simulated arm) |
 
 **Test without the arm or the leader:**
@@ -185,7 +232,8 @@ python teleop.py --fake-leader --local --dry-run --auto 8
   J2 and J3, so the PiPER has the SO-101's layout.
 - **The nominal map:** J1 = −pan, J2 = lift + 96.2°, J3 = elbow − 88.4°,
   J5 = wrist_flex − 2.8°, J6 = −roll. It comes from the SO-101 URDF that matches LeRobot's
-  calibration, so align it on the real arms (the A key).
+  calibration. `teleop.py` now takes only its joints and directions from it, and scales each
+  joint end to end instead (above), so the arms' poses match only roughly.
 - **What J4 would add** is tilting the gripper out of the arm's vertical plane. With J4 held,
   the gripper can still point straight down, straight out along the arm, and anywhere
   between, and J6 still turns it about its own axis.
@@ -219,10 +267,9 @@ python teleop.py --fake-leader --local --dry-run --auto 8
       park angle should be for the new camera and its cable, and update `arm_home.json`,
       `--park-j6-deg` and `--envelope` together. With the motors off, J6 rolls freely, so
       `arm_power.py off` refuses until it is rolled back to about −52°.
-- [ ] **The leader-to-PiPER joint map.** The nominal map comes from the SO-101 URDF and is
-      corrected per operator by the A key (`align.json`, not in git). The signs and offsets
-      haven't been checked joint by joint against the real arm, and the leader's own LeRobot
-      calibration is per computer.
+- [ ] **The leader-to-PiPER joint map.** Each joint's calibrated range is scaled onto the
+      arm's. The directions haven't been checked joint by joint against the real arm, and the
+      leader's own LeRobot calibration is per computer.
 - [ ] **The cell camera's aim.** The video now uses mpzy's whole sensor, but the arm still
       leaves the top of the frame when raised high: tilt or move the camera.
 - [ ] Video from the gripper: the gripper Pi (76zj) has to be online, with nothing else

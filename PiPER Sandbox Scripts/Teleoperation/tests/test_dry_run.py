@@ -39,16 +39,17 @@ class Run:
         assert self.ready, "\n".join(self.lines)
         return self.ready
 
-    def target(self, q6, deadman=True, grip="nan"):
+    def target(self, q6, deadman=True, grip="nan", jog=None):
         self.seq += 1
         j = [q6[0], q6[1], q6[2], q6[4], q6[5]]
         self.p.stdin.write((f"T {self.seq} {time.time():.3f} {int(deadman)} "
-                            + " ".join(f"{v:.2f}" for v in j) + f" {grip}\n").encode())
+                            + " ".join(f"{v:.2f}" for v in j) + f" {grip}"
+                            + ("" if jog is None else f" {jog}") + "\n").encode())
 
-    def stream(self, q6, seconds, deadman=True):
+    def stream(self, q6, seconds, deadman=True, jog=None):
         t0 = time.time()
         while time.time() - t0 < seconds:
-            self.target(q6, deadman)
+            self.target(q6, deadman, jog=jog)
             time.sleep(0.01)
 
     def states(self):
@@ -80,6 +81,25 @@ def test_snag_holds_until_reengaged():
     assert r.states()[-1]["ph"] == "follow", r.states()[-1]
     r.stream(ready, 2.0)  # and bring it back
     r.p.stdin.write(b"Q\n")
+    rc, bye = r.bye()
+    assert rc == 0 and bye["phase"] == "parked", (rc, bye)
+
+
+def test_j4_jogs_only_while_moving():
+    r = Run()
+    ready = r.wait_ready()
+    j4 = ready[3]
+    r.stream(ready, 0.5, jog=0)  # engage
+    r.stream(ready, 2.0, jog=1)  # 10 deg/s
+    up = r.states()[-1]["q"][3]
+    assert 15 < up - j4 < 22, (j4, up)
+    r.stream(ready, 1.0, deadman=False, jog=-1)  # not moving: the jog does nothing
+    assert abs(r.states()[-1]["q"][3] - up) < 1, r.states()[-1]
+    r.stream(ready, 0.5, jog=0)  # engage again
+    r.stream(ready, 1.0, jog=-1)
+    down = r.states()[-1]["q"][3]
+    assert 6 < up - down < 13, (up, down)
+    r.p.stdin.write(b"Q\n")  # back to READY, J4 included, and park
     rc, bye = r.bye()
     assert rc == 0 and bye["phase"] == "parked", (rc, bye)
 
@@ -189,6 +209,36 @@ def test_camera_keeps_only_the_newest_frame():
     frame, age, n = cam.latest()
     assert frame is not None and 1 <= n <= 40, n
     assert abs(int(frame.mean()) - 5 * 39) <= 2, frame.mean()  # the last frame sent
+
+
+def test_recording_keeps_every_frame():
+    """--record: the window decodes only the newest frame, but the recording keeps all 40, and
+    render makes camera.mp4 and window.mp4 with one video frame per camera frame."""
+    try:
+        import cv2
+        import numpy  # noqa: F401
+    except ImportError:
+        print("skipped: needs opencv-python and numpy")
+        return
+    import tempfile
+
+    teleop = load_teleop()
+    with tempfile.TemporaryDirectory() as tmp:
+        rec = teleop.Recorder(os.path.join(tmp, "rec"), fps=30)
+        rec.status(["phase hold   deadman off", "line two"])
+        cam = teleop.Camera(cmd=[sys.executable, "-c", FAKE_CAMERA], rec=rec)
+        cam.proc.wait(timeout=30)
+        t0 = time.time()
+        while cam.err is None and time.time() - t0 < 10:
+            time.sleep(0.05)
+        rec.close()
+        assert (rec.n, rec.dropped) == (40, 0), (rec.n, rec.dropped)
+        assert teleop.render(rec.path, width=320)
+        for name, height in (("camera.mp4", 240), ("window.mp4", 256)):
+            v = cv2.VideoCapture(os.path.join(rec.path, name))
+            got = (int(v.get(cv2.CAP_PROP_FRAME_COUNT)), int(v.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+            v.release()
+            assert got == (40, height), (name, got)
 
 
 def load_teleop():

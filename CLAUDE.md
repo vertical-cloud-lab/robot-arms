@@ -209,7 +209,11 @@ silent. The repo copy was scp'd to `~/arm_power.py`; the previous one is
 `/usr/bin/ip link set can0 down`, `… up` and `… type can bitrate 1000000` without a password.
 The file's line is in `arm_power.py`'s docstring. Delete that file and restore the backup to
 undo it. `Arm Control/joint_watch.py`, run from `/tmp`, saved the hand-measured joint ranges
-to `~/joint_watch_runs/` the same night. mpzy's own `~/Up_and_Down.py` is still the
+to `~/joint_watch_runs/` the same night. **J1 re-zeroed (2026-11-14 UTC).** With the base centred by eye and every motor disabled,
+`JointConfig(1, set_zero=0xAE)` made J1's position its zero: it read 15.2° and then 0.0°.
+J1's readings before then (the 2026-11-12 hand-measured ranges and `--envelope`'s J1 ±150°)
+may be offset by up to that much, so measure J1's range again with `joint_watch.py`. To undo
+it, centre the base the old way and set the zero again. mpzy's own `~/Up_and_Down.py` is still the
 2026-11-06 copy: it enables with `EnablePiper()`, which also enables the gripper and sets it
 closing onto its finger sleeves, so replace it with the repo copy before running it on its own.
 
