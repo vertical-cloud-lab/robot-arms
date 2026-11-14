@@ -1,0 +1,61 @@
+# ============================================================================================
+# AprilTags in the cell: the set asked for on PR #77. Units: mm and degrees.
+#
+#   size     edge of the tag's black square (what pose estimation needs). A white border of
+#            one data square (size / 8) is added around it, as on the printed tags.
+#   parent   the object the tag is stuck to, so it moves with it:
+#              table   world frame (centre of the table top)
+#              arm     the PiPER's base frame
+#              printer the A1 mini's frame (static parts)
+#              plate   the build plate (moves with the bed): origin at the plate's top centre
+#              shelf   top centre of the black shelf
+#              box     centre of the box's inner floor
+#              finger1 / finger2   the gripper's fingers (move with the gripper)
+#   pos      the tag centre in the parent frame
+#   normal   which way the tag faces in the parent frame: +z (up), -y (toward the front) ...
+#   id       tag36h11 ID. P1 = 31 and the bed tags 30, 32, 36 are the ones already on the
+#            printer (PR #77 photos; which bed tag is which corner is a guess). The rest are
+#            placeholders: change them to the tags you print.
+# ============================================================================================
+
+family: tag36h11
+
+tags:
+  # --- Table: centre of each edge, the world frame (and camera-bump check) ---
+  - {name: W1, id: 0, size: 60, parent: table, pos: [0, 415, 0], normal: +z}       # back edge
+  - {name: W2, id: 1, size: 60, parent: table, pos: [570, 0, 0], normal: +z}       # right edge
+  - {name: W3, id: 2, size: 60, parent: table, pos: [-570, 0, 0], normal: +z}      # left edge
+  - {name: W4, id: 3, size: 60, parent: table, pos: [0, -415, 0], normal: +z}      # front edge
+
+  # --- Arm base: flush against the PiPER's base (it is ~100 x 80 mm) ---
+  - {name: A1, id: 40, size: 40, parent: arm, pos: [65, 0, 0], normal: +z}          # in front
+  - {name: A2, id: 41, size: 40, parent: arm, pos: [-5, -65, 0], normal: +z}        # arm's right
+  - {name: A3, id: 42, size: 40, parent: arm, pos: [-5, 65, 0], normal: +z}         # arm's left
+
+  # --- Printer body (fixed) ---
+  - {name: P1, id: 31, size: 22, parent: printer, pos: [118, -35, 54], normal: +z}  # base top, right of the plate
+  - {name: P2, id: 34, size: 22, parent: printer, pos: [-20, -150, 30], normal: -y} # base front face
+
+  # --- Build plate corners, flush with the edges (move with the bed) ---
+  - {name: B1, id: 30, size: 16, parent: plate, pos: [-82, -82, 0], normal: +z}     # front-left
+  - {name: B2, id: 32, size: 16, parent: plate, pos: [82, -82, 0], normal: +z}      # front-right
+  - {name: B3, id: 33, size: 16, parent: plate, pos: [-82, 82, 0], normal: +z}      # back-left
+  - {name: B4, id: 36, size: 16, parent: plate, pos: [82, 82, 0], normal: +z}       # back-right
+
+  # --- Gripper: one per finger, on the outside face (they move with the fingers) ---
+  - {name: G1, id: 50, size: 12, parent: finger1, pos: [0, -12, 112], normal: -y}
+  - {name: G2, id: 51, size: 12, parent: finger2, pos: [0, 12, 112], normal: +y}
+
+  # --- Black shelf: its four corners, clear of the holes ---
+  - {name: S1, id: 60, size: 20, parent: shelf, pos: [-180, -130, 0], normal: +z}  # front-left
+  - {name: S2, id: 61, size: 20, parent: shelf, pos: [180, -130, 0], normal: +z}   # front-right
+  - {name: S3, id: 62, size: 20, parent: shelf, pos: [-180, 130, 0], normal: +z}   # back-left
+  - {name: S4, id: 63, size: 20, parent: shelf, pos: [180, 130, 0], normal: +z}    # back-right
+
+  # --- Box: one on each inner wall near the rim (still visible when the box is full), and
+  #     one on the floor that disappears as prints land on it (a fill-level check) ---
+  - {name: X1, id: 70, size: 30, parent: box, pos: [0, 77, 62], normal: -y}         # back wall
+  - {name: X2, id: 71, size: 30, parent: box, pos: [0, -77, 62], normal: +y}        # front wall
+  - {name: X3, id: 72, size: 30, parent: box, pos: [-107, 0, 62], normal: +x}       # left wall
+  - {name: X4, id: 73, size: 30, parent: box, pos: [107, 0, 62], normal: -x}        # right wall
+  - {name: X5, id: 74, size: 30, parent: box, pos: [0, 0, 0], normal: +z}           # floor

@@ -1,0 +1,94 @@
+# ============================================================================================
+# AgileX PiPER: kinematics, limits, actuators and gripper (with the lab's finger sleeves).
+# Units: mm, degrees, kg, N, N*m, seconds (converted to SI when loaded).
+# Every engine builds the arm from THIS file, so edit it here and every simulation follows.
+# ============================================================================================
+
+name: piper
+
+kinematics:
+  # piper_sdk's modified-DH table (C_PiperForwardKinematics). Rows: [a, alpha, theta_offset, d].
+  # The SDK has two variants that differ only in J2's and J3's zero (2 deg):
+  #   dh_is_offset_1: newer firmware. `Arm Control/Up_and_Down.py` uses this one.
+  #   dh_is_offset_0: older firmware. AgileX's URDF (and MuJoCo Menagerie's model) match this
+  #                   one to 0.02 mm, which is how the link meshes were placed (tools/).
+  # Pick the variant that matches the arm's firmware: joint angles then mean the same thing
+  # in the twin as in piper_sdk's GetArmJointMsgs().
+  variant: dh_is_offset_1
+  dh_is_offset_1:
+    - [0,       0,   0,       123]
+    - [0,     -90,  -172.22,    0]
+    - [285.03,  0,  -102.78,    0]
+    - [-21.98, 90,   0,       250.75]
+    - [0,     -90,   0,         0]
+    - [0,      90,   0,        91]
+  dh_is_offset_0:
+    - [0,       0,   0,       123]
+    - [0,     -90,  -174.22,    0]
+    - [285.03,  0,  -100.78,    0]
+    - [-21.98, 90,   0,       250.75]
+    - [0,     -90,   0,         0]
+    - [0,      90,   0,        91]
+  # Tool centre point (TCP): the fingertips, between the two sleeves, in the flange (DH frame
+  # 6) frame. 140 mm is `Teleoperation/follower.py --tool-mm` ("flange to fingertips"), and
+  # the stock finger meshes end at 140 mm too.
+  tcp_mm: [0, 0, 140]
+
+joints:
+  names: [joint1, joint2, joint3, joint4, joint5, joint6]
+  # Limits from piper_sdk's JointCtrl docstring, except J6 (the firmware reports -180..180),
+  # as in `Arm Control/Up_and_Down.py`. The arm rests just outside J2's and J3's (~-2, +2).
+  limits_deg: [[-150, 150], [0, 180], [-170, 0], [-100, 100], [-70, 70], [-180, 180]]
+  # Max joint speeds, deg/s (reseller spec sheets for the PiPER; the firmware can cap them at
+  # 3.0 rad/s). The planner uses `speed_fraction` of these.
+  max_speed_dps: [180, 195, 180, 225, 225, 225]
+  # Peak torques, N*m. AgileX doesn't publish them: JointMitCtrl's t_ref is +-8 N*m (V2) or
+  # +-16 (V3), and the SDK's Q&A says the motor applies 4x what is sent. These estimates are
+  # the actuators' force limits in the physics engine; lower them to find marginal moves.
+  max_torque_nm: [18, 18, 18, 8, 8, 8]
+  # Joint-side friction and reflected rotor inertia: guesses of the right order for small
+  # harmonic-drive joints. They make the sim's arm "feel" like a geared arm, not a free one.
+  frictionloss_nm: [0.3, 0.3, 0.3, 0.15, 0.15, 0.1]
+  damping_nms: [0.5, 0.5, 0.5, 0.2, 0.2, 0.1]
+  armature_kgm2: [0.02, 0.02, 0.02, 0.005, 0.005, 0.005]
+  # Where the arm starts each simulation (deg). The rest pose: folded on its stand.
+  home_deg: [0, 0, 0, 0, 0, 0]
+  # A pose to start tasks from: wrist up and clear of everything.
+  ready_deg: [0, 60, -60, 0, 50, 0]
+
+control:
+  rate_hz: 500  # how often the controller runs (the physics runs at sim.yaml's timestep)
+  # Default joint-space PD around a target (what the firmware's position mode does), plus
+  # gravity compensation from the physics engine's model. Same shape as piper_sdk's
+  # JointMitCtrl(pos_ref, vel_ref, kp, kd, t_ref), so MIT-mode code transfers.
+  kp: [400, 400, 400, 120, 120, 60]     # N*m/rad
+  kd: [25, 25, 25, 6, 6, 3]             # N*m*s/rad
+  # Cartesian impedance (compliant mode, control/controllers.py): stiffness N/m and N*m/rad.
+  cartesian_stiffness: [800, 800, 800, 40, 40, 40]
+  cartesian_damping_ratio: 1.0
+
+gripper:
+  # Each finger slides along the flange's y axis (finger1 toward -y, finger2 toward +y), and
+  # the two are coupled like the real rack: one motor, symmetric fingers.
+  # Stock stroke: each finger 0-35 mm (fingers touching at 0), 70 mm total.
+  finger_travel_mm: [0, 35]
+  # The lab's custom finger sleeves (2026-11-12 measurement in Teleoperation/README.md): the
+  # gripper reads 45.6 mm with the sleeves touching and 108.6 mm fully open, 63 mm of travel
+  # instead of 70, so each sleeve is 3.5 mm thick on its gripping face, and the gripper's
+  # reading is the stock opening + 38.6 mm. Change these if the sleeves change.
+  sleeve:
+    thickness_mm: 3.5         # on the gripping face
+    width_mm: 28              # across the finger (flange x); the stock fingertip is 28 mm wide
+    length_mm: 58             # along the finger, ending at the fingertip (z 82-140 mm)
+    tip_z_mm: 140             # fingertip, flange frame (= the TCP)
+    material: TPU             # physics/materials.py: friction and contact softness
+  reading_offset_mm: 38.6     # SDK gripper reading = 2 * finger travel + this
+  max_force_n: 40             # squeeze at each jaw: 40 N rated, 50 N max (AgileX gripper sheet)
+  default_force_n: 20         # what the planner squeezes prints with
+  max_speed_mm_s: 60          # finger opening speed (both fingers together)
+  finger_mass_kg: 0.0265      # URDF
+
+visual:
+  meshes: assets/piper        # STL meshes in DH frames, written by tools/build_piper_assets.py
+  inertials: assets/piper/inertials.yaml
+  color_rgba: [0.18, 0.18, 0.2, 1]

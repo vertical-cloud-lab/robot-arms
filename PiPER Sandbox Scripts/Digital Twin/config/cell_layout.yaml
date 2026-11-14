@@ -1,0 +1,93 @@
+# ============================================================================================
+# The PiPER cell: where everything sits. Units: mm and degrees.
+#
+# WORLD FRAME = the table: origin at the centre of the table top, x to the right and y toward
+# the back as seen from the front (mpzy's camera), z up. Each object has a `pose`:
+# [x, y, z, yaw] of its own frame in the world (yaw about z, degrees).
+#
+# THESE POSITIONS ARE ESTIMATES from mpzy's 2026-11-12 frame and the 2026-11-14 close-up of
+# the A1 mini (AprilTags/*.jpg), not measurements. Measure the real cell (tape, or the
+# AprilTags once they are up) and edit the numbers here; everything else follows.
+# ============================================================================================
+
+table:
+  size: [1220, 910, 19]        # 4 ft x 3 ft plywood top (guess), 3/4 in thick
+  height: 750                  # floor to top, only for drawing the legs
+  material: plywood
+  color: [0.86, 0.74, 0.55, 1]
+
+arm:
+  # The PiPER's base frame (piper_sdk's: x forward, y left, z up, origin where the base meets
+  # the table). The arm faces the front of the cell, so its x is the world's -y.
+  pose: [50, 200, 0, -90]
+
+rest_stand:
+  # The wooden box behind the arm that the folded arm rests over (photo). Arm-base frame.
+  frame: arm
+  center: [-280, 0, 45]
+  size: [120, 300, 90]
+  material: plywood
+  color: [0.80, 0.66, 0.45, 1]
+
+printer:
+  model: a1_mini
+  # Printer frame: origin on the table under the plate's centre with the bed at mid-travel;
+  # x to the printer's right, y to its back. The printer faces the front of the cell.
+  pose: [-330, 220, 0, 0]
+  # Bambu Lab A1 mini: 347 x 315 x 365 mm outside, 180 mm cube build volume, base ~188 x 310 mm
+  # on the table (forum measurement), Z column on the right, nozzle tip 25 mm below the X arm
+  # (BambuStudio profile). The end G-code raises Z by up to 100 mm (max 180) and parks at
+  # X-13 Y180: toolhead at the far left, bed fully forward, which is the state modelled here.
+  # plate_top_z was not published anywhere we could find: it is the number that matters most
+  # for picking, so measure it.
+  plate_top_z: 88             # table to the top of the PEI sheet
+  plate_size: [184, 184, 0.6] # spring-steel PEI sheet (the 180 x 180 mm print area sits inside)
+  bed_size: [184, 184, 6]     # heated bed under the sheet
+  print_area: [180, 180]
+  bed_travel_y: [-90, 90]     # plate centre's y; -90 = fully forward (toward the front)
+  bed_y: -90                  # where the bed is: fully forward, presenting the prints
+  base: {center: [39, 0, 27], size: [188, 310, 54]}
+  column: {center: [110, 25], size: [46, 46, 365]}   # Z tower, at the printer's right
+  x_arm: {from_x: -140, to_x: 110, y: 10, size_yz: [40, 32], above_nozzle: 25}  # cantilevered X axis
+  toolhead: {size: [58, 52, 78]}
+  nozzle_z_above_plate: 180   # end G-code: last layer + 100 mm, capped at 180
+  toolhead_x: -103            # parked at X-13: 13 mm left of the print area
+  material: abs_plastic
+  color: [0.92, 0.92, 0.93, 1]
+
+shelf:
+  # The black perforated shelf in front of the printer: a plate on four feet.
+  pose: [-215, -120, 0, 0]
+  size: [400, 300, 5]          # top plate
+  top_z: 65                    # table to the top surface
+  hole_diameter: 20
+  hole_pitch: [45, 45]
+  hole_grid: [8, 6]            # columns (x) x rows (y), centred on the plate
+  foot: {diameter: 30, inset: 35}
+  material: black_aluminium
+  color: [0.06, 0.06, 0.07, 1]
+
+box:
+  # The bin prints are dropped into. The pink box beside the printer (O4 in the tag graphic)
+  # is too small for the model airplane, so this is a bigger bin; set it to your real box.
+  pose: [280, -100, 0, 0]
+  outer_size: [220, 160, 90]
+  wall: 3
+  floor: 3
+  material: pla
+  color: [0.95, 0.35, 0.65, 1]
+
+cameras:
+  # mpzy's fixed camera (Camera Module 3 Wide, 4608 x 2592, f = 1964 px, so 67 deg vertical
+  # field of view). `look_at` is the point it is aimed at.
+  mpzy:
+    position: [-120, -720, 560]
+    look_at: [-60, 80, 60]
+    fovy_deg: 67.0
+    resolution: [1280, 720]    # rendered size (the real sensor is 4608 x 2592)
+  # The wrist camera on the gripper, looking along the tool axis.
+  wrist:
+    parent: flange
+    position: [0, 45, 60]      # flange frame, mm
+    fovy_deg: 70.0
+    resolution: [640, 480]
