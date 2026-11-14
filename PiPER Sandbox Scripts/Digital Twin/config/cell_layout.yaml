@@ -24,8 +24,8 @@ arm:
 rest_stand:
   # The wooden box behind the arm that the folded arm rests over (photo). Arm-base frame.
   frame: arm
-  center: [-280, 0, 45]
-  size: [120, 300, 90]
+  center: [-280, 0, 43]
+  size: [120, 300, 86]   # top just under the folded upper arm (89 mm at the all-zero pose)
   material: plywood
   color: [0.80, 0.66, 0.45, 1]
 

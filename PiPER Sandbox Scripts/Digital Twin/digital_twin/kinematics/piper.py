@@ -55,8 +55,14 @@ class PiperKinematics:
         rng = rng or np.random.default_rng(0)
         seeds = [np.asarray(q_seed, float)]
         lo, hi = self.limits[:, 0], self.limits[:, 1]
-        for _ in range(extra_seeds):
-            seeds.append(rng.uniform(lo, hi))
+        if extra_seeds:
+            # Elbow-up postures pointed at the target first (they usually converge), then random.
+            p = T_target[:3, 3]
+            j1 = float(np.clip(np.arctan2(p[1], p[0]), lo[0], hi[0]))
+            for j2, j3, j5 in ((80, -60, 40), (100, -90, 60), (60, -30, 20), (90, -40, 0)):
+                seeds.append(self.clamp(np.radians([np.degrees(j1), j2, j3, 0, j5, 0])))
+            for _ in range(extra_seeds):
+                seeds.append(rng.uniform(lo, hi))
         best, best_cost = None, np.inf
         W = np.array([2.0, 2.0, 1.5, 1.0, 1.0, 0.5])  # prefer moving the wrist over the shoulder
         for i, s in enumerate(seeds):
@@ -70,16 +76,15 @@ class PiperKinematics:
                 break  # the seed itself converged nearby: good enough, skip the random restarts
         return best
 
-    def _solve(self, T_target, q0, tool, pos_tol, rot_tol, rot_weight, iters: int = 300):
+    def _solve(self, T_target, q0, tool, pos_tol, rot_tol, rot_weight, iters: int = 120):
         q = self.clamp(np.array(q0, float))
         lam = 0.02
         for _ in range(iters):
-            T = self.chain.fk(q, tool)
+            T, J = self.chain.fk_jac(q, tool)
             e_p = T_target[:3, 3] - T[:3, 3]
             e_r = rotvec(T_target[:3, :3] @ T[:3, :3].T)
             if np.linalg.norm(e_p) < pos_tol and np.linalg.norm(e_r) < rot_tol:
                 return q
-            J = self.chain.jacobian(q, tool)
             e = np.concatenate([e_p, rot_weight * e_r])
             Jw = J.copy()
             Jw[3:] *= rot_weight

@@ -18,22 +18,28 @@
 #                the material's default.
 #   grasp        tip_z: fingertip height above the plate; yaw: direction the fingers close,
 #                in the print's frame (0 = along x); width: the print's width across the
-#                fingers there; xy: grasp point in the print's frame (default [0, 0])
+#                fingers there; xy: grasp point in the print's frame (default [0, 0]);
+#                symmetry: the print looks the same turned by this many degrees about z
+#                (90 for a square, 60 for a hexagon, 0 for round), so the planner may pick
+#                any of those yaws; leave it out for prints with one way to hold them
 #   destination  box (dropped in) or shelf (set down upright on the black shelf)
 #
 # The order of the list is the order they are picked. Change, add or remove prints freely:
-# the scene builder warns if two footprints overlap or one hangs off the plate.
+# the scene builder warns if a print hangs off the plate, and the engine if two overlap.
+#
+# Keep grasp points in front of y = +40 mm with the bed fully forward: behind that, the arm
+# hits the X arm, toolhead or Z column on its way in (scenarios/reach_map.py draws the map).
 # ============================================================================================
 
 prints:
   - name: hex_nut
     shape: hex_prism
     params: {across_flats: 24, height: 10}
-    plate_xy: [66, -54]
+    plate_xy: [45, -75]
     yaw: 0
     material: PLA
     color: [0.95, 0.75, 0.1, 1]
-    grasp: {tip_z: 2.5, yaw: 0, width: 24}
+    grasp: {tip_z: 2.5, yaw: 0, width: 24, symmetry: 60}
     destination: box
 
   - name: l_bracket
@@ -42,7 +48,7 @@ prints:
       parts:   # each part: type, size (box: full x y z; cylinder/capsule: radius, half-length), pos (centre), euler
         - {type: box, size: [40, 20, 4], pos: [0, 0, 2]}
         - {type: box, size: [4, 20, 30], pos: [-18, 0, 17]}
-    plate_xy: [60, 6]
+    plate_xy: [55, -45]
     yaw: 0
     material: PETG
     color: [0.2, 0.6, 0.9, 1]
@@ -52,7 +58,7 @@ prints:
   - name: action_figure
     shape: action_figure
     params: {height: 95}     # template: base disc, legs, torso, arms, head
-    plate_xy: [48, 42]
+    plate_xy: [55, 30]
     yaw: 0
     material: PLA
     color: [0.85, 0.2, 0.2, 1]
@@ -62,38 +68,38 @@ prints:
   - name: tall_vase
     shape: cylinder
     params: {diameter: 30, height: 70}
-    plate_xy: [0, 52]
+    plate_xy: [15, 30]
     yaw: 0
     material: PLA
     color: [0.3, 0.8, 0.4, 1]
-    grasp: {tip_z: 34, yaw: 0, width: 30}
+    grasp: {tip_z: 34, yaw: 0, width: 30, symmetry: 0}
     destination: shelf
 
   - name: gear_blank
     shape: cylinder
     params: {diameter: 40, height: 8}
-    plate_xy: [-66, 22]
+    plate_xy: [-60, 26]
     yaw: 0
     material: PLA
     color: [0.6, 0.3, 0.8, 1]
-    grasp: {tip_z: 2.0, yaw: 0, width: 40}
+    grasp: {tip_z: 2.0, yaw: 0, width: 40, symmetry: 0}
     destination: box
 
   - name: calibration_cube
     shape: box
     params: {size: [20, 20, 20]}
-    plate_xy: [-56, 62]
+    plate_xy: [60, -15]
     yaw: 0
     material: PLA
     color: [0.95, 0.5, 0.1, 1]
-    grasp: {tip_z: 4, yaw: 0, width: 20}
+    grasp: {tip_z: 4, yaw: 0, width: 20, symmetry: 90}
     destination: box
 
   - name: model_airplane
     shape: model_airplane
-    params: {length: 110, wingspan: 130}   # printed flat: wings and tailplane on the plate
-    plate_xy: [-15, -30]
-    yaw: -90                 # template nose is +x, so this points it at the front (-y)
+    params: {length: 110, wingspan: 120}   # printed flat: wings and tailplane on the plate
+    plate_xy: [-25, -25]
+    yaw: 0                   # nose toward the printer's right (+x), wings front to back
     material: PLA
     color: [0.85, 0.85, 0.9, 1]
     stick_kpa: 1.5           # big flat wings: more area, so a lower stress gives "a little" stick

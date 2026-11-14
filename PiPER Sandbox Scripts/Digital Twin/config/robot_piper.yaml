@@ -57,7 +57,7 @@ joints:
   ready_deg: [0, 60, -60, 0, 50, 0]
 
 control:
-  rate_hz: 500  # how often the controller runs (the physics runs at sim.yaml's timestep)
+  rate_hz: 1000  # how often the controller runs (the physics runs at sim.yaml timestep)
   # Default joint-space PD around a target (what the firmware's position mode does), plus
   # gravity compensation from the physics engine's model. Same shape as piper_sdk's
   # JointMitCtrl(pos_ref, vel_ref, kp, kd, t_ref), so MIT-mode code transfers.

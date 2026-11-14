@@ -75,11 +75,16 @@ class DHChain:
 
     def jacobian(self, q, tool: bool = True) -> np.ndarray:
         """6xn geometric Jacobian [v; w] of the flange or tool point, in the world frame."""
+        return self.fk_jac(q, tool)[1]
+
+    def fk_jac(self, q, tool: bool = True) -> tuple[np.ndarray, np.ndarray]:
+        """End pose and Jacobian from one pass over the chain (what IK needs every iteration)."""
         frames = self.frames(q)
-        p_end = (frames[-1] @ self.tool if tool else frames[-1])[:3, 3]
+        T_end = frames[-1] @ self.tool if tool else frames[-1]
+        p_end = T_end[:3, 3]
         J = np.zeros((6, self.n))
         for i, T in enumerate(frames):
             z, p = T[:3, 2], T[:3, 3]  # joint i rotates about frame i's z axis
             J[:3, i] = np.cross(z, p_end - p)
             J[3:, i] = z
-        return J
+        return T_end, J
