@@ -87,6 +87,13 @@ class PhysicsEngine(ABC):
         """Current failure index of a print's bond (>= 1 breaks it); 0 when not loaded."""
         return 0.0
 
+    def contact_force(self, bodies_a, bodies_b) -> float:
+        """Total normal contact force (N) between two groups of bodies (0 without physics)."""
+        return 0.0
+
+    def push(self, body: str, force_world, point_world=None) -> None:
+        """Apply an external force to a body (for compliance tests); no-op without physics."""
+
     # --- collisions ------------------------------------------------------------------------
     def arm_collisions(self, q: np.ndarray, gripper_travel: float | None = None,
                        ignore: tuple = ()) -> list[tuple[str, str]]:

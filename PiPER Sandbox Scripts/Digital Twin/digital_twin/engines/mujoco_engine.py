@@ -59,8 +59,10 @@ class _Builder:
                       impratio=str(mj["impratio"]), gravity=_f(mj["gravity"]))
         ET.SubElement(self.root, "size", memory="256M")
         vis = ET.SubElement(self.root, "visual")
-        ET.SubElement(vis, "global", offwidth=str(mj["offscreen_width"]), offheight=str(mj["offscreen_height"]),
-                      azimuth="-120", elevation="-25")
+        cams = self.cfg.cell.get("cameras", {}).values()
+        offw = max([mj["offscreen_width"]] + [c["resolution"][0] for c in cams])
+        offh = max([mj["offscreen_height"]] + [c["resolution"][1] for c in cams])
+        ET.SubElement(vis, "global", offwidth=str(offw), offheight=str(offh), azimuth="-120", elevation="-25")
         ET.SubElement(vis, "quality", shadowsize="4096", offsamples="4")
         ET.SubElement(vis, "headlight", diffuse="0.5 0.5 0.5", ambient="0.35 0.35 0.35", specular="0 0 0")
         ET.SubElement(vis, "map", znear="0.005")
@@ -246,8 +248,6 @@ class MujocoEngine(PhysicsEngine):
         gj = self.m.joint(info["gripper_joint"]).id
         self._g_qadr, self._g_vadr = self.m.jnt_qposadr[gj], self.m.jnt_dofadr[gj]
         self._g_act = [self.m.actuator(f"act_{j}").id for j in info["finger_joints"]]
-        self._bed_act = self.m.actuator("act_bed_y").id if "act_bed_y" in [self.m.actuator(i).name
-                                                                         for i in range(self.m.nu)] else None
         # Bonds: equality id, print body id, its free joint's dof address, capacity.
         self.bonds = {}
         for b in scene.bonds:
@@ -379,6 +379,30 @@ class MujocoEngine(PhysicsEngine):
                 d.eq_active[b["eq"]] = 0
                 self.bond_log.append(dict(print=name, time=self.time, force_n=load_f.round(3).tolist(),
                                           torque_nm=load_t.round(4).tolist(), index=round(idx, 3)))
+
+    def contact_force(self, bodies_a, bodies_b) -> float:
+        """Total normal force (N) between geoms of bodies_a and geoms of bodies_b right now."""
+        mj, m, d = self.mujoco, self.m, self.d
+        A = {m.body(n).id for n in bodies_a}
+        B = {m.body(n).id for n in bodies_b}
+        f6 = np.zeros(6)
+        total = 0.0
+        for i in range(d.ncon):
+            c = d.contact[i]
+            b1, b2 = m.geom_bodyid[c.geom1], m.geom_bodyid[c.geom2]
+            if (b1 in A and b2 in B) or (b1 in B and b2 in A):
+                mj.mj_contactForce(m, d, i, f6)
+                total += f6[0]  # normal component, in the contact frame
+        return float(total)
+
+    def push(self, body: str, force_world, point_world=None) -> None:
+        """Apply an external force (N, world frame) to a body, at point_world (default: its
+        centre of mass), until changed."""
+        b = self.m.body(body).id
+        f = np.asarray(force_world, float)
+        tau = np.zeros(3) if point_world is None else np.cross(np.asarray(point_world) - self.d.xipos[b], f)
+        self.d.xfrc_applied[b, :3] = f
+        self.d.xfrc_applied[b, 3:] = tau
 
     # --- collisions for planning ---------------------------------------------------------
     def arm_collisions(self, q, gripper_travel=None, ignore=()):

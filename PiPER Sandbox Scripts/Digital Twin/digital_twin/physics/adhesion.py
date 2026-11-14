@@ -62,8 +62,9 @@ def footprint(geoms) -> np.ndarray:
     """(N, 2) raster points of the print's contact patch with the plate (print frame, m)."""
     from ..world.print_library import bounds
     lo, hi = bounds(geoms)
-    xs = np.arange(lo[0], hi[0] + RASTER_M, RASTER_M)
-    ys = np.arange(lo[1], hi[1] + RASTER_M, RASTER_M)
+    # Sample the centre of each raster cell, so a cell counts for exactly RASTER_M^2 of area.
+    xs = np.arange(lo[0] + RASTER_M / 2, hi[0], RASTER_M)
+    ys = np.arange(lo[1] + RASTER_M / 2, hi[1], RASTER_M)
     X, Y = np.meshgrid(xs, ys)
     pts = np.column_stack([X.ravel(), Y.ravel(), np.full(X.size, CONTACT_SLICE_M)])
     mask = np.zeros(len(pts), bool)

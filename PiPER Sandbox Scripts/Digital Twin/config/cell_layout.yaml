@@ -84,7 +84,7 @@ cameras:
     position: [-120, -720, 560]
     look_at: [-60, 80, 60]
     fovy_deg: 67.0
-    resolution: [1280, 720]    # rendered size (the real sensor is 4608 x 2592)
+    resolution: [4608, 2592]   # the real sensor's full resolution (camera_check renders this)
   # The wrist camera on the gripper, looking along the tool axis.
   wrist:
     parent: flange
