@@ -1,0 +1,157 @@
+# ============================================================================================
+# The powder doser (powder-doser PR 200) in the PiPER cell, its augers, and the rack that
+# holds the spares: everything the auger-swap simulation needs. Units: mm, degrees, g, MPa.
+#
+# Geometry that comes from the CAD (tube, gear, clips, where every part sits) is NOT here:
+# tools/build_doser_assets.py measures it from PR 200's STLs into
+# assets/powder_doser/geometry.yaml. This file holds what the CAD can't say: where the doser
+# and rack stand on the table, what is in each auger, materials, and the swap plan.
+#
+# Poses are [x, y, z, yaw] in the cell's world frame (cell_layout.yaml: origin at the centre
+# of the table top, x right, y toward the back, z up). THESE PLACEMENTS ARE PROPOSALS: the
+# doser isn't in the cell yet. They were chosen so the arm can
+# reach every auger and follow the peel and roll-in paths (searched with the planner's own IK
+# and collision checks; README "Swapping the powder doser's auger"). Move them to where you put the real doser and rack.
+# ============================================================================================
+
+doser:
+  # The doser frame (geometry.yaml): Onshape's assembly turned the right way up, legs on the
+  # table. Its auger runs along the frame's -y (outlet at +y). yaw turns the doser so its
+  # auger points along the arm's reach (radially), which is how the gripper grasps it best.
+  pose: [351, 216, -120, 90]  # right of the arm, auger pointing at its base, outlet toward it
+  # The tap collar is drawn as a CLOSED ring around the tube (12.7 mm bore) and the drive gear
+  # sits between it and the back clip, so as drawn the auger can't be lifted out. The twin
+  # cuts the top of the collar open (tools/build_doser_assets.py, COLLAR_CUT_DEG). Tell the
+  # doser team: the collar needs an open top (like the clips) or a hinge for an arm to swap
+  # augers. Set false to simulate the CAD as drawn (the swap then fails, as it would).
+  collar_open_top: true
+  color: [0.12, 0.12, 0.13, 1]   # printed in black PLA (PR 200's A1 mini / H2D prints)
+  wood_color: [0.80, 0.66, 0.45, 1]
+  bought_color: [0.55, 0.56, 0.6, 1]
+
+clip:
+  # The C-clip that holds the auger (PR 200's "Bracket Recreation"), as a snap fit
+  # (physics/snap_fit.py). Its shape is measured from the STL; these are the material and the
+  # one number the STL can't give: where the flexing arm starts.
+  material: PLA
+  E_mpa: 3000          # PLA, printed, along the layers (datasheets: 2.3-3.5 GPa)
+  yield_mpa: 50        # for the stress check
+  mu: 0.30             # tube on lip, PLA on PLA (0.12-0.38 static, Santana 2021)
+  root_deg: 155        # the ring joins its base over the bottom ~50 deg (the section in
+                       # geometry.yaml): the arms flex from there up to the lips at 40 deg.
+                       # 125 makes the clip 2.4x stiffer, 180 makes it 1.6x softer.
+  # => k = 4.5 N/mm per arm, ~18 N to push the tube into one clip and ~18 N to pull it out,
+  #    48 MPa at the arms' roots at full spread (close to PLA's limit: PETG would last longer).
+
+auger:
+  # The printed auger (tube + internal screw + drive gear), from the STL: 53.3 cm^3 of plastic.
+  material: PLA
+  fill: 0.95           # thin walls print solid; 1.0 = the STL's full volume
+  # The screw-on cap (PR 200's auger_cap: 29 x 29 x 27 mm, 4.36 cm^3; its STL isn't in the
+  # repo, so it is drawn as a cylinder of that size over the threads).
+  cap: {diameter: 29, length: 27, volume_cm3: 4.363}
+  # Usable powder volume: the bore (21 mm) from the outlet wall to the threads, less the screw.
+  # The screw's share is an estimate; weigh an empty and a full auger to pin it down.
+  bore_fill_volume_cm3: 60
+  tag:                 # AprilTag on the cap's flat end: which auger it is, and where its axis is
+    size: 18           # black square, mm (the 29 mm end face fits 18 + 2 x 2.25 white border)
+
+augers:
+  # One entry per auger in the cell. `powder` sets the bulk density; `fill` the fraction of the
+  # bore that's full; `color` the PLA it was printed in; `tag_id` the tag36h11 ID on its cap.
+  # `start`: doser (in the doser's clips) or rack:N (in rack slot N, 0-based).
+  # The swap below takes out what's in the doser and puts `swap_in` in its place.
+  - name: auger_xanthan
+    powder: xanthan_gum
+    fill: 0.45
+    color: [0.10, 0.10, 0.11, 1]
+    tag_id: 80
+    start: doser
+  - name: auger_salt
+    powder: sodium_chloride
+    fill: 0.70
+    color: [0.20, 0.45, 0.85, 1]
+    tag_id: 81
+    start: rack:1
+  - name: auger_iron
+    powder: iron_powder
+    fill: 0.60
+    color: [0.85, 0.35, 0.15, 1]
+    tag_id: 82
+    start: rack:2
+
+powders:
+  # Bulk (poured) densities, g/cm^3. Sources: supplier datasheets / handbooks, typical values.
+  xanthan_gum: {bulk_density: 0.80, color: [0.93, 0.90, 0.80, 1]}
+  sodium_chloride: {bulk_density: 1.20, color: [0.97, 0.97, 0.97, 1]}
+  wheat_flour: {bulk_density: 0.55, color: [0.96, 0.93, 0.85, 1]}
+  iron_powder: {bulk_density: 3.00, color: [0.35, 0.35, 0.37, 1]}   # atomised, -100 mesh
+  ti64_powder: {bulk_density: 2.50, color: [0.6, 0.6, 0.62, 1]}     # AM feedstock
+
+rack:
+  # A printed rack that holds spare augers in the same clips the doser uses (print more
+  # "Bracket Recreation" clips), so parking an auger is the same snap-in as installing one.
+  # It stands on a riser to bring the augers up where the PiPER grasps them top-down.
+  pose: [170, -125, 0, 20]  # front right of the arm, augers pointing at its base
+  slots: 3
+  pitch: 75            # mm between slot centre lines (the 46 mm gears need > 60)
+  riser_height: 120    # table to the top of the rack's plate
+  plate: [290, 270, 6] # x (across the slots) y (along the augers) thickness
+  axis_yaw: 90         # direction of the augers' outlet ends, deg in the rack frame
+  # The rack's clips have their arms cut off (open cradles: print the clip and snip the arms,
+  # or print tools/build_doser_assets.py's cradle.stl), so parking and fetching need no force.
+  # true = whole clips, snapping like the doser's.
+  snap: false
+  color: [0.15, 0.55, 0.35, 1]
+  riser_color: [0.80, 0.66, 0.45, 1]
+
+swap:
+  # The job: take the doser's auger out, park it in the rack, put `swap_in` in the doser.
+  swap_in: auger_salt
+  park_slot: 0                # rack slot the removed auger goes into
+  grasp_at_mm: 189            # along the auger from its outlet end. The 28 mm sleeves only fit
+                              # on the doser's auger between the back clip and the cap (150-222):
+                              # between the gear and the back clip (88-129) the stepper's mount
+                              # (94-102) leaves 27 mm, and around the outlet the hinge arms leave
+                              # 3 mm beside the tube (scenarios/swap_augers.py prints the map)
+  grasp_window_mm: [164, 208] # where else along the tube the planner may grip, if the arm or
+                              # the open gripper would touch something at grasp_at_mm
+  open_margin_mm: 8           # gap between each open sleeve and the tube on the way down
+  squeeze_n: 40               # per jaw. The default 20 N can't hold the tube against both
+                              # clips at once (~36 N): the planner peels one clip at a time
+  extract: peel               # peel (lift the cap end first, one clip at a time) | straight
+  peel_deg: 40                # how far the cap end is tipped up to lever the tube out of both clips
+  approach_mm: 60             # straight down from this high above the grasp
+  lift_mm: 50                 # straight up after it's free
+  clearance_mm: 90            # fingertips above anything when moving between doser and rack
+  insert: roll                # roll (the peel backwards: tipped, outlet end on its clip, turned
+                              # down about it) | push (level, then a Cartesian spring pushes down
+                              # until both clips snap: needs the grip near the clips' midpoint)
+  insert_force_n: 45          # what the spring pushes with (both clips at once: ~36 N needed)
+  seated_tol_mm: 0.6          # tube centre within this of every clip's seat = seated
+  gear_axial_tol_mm: 3        # gear face centred on the pinion's to within this = meshes
+
+apriltags:
+  # Tags this workflow adds (tag36h11, sizes = black square in mm, as in apriltags.yaml).
+  # It keeps the table (W), arm-base (A) and gripper (G) tags from apriltags.yaml; the
+  # printer, plate and shelf tags stay in the scene but this job doesn't use them.
+  #   parent  doser: the doser frame (geometry.yaml)   rack: the rack frame (plate top centre)
+  #           auger: on every auger, in its own frame (outlet end centre, z toward the cap)
+  # --- Doser: two on the baseplate's flat arms either side of the mounting plate (the only
+  #     flat, uncovered patches on top, 32 mm wide), one on the outer face of the leg that
+  #     faces the front of the cell (mpzy). Not all in one plane, so the doser's pose is well
+  #     defined even when the arm hides one of them.
+  - {name: D1, id: 90, size: 24, parent: doser, pos: [-91, 70, 258], normal: +z}
+  - {name: D2, id: 91, size: 24, parent: doser, pos: [63, 70, 258], normal: +z}
+  - {name: D3, id: 92, size: 40, parent: doser, pos: [-141.5, 64.6, 200], normal: -x}
+  # --- Rack: three plate corners (the rack's pose), and one under each slot between the gear
+  #     and the back clip: hidden while an auger sits there, so it reads which slots are full.
+  - {name: R1, id: 93, size: 30, parent: rack, pos: [-121, -110, 0], normal: +z}
+  - {name: R2, id: 94, size: 30, parent: rack, pos: [121, -110, 0], normal: +z}
+  - {name: R3, id: 95, size: 30, parent: rack, pos: [121, 110, 0], normal: +z}
+  - {name: RS0, id: 96, size: 22, parent: rack_slot0, pos: [0, 0, 0], normal: +z}
+  - {name: RS1, id: 97, size: 22, parent: rack_slot1, pos: [0, 0, 0], normal: +z}
+  - {name: RS2, id: 98, size: 22, parent: rack_slot2, pos: [0, 0, 0], normal: +z}
+  # --- Each auger: on its cap's flat end (the id is the auger's `tag_id` above). It says which
+  #     powder is in the doser, and where the auger's axis ends.
+  - {name: U, parent: auger, normal: +z}
