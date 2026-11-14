@@ -17,12 +17,12 @@ pip install -r requirements.txt
 python run_sim.py --viewer                       # watch the plate get cleared, live, in 3D
 python run_sim.py                                # same, headless: prints a report
 python run_sim.py --video output/clear_bed.mp4   # render mpzy's camera view to a video
-python run_sim.py --video out.mp4 --camera orbit # a closer, slowly orbiting view
+python run_sim.py --video out.mp4 --camera orbit # a closer view from the front-right
 python run_sim.py --engine kinematic --viewer    # no MuJoCo needed: numpy + matplotlib
 python run_sim.py --scenario reach_map           # where on the plate the arm can pick
 python run_sim.py --scenario camera_check        # mpzy's view and the AprilTags it finds
 python run_sim.py --scenario compliance_demo     # impedance control: push and press tests
-python -m pytest tests                           # 10 tests, about a minute
+python -m pytest tests                           # 11 tests, about a minute
 ```
 
 In the viewer, drag to orbit, right-drag to pan, scroll to zoom, double-click a body to
@@ -38,7 +38,7 @@ and under what load, and any planned move that touched the cell.
 | Arm kinematics | piper_sdk's modified-DH table, both firmware variants (`dh_is_offset` 0 and 1) | `Arm Control/Up_and_Down.py`, piper_sdk | Exact. Matches `Up_and_Down.fk()` to 1e-6 mm (tests), and MuJoCo's TCP matches the DH chain to 1e-6 m |
 | Arm links | AgileX's meshes and inertias, re-expressed in the DH frames | MuJoCo Menagerie `agilex_piper` (MIT), from AgileX's URDF | Meshes good. The URDF's masses total 2.4 kg against AgileX's 4.2 kg, so torques are approximate |
 | Joints | limits, max speeds, torque limits, friction, rotor inertia | `Up_and_Down.py`, AgileX spec sheets | Limits exact. Torque limits are estimates (AgileX doesn't publish them) |
-| Gripper and sleeves | two coupled fingers (0–35 mm each), a 3.5 mm TPU sleeve on each gripping face, 63 mm max gap, TCP 140 mm from the flange | Teleoperation README (45.6 / 108.6 mm readings), `follower.py --tool-mm` | Derived from your measurements. Sleeve width and length are estimates |
+| Gripper and sleeves | two coupled fingers (0–35 mm each), a 3.5 mm TPU sleeve on each gripping face, 63 mm max gap, TCP 140 mm from the flange | Teleoperation README (45.6 / 108.6 mm readings), `follower.py --tool-mm` | Derived from the lab's gripper readings. Sleeve width and length are estimates |
 | A1 mini | base, Z column (right), cantilevered X arm, toolhead parked at X-13, bed on a slide joint (fully forward), 0.6 mm PEI sheet | Bambu spec sheet, BambuStudio profiles and G-code, forum measurement | Layout good. **The plate height (88 mm) is a guess: measure it first** |
 | Black shelf | 400 × 300 mm plate, 8 × 6 grid of 20 mm holes at 45 mm pitch, on 4 feet; holes are real openings | photos | Sizes are estimates |
 | Box, table, rest stand | boxes | photos | Estimates |
@@ -172,7 +172,46 @@ tried on the twin before it is pointed at the arm.
 
 ## Results so far
 
-RESULTS_PLACEHOLDER
+From `python run_sim.py` and the other scenarios, run on 2026-11-14 with MuJoCo 4.0.1 and
+Python 3.14 and the `config/` files as committed.
+
+![Frames from the clear-bed run](docs/clear_bed_frames.jpg)
+
+**Clearing the plate: 7 of 7 prints delivered** in 122 s of simulated time (about 66 s of wall
+time headless on a CI runner), and no planned move touched the cell.
+
+| Print | Mass | Bond's pull capacity | Freed by | Gripper lean | Went to | Ended up |
+|---|---|---|---|---|---|---|
+| calibration cube, 20 mm | 3.5 g | 1.6 N | the squeeze | 15° | box | in the box |
+| hex nut, 24 mm | 2.2 g | 2.0 N | the squeeze | 10° | box | in the box |
+| L bracket (PETG) | 2.5 g | 4.0 N | the squeeze | 15° | box | in the box |
+| action figure, 95 mm tall | 12.0 g | 4.1 N | the squeeze | 20° | shelf | standing, 0° tilt |
+| tall vase, 30 × 70 mm | 21.5 g | 2.8 N | the squeeze | 20° | shelf | standing, 0° tilt |
+| pulley, 36 × 14 mm | 6.2 g | 4.1 N | twist | 20° | box | in the box |
+| model airplane, 110 mm long, 120 mm span | 15.8 g | 6.9 N (1.5 kPa) | twist (245 N·mm) | 15° | shelf | flat on the shelf |
+
+What the runs showed:
+
+- **A little stick barely holds small prints.** At 4 kPa a 20 mm cube resists only 5.5 N·mm of
+  peel. The two sleeves never meet a print at exactly the same instant, so even the gentle
+  2 N close tips it free. The large, flat airplane and pulley held on until the twist. If real
+  prints hold harder, raise `stick_kpa`: the twist, rock and pull steps are already there, and
+  the report says which one freed each print.
+- **The back of the plate is out of reach** with the bed fully forward. Grasps behind about
+  y = +45 mm put the arm into the X arm, toolhead or Z column (the map at the top).
+- **The gripper leans 10–20°** everywhere on the plate, because J5's ±70° stops it pointing
+  straight down this low.
+- **Tags (`camera_check`):** at mpzy's full 4608 × 2592 resolution, the detector finds 11 of the 24
+  tags from the estimated camera pose. It finds none of the 16 mm plate tags, which matches the
+  real photo, where only P1 decoded. Single-tag position errors are 2–20 mm, worse for small
+  and far tags.
+
+  ![mpzy's simulated view with detected tags](docs/camera_check_mpzy.jpg)
+- **Compliance (`compliance_demo`):**
+  - Aiming the fingertips 10 mm into the shelf with K_z = 400, 800 and 1600 N/m gives 3.95, 8.11
+    and 16.13 N, which is K_z × 10 mm. The stiffness sets the force.
+  - A 5 N push at the fingertips moves them 4.4 mm, against F/K = 6.2 mm, because joint
+    friction takes part of the load.
 
 ## Design decisions that differ from the request
 

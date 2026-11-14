@@ -52,8 +52,9 @@ class VideoRecorder:
     def _render(self):
         e = self.sim.engine
         if self.camera == "orbit" and hasattr(e, "free_camera"):
-            az = -150 + 20 * np.sin(e.time / 12)
-            cam = e.free_camera(lookat=[-0.12, 0.05, 0.12], distance=1.15, azimuth=az, elevation=-28)
+            # From the front-right of the cell, swaying slowly between 105 and 135 deg.
+            az = 120 + 15 * np.sin(e.time / 15)
+            cam = e.free_camera(lookat=[-0.06, 0.02, 0.12], distance=1.2, azimuth=az, elevation=-30)
             img = e.render(cam, self.width, self.height)
         else:
             img = e.render(self.camera, self.width, self.height)

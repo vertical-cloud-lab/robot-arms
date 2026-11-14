@@ -46,3 +46,20 @@ def test_tags_decode_in_rendered_frame():
         pytest.skip(f"no offscreen rendering: {exc}")
     ids = {d["id"] for d in detect(img, intrinsics(67.0, 1920, 1080))}
     assert {1, 2, 3} <= ids  # W2, W3, W4: big table tags facing the camera
+
+
+def test_piper_sdk_facade_units():
+    """Scripts written for piper_sdk (0.001 deg, 0.001 mm) drive the twin the same way."""
+    pytest.importorskip("mujoco")
+    from digital_twin.control.sim_robot import PiperSDK
+    sim = make_sim(quiet=True)
+    piper = PiperSDK(sim.robot)
+    piper.MotionCtrl_2(0x01, 0x01, 30, 0x00)
+    piper.JointCtrl(0, 60000, -60000, 0, 50000, 0)
+    piper.spin(3.0)
+    js = piper.GetArmJointMsgs().joint_state
+    got = [getattr(js, f"joint_{i}") / 1000 for i in range(1, 7)]
+    assert np.allclose(got, [0, 60, -60, 0, 50, 0], atol=0.1)
+    piper.GripperCtrl(80000, 1000, 0x01, 0)  # the lab gripper's reading: 80 mm
+    piper.spin(1.5)
+    assert abs(piper.GetArmGripperMsgs().gripper_state.grippers_angle / 1000 - 80.0) < 0.5
