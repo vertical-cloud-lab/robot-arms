@@ -16,7 +16,8 @@ Model (engine-agnostic; each engine only has to report the bond's wrench and bre
                        M_y = sigma * I_y / c_x          section modulus, like a beam)
        twist capacity  T   = tau * J / r_max           (turning about z)
 
-   sigma = stick_kpa (prints.yaml / materials.py), tau = shear_ratio * sigma.
+   sigma = stick_kpa (prints.yaml / materials.py), tau = shear_ratio * sigma (1.5: bonds
+   take sliding better than lifting).
 
 3. It breaks when the loads, each against its capacity, add up past one:
 
@@ -71,7 +72,7 @@ def footprint(geoms) -> np.ndarray:
     return pts[mask, :2]
 
 
-def capacity(geoms, stick_kpa: float, shear_ratio: float = 1.0) -> BondCapacity:
+def capacity(geoms, stick_kpa: float, shear_ratio: float = 1.5) -> BondCapacity:
     """Bond capacities of a print from its geometry and bond stress (kPa)."""
     fp = footprint(geoms)
     sigma = stick_kpa * 1e3

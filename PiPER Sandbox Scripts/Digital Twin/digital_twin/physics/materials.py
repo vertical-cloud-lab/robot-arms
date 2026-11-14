@@ -23,13 +23,13 @@ class Material:
 MATERIALS: dict[str, Material] = {
     # Printed plastics. Densities are datasheet values for the solid; a print's mass is
     # density * volume * fill (prints.yaml). stick_kpa: cooled prints on textured PEI let go
-    # easily; a few kPa (a 20 mm cube is then held by ~1 N) is "a little bit of stick".
+    # easily; a few kPa (a 20 mm cube is then held down by ~1.7 N) is "a little bit of stick".
     # Friction: PLA on PLA 0.12-0.38 static (Santana 2021), PLA on steel 0.2-0.3 (Stoimenov
     # 2024). No published value for TPU 95A on PLA: TPU on steel is only 0.17-0.33 kinetic
     # (Braileanu 2023), and TPU grips plastic better than steel, so 0.6 is an estimate.
-    "PLA": Material(density=1240, friction=0.30, stick_kpa=2.5),
-    "PETG": Material(density=1270, friction=0.35, stick_kpa=3.5),
-    "ABS": Material(density=1040, friction=0.30, stick_kpa=2.0),
+    "PLA": Material(density=1240, friction=0.30, stick_kpa=4.0),
+    "PETG": Material(density=1270, friction=0.35, stick_kpa=5.0),
+    "ABS": Material(density=1040, friction=0.30, stick_kpa=3.0),
     "TPU": Material(density=1210, friction=0.60, torsional=0.01, solref=(0.006, 1.0)),
     # Cell surfaces (estimates: nothing published for these pairs).
     "plywood": Material(density=600, friction=0.40),

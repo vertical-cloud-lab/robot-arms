@@ -166,16 +166,22 @@ class SimRobot:
             t = abs(self.grip_target - self.engine.gripper_travel()) / self.grip_speed + 0.15
             self.run(t)
 
-    def grip(self, squeeze_n=None, settle=None):
-        """Close until the sleeves meet the print, then squeeze with squeeze_n at each jaw."""
-        self.squeeze = squeeze_n or self.cfg.robot["gripper"]["default_force_n"]
+    def grip(self, squeeze_n=None, settle=None, contact_n=2.0):
+        """Close until the sleeves meet the print, then squeeze with squeeze_n at each jaw.
+        It closes gently (contact_n) and only then ramps up the squeeze, so a print that is
+        a little off-centre is nudged, not shoved, before both sleeves are on it."""
+        target = squeeze_n or self.cfg.robot["gripper"]["default_force_n"]
         lo, _ = self.travel_range
+        self.squeeze = contact_n
         self.grip_target = lo  # aim fully closed; the force limit is what stops it
         t0 = self.engine.time
-        while self.engine.time - t0 < 2.0:
+        while self.engine.time - t0 < 2.5:
             self.run(0.05)
-            if abs(getattr(self.engine, "gripper_speed", lambda: 0.0)()) < 1e-4 and self.engine.time - t0 > 0.15:
+            if abs(getattr(self.engine, "gripper_speed", lambda: 0.0)()) < 2e-4 and self.engine.time - t0 > 0.2:
                 break
+        for k in range(1, 11):  # ramp the squeeze over 0.3 s
+            self.squeeze = contact_n + (target - contact_n) * k / 10
+            self.run(0.03)
         self.run(settle if settle is not None else self.task["grasp_settle_s"])
         return self.gap()
 

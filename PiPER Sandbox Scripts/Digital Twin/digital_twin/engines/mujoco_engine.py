@@ -245,7 +245,7 @@ class MujocoEngine(PhysicsEngine):
         self._act = np.array([self.m.actuator(f"act_{n}").id for n in info["arm_joints"]])
         gj = self.m.joint(info["gripper_joint"]).id
         self._g_qadr, self._g_vadr = self.m.jnt_qposadr[gj], self.m.jnt_dofadr[gj]
-        self._g_act = self.m.actuator(f"act_{info['gripper_joint']}").id
+        self._g_act = [self.m.actuator(f"act_{j}").id for j in info["finger_joints"]]
         self._bed_act = self.m.actuator("act_bed_y").id if "act_bed_y" in [self.m.actuator(i).name
                                                                          for i in range(self.m.nu)] else None
         # Bonds: equality id, print body id, its free joint's dof address, capacity.
@@ -260,6 +260,21 @@ class MujocoEngine(PhysicsEngine):
         self._res = np.zeros(self.m.nv)
         self.renderers = {}
         self.reset()
+
+    def start_report(self) -> list[str]:
+        """Problems with the starting scene: prints overlapping each other or the cell."""
+        mj, m, d = self.mujoco, self.m, self.d
+        mj.mj_forward(m, d)
+        prints = {self.m.body(n).id for n in self.print_names()}
+        out = set()
+        for i in range(d.ncon):
+            c = d.contact[i]
+            b1, b2 = m.geom_bodyid[c.geom1], m.geom_bodyid[c.geom2]
+            if (b1 in prints or b2 in prints) and c.dist < -0.0003:
+                a, b = m.body(b1).name, m.body(b2).name
+                if not ({a, b} & {"plate", "printer_bed"}):
+                    out.add(f"{a} and {b} overlap by {-c.dist * 1000:.1f} mm at the start")
+        return sorted(out)
 
     # --- time ----------------------------------------------------------------------------
     @property
@@ -303,7 +318,7 @@ class MujocoEngine(PhysicsEngine):
         self.d.ctrl[self._act] = tau
 
     def set_gripper_force(self, f):
-        self.d.ctrl[self._g_act] = f
+        self.d.ctrl[self._g_act] = f / 2  # each jaw gets half of the drive force
 
     def gravity_torque(self):
         return self.d.qfrc_bias[self._vadr].copy()

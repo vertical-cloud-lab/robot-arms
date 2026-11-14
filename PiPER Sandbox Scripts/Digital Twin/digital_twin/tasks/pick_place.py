@@ -114,7 +114,7 @@ class PickPlace:
         return None
 
     # --- moves -------------------------------------------------------------------------------
-    def transit(self, T_goal_up, q_goal_up, label):
+    def transit(self, T_goal_up, q_goal_up, label, ignore=()):
         """Rise straight up to a safe height, swing over in joint space, and arrive above."""
         r = self.robot
         T_now = r.tcp_world(r.q_ref)
@@ -123,24 +123,33 @@ class PickPlace:
         if T_now[2, 3] < z_safe - 1e-3:
             T_rise = T_now.copy()
             T_rise[2, 3] = z_safe
-            if not r.move_linear(T_rise, speed=0.12, label=f"{label}: rise"):
+            if not r.move_linear(T_rise, speed=0.12, label=f"{label}: rise", ignore=ignore):
                 q_rise = r.ik_world(T_rise, r.q_ref)
                 if q_rise is not None:
-                    r.move_joints(q_rise, label=f"{label}: rise (joint)")
+                    r.move_joints(q_rise, label=f"{label}: rise (joint)", ignore=ignore)
         T_over = T_goal_up.copy()
         T_over[2, 3] = z_safe
         q_over = r.ik_world(T_over, q_goal_up)
         if q_over is not None and z_safe > T_goal_up[2, 3] + 1e-3:
-            r.move_joints(q_over, label=f"{label}: over")
-            r.move_linear(T_goal_up, speed=0.12, label=f"{label}: down to approach")
+            r.move_joints(q_over, label=f"{label}: over", ignore=ignore)
+            r.move_linear(T_goal_up, speed=0.12, label=f"{label}: down to approach", ignore=ignore)
         else:
-            r.move_joints(q_goal_up, label=f"{label}: over")
+            r.move_joints(q_goal_up, label=f"{label}: over", ignore=ignore)
 
     # --- the task ----------------------------------------------------------------------------
     def run(self, names=None):
-        prints = [p for p in self.cell.prints if names is None or p.name in names]
-        for pr in prints:
+        queue = [p for p in self.cell.prints if names is None or p.name in names]
+        waits = {}
+        while queue:
+            pr = queue.pop(0)
             rec = self.pick_and_place(pr)
+            if rec["result"] == "waiting" and waits.get(pr.name, 0) < len(queue):
+                waits[pr.name] = waits.get(pr.name, 0) + 1
+                print(f"  {pr.name:18s} later      ({rec['note']})", flush=True)
+                queue.append(pr)
+                continue
+            if rec["result"] == "waiting":
+                rec["result"] = "blocked"
             self.report.append(rec)
             print(f"  {pr.name:18s} {rec['result']:10s} t={rec['t_end']:6.1f}s  {rec.get('note', '')}", flush=True)
         q_ready = deg(self.cfg.robot["joints"]["ready_deg"])
@@ -159,15 +168,31 @@ class PickPlace:
         open_gap = min(mm(g["width"]) + 0.024, self.max_gap)
         self.pad_half_gap = open_gap / 2
         approach = mm(self.task["approach_height_mm"])
-        sol = self.solve_grasp(p, self.closing_options(pr, T_print), r.q_ref, rise=approach)
+        # Try each way the print can be held; keep the first whose approach and grasp poses
+        # are reachable and clear of the cell and the other prints.
+        sol, hits = None, []
+        for d in self.closing_options(pr, T_print)[:4]:
+            cand = self.solve_grasp(p, [d], r.q_ref, rise=approach)
+            if cand is None:
+                continue
+            h = [x for q in (cand[1], cand[3]) for x in e.arm_collisions(q, open_gap / 2 + r.sleeve_t, (pr.name,))]
+            if not h:
+                sol, hits = cand, []
+                break
+            if sol is None:
+                sol, hits = cand, h
         if sol is None:
             rec.update(result="unreachable", t_end=e.time, note="no IK for the grasp")
             return rec
         T_grasp, q_grasp, T_pre, q_pre = sol
-        hits = [h for q in (q_grasp, q_pre) for h in e.arm_collisions(q, open_gap / 2 + r.sleeve_t, (pr.name,))]
         if hits:
-            rec.update(result="blocked", t_end=e.time,
-                       note="the arm would hit " + ", ".join(sorted({h[1] for h in hits})))
+            others = sorted({h[1] for h in hits})
+            prints = {p.name for p in self.cell.prints}
+            in_way = sorted({o.split("/")[0] for o in others if o.split("/")[0] in prints})
+            if all(o.split("/")[0] in prints for o in others):  # only other prints in the way
+                rec.update(result="waiting", t_end=e.time, note="fingers would hit " + ", ".join(in_way))
+            else:
+                rec.update(result="blocked", t_end=e.time, note="the arm would hit " + ", ".join(others))
             return rec
         rec["lean_deg"] = round(float(np.degrees(np.arccos(np.clip(-T_grasp[2, 2], -1, 1)))), 1)
         # 3. approach
@@ -213,7 +238,7 @@ class PickPlace:
         """Wiggle the print free of the plate. Returns the action that broke the bond, or None."""
         r, e = self.robot, self.e
         if not e.bonded(pr.name):
-            return "already free"
+            return "squeeze (it let go while gripping)"
         for attempt in range(1, int(self.task["max_release_attempts"]) + 1):
             for how in self.task["release_strategy"]:
                 if how == "twist":
@@ -289,14 +314,14 @@ class PickPlace:
             rec["note"] = "box drop point unreachable"
             return False
         T_rel, q_rel = sol[0], sol[1]
-        self.transit(T_rel, q_rel, f"{pr.name}: to box")
+        self.transit(T_rel, q_rel, f"{pr.name}: to box", ignore=(pr.name,))
         r.set_gripper(width_m=min(r.gap() + 0.025, self.max_gap))
         r.wait(self.task["release_settle_s"] + 0.6)  # let go, let it land
         inside = self.in_box(pr)
         rec["in_box"] = inside
         T_up = r.tcp_world(r.q_ref)
         T_up[2, 3] += 0.05
-        r.move_linear(T_up, speed=0.1, label=f"{pr.name}: retreat")
+        r.move_linear(T_up, speed=0.1, label=f"{pr.name}: retreat", ignore=(pr.name,))
         return inside
 
     def in_box(self, pr) -> bool:
@@ -329,11 +354,11 @@ class PickPlace:
             rec["note"] = "no free shelf spot in reach"
             return False
         w, rad, (T_place, q_place, T_above, q_above) = found
-        self.transit(T_above, q_above, f"{pr.name}: to shelf")
+        self.transit(T_above, q_above, f"{pr.name}: to shelf", ignore=(pr.name,))
         r.move_linear(T_place, label=f"{pr.name}: set down", ignore=(pr.name,))
         r.set_gripper(width_m=min(r.gap() + 0.02, self.max_gap))
         r.wait(self.task["release_settle_s"])
-        r.move_linear(T_above, speed=0.08, label=f"{pr.name}: retreat")
+        r.move_linear(T_above, speed=0.08, label=f"{pr.name}: retreat", ignore=(pr.name,))
         self.shelf_used.append((w[:2], rad))
         r.wait(0.3)
         T = self.e.body_pose(pr.name)

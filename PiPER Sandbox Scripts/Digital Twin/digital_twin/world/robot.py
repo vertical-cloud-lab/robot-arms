@@ -121,12 +121,14 @@ def build_piper(robot_cfg: dict, base_pose: np.ndarray, root: str) -> tuple[Body
         body = Body(name, pose=np.eye(4), kind="robot", geoms=geoms,
                     joints=[Joint(f"{name}_slide", "slide", (0, sign, 0), jrange, damping=2.0,
                                   armature=0.01,
-                                  actuator=({"type": "motor", "limit": 2.0 * g["max_force_n"]} if k == 1 else None))],
+                                  actuator={"type": "motor", "limit": float(g["max_force_n"])})],
                     inertial=_inertial(inert[name], f))
         link6.add(body)
         finger_info[name] = body
     equalities = [{"type": "joint", "joint1": "finger2_slide", "joint2": "finger1_slide",
                    "polycoef": (0, 1, 0, 0, 0)}]
+    # Both fingers are driven with the same force (the rack pushes both jaws equally) and the
+    # joint equality keeps them symmetric, so neither jaw reaches a print first.
     info = {"arm_joints": list(jc["names"]), "gripper_joint": "finger1_slide",
             "finger_joints": ["finger1_slide", "finger2_slide"], "tcp_site": "tcp",
             "flange_body": "link6", "finger_bodies": ["finger1", "finger2"],
