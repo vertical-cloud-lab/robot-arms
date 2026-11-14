@@ -9,8 +9,9 @@
 #
 # Poses are [x, y, z, yaw] in the cell's world frame (cell_layout.yaml: origin at the centre
 # of the table top, x right, y toward the back, z up). THESE PLACEMENTS ARE PROPOSALS: the
-# doser isn't in the cell yet. They were chosen with scenarios/doser_reach.py so the arm can
-# reach every auger top-down (the doser's needs the tool leaned ~50 deg: it sits ~300 mm up). Move them to where you put the real doser and rack.
+# doser isn't in the cell yet. They were chosen so the arm can
+# reach every auger and follow the peel and roll-in paths (searched with the planner's own IK
+# and collision checks; README "Swapping the powder doser's auger"). Move them to where you put the real doser and rack.
 # ============================================================================================
 
 doser:
@@ -123,7 +124,9 @@ swap:
   approach_mm: 60             # straight down from this high above the grasp
   lift_mm: 50                 # straight up after it's free
   clearance_mm: 90            # fingertips above anything when moving between doser and rack
-  insert: impedance           # impedance (push down with a Cartesian spring until it snaps)
+  insert: roll                # roll (the peel backwards: tipped, outlet end on its clip, turned
+                              # down about it) | push (level, then a Cartesian spring pushes down
+                              # until both clips snap: needs the grip near the clips' midpoint)
   insert_force_n: 45          # what the spring pushes with (both clips at once: ~36 N needed)
   seated_tol_mm: 0.6          # tube centre within this of every clip's seat = seated
   gear_axial_tol_mm: 3        # gear face centred on the pinion's to within this = meshes
@@ -134,12 +137,13 @@ apriltags:
   # printer, plate and shelf tags stay in the scene but this job doesn't use them.
   #   parent  doser: the doser frame (geometry.yaml)   rack: the rack frame (plate top centre)
   #           auger: on every auger, in its own frame (outlet end centre, z toward the cap)
-  # --- Doser: two on the baseplate's flat arms either side of the mounting plate, one on the
-  #     right leg's outer face. Not all in one plane, so the doser's pose is well defined even
-  #     when the arm hides one of them.
+  # --- Doser: two on the baseplate's flat arms either side of the mounting plate (the only
+  #     flat, uncovered patches on top, 32 mm wide), one on the outer face of the leg that
+  #     faces the front of the cell (mpzy). Not all in one plane, so the doser's pose is well
+  #     defined even when the arm hides one of them.
   - {name: D1, id: 90, size: 24, parent: doser, pos: [-91, 70, 258], normal: +z}
   - {name: D2, id: 91, size: 24, parent: doser, pos: [63, 70, 258], normal: +z}
-  - {name: D3, id: 92, size: 40, parent: doser, pos: [108.7, 64.6, 150], normal: +x}
+  - {name: D3, id: 92, size: 40, parent: doser, pos: [-141.5, 64.6, 200], normal: -x}
   # --- Rack: three plate corners (the rack's pose), and one under each slot between the gear
   #     and the back clip: hidden while an auger sits there, so it reads which slots are full.
   - {name: R1, id: 93, size: 30, parent: rack, pos: [-121, -110, 0], normal: +z}

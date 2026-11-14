@@ -4,7 +4,9 @@ A physics simulation of the lab's AgileX PiPER clearing prints off the Bambu Lab
 For each print it grips it, breaks it free of the plate, then drops it in a box or stands it
 on the black perforated shelf. Everything is open-source Python. The physics engine is
 [MuJoCo](https://mujoco.org) (Apache-2.0), and a numpy-only engine needs nothing else.
-Started on [PR #77](https://github.com/vertical-cloud-lab/robot-arms/pull/77).
+Started on [PR #77](https://github.com/vertical-cloud-lab/robot-arms/pull/77). A second job
+swaps the auger of the [powder doser](https://github.com/vertical-cloud-lab/powder-doser/pull/200)
+(see [Swapping the powder doser's auger](#swapping-the-powder-dosers-auger)).
 
 ![Where the arm can grasp on the plate](docs/reach_map.png)
 
@@ -22,7 +24,8 @@ python run_sim.py --engine kinematic --viewer    # no MuJoCo needed: numpy + mat
 python run_sim.py --scenario reach_map           # where on the plate the arm can pick
 python run_sim.py --scenario camera_check        # mpzy's view and the AprilTags it finds
 python run_sim.py --scenario compliance_demo     # impedance control: push and press tests
-python -m pytest tests                           # 11 tests, about a minute
+python run_sim.py --scenario swap_augers         # swap the powder doser's auger
+python -m pytest tests                           # 14 tests, about two minutes (-m "not slow": one)
 ```
 
 In the viewer, drag to orbit, right-drag to pan, scroll to zoom, double-click a body to
@@ -109,6 +112,8 @@ Digital Twin/
 │   ├── cell_layout.yaml       table, arm pose, A1 mini, shelf, box, rest stand, cameras
 │   ├── apriltags.yaml         every tag: id, size, which object it's on, where, facing which way
 │   ├── prints.yaml            every print: shape, size, position on the plate, material, stick, grasp, destination
+│   ├── powder_doser.yaml      the auger job: doser and rack placement, augers and powders, clip
+│   │                          material, swap settings (grip, squeeze, peel, roll-in), its AprilTags
 │   └── sim.yaml               engine choice, timestep, contact softness, task speeds and heights
 ├── digital_twin/              the Python package
 │   ├── config.py              loads the YAML files
@@ -117,16 +122,21 @@ Digital Twin/
 │   ├── kinematics/            dh.py (FK, Jacobian), piper.py (the PiPER: FK, IK, limits)
 │   ├── world/                 scene.py (Body/Geom/Joint), objects.py (Table, PrinterA1Mini,
 │   │                          PerforatedShelf, Bin, Print), robot.py (the PiPER), cell.py,
-│   │                          print_library.py (print shapes: action figure, airplane, ...)
-│   ├── physics/               adhesion.py (the stick), materials.py (density, friction, softness)
+│   │                          print_library.py (print shapes: action figure, airplane, ...),
+│   │                          powder_doser.py (PowderDoser, Auger, AugerRack), doser_cell.py
+│   ├── physics/               adhesion.py (the stick), materials.py (density, friction, softness),
+│   │                          snap_fit.py (the doser's clips: stiffness, snap force, force field)
 │   ├── engines/               base.py (the interface), mujoco_engine.py, kinematic_engine.py
 │   ├── control/               controllers.py, trajectory.py, sim_robot.py (+ a piper_sdk-style facade)
-│   ├── tasks/                 pick_place.py
+│   ├── tasks/                 pick_place.py, auger_swap.py
 │   ├── perception/            apriltags.py (tag textures, detection, pose)
 │   └── viz/                   recorders.py (viewer, video), matplotlib_view.py
-├── scenarios/                 clear_bed, reach_map, camera_check, compliance_demo
+├── scenarios/                 clear_bed, reach_map, camera_check, compliance_demo, swap_augers
 ├── assets/piper/              link meshes (STL, DH frames) + inertias + MIT licence
+├── assets/powder_doser/       doser meshes (doser frame), auger, clip, cradle, geometry.yaml + MIT licence
 ├── tools/build_piper_assets.py  regenerates assets/piper/ from MuJoCo Menagerie
+├── tools/build_doser_assets.py  regenerates assets/powder_doser/ from powder-doser PR 200
+├── tools/render_swap.py, draw_doser_tags.py   the swap's frame sheet and its AprilTag graphic
 ├── tests/                     kinematics, world, tasks
 └── docs/                      images used here
 ```
@@ -212,6 +222,115 @@ What the runs showed:
     and 16.13 N, which is K_z × 10 mm. The stiffness sets the force.
   - A 5 N push at the fingertips moves them 4.4 mm, against F/K = 6.2 mm, because joint
     friction takes part of the load.
+
+## Swapping the powder doser's auger
+
+The same arm takes the auger out of the powder doser from
+[powder-doser PR 200](https://github.com/vertical-cloud-lab/powder-doser/pull/200) and puts
+another one in. The auger is a 25 mm printed tube with a screw inside, a 46 mm drive gear and
+a screw-on cap. Two printed C-clips hold it, and each must be snapped open to get it out.
+
+```bash
+python run_sim.py --scenario swap_augers                       # headless, prints a report (MuJoCo only)
+python run_sim.py --scenario swap_augers --viewer              # watch it live
+python run_sim.py --scenario swap_augers --video output/swap.mp4 --camera swap   # or --camera doser
+MUJOCO_GL=egl python tools/render_swap.py                      # the frame sheet below
+MUJOCO_GL=egl python tools/draw_doser_tags.py                  # ../AprilTags/apriltag_locations_augers.jpg
+```
+
+![Eight moments of the auger swap](docs/swap_augers_frames.jpg)
+
+**What the planner does** (`digital_twin/tasks/auger_swap.py`):
+
+1. **Grip** the installed auger across its tube, between the back clip and the cap. That is
+   the only stretch the 28 mm sleeves fit.
+2. **Peel it out.** It tips the cap end up 40° about the bottom edge of the outlet-side clip.
+   The back clip lets go first, then the tube levers itself out of the outlet-side clip across
+   that clip's 12 mm width. Then it lifts.
+3. **Park it** in an empty slot of the rack.
+4. **Grip the next auger.** The grip is chosen so the arm can also install it from that
+   grip, without letting go on the way.
+5. **Roll it in**, which is the peel run backwards. It holds the auger tipped 40° with its
+   outlet section on its clip, then turns it down about that clip's edge. The outlet-side
+   clip snaps, then the back clip. A short press with the Cartesian spring finishes seating it.
+6. **Check** that the tube sits centred in both clips and the gear's face is on the stepper
+   pinion's, then let go.
+
+**What is modelled, and how exact it is**
+
+| Part | Model | Source | How sure |
+|---|---|---|---|
+| Doser | Every printed and wooden part from PR 200's STLs, at Onshape's assembly placements, turned the right way up (the CAD is drawn upside down). Meshes for looks; for collisions, each part is voxelised at 2–4 mm and merged into boxes | `tools/build_doser_assets.py`, pinned to PR 200's commit (MIT) | Geometry to the voxel. The stepper, servos and solenoid have no STLs in PR 200, so they are drawn as boxes of their size and don't collide |
+| Auger | 25 mm tube, 45-tooth 46 mm gear at 78–88 mm from the outlet, 29 mm cap. Mass is the STL's 53.3 cm³ of PLA, plus the cap, plus the powder | auger STL | Shape exact. The cap is a cylinder because its STL isn't in PR 200 |
+| Clips (the "stick") | The ring's lower half is rigid. Above it, each arm is a 2 mm PLA arc acting as a spring (Castigliano: 4.5 N/mm at the lip). The mouth is 17.5 mm for the 25 mm tube. Friction is 0.3. Three slices across the clip's width, so a tilted tube loads one edge first | `physics/snap_fit.py`, dimensions measured from the clip STL | Shape exact. The stiffness is beam theory with E = 3 GPa: **calibrate it** (luggage scale on a string loop, then scale `E_mpa`) |
+| Tap collar | An open-top cradle | the CAD has a closed ring | A change to the CAD (see below) |
+| Rack | A printed plate on a 120 mm riser with three slots, each made of two of the doser's clips with their arms cut off (open cradles), plus a slot tag | `config/powder_doser.yaml` | A proposal |
+| Augers | Xanthan gum (45 % full, 89.5 g), salt (70 %, 118 g), iron powder (60 %, 176 g) | bulk densities | Estimates: weigh them |
+
+**Results** (`python run_sim.py --scenario swap_augers`, 2026-11-14, MuJoCo 4.0.1, Python 3.14):
+
+- **The swap succeeds** in 66.6 s of simulated time (about 69 s of wall time headless).
+- **Snap forces:** 18.0 N (back clip) and 16.7 N (outlet clip) coming out, then 18.1 N and
+  19.1 N going in. Beam theory predicts 17.9 N per clip. As the tube levers out, the outlet
+  clip catches it once more for an instant (11 N).
+- **The new auger is seated** within 0.24 mm of both clips' seats, which is the clips'
+  clearance. Its gear face is 1.3 mm off the pinion's (3 mm allowed), with the gear and pinion
+  centres 32.0 mm apart, as in the CAD.
+- **The auger slips in the grip while it is peeled out:** it turns 4° and slides 16 mm, but
+  stays in the gripper. The clips pull on it harder than the sleeves' friction can resist as
+  a torque.
+- **The default 20 N squeeze is enough.** With `squeeze_n: 20` the swap succeeds the same way,
+  because peeling and rolling keep the load on the grip small. The config uses 40 N for margin.
+- **The heaviest auger doesn't go in yet.** With `swap_in: auger_iron` (176 g, 108 g of iron
+  powder), it shifts 3.8 mm in the grip while carried tipped. The roll-in then snaps the back
+  clip but leaves the outlet clip open, and the back clip lets go after release. Its centre of
+  mass sits 78 mm from the only place the sleeves fit, so heavy augers need a firmer grip, a
+  second press right over the outlet clip, or a grip feature nearer their middle.
+
+**What the twin found about the doser** (for the powder-doser team):
+
+1. **The tap collar is a closed ring around the tube** (12.7 mm bore), and the drive gear sits
+   between it and the back clip. As drawn, the auger can't come out at all. The twin opens the
+   collar's top (`collar_open_top`); set that to `false` to simulate the CAD as drawn. The
+   collar needs an open top like the clips, or a hinge.
+2. **The doser is too tall for the PiPER on its 250 mm legs.** With the auger about 300 mm up,
+   the wrist (J5, ±70°) has to tilt the tool about 50°, and at that angle the gripper's body
+   hits the tube. Lowered 120 mm (legs cut to 130 mm, or the stand brackets bolted 120 mm
+   lower), the arm reaches it with a 20–30° tilt. The twin's doser stands that low
+   (`pose` z = −120 in `config/powder_doser.yaml`).
+3. **There is one place to grip.** Between the gear and the back clip, the stepper's mount
+   leaves 27 mm of tube for 28 mm sleeves. Around the outlet, the hinge arms leave 3 mm beside
+   the tube. That leaves 150–222 mm from the outlet.
+4. **A straight pull or push doesn't work from there.** Both clips together take about 36 N.
+   From the cap side, pushing the outlet clip shut takes about 2.4 N·m through the grip,
+   several times what the sleeves' friction holds. Tipping about the outlet clip's edge (the
+   peel and roll-in) needs only a few newtons.
+5. **The clips are near their limit.** At full spread (3.75 mm per arm), the arms' roots reach
+   about 48 MPa, close to PLA's tensile strength. Printing the clips in PETG, or giving them a
+   wider mouth, would make them last longer and make swaps easier.
+
+**Design decisions that differ from the request (auger job):**
+
+- **"Follow the last prompt, with augers instead of prints"** became a second scenario in the
+  same folder, not a replacement. `clear_bed` still clears prints, and `swap_augers` reuses its
+  engine, arm, controllers, AprilTag code and viewer.
+- **The variety is in the augers' contents, not their shapes.** The doser takes one auger
+  design, so there is no action figure or model airplane. The three augers hold different
+  powders at different fill levels (90–176 g).
+- **The doser stands 120 mm lower than in the CAD** (point 2 above), and its placement and the
+  rack's are proposals, since the doser isn't in the cell yet. They were found by searching
+  placements with the planner's own IK and collision checks.
+- **The tap collar is open at the top** (point 1), and the rack's clips have no arms.
+- **Tags:** the table (W), arm-base (A) and gripper (G) tags stay. The new ones are doser (D),
+  rack (R), rack-slot (RS) and auger-cap (U) tags. The printer, plate and shelf tags stay in
+  the scene but this job doesn't use them, and the drop box is left out.
+- **The bought parts are visual only**, as in the table above. If the stepper's body sits
+  beside the tube at 100–150 mm (which its placement suggests), grips there are blocked, which
+  the twin already avoids.
+- **Positions come from the simulation (ground truth)**, as in the print job. The tags are in
+  place for closing the loop.
+
+![Where the AprilTags go for the auger swap](../AprilTags/apriltag_locations_augers.jpg)
 
 ## Design decisions that differ from the request
 

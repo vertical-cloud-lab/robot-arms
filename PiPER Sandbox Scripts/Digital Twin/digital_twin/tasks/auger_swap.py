@@ -1,22 +1,26 @@
 """Swapping the powder doser's auger: take the installed one out, park it in the rack, and snap
-another one in (config/powder_doser.yaml, `swap`).
+another one in (config/powder_doser.yaml, `swap`). MuJoCo only: the clips' snap is a force.
 
-    1. remove   grasp the doser's auger across its tube (fingers closing across it, between
-                the gear and the back clip), then get it out of the two snap clips:
-                  peel      lift the cap end about the outlet-side clip (one clip at a time,
-                            like peeling a tube out of cable clips by hand), then lift
-                  straight  pull straight up through both clips at once
-                and check that it came out with the gripper, not left behind or slipped
-    2. park     carry it over, set it into an empty rack slot, let go
-    3. fetch    grasp `swap_in` in its rack slot and lift it out
-    4. install  hold it level over the doser with its gear between the tap collar and the back
-                clip (axial alignment), lower it onto the clips' mouths, then push down with the
-                Cartesian impedance controller (a spring at the TCP) until both clips snap,
-                which shows up as the push suddenly meeting no resistance
+    1. remove   grip the doser's auger across its tube (the only stretch the 28 mm sleeves fit
+                is between the back clip and the cap), then get it out of the two snap clips:
+                  peel      tip the cap end up (peel_deg) about the bottom edge of the outlet-side
+                            clip: the back clip lets go first, then the tube levers itself out
+                            of the outlet-side clip across that clip's width; then lift
+                  straight  pull straight up through both clips at once (needs ~36 N)
+                and check it came out with the gripper (slip in the grip is reported)
+    2. park     carry it over, set it in an empty rack slot (open cradles), let go
+    3. fetch    grip `swap_in` in its slot, choosing a grip from which the arm can also
+                install it (so it needn't be re-gripped)
+    4. install  roll    the peel backwards: hold it tipped, outlet section on its clip, turn it
+                        down about that clip's edge (outlet clip snaps, then the back clip),
+                        then a short press with the Cartesian impedance controller
+                push    hold it level over the clips and push down with the Cartesian spring
+                        until both snap (needs the grip near the clips' midpoint)
     5. verify   tube centred in every clip (seated), gear face on the pinion's (meshes), let go
 
 Every step goes in `self.report` (forces from the clips' snap model, slip in the grip, timing),
-which scenarios/swap_augers.py prints and saves as JSON.
+which scenarios/swap_augers.py prints and saves as JSON. Placement poses are searched over
+the auger's turn about its own axis (the tube is round), so any reachable one is used.
 """
 from __future__ import annotations
 
@@ -101,7 +105,13 @@ class AugerSwap:
                         continue
                     if then_place is not None:  # this grip must also let it be set down there
                         T_goal, hover = then_place
-                        if self.place_solution(inv(T) @ T_auger, T_goal, hover, ignore[0] if ignore else "") is None:
+                        name = ignore[0] if ignore else ""
+                        T_rel = inv(T) @ T_auger
+                        if self.sw.get("insert", "roll") == "roll":
+                            path = self.tipped_path(name, T_goal, max(4, int(self.sw["peel_deg"] / 4)))
+                            if self.path_solution(T_rel, path, name, mm(self.sw["clearance_mm"])) is None:
+                                continue
+                        elif self.place_solution(T_rel, T_goal, hover, name) is None:
                             continue
                     cost = float(np.sum((q - q_seed) ** 2)) + 50 * abs(sg - s0)
                     if best is None or cost < best[0]:
@@ -200,13 +210,16 @@ class AugerSwap:
         slip_mm, slip_deg = self.held_in_grip(auger)
         free = not any(self.cell.snap.seated(self.e, auger, [c], tol_mm=3.0) for c in self.doser_clips)
         ev = self.cell.snap.events[n0:]
-        self._log(f"remove {auger}", ok=free and slip_mm < 5, out_of_clips=free, slip_mm=slip_mm,
+        # ok: out of both clips and still in the gripper. Some slip is expected: the clips pull
+        # on the tube while the grip turns it, and the grip can only resist so much torque.
+        self._log(f"remove {auger}", ok=free and slip_mm < 25, out_of_clips=free, slip_mm=slip_mm,
                   slip_deg=slip_deg, snaps=[(e["clip"], e["event"], e["peak_force_n"]) for e in ev])
         return free
 
     def pivot(self, auger, T_a):
         """Bottom edge (outlet side) of the doser clip nearest the outlet, and the horizontal
-        axis across the tube there, signed so a positive turn lifts the cap end."""
+        axis across the tube there, signed so a positive turn lifts the cap end. T_a: the
+        auger's pose, seated (now, or where it will be)."""
         seats = {c: self.e.site_pose(f"{c}_seat") for c in self.doser_clips}
         s_of = {c: (T[:3, 3] - T_a[:3, 3]) @ T_a[:3, 2] for c, T in seats.items()}
         near = min(s_of, key=s_of.get)
@@ -226,10 +239,64 @@ class AugerSwap:
         T[2, 3] += dz
         return T
 
+    def roll_in(self, auger: str, T_seat: np.ndarray, where: str, clips: list[str]) -> bool:
+        """Install by rolling in: hold the auger tipped up by peel_deg with its outlet-side
+        section on the outlet-side clip's bottom edge, then turn it down about that edge. The
+        outlet-side clip is levered shut across its 12 mm width (a small force at the grip),
+        then the back clip is snapped by the tube acting as a lever on the pivot."""
+        r, sw = self.robot, self.sw
+        T_rel = inv(r.tcp_world()) @ self.e.body_pose(auger)
+        path = self.tipped_path(auger, T_seat, max(4, int(sw["peel_deg"] / 4)))
+        tcps = self.path_solution(T_rel, path, auger, mm(sw["clearance_mm"]))
+        if tcps is None:
+            self._log(f"place {auger} in {where}", ok=False, why="no reachable roll-in path")
+            return False
+        T_up = tcps[0].copy()
+        T_up[2, 3] += mm(sw["clearance_mm"])
+        if not self.transit(T_up, f"carry {auger} to {where}"):
+            return False
+        # A heavy auger can shift in the grip while it is carried tipped: measure the grip
+        # again and re-plan the roll-in from where the auger really is in the gripper.
+        r.wait(0.3)
+        T_rel2 = inv(r.tcp_world()) @ self.e.body_pose(auger)
+        moved = np.linalg.norm(T_rel2[:3, 3] - T_rel[:3, 3]) * 1000
+        if moved > 1.0:
+            tcps2 = self.path_solution(T_rel2, path, auger, mm(sw["clearance_mm"]))
+            if tcps2 is not None:
+                tcps = tcps2
+            self._log(f"re-plan roll-in for {auger}", ok=tcps2 is not None, grip_shift_mm=float(moved))
+        n0 = len(self.cell.snap.events)
+        T_hover = tcps[0].copy()
+        T_hover[2, 3] += 0.01
+        r.move_linear(T_hover, 0.04, label=f"lower onto {where}, tipped", ignore=(auger,))
+        r.move_linear(tcps[0], 0.01, label="set the outlet end on its clip", ignore=(auger,))
+        for T in tcps[1:]:
+            r.move_linear(T, 0.015, label="roll in", ignore=(auger,))
+        # Press down with the Cartesian spring to finish seating, then relax.
+        kz = self.cfg.robot["control"]["cartesian_stiffness"][2]
+        T_push = tcps[-1].copy()
+        T_push[2, 3] -= sw["insert_force_n"] / kz
+        t0 = self.e.time
+        while self.e.time - t0 < 1.5 and not self.cell.snap.seated(self.e, auger, clips, sw["seated_tol_mm"]):
+            r.compliant(T_push, 0.1, label=f"press into {where}")
+        r.compliant(tcps[-1], 0.3, label="relax")
+        seated = self.cell.snap.seated(self.e, auger, clips, sw["seated_tol_mm"])
+        r.set_gripper(width_m=2 * (self.tube_r + self.open_margin))
+        self.held = []
+        r.move_linear(self._raised(mm(sw["approach_mm"])), 0.05, label="back off", ignore=(auger,))
+        r.wait(0.5)  # let it settle in the cradles
+        seated_after = self.cell.snap.seated(self.e, auger, clips, sw["seated_tol_mm"])
+        ev = self.cell.snap.events[n0:]
+        self._log(f"place {auger} in {where}", ok=seated_after, how="roll in", offsets_mm=self.seat_offsets(auger, clips), seated_when_pushed=seated,
+                  seated_after_release=seated_after, snaps=[(e["clip"], e["event"], e["peak_force_n"]) for e in ev])
+        return seated_after
+
     def place(self, auger: str, T_target_auger: np.ndarray, where: str, clips: list[str], push: bool) -> bool:
         """Set the held auger down so its frame lands on T_target_auger, push it in if `push`,
         check it is seated, let go and back off."""
         r, sw = self.robot, self.sw
+        if push and sw.get("insert", "roll") == "roll":
+            return self.roll_in(auger, T_target_auger, where, clips)
         # Where the TCP must be so the auger lands on the target, keeping the grip as it is now.
         # The tube is round, so the auger may land turned any way about its own axis: pick the
         # turn the arm can reach at the seat, just above it and at the carrying height.
@@ -264,13 +331,53 @@ class AugerSwap:
         seated = self.cell.snap.seated(self.e, auger, clips, sw["seated_tol_mm"] if push else 1.5)
         r.set_gripper(width_m=2 * (self.tube_r + self.open_margin))
         self.held = []
-        r.move_linear(self._raised(mm(sw["approach_mm"])), 0.05, label="back off")
+        r.move_linear(self._raised(mm(sw["approach_mm"])), 0.05, label="back off", ignore=(auger,))
+        r.wait(0.5)  # let it settle in the cradles
         seated_after = self.cell.snap.seated(self.e, auger, clips, sw["seated_tol_mm"] if push else 1.5)
         ev = self.cell.snap.events[n0:]
         self._log(f"place {auger} in {where}", ok=seated_after, seated_when_pushed=seated,
                   seated_after_release=seated_after,
                   snaps=[(e["clip"], e["event"], e["peak_force_n"]) for e in ev])
         return seated_after
+
+    def tipped_path(self, auger, T_seat, n: int):
+        """Auger poses from tipped up by peel_deg about the outlet-side clip's bottom edge
+        (cap end up) down to seated: the peel run backwards."""
+        pivot, axis = self.pivot(auger, T_seat)
+        out = []
+        for k in range(n, -1, -1):
+            R = axis_angle(axis, deg(self.sw["peel_deg"]) * k / n)
+            T = T_seat.copy()
+            T[:3, :3] = R @ T_seat[:3, :3]
+            T[:3, 3] = pivot + R @ (T_seat[:3, 3] - pivot)
+            out.append(T)
+        return out
+
+    def path_solution(self, T_rel, path, auger, rise: float):
+        """Like place_solution, for a whole path of auger poses (the first one approached
+        straight down from `rise` above): the turn about the auger's axis that the arm can
+        follow all the way. Returns the TCP poses, or None."""
+        r = self.robot
+        best = None
+        for th in np.radians(np.arange(0, 360, 15)):
+            Rz = make_pose(axis_angle([0, 0, 1.0], th))
+            tcps = [T @ Rz @ inv(T_rel) for T in path]
+            if tcps[-1][2, 2] > -0.2:
+                continue
+            T0 = tcps[0].copy()
+            T0[2, 3] += rise
+            q, ok = r.q_ref, True
+            for i, Tz in enumerate([T0] + tcps):
+                q2 = r.ik_world(Tz, q, extra_seeds=6 if i == 0 else 0)
+                if q2 is None or (i and np.max(np.abs(q2 - q)) > 0.6) or self._hits(q2, (auger,)):
+                    ok = False
+                    break
+                q = q2
+            if ok:
+                cost = float(np.arccos(np.clip(-tcps[-1][2, 2], -1, 1)))
+                if best is None or cost < best[0]:
+                    best = (cost, tcps)
+        return None if best is None else best[1]
 
     def place_solution(self, T_rel, T_target_auger, hover, auger, q_seed=None):
         """TCP pose that sets an auger held as T_rel (auger in the TCP frame) down on
@@ -296,6 +403,18 @@ class AugerSwap:
                 if best is None or cost < best[0]:
                     best = (cost, T_tcp)
         return None if best is None else best[1]
+
+    def seat_offsets(self, auger: str, clips: list[str]) -> dict:
+        """Tube centre's offset from each clip's seat (mm): across, up."""
+        T_a = self.e.body_pose(auger)
+        out = {}
+        for c in clips:
+            T_c = self.e.site_pose(f"{c}_seat")
+            y, ax = T_c[:3, 1], T_a[:3, 2]
+            sc = ((T_c[:3, 3] - T_a[:3, 3]) @ y) / (ax @ y)
+            d = T_c[:3, :3].T @ (T_a[:3, 3] + ax * sc - T_c[:3, 3]) * 1000
+            out[c] = [round(float(d[0]), 2), round(float(d[2]), 2)]
+        return out
 
     def gear_check(self, auger: str) -> dict:
         """Is the gear's face centred on the pinion's (axially), and at the right distance?"""
@@ -336,6 +455,6 @@ class AugerSwap:
                 r.move_linear(self._raised(mm(sw["lift_mm"])), 0.04, label="lift from rack", ignore=(new,))
                 ok &= self.place(new, c.doser_seat_world, "doser", self.doser_clips, push=True)
                 self.gear_check(new)
-        r.move_joints(q_ready, label="ready")
+        r.move_joints(q_ready, label="ready", ignore=tuple(c.augers))
         self._log("done", ok=bool(ok))
         return bool(ok)

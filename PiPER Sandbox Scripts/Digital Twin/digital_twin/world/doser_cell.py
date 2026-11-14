@@ -73,7 +73,24 @@ class DoserCell(Cell):
         self.snap = SnapFitField(snap_clips, self.augers, geom, ag["tube_radius"], spans, cg["width"] / 2)
         self.scene.info["force_fields"] = [self.snap]
         self.scene.info.update(doser_body="doser", rack_body="rack", augers=list(self.augers))
+        # Named views for videos (run_sim.py --camera doser / swap): free cameras, world frame.
+        d_xy = self.doser_seat_world[:3, 3]
+        r_xy = self.slot_world(1)[:3, 3]
+        mid = (d_xy + r_xy) / 2
+        self.scene.info["free_cameras"] = {
+            "swap": dict(lookat=[mid[0], mid[1], 0.16], distance=1.0, azimuth=150, elevation=-34),
+            "doser": dict(lookat=list(d_xy), distance=0.55, azimuth=35, elevation=-30),
+        }
         self.poses0 = {b.name: T for b, T in root.walk()}
+
+    def add_view(self, name: str, position, look_at, fovy_deg: float = 45.0, resolution=(1600, 1000)):
+        """A fixed world camera (before the engine is built), e.g. for the tag-placement graphic."""
+        from .cell import look_at_pose
+        from .scene import Camera
+        cam = Camera(name, look_at_pose(np.asarray(position, float), np.asarray(look_at, float)), fovy_deg,
+                     tuple(resolution))
+        self.scene.info["world_cameras"].append(cam)
+        return cam
 
     def slot_world(self, k: int) -> np.ndarray:
         return self.rack_pose() @ self.rack.slot_poses[k]
