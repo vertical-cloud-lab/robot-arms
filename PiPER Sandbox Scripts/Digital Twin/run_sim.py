@@ -9,6 +9,7 @@
     python run_sim.py --engine kinematic --video k.gif # no physics engine needed (numpy + matplotlib)
     python run_sim.py --scenario reach_map             # where on the plate the arm can pick
     python run_sim.py --scenario camera_check          # render mpzy's view, find the AprilTags
+    python run_sim.py --scenario swap_augers           # swap the powder doser's auger (PR 200)
     python run_sim.py --prints action_figure,model_airplane
     python run_sim.py --config my_config_dir           # your own copy of config/
 
@@ -52,7 +53,8 @@ def main():
     if args.video and not args.viewer and sys.platform.startswith("linux") and not os.environ.get("DISPLAY"):
         os.environ.setdefault("MUJOCO_GL", "egl")
     cfg = load_config(args.config)
-    sim = make_sim(cfg, args.engine)
+    scenario = importlib.import_module(f"scenarios.{args.scenario}")
+    sim = make_sim(cfg, args.engine, cell_factory=getattr(scenario, "make_cell", None))
     sim.robot.collision_check = not args.no_collision_check
     rec = None
     if args.video:
@@ -62,7 +64,6 @@ def main():
     if args.viewer:
         from digital_twin.viz.recorders import LiveViewer
         LiveViewer(sim, speed=args.speed).attach()
-    scenario = importlib.import_module(f"scenarios.{args.scenario}")
     t0 = time.time()
     try:
         result = scenario.run(sim, args)

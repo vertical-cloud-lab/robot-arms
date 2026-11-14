@@ -30,10 +30,14 @@ from .base import PhysicsEngine
 # (contype1 & conaffinity2) or (contype2 & conaffinity1) is non-zero.
 #   env 1, print 2, arm 4, finger 8: env never touches env; the arm and fingers never touch
 #   themselves or each other (the real arm's limits keep them apart), everything else does.
-GROUP_BITS = {"env": (1, 2 | 4 | 8), "print": (2, 1 | 2 | 4 | 8), "arm": (4, 1 | 2),
-              "finger": (8, 1 | 2), "none": (0, 0)}
+#   print_wide 2|32 and clip_arm 16 (the powder doser, world/powder_doser.py): an auger's gear and
+#   cap hit a snap clip's arms, its tube doesn't (physics/snap_fit.py models the arms flexing
+#   around the tube), and the arm and fingers hit them like anything else.
+GROUP_BITS = {"env": (1, 2 | 4 | 8), "print": (2, 1 | 2 | 4 | 8), "arm": (4, 1 | 2 | 16),
+              "finger": (8, 1 | 2 | 16), "print_wide": (2 | 32, 1 | 2 | 4 | 8 | 16), "clip_arm": (16, 4 | 8 | 32),
+              "none": (0, 0)}
 # Which geoms show in the viewer by default (MuJoCo groups 0-2 are visible, 3+ hidden).
-VIS_GROUP = {"env": 0, "print": 0, "arm": 3, "finger": 0, "none": 2}
+VIS_GROUP = {"env": 0, "print": 0, "arm": 3, "finger": 0, "print_wide": 0, "clip_arm": 0, "none": 2}
 
 
 def _f(v, fmt="{:.6g}"):
@@ -194,7 +198,7 @@ class _Builder:
             sr = g.solref or m.solref
             if sr is not None:
                 attrs["solref"] = _f(sr)
-            if g.collide in ("print", "finger"):
+            if g.collide in ("print", "print_wide", "finger"):
                 attrs["condim"] = "6"  # sliding + torsional + rolling friction for grasps
         attrs["rgba"] = _f(g.rgba)
         if body.inertial is not None or body.kind == "static":
@@ -259,6 +263,11 @@ class MujocoEngine(PhysicsEngine):
         self._efc_vec = None
         self._res = np.zeros(self.m.nv)
         self.renderers = {}
+        # Force fields (e.g. physics/snap_fit.SnapFitField): extra forces some objects put on
+        # others, computed in Python every physics step and applied as body wrenches.
+        self.force_fields = list(scene.info.get("force_fields", []))
+        for f in self.force_fields:
+            f.bind(self)
         self.reset()
 
     def start_report(self) -> list[str]:
@@ -297,6 +306,10 @@ class MujocoEngine(PhysicsEngine):
     def step(self, n: int = 1):
         mj = self.mujoco
         for _ in range(n):
+            if self.force_fields:
+                self.d.xfrc_applied[:] = 0.0
+                for f in self.force_fields:
+                    f.apply(self)
             mj.mj_step(self.m, self.d)
             if self.bonds:
                 self._update_bonds()
@@ -335,6 +348,20 @@ class MujocoEngine(PhysicsEngine):
         T[:3, :3] = self.d.xmat[b].reshape(3, 3)
         T[:3, 3] = self.d.xpos[b]
         return T
+
+    def body_velocity(self, name):
+        """(linear velocity of the body's origin, angular velocity), world frame."""
+        b = self.m.body(name).id
+        v = np.zeros(6)
+        self.mujoco.mj_objectVelocity(self.m, self.d, self.mujoco.mjtObj.mjOBJ_XBODY, b, v, 0)
+        return v[3:].copy(), v[:3].copy()
+
+    def apply_wrench(self, name, force, torque):
+        """Add a force (N) and a torque about the body's origin (N*m), world frame."""
+        b = self.m.body(name).id
+        com = self.d.xipos[b] - self.d.xpos[b]
+        self.d.xfrc_applied[b, :3] += force
+        self.d.xfrc_applied[b, 3:] += np.asarray(torque) - np.cross(com, force)
 
     def site_pose(self, name):
         s = self.m.site(name).id

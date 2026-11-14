@@ -28,11 +28,14 @@ class Sim:
     robot: SimRobot
 
 
-def make_sim(cfg: Config | None = None, engine: str | None = None, quiet: bool = False) -> Sim:
+def make_sim(cfg: Config | None = None, engine: str | None = None, quiet: bool = False,
+             cell_factory=None) -> Sim:
+    """cell_factory(cfg) -> a Cell (default: world/cell.py's Cell). Scenarios that need a
+    different cell (scenarios/swap_augers.py: the powder doser) define `make_cell(cfg)`."""
     cfg = cfg or load_config()
     with warnings.catch_warnings(record=True) as caught:
         warnings.simplefilter("always")
-        cell = Cell(cfg)
+        cell = (cell_factory or Cell)(cfg)
     if not quiet:
         for w in caught:
             print("warning:", w.message)

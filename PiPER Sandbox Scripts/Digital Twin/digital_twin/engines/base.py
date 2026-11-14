@@ -76,6 +76,14 @@ class PhysicsEngine(ABC):
     @abstractmethod
     def site_pose(self, name: str) -> np.ndarray: ...
 
+    def body_velocity(self, name: str):
+        """(linear velocity of the body's origin, angular velocity), world frame."""
+        return np.zeros(3), np.zeros(3)
+
+    def apply_wrench(self, name: str, force, torque) -> None:
+        """Add a force and a torque (about the body's origin) for the next step, world frame.
+        Used by force fields (physics/snap_fit.py); engines without dynamics ignore it."""
+
     def print_names(self) -> list[str]:
         return [b.name for b, _ in self.scene.root.walk() if b.kind == "print"]
 
