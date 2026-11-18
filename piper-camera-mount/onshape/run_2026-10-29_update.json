@@ -1,0 +1,203 @@
+{
+  "date": "2026-10-29",
+  "commit": "393c198",
+  "document": "https://cad.onshape.com/documents/93ef145982c24192bfd160be/w/e3d08fcb2dcad7c92e183721",
+  "tabs_before": {
+    "Print plate (printed parts, A1 mini layout)": "PARTSTUDIO",
+    "Mount parts (exports/assembly.step)": "PARTSTUDIO",
+    "AgileX gripper (reference, do not share)": "PARTSTUDIO",
+    "OLD 4be6e17, superseded: do not print": "PARTSTUDIO",
+    "Part Studio 1": "PARTSTUDIO",
+    "Mount on gripper": "ASSEMBLY",
+    "BOM : Mount on gripper": "BILLOFMATERIALS"
+  },
+  "version_before": {
+    "name": "e082c8b (before 393c198)",
+    "url": "https://cad.onshape.com/documents/93ef145982c24192bfd160be/v/364a8207cabe63664136a251"
+  },
+  "imports": {
+    "assembly.step": "526ce842a89a19259b8c191f",
+    "print_plate.step": "f18f23ef961111164210f21b"
+  },
+  "assembly": "Mount on gripper: deleted the old mount's 19 part instances, inserted the new mount whole",
+  "deleted": {
+    "old mount Part Studio": "refused (HTTP 403: {\n  \"message\" : \"Access denied.\",\n  \"moreInfoUrl\" )",
+    "old print plate": "refused (HTTP 403: {\n  \"message\" : \"Access denied.\",\n  \"moreInfoUrl\" )",
+    "Part Studio 1 (empty default)": "refused (HTTP 403: {\n  \"message\" : \"Access denied.\",\n  \"moreInfoUrl\" )"
+  },
+  "name": {
+    "before": "PiPER wrist camera mount (e082c8b)",
+    "after": "PiPER wrist camera mount (393c198)"
+  },
+  "print_plate": {
+    "parts_in_onshape": [
+      [
+        "bracket",
+        50126.3
+      ],
+      [
+        "carrier",
+        52570.7
+      ],
+      [
+        "pod",
+        17700.5
+      ],
+      [
+        "spacers",
+        110.6
+      ],
+      [
+        "spacers",
+        110.6
+      ],
+      [
+        "spacers",
+        110.6
+      ],
+      [
+        "spacers",
+        110.6
+      ],
+      [
+        "tag_wedge_1",
+        124.0
+      ],
+      [
+        "tag_wedge_2",
+        124.0
+      ]
+    ],
+    "check_against_stl": {
+      "bracket": {
+        "volume_mm3": 50126.1,
+        "stl_volume_mm3": 50142.2,
+        "volume_diff_pct": -0.032,
+        "bbox_diff_mm": 0.0,
+        "solids": 1,
+        "ok": true
+      },
+      "pod": {
+        "volume_mm3": 17700.2,
+        "stl_volume_mm3": 17701.7,
+        "volume_diff_pct": -0.008,
+        "bbox_diff_mm": 0.0,
+        "solids": 1,
+        "ok": true
+      },
+      "carrier": {
+        "volume_mm3": 52571.8,
+        "stl_volume_mm3": 52588.6,
+        "volume_diff_pct": -0.032,
+        "bbox_diff_mm": 0.0,
+        "solids": 1,
+        "ok": true
+      },
+      "spacers": {
+        "volume_mm3": 442.3,
+        "stl_volume_mm3": 442.2,
+        "volume_diff_pct": 0.041,
+        "bbox_diff_mm": 0.0009,
+        "solids": 4,
+        "ok": true
+      },
+      "tag_wedge": {
+        "volume_mm3": 124.0,
+        "stl_volume_mm3": 124.0,
+        "volume_diff_pct": -0.0,
+        "bbox_diff_mm": 0.0,
+        "solids": 1,
+        "ok": true
+      }
+    },
+    "layout": {
+      "bracket": {
+        "footprint_centre_mm": [
+          43,
+          55
+        ],
+        "size_mm": [
+          72.43,
+          88.0,
+          42.68
+        ]
+      },
+      "carrier": {
+        "footprint_centre_mm": [
+          50,
+          146
+        ],
+        "size_mm": [
+          88.0,
+          55.5,
+          38.61
+        ]
+      },
+      "pod": {
+        "footprint_centre_mm": [
+          135,
+          131
+        ],
+        "size_mm": [
+          65.0,
+          81.0,
+          10.0
+        ]
+      },
+      "spacers": {
+        "footprint_centre_mm": [
+          130,
+          28
+        ],
+        "size_mm": [
+          36.0,
+          6.0,
+          5.0
+        ]
+      },
+      "tag_wedge#1": {
+        "footprint_centre_mm": [
+          112,
+          60
+        ],
+        "size_mm": [
+          5.94,
+          7.25,
+          4.96
+        ]
+      },
+      "tag_wedge#2": {
+        "footprint_centre_mm": [
+          128,
+          60
+        ],
+        "size_mm": [
+          5.94,
+          7.25,
+          4.96
+        ]
+      }
+    }
+  },
+  "shaded_views": [
+    "onshape_print_plate.png",
+    "onshape_assembly.png",
+    "onshape_on_gripper.png"
+  ],
+  "tabs_after": {
+    "Print plate (printed parts, A1 mini layout)": "PARTSTUDIO",
+    "Mount parts (exports/assembly.step)": "PARTSTUDIO",
+    "OLD e082c8b print plate, superseded: do not print": "PARTSTUDIO",
+    "OLD e082c8b, superseded: do not print": "PARTSTUDIO",
+    "AgileX gripper (reference, do not share)": "PARTSTUDIO",
+    "OLD 4be6e17, superseded: do not print": "PARTSTUDIO",
+    "Part Studio 1": "PARTSTUDIO",
+    "Mount on gripper": "ASSEMBLY",
+    "BOM : Mount on gripper": "BILLOFMATERIALS"
+  },
+  "version_after": {
+    "name": "393c198",
+    "url": "https://cad.onshape.com/documents/93ef145982c24192bfd160be/v/b3d73f46329d8b169662934f"
+  },
+  "api_calls_used": 44
+}
