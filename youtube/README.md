@@ -30,9 +30,11 @@ python youtube/yt_service.py upload clip.mp4 --title "PiPER pick-and-place, run 
 from youtube.yt_service import get_youtube_service, upload_video
 ```
 
-Uploads default to `private`, and videos uploaded through the API from an unaudited Cloud
-project are locked private anyway. Link the video in the comment and say it is private;
-sgbaird publishes or unlists from YouTube Studio (or a `@claude-youtube` run in byu-vcl).
+Uploads default to `public`; pass `--privacy unlisted` or `--privacy private` when asked.
+Since 2026-11-02 YouTube no longer locks uploads from unaudited API projects to private
+([revision history](https://developers.google.com/youtube/v3/revision_history)), so the privacy set at upload
+sticks. Link the video in the comment and say which privacy it has. Changing it afterwards
+needs the full-control token (a `@claude-youtube` run in byu-vcl) or YouTube Studio.
 
 ## Rotating
 

@@ -266,9 +266,10 @@ python youtube/yt_service.py upload clip.mp4 --title "PiPER <what it shows>, <da
   --description "From <issue/PR link>, commit <sha7>."
 ```
 
-- Uploads are `private` (API uploads from an unaudited Cloud project are locked private
-  anyway). Post the `youtube.com/watch?v=…` link in the comment and say it is private;
-  sgbaird publishes or unlists it from YouTube Studio.
+- Uploads default to `public`; pass `--privacy unlisted` or `--privacy private` when the
+  person asks. Since 2026-11-02 YouTube no longer locks uploads from unaudited API projects
+  to private, so the privacy set at upload is what viewers get. Post the
+  `youtube.com/watch?v=…` link in the comment and say which privacy it has.
 - The token cannot delete, edit metadata, change privacy, or manage playlists. If a run needs
   that, say so in the comment instead of looking for another credential: it takes byu-vcl's
   full-control token, behind `@claude-youtube` there (sgbaird only, each run approved).
