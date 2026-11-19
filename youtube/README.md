@@ -36,6 +36,10 @@ Since 2026-11-02 YouTube no longer locks uploads from unaudited API projects to 
 sticks. Link the video in the comment and say which privacy it has. Changing it afterwards
 needs the full-control token (a `@claude-youtube` run in byu-vcl) or YouTube Studio.
 
+In a GitHub Actions run the helper appends `Requested in <link>` to the description: the
+exact comment, review or issue that started the run, read from `$GITHUB_EVENT_PATH`.
+`--no-source-link` (or `source_link=False`) skips it.
+
 ## Rotating
 
 The value is the same one byu-vcl uses. Re-mint it there
