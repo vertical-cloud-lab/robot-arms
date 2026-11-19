@@ -263,13 +263,15 @@ stream cams' livestream channel. Every `@claude` run has `YOUTUBE_UPLOAD_TOKEN_P
 pip install -r youtube/requirements.txt
 python youtube/yt_service.py                         # confirm channel and scopes
 python youtube/yt_service.py upload clip.mp4 --title "PiPER <what it shows>, <date>" \
-  --description "From <issue/PR link>, commit <sha7>."
+  --description "Commit <sha7>."
 ```
 
 - Uploads default to `public`; pass `--privacy unlisted` or `--privacy private` when the
   person asks. Since 2026-11-02 YouTube no longer locks uploads from unaudited API projects
   to private, so the privacy set at upload is what viewers get. Post the
   `youtube.com/watch?v=…` link in the comment and say which privacy it has.
+- The description automatically ends with `Requested in <link>`, the exact comment, review
+  or issue that started the run (from `$GITHUB_EVENT_PATH`); don't add it by hand.
 - The token cannot delete, edit metadata, change privacy, or manage playlists. If a run needs
   that, say so in the comment instead of looking for another credential: it takes byu-vcl's
   full-control token, behind `@claude-youtube` there (sgbaird only, each run approved).
