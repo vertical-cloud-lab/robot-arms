@@ -1,0 +1,9 @@
+# AprilTag cubes. Python 3.10+.
+#   pip install -r requirements.txt
+numpy>=1.24
+pyyaml>=6.0             # cubes.yaml, cube_tags.yaml
+manifold3d>=3.0         # the solids and their booleans (make_cubes.py)
+opencv-python>=4.8      # tag bit patterns and the detector
+mujoco>=3.1             # renders for check_cubes.py and cell_view.py (not needed to make the files)
+# Optional: pupil-apriltags (check_cubes.py also checks AprilRobotics' detector's corner order).
+# cell_view.py also needs the Digital Twin's own requirements: ../../Digital Twin/requirements.txt

@@ -1,0 +1,108 @@
+# ============================================================================================
+# The prints on the build plate, and where each one goes. Units: mm, degrees, kPa.
+#
+# Each print's frame: origin at the centre of its footprint, on the plate; x and y as the
+# plate's (x to the printer's right, y to its back); z up.
+#
+#   shape        box | cylinder | hex_prism | compound | any template in
+#                digital_twin/world/print_library.py (action_figure, model_airplane, ...)
+#   params       the shape's dimensions (see the template's docstring for compound shapes)
+#   plate_xy     where it sits on the plate (plate frame: origin at the plate's top centre)
+#   yaw          its rotation about the plate's z
+#   material     physics/materials.py: density, friction, colour softness
+#   fill         solid fraction (walls + infill). 0.35 is roughly 2 walls + 15 % infill on a
+#                small part; mass = density * volume * fill
+#   stick_kpa    bond strength to the plate. "A little bit of stick": cooled PLA on textured
+#                PEI lets go at a few kPa. The bond breaks when pull, shear, peel and twist,
+#                each against its own capacity, add up (physics/adhesion.py). Omit it to use
+#                the material's default.
+#   grasp        tip_z: fingertip height above the plate; yaw: direction the fingers close,
+#                in the print's frame (0 = along x); width: the print's width across the
+#                fingers there; xy: grasp point in the print's frame (default [0, 0]);
+#                symmetry: the print looks the same turned by this many degrees about z
+#                (90 for a square, 60 for a hexagon, 0 for round), so the planner may pick
+#                any of those yaws; leave it out for prints with one way to hold them
+#   destination  box (dropped in) or shelf (set down upright on the black shelf)
+#
+# The list is the order they are picked; a print whose neighbours are in the way of the open
+# fingers waits until they are gone. Change, add or remove prints freely:
+# the scene builder warns if a print hangs off the plate, and the engine if two overlap.
+#
+# Keep grasp points in front of y = +40 mm with the bed fully forward: behind that, the arm
+# hits the X arm, toolhead or Z column on its way in (scenarios/reach_map.py draws the map).
+# ============================================================================================
+
+prints:
+  - name: calibration_cube
+    shape: box
+    params: {size: [20, 20, 20]}
+    plate_xy: [45, -25]
+    yaw: 0
+    material: PLA
+    color: [0.95, 0.5, 0.1, 1]
+    grasp: {tip_z: 4, yaw: 0, width: 20, symmetry: 90}
+    destination: box
+
+  - name: hex_nut
+    shape: hex_prism
+    params: {across_flats: 24, height: 10}
+    plate_xy: [76, -58]
+    yaw: 0
+    material: PLA
+    color: [0.95, 0.75, 0.1, 1]
+    grasp: {tip_z: 2.5, yaw: 0, width: 24, symmetry: 60}
+    destination: box
+
+  - name: l_bracket
+    shape: compound
+    params:
+      parts:   # each part: type, size (box: full x y z), pos (centre), euler (deg)
+        - {type: box, size: [40, 20, 4], pos: [0, 0, 2]}
+        - {type: box, size: [4, 20, 30], pos: [-18, 0, 17]}
+    plate_xy: [35, -70]
+    yaw: 0
+    material: PETG
+    color: [0.2, 0.6, 0.9, 1]
+    grasp: {tip_z: 7, yaw: 90, width: 20, xy: [-18, 0]}   # pinch the upright
+    destination: box
+
+  - name: action_figure
+    shape: action_figure
+    params: {height: 95}     # template: base disc, legs, torso, arms, head
+    plate_xy: [65, 25]
+    yaw: 0
+    material: PLA
+    color: [0.85, 0.2, 0.2, 1]
+    grasp: {tip_z: 44, yaw: 90, width: 16}   # across the torso, front to back
+    destination: shelf
+
+  - name: tall_vase
+    shape: cylinder
+    params: {diameter: 30, height: 70}
+    plate_xy: [25, 28]
+    yaw: 0
+    material: PLA
+    color: [0.3, 0.8, 0.4, 1]
+    grasp: {tip_z: 34, yaw: 0, width: 30, symmetry: 0}
+    destination: shelf
+
+  - name: pulley
+    shape: cylinder
+    params: {diameter: 36, height: 14}
+    plate_xy: [-62, 30]
+    yaw: 0
+    material: PLA
+    color: [0.6, 0.3, 0.8, 1]
+    grasp: {tip_z: 3, yaw: 0, width: 36, symmetry: 0}
+    destination: box
+
+  - name: model_airplane
+    shape: model_airplane
+    params: {length: 110, wingspan: 120}   # printed flat: wings and tailplane on the plate
+    plate_xy: [-30, -28]
+    yaw: 0                   # nose toward the printer's right (+x), wings front to back
+    material: PLA
+    color: [0.85, 0.85, 0.9, 1]
+    stick_kpa: 1.5           # big flat wings: more area, so a lower stress gives "a little" stick
+    grasp: {tip_z: 5, yaw: 90, width: 16.5}   # across the fuselage, fingertips above the wing
+    destination: shelf

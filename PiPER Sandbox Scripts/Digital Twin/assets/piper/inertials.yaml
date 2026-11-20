@@ -1,0 +1,122 @@
+# Written by tools/build_piper_assets.py from MuJoCo Menagerie's agilex_piper
+# (commit 370c43965323c0944b433b202aac5058b5f907a9), which took them from AgileX's URDF. Expressed in the
+# twin's DH frames. The URDF's masses add up to about 2.4 kg; AgileX lists the
+# arm at 4.2 kg, so the dynamics (torques) are approximate even though the
+# kinematics (positions) are exact to the DH table.
+base:
+  mass_kg: 0.162549
+  com_m:
+  - -0.009793
+  - 2.0e-06
+  - 0.04101
+  fullinertia_kgm2:
+  - 0.0002265968
+  - 0.0002694449
+  - 0.0002223183
+  - -7.342827e-08
+  - 2.13242e-06
+  - 8.178084e-09
+link1:
+  mass_kg: 0.097868
+  com_m:
+  - 0.00031
+  - -0.001317
+  - -0.009229
+  fullinertia_kgm2:
+  - 9.249676e-05
+  - 7.766845e-05
+  - 8.245889e-05
+  - -1.091557e-07
+  - 9.912874e-07
+  - 1.974803e-06
+link2:
+  mass_kg: 0.290889
+  com_m:
+  - 0.147794
+  - -0.017393
+  - 0.001753
+  fullinertia_kgm2:
+  - 0.0001501911
+  - 0.001726775
+  - 0.001775464
+  - 8.593739e-05
+  - -1.088004e-06
+  - -9.933377e-07
+link3:
+  mass_kg: 0.290848
+  com_m:
+  - -0.0157
+  - -0.104465
+  - 0.00051
+  fullinertia_kgm2:
+  - 0.0002217687
+  - 0.0001008618
+  - 0.0002419235
+  - -7.574202e-06
+  - 6.370534e-07
+  - 8.153206e-07
+link4:
+  mass_kg: 0.127087
+  com_m:
+  - -0.000302
+  - 0.001029
+  - -0.004724
+  fullinertia_kgm2:
+  - 3.820118e-05
+  - 4.870489e-05
+  - 4.105924e-05
+  - -4.918999e-08
+  - -4.890853e-08
+  - -6.700129e-08
+link5:
+  mass_kg: 0.144711
+  com_m:
+  - -0.000113
+  - -0.056688
+  - -0.001961
+  fullinertia_kgm2:
+  - 0.001
+  - 0.001
+  - 0.001
+  - -1.600486e-20
+  - -1.61284e-20
+  - 2.007243e-19
+link6:
+  mass_kg: 1.2
+  com_m:
+  - 0.001008
+  - 0.013592
+  - 0.031553
+  fullinertia_kgm2:
+  - 0.001
+  - 0.001
+  - 0.001
+  - -1.200528e-20
+  - -4.338765e-19
+  - -1.993691e-20
+finger1:
+  mass_kg: 0.026482
+  com_m:
+  - 0.000256
+  - -0.007794
+  - 0.088267
+  fullinertia_kgm2:
+  - 0.001
+  - 0.001
+  - 0.001
+  - -2.060222e-19
+  - 1.985084e-19
+  - -1.864674e-19
+finger2:
+  mass_kg: 0.026482
+  com_m:
+  - -0.0003
+  - 0.010627
+  - 0.088267
+  fullinertia_kgm2:
+  - 0.001
+  - 0.001
+  - 0.001
+  - -1.322147e-21
+  - -1.370585e-19
+  - -2.435235e-20

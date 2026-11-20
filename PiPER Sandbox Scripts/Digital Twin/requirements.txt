@@ -1,0 +1,12 @@
+# Digital Twin of the PiPER cell. Python 3.10+.
+#   pip install -r requirements.txt
+numpy>=1.24
+scipy>=1.10             # convex hulls (hex prisms, footprints)
+pyyaml>=6.0             # config/*.yaml
+mujoco>=3.1             # the physics engine and its 3D viewer (Apache-2.0)
+matplotlib>=3.7         # the no-physics view (--engine kinematic) and plots
+imageio>=2.31           # --video
+imageio-ffmpeg>=0.4     # .mp4 videos
+opencv-python>=4.8      # AprilTag textures and detection (scenarios/camera_check.py)
+pytest>=7               # tests/
+# Only to rebuild assets/piper/ (tools/build_piper_assets.py): trimesh, fast-simplification
