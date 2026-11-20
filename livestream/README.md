@@ -2,10 +2,20 @@
 
 The cell streams to the *BYU VCL Hardware Streams* YouTube channel through the lab's streaming
 Lambda ([`vertical-cloud-lab/streamingLambda`](https://github.com/vertical-cloud-lab/streamingLambda)),
-like the byu-vcl stream cams. **All four cameras stream publicly, with faces blurred on the Pi**:
-the cell's two fixed cameras since 2026-11-03 22:48 UTC, and the two gripper cameras on 76zj since
-2026-11-05 02:05 UTC (unlisted from 00:42 UTC; see
-[Gripper cameras](#gripper-cameras-two-streams-on-76zj)). A restart of a Pi's service goes back to the broadcast that was live, so
+like the byu-vcl stream cams. **Four cameras are set up to stream publicly, with faces blurred on
+the Pi**: the cell's two fixed cameras since 2026-11-03 22:48 UTC, and the two gripper cameras on
+76zj since 2026-11-05 02:05 UTC (unlisted from 00:42 UTC; see
+[Gripper cameras](#gripper-cameras-two-streams-on-76zj)).
+
+**As of 2026-11-20 only the front cam (mpzy) streams.** eufi (back cam) has been off the tailnet
+since 2026-11-06 and 76zj (gripper cams) since 2026-11-11; their broadcasts ended on 2026-11-06
+02:43 UTC and 2026-11-05 18:51 UTC. mpzy's stream was stopped by hand on 2026-11-13 02:03 UTC so
+that teleop could use its camera, and started again on 2026-11-20 at 15:28 UTC (`h5TJ0nLUljU`).
+It now [lends its camera](#lending-the-camera) to teleop instead, so it doesn't need stopping. When
+eufi and 76zj are back, check their streams came up, and update their `device.py` to the one here
+so that they lend their cameras too.
+
+A restart of a Pi's service goes back to the broadcast that was live, so
 its link keeps working, if a frame went out less than 10 minutes before (`BROADCAST_REUSE_SEC`).
 After a longer stop, or a change to `WORKFLOW_NAME` or `PRIVACY_STATUS`, a start ends that
 camera's broadcast and makes a new one, so each camera's playlist is its stable link:
@@ -252,13 +262,63 @@ to it except the example, and installs both units.
 `picam-stream@<name>.service`) after an edit. That goes back to the same broadcast unless the edit
 changed `WORKFLOW_NAME` or `PRIVACY_STATUS`.
 
+## Lending the camera
+
+libcamera gives a camera to one process at a time. Since 2026-11-20 a stream lends its camera to
+any other program on the Pi that asks, so nothing has to be stopped by hand.
+[`teleop.py`](../PiPER%20Sandbox%20Scripts/Teleoperation/teleop.py) asks for every session's video
+(and for its mode probe just before), which is why mpzy's stream was stopped from 2026-11-13 to
+2026-11-20.
+
+1. **A program asks** by writing its PID to `/tmp/picam-pause-<camera index>` (`0` on a Pi with
+   one camera), then waiting until no `rpicam-vid .*--codec yuv420 .*--camera <index> ` is
+   running. `device.py` always passes `--camera`, so that pattern finds the stream holding that
+   camera and no other.
+2. **The stream lets go** within a frame or so. It keeps ffmpeg running and sends a card instead
+   of the camera: the last frame sent, blurred beyond recognition and darkened, with "Camera in
+   use" and the time. So the broadcast stays live and its link doesn't change, however long the
+   camera is lent. Nothing from the camera goes into the card once it has been let go of.
+3. **The request lasts as long as that process runs.** 5 s after it exits (`LEND_GRACE_SEC`), the
+   stream takes the camera back, so a crash or a dropped SSH session ends the loan too and
+   nothing has to clean up. The 5 s let a program that borrows twice in a row, like teleop's
+   mode probe and then its video, keep the camera between the two. A zombie, or a process that
+   started after the file was written (a reused PID), doesn't count.
+
+From a shell, borrow it for one command like this (the shell becomes the command at `exec`, so
+the loan ends when it does):
+
+```bash
+bash -c 'echo $$ > /tmp/picam-pause-0
+  for i in $(seq 100); do pgrep -f "rpicam-vid .*--codec yuv420 .*--camera 0 " >/dev/null || break; sleep 0.1; done
+  exec rpicam-still -o still.jpg'
+```
+
+The log shows each loan: `Camera lent to PID … (rpicam-vid …); sending a card until it exits`,
+then `PID … has exited; taking the camera back after N s`. The 2-minute line adds `camera lent
+out for about N s of 120`. While lent, the stream needs only a fraction of one core (about 30 %
+in one reading on mpzy: the card is still encoded at the stream's frame rate), against its two
+cores while streaming.
+
+![What the stream sends while the camera is lent out](../docs/images/picam-stream-camera-in-use-card-2026-11-20.jpg)
+
+**Tested on mpzy, 2026-11-20** (15:35 to 15:40 UTC), on the live broadcast: `teleop.py`'s own
+`camera_cmd()` and `Camera` reader, run from CI as a session would, got their first frame 2 s
+after asking, from the whole-sensor 2304:1296 mode, and about 600 frames in 50 s (over CI's slow
+link). The stream lent the camera to the mode probe and then to the video without taking it back
+in between, sent the card meanwhile, and went back to the camera 5 s after the video ended. The
+YouTube broadcast stayed live throughout, with its start time unchanged.
+
+**Only mpzy has this `device.py` so far.** eufi's and 76zj's (from 2026-11-04 and 2026-11-05) don't
+lend: teleop's video then fails after 10 s with `camera N is still held by its livestream`. Copy
+this `device.py` to `~/picam-stream/` and `~/picam-stream-src/` on each and restart its streams.
+
 ## The camera is held by the stream
 
-libcamera gives a camera to one process at a time, so anything else that opens a streaming Pi's
-camera (run recordings like #54's on mpzy, `piper_vision.py` or calibration stills on eufi, the
-gripper cameras on 76zj) fails while the stream runs. On 76zj each camera has its own unit, so
-stop only the one you need: `picam-stream@wide.service` or `picam-stream@hq.service`, and its
-still is `/tmp/picam-stream-wide-latest.jpg` or `/tmp/picam-stream-hq-latest.jpg`.
+Anything that opens a streaming Pi's camera without [borrowing it](#lending-the-camera) (run
+recordings like #54's on mpzy, `piper_vision.py` or calibration stills on eufi, the gripper cameras
+on 76zj) fails while the stream runs. On 76zj each camera has its own unit, so stop only the one
+you need: `picam-stream@wide.service` or `picam-stream@hq.service`, and its still is
+`/tmp/picam-stream-wide-latest.jpg` or `/tmp/picam-stream-hq-latest.jpg`.
 
 **For a still, don't stop the stream.** The last frame sent, faces already pixelated, is in
 `/tmp/picam-stream-latest.jpg`, refreshed every 30 s:

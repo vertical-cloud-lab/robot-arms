@@ -100,11 +100,40 @@ YuNet on every frame. Each view also has one `STRICT_RECTS` box around the A1 mi
 feeders, which both detectors take for a face; **redo it if that camera or the AMS lite
 moves**. The stream holds each Pi's camera. **For a still, never stop it**: copy
 `/tmp/picam-stream-latest.jpg`, the last frame sent (faces already pixelated), which is refreshed
-every 30 s. Only for work that needs the camera itself (`piper_vision.py` on eufi, run
-recordings on mpzy) stop `picam-stream.service`, and start it again **within 10 minutes**: the
-restart then goes back to the same YouTube broadcast, so people's links keep working. After a
-longer stop it makes a new broadcast. It never touches CAN, the relay or the arm. No
+every 30 s. **For work that needs the camera itself, borrow it** (since 2026-11-20, mpzy only so
+far): write the PID of the process that will use it to `/tmp/picam-pause-<camera index>` and wait
+for the stream's `rpicam-vid` on that camera to exit. The stream sends a "camera in use" card
+meanwhile and takes the camera back 5 s after that process exits, on the same broadcast.
+`teleop.py` does this for its video, and `livestream/README.md` ("Lending the camera") has a
+shell one-liner. On a Pi whose `device.py` predates that, stop `picam-stream.service`, and start
+it again **within 10 minutes**: the restart then goes back to the same YouTube broadcast, so
+people's links keep working. After a longer stop it makes a new broadcast. It never touches CAN,
+the relay or the arm. No
 watchdog timer and no reboot cron on either Pi: those reboot the Pi, which would kill an arm run.
+
+**Status on 2026-11-20 (the eighth #61 run):** only mpzy streams. eufi has been off the tailnet
+since 2026-11-06 02:47 UTC and 76zj since 2026-11-11 20:47 UTC, so their streams (and broadcasts)
+are down until someone in the lab brings them back. Then check that their services came up, and
+copy the current `device.py` to each so they lend their cameras too. Changes made on mpzy by that
+run (15:21 to 15:45 UTC):
+
+- Read-only first: `picam-stream.service` was enabled but had been stopped by hand
+  (`sudo systemctl stop picam-stream`, 2026-11-13 02:03:47 UTC) for teleop, which needed the
+  camera. Nothing held the camera and the Pi was idle. The arm (`arm_power.py status`, which only
+  listens on `can0`) was on its rest with all six motors disabled, but with the relay still on:
+  the last teleop session (2026-11-14 05:53 to 05:58 UTC) stopped on `J4 drew -2.4 A (limit 2)`
+  and left it on with the arm up. It has since been put back on its rest with the motors off
+  (not by an `arm_power.py run`, so presumably by hand), and `arm_power.py off` refuses while J6
+  reads −22° (outside home's −95 to −45). That was left as found.
+- `sudo systemctl start picam-stream.service` at 15:28 UTC: it ended the old broadcast and made
+  `h5TJ0nLUljU` (public, in the front cam playlist).
+- `~/picam-stream/device.py` and `~/picam-stream-src/device.py` replaced by this repo's (camera
+  hand-off, plus the 2026-11-05 instance and rotation code, which does the same as before for
+  mpzy). The previous ones are `device.py.bak-2026-11-20-issue61` in each directory. The service
+  was restarted at 15:34 and 15:38 UTC, and both times went back to `h5TJ0nLUljU`.
+- Two 50-s test loans from CI using `teleop.py`'s camera code (15:35 and 15:38 UTC). They left
+  `/tmp/picam-pause-0` behind, naming a process that has exited, which is harmless (`/tmp` is
+  cleared at boot). `my_secrets.py`, the unit and everything else are unchanged.
 
 **76zj streams both gripper cameras, publicly** (since 2026-11-05 02:05 UTC; unlisted from
 00:42 UTC), as `picam-stream@wide.service` (`PiPER arm gripper wide cam`, the `imx708_wide`) and

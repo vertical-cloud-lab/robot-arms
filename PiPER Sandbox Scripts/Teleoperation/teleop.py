@@ -30,6 +30,7 @@ needs SSH to both: the lab tailnet with a grant, or the lab network.
    the follower holds, then parks on its own after its --lost-s (10 s).
 4. With a camera Pi set, a second SSH connection streams its HQ camera as MJPEG (rpicam-vid)
    into the window. Only the newest frame is decoded and shown, so video never queues up.
+   If the Pi livestreams that camera, the session borrows it from the stream (BORROW).
 5. --record also saves every frame exactly as it arrives, and the window's text, to
    recordings/ beside this file, and once the arm has parked makes camera.mp4 (the camera
    alone) and window.mp4 (the window) from them. While the arm is driven nothing is encoded,
