@@ -33,6 +33,12 @@ and snapshot apart from the others'.
 ``device.py --preview out.jpg`` saves one frame exactly as it would be sent
 (turned, blurred, timestamped) and exits, without calling the Lambda. The
 camera must be free, so stop that camera's stream first.
+
+Another program on the Pi can borrow the camera without stopping the stream
+(teleop.py does): it writes its PID to ``/tmp/picam-pause-<camera index>``.
+Within a frame or so the stream lets go of the camera and sends a "camera in
+use" card instead, so the broadcast and its link stay up, and once that process
+has exited it takes the camera back. See ``borrower()``.
 """
 
 import argparse
@@ -131,6 +137,14 @@ BROADCAST_STATE = Path(getattr(S, "BROADCAST_STATE", HERE / f"broadcast{SUFFIX}.
 BROADCAST_REUSE_SEC = getattr(S, "BROADCAST_REUSE_SEC", 600)
 # Exists once systemd-timesyncd has set the clock since boot.
 CLOCK_SYNCED = Path("/run/systemd/timesync/synchronized")
+# Where another program asks to borrow the camera: PAUSE_DIR/picam-pause-<index>.
+PAUSE_DIR = Path(getattr(S, "PAUSE_DIR", "/tmp"))
+# After the borrower exits, the card stays up this long before the camera is
+# taken back, so that a program that borrows it twice in a row (teleop.py lists
+# the camera's modes, which needs it free, then streams it) gets it back
+# without the stream grabbing it in between.
+LEND_GRACE_SEC = getattr(S, "LEND_GRACE_SEC", 5)
+CLK_TCK = os.sysconf("SC_CLK_TCK")
 
 
 def call_lambda(action, privacy_status="private"):
@@ -513,11 +527,12 @@ def camera_cmd(width, height, index=None):
     cmd = shutil.which("rpicam-vid") or shutil.which("libcamera-vid")
     if not cmd:
         raise SystemExit("rpicam-vid not found")
+    # Always name the camera (rpicam's default is 0), so that a program waiting
+    # to borrow it can tell which rpicam-vid holds it: teleop.py waits while
+    # `pgrep -f 'rpicam-vid .*--codec yuv420 .*--camera <index> '` finds one.
     args = [cmd, "--nopreview", "-t", "0", "--flush", "--codec", "yuv420",
             "--width", str(width), "--height", str(height),
-            "--framerate", str(FRAME_RATE)]  # fmt: skip
-    if index is not None:
-        args += ["--camera", str(index)]
+            "--framerate", str(FRAME_RATE), "--camera", str(index or 0)]  # fmt: skip
     if SENSOR_MODE:
         args += ["--mode", SENSOR_MODE]
     if CAMERA_VFLIP:
@@ -525,6 +540,111 @@ def camera_cmd(width, height, index=None):
     if CAMERA_HFLIP:
         args.append("--hflip")
     return args + ["-o", "-"]
+
+
+def borrower(index):
+    """The PID of a running program that has asked to borrow this stream's
+    camera, or None.
+
+    A program asks by writing its PID to PAUSE_DIR/picam-pause-<camera index>
+    (``echo $$ > /tmp/picam-pause-0`` in a shell that then runs the camera, as
+    teleop.py does). The request lasts while that process runs, so a crash or a
+    dropped SSH session ends it too, and nothing has to clean up. A zombie, or a
+    process started after the file was written (its PID was reused), doesn't
+    count.
+    """
+    path = PAUSE_DIR / f"picam-pause-{index or 0}"
+    try:
+        written = path.stat().st_mtime
+        pid = int(path.read_text().split()[0])
+        with open(f"/proc/{pid}/stat") as f:  # "pid (comm) state ppid ... starttime ..."
+            state, *rest = f.read().rpartition(")")[2].split()
+        with open("/proc/stat") as f:
+            btime = next(int(ln.split()[1]) for ln in f if ln.startswith("btime "))
+        started = btime + int(rest[18]) / CLK_TCK  # field 22, in clock ticks since boot
+    except (OSError, ValueError, IndexError, StopIteration):
+        return None
+    return pid if state != "Z" and started <= written + 2 else None
+
+
+def process_name(pid):
+    try:
+        with open(f"/proc/{pid}/cmdline", "rb") as f:
+            return f.read().replace(b"\0", b" ").decode(errors="replace").strip()[:80]
+    except OSError:
+        return "?"
+
+
+class CameraFeed:
+    """rpicam-vid and the thread reading its frames, so the camera can be let
+    go of and taken back while ffmpeg, and so the broadcast, keeps running."""
+
+    def __init__(self, view, index):
+        self.cmd, self.size = camera_cmd(*view.capture, index), view.capture
+        self.proc = self.reader = None
+        self.seq = 0
+
+    @property
+    def running(self):
+        return self.proc is not None
+
+    def start(self):
+        # Buffered stdout, so read(n) returns a whole frame rather than
+        # whatever the pipe holds. The camera's own log goes to the journal.
+        self.proc = subprocess.Popen(self.cmd, stdout=subprocess.PIPE)
+        self.reader = LatestFrame(self.proc.stdout, *self.size)
+        self.reader.start()
+        self.seq = 0
+
+    def get(self):
+        frame, self.seq = self.reader.get(self.seq)
+        return frame
+
+    def stop(self):
+        if self.proc is None:
+            return
+        if self.proc.poll() is None:
+            self.proc.terminate()
+        try:
+            self.proc.wait(timeout=10)
+        except subprocess.TimeoutExpired:
+            self.proc.kill()
+            self.proc.wait()
+        self.proc = self.reader = None
+
+
+class Card:
+    """What is sent while the camera is lent out: the last frame sent (already
+    blurred) blurred beyond recognition and darkened, with a note. Nothing from
+    the camera goes into it after the camera was let go of."""
+
+    LINES = [("Camera in use", 1.6),
+             ("Another program on this Pi is using the camera (teleoperation, say).", 0.75),
+             ("The live picture comes back by itself when it is done.", 0.75)]  # fmt: skip
+
+    def __init__(self, last, size):
+        w, h = size
+        if last is None:
+            self.bg = np.zeros((h, w, 3), np.uint8)
+        else:  # a 1/16-size copy, blurred and scaled back up: shapes and colours only
+            small = cv2.resize(last, (w // 16, h // 16), interpolation=cv2.INTER_AREA)
+            small = cv2.GaussianBlur(small, (0, 0), 2)
+            self.bg = (cv2.resize(small, (w, h)) * 0.3).astype(np.uint8)
+
+    def frame(self):
+        out = self.bg.copy()
+        h, w = out.shape[:2]
+        k = h / 720
+        y = h // 2 - int(60 * k)
+        for text, scale in self.LINES:
+            s, thick = scale * k, max(1, round(scale * k * 2))
+            (tw, th), base = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, s, thick)
+            cv2.putText(out, text, ((w - tw) // 2, y + th), cv2.FONT_HERSHEY_SIMPLEX, s,
+                        (255, 255, 255), thick, cv2.LINE_AA)  # fmt: skip
+            y += th + base + int((24 if scale < 1 else 40) * k)
+        if TIMESTAMP_OVERLAY:
+            draw_timestamp(out)
+        return out
 
 
 def ffmpeg_cmd(ffmpeg_url, width, height):
@@ -557,32 +677,57 @@ def draw_timestamp(frame):
 
 
 def stream_once(state, view, blur, index=None):
-    """Run one camera -> blur -> ffmpeg session until something exits."""
-    # Buffered stdout, so read(n) returns a whole frame rather than whatever
-    # the pipe holds. The camera's own log goes to the journal.
-    cam = subprocess.Popen(camera_cmd(*view.capture, index), stdout=subprocess.PIPE)
+    """Run one camera -> blur -> ffmpeg session until something exits. While
+    another program borrows the camera (see borrower()), ffmpeg keeps running
+    on a card, so the broadcast stays live."""
     enc = subprocess.Popen(ffmpeg_cmd(state["ffmpeg_url"], *view.out),
                            stdin=subprocess.PIPE)  # fmt: skip
-    reader = LatestFrame(cam.stdout, *view.capture)
-    reader.start()
-    seq, n, faces, t0, slow = 0, 0, 0, time.monotonic(), 0.0
-    last_snap = last_beat = 0.0
+    cam = CameraFeed(view, index)
+    n, cards, faces, t0, slow = 0, 0, 0, time.monotonic(), 0.0
+    last_snap = last_beat = lent_at = 0.0
+    sent = card = lent_to = gone_at = None  # last frame sent; card; borrower; when it exited
     try:
         while enc.poll() is None:
-            frame, seq = reader.get(seq)
-            if frame is None:
-                print("Camera stopped delivering frames", flush=True)
-                break
-            t = time.monotonic()
-            try:
-                frame, found = render(frame, view, blur)
-            except Exception as e:  # never send a frame that was not blurred
-                print(f"Frame dropped, blur failed: {e}", flush=True)
-                continue
-            faces += found
-            slow = max(slow, time.monotonic() - t)
+            pid = borrower(index)
+            if pid and pid != lent_to:
+                cam.stop()  # the borrower is waiting for this rpicam-vid to exit
+                if lent_to is None:
+                    lent_at, card = time.monotonic(), Card(sent, view.out)
+                lent_to = pid
+                print(f"Camera lent to PID {pid} ({process_name(pid)}); sending a card "
+                      "until it exits", flush=True)  # fmt: skip
+            if pid:
+                gone_at = None
+            elif lent_to is not None:
+                gone_at = gone_at or time.monotonic()
+                if time.monotonic() - gone_at >= LEND_GRACE_SEC:
+                    print(f"PID {lent_to} has exited; taking the camera back after "
+                          f"{time.monotonic() - lent_at:.0f} s", flush=True)  # fmt: skip
+                    lent_to = card = gone_at = None
+            if lent_to is not None:
+                frame = card.frame()
+                cards += 1
+                time.sleep(1 / FRAME_RATE)
+            else:
+                if not cam.running:
+                    cam.start()
+                frame = cam.get()
+                if frame is None:
+                    if borrower(index):
+                        continue  # asked for while waiting for a frame
+                    print("Camera stopped delivering frames", flush=True)
+                    break
+                t = time.monotonic()
+                try:
+                    frame, found = render(frame, view, blur)
+                except Exception as e:  # never send a frame that was not blurred
+                    print(f"Frame dropped, blur failed: {e}", flush=True)
+                    continue
+                faces += found
+                slow = max(slow, time.monotonic() - t)
+                n += 1
             enc.stdin.write(frame.tobytes())
-            n += 1
+            sent = frame
             if SNAPSHOT_PATH and time.monotonic() - last_snap >= SNAPSHOT_SEC:
                 last_snap = time.monotonic()
                 cv2.imwrite(SNAPSHOT_PATH + ".tmp.jpg", frame)
@@ -596,20 +741,23 @@ def stream_once(state, view, blur, index=None):
                     print(f"Could not save the broadcast state: {e}", flush=True)
             if time.monotonic() - t0 >= 120:
                 dt = time.monotonic() - t0
-                print(f"{n / dt:.1f} fps out, {faces} face boxes ({blur.summary()}), "
-                      f"slowest frame {slow * 1000:.0f} ms", flush=True)  # fmt: skip
-                n, faces, t0, slow = 0, 0, time.monotonic(), 0.0
+                lent = cards / FRAME_RATE
+                line = (f"{n / max(dt - lent, 1.0):.1f} fps out, {faces} face boxes "
+                        f"({blur.summary()}), slowest frame {slow * 1000:.0f} ms")  # fmt: skip
+                if cards:
+                    line += f"; camera lent out for about {lent:.0f} s of {dt:.0f}"
+                print(line, flush=True)
+                n, faces, cards, t0, slow = 0, 0, 0, time.monotonic(), 0.0
     except BrokenPipeError:
         print("ffmpeg closed its input", flush=True)
     finally:
-        for p in (cam, enc):
-            if p.poll() is None:
-                p.terminate()
-        for p in (cam, enc):
-            try:
-                p.wait(timeout=10)
-            except subprocess.TimeoutExpired:
-                p.kill()
+        cam.stop()
+        if enc.poll() is None:
+            enc.terminate()
+        try:
+            enc.wait(timeout=10)
+        except subprocess.TimeoutExpired:
+            enc.kill()
 
 
 def preview(path, view, blur, index=None):
