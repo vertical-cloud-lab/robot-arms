@@ -75,6 +75,11 @@ CORNER_ORDER = {
 EPS = 0.01  # mm: overlaps that keep booleans clean (far below what a printer resolves)
 
 
+def _uid(*key) -> uuid.UUID:
+    """A UUID fixed by its key, so rebuilding the same parts writes byte-identical files."""
+    return uuid.uuid5(uuid.NAMESPACE_URL, "robot-arms/tag-cubes/" + "/".join(map(str, key)))
+
+
 # ------------------------------------------------------------------------------------------
 # Tags
 # ------------------------------------------------------------------------------------------
@@ -294,15 +299,21 @@ def mount_base_collar(p: dict, specs: list) -> MountResult:
         side = by_name[spec.name]["side"]
         L = spec.edge
         # Each cube's local front (-y) faces outward; its back (toward the base) has no tag.
+        # The cubes stand on plinths as tall as the band: the band then meets them below the
+        # tags' white border instead of beside a black corner (it pulled OpenCV's corner 7 px
+        # off when it ran past the side cubes' forward faces at the black square's level).
+        z = band_h
         if side == "front":
-            T = yaw_pose(xf + L / 2, 0, 0, 90)
+            T = yaw_pose(xf + L / 2, 0, z, 90)
         elif side == "right":
-            T = yaw_pose(0, yr - L / 2, 0, 0)
+            T = yaw_pose(0, yr - L / 2, z, 0)
         elif side == "left":
-            T = yaw_pose(0, yl + L / 2, 0, 180)
+            T = yaw_pose(0, yl + L / 2, z, 180)
         else:
             raise ValueError(f"collar side must be front, right or left, not {side}")
         placed.append(Placed(spec, T))
+        plinth = box((-L / 2, -L / 2, -z), (L / 2, L / 2, spec.chamfer))  # fills the bottom chamfer too
+        add.append(_apply(plinth, T))
     Lmax = max(s.edge for s in specs)
     # The U band: in front of the flange and along both sides back to the side cubes.
     x_back = -Lmax / 2
@@ -454,11 +465,11 @@ def write_stl(path: str, m: "m3d.Manifold"):
         fh.write(rec.tobytes())
 
 
-def _mesh_xml(oid: int, m: "m3d.Manifold") -> str:
+def _mesh_xml(oid: int, m: "m3d.Manifold", key: str = "") -> str:
     v, f = mesh_arrays(m)
     vs = "".join(f'<vertex x="{a:.4f}" y="{b:.4f}" z="{c:.4f}"/>' for a, b, c in v)
     ts = "".join(f'<triangle v1="{a}" v2="{b}" v3="{c}"/>' for a, b, c in f)
-    return (f' <object id="{oid}" p:UUID="{uuid.uuid4()}" type="model">\n  <mesh>\n'
+    return (f' <object id="{oid}" p:UUID="{_uid(key, oid)}" type="model">\n  <mesh>\n'
             f'   <vertices>{vs}</vertices>\n   <triangles>{ts}</triangles>\n  </mesh>\n </object>\n')
 
 
@@ -470,57 +481,90 @@ _NS = ('xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02" '
 
 def write_3mf(path: str, name: str, white: "m3d.Manifold", black: "m3d.Manifold",
               bed_center=(90.0, 90.0)):
-    """A Bambu Studio / OrcaSlicer project with one object made of two parts:
-    the white body on filament 1 and the black inlays on filament 2. Same layout Bambu
-    Studio writes (production extension: the meshes in 3D/Objects/, the parts and their
-    filaments in Metadata/model_settings.config). Meshes must sit on z = 0."""
-    lo = np.minimum(white.bounding_box()[:3], black.bounding_box()[:3])
-    hi = np.maximum(white.bounding_box()[3:], black.bounding_box()[3:])
-    off = (-(lo[0] + hi[0]) / 2, -(lo[1] + hi[1]) / 2, 0.0)  # centre the object on its origin
-    w, b = white.translate(off), black.translate(off)
-    obj_file = "3D/Objects/object_1.model"
-    objects = (f'<?xml version="1.0" encoding="UTF-8"?>\n<model unit="millimeter" xml:lang="en-US" {_NS}>\n'
-               f' <metadata name="BambuStudio:3mfVersion">1</metadata>\n <resources>\n'
-               f'{_mesh_xml(1, w)}{_mesh_xml(2, b)} </resources>\n <build/>\n</model>\n')
+    """One part (white body + black inlays) as a Bambu Studio / OrcaSlicer project."""
+    write_3mf_plate(path, [(name, white, black, bed_center)])
+
+
+def write_3mf_plate(path: str, items: list):
+    """A 3MF for Bambu Studio / OrcaSlicer with one object per item, each made of two parts:
+    the white body on filament 1 and the black inlays on filament 2.
+
+    items: [(name, white, black, (x, y) on the bed)], solids already turned for printing and
+    sitting on z = 0. Same layout Bambu Studio writes: the meshes in 3D/Objects/object_N.model
+    (3MF production extension), the parts and their filaments in Metadata/model_settings.config.
+    """
+    n = len(items)
     ident = "1 0 0 0 1 0 0 0 1 0 0 0"
-    root = (f'<?xml version="1.0" encoding="UTF-8"?>\n<model unit="millimeter" xml:lang="en-US" {_NS}>\n'
-            f' <metadata name="Application">BambuStudio-02.03.00.70</metadata>\n'
-            f' <metadata name="BambuStudio:3mfVersion">1</metadata>\n'
-            f' <metadata name="Title">{name}</metadata>\n <resources>\n'
-            f'  <object id="3" p:UUID="{uuid.uuid4()}" type="model">\n   <components>\n'
-            f'    <component p:path="/{obj_file}" objectid="1" p:UUID="{uuid.uuid4()}" transform="{ident}"/>\n'
-            f'    <component p:path="/{obj_file}" objectid="2" p:UUID="{uuid.uuid4()}" transform="{ident}"/>\n'
-            f'   </components>\n  </object>\n </resources>\n <build p:UUID="{uuid.uuid4()}">\n'
-            f'  <item objectid="3" p:UUID="{uuid.uuid4()}" '
-            f'transform="1 0 0 0 1 0 0 0 1 {bed_center[0]:.3f} {bed_center[1]:.3f} 0" printable="1"/>\n'
-            f' </build>\n</model>\n')
     ident4 = "1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1"
-    settings = (f'<?xml version="1.0" encoding="UTF-8"?>\n<config>\n  <object id="3">\n'
-                f'    <metadata key="name" value="{name}"/>\n    <metadata key="extruder" value="1"/>\n'
-                f'    <part id="1" subtype="normal_part">\n      <metadata key="name" value="{name} white"/>\n'
-                f'      <metadata key="matrix" value="{ident4}"/>\n      <metadata key="extruder" value="1"/>\n'
-                f'    </part>\n    <part id="2" subtype="normal_part">\n'
-                f'      <metadata key="name" value="{name} black"/>\n'
-                f'      <metadata key="matrix" value="{ident4}"/>\n      <metadata key="extruder" value="2"/>\n'
-                f'    </part>\n  </object>\n  <plate>\n    <metadata key="plater_id" value="1"/>\n'
-                f'    <metadata key="plater_name" value=""/>\n    <metadata key="locked" value="false"/>\n'
-                f'    <model_instance>\n      <metadata key="object_id" value="3"/>\n'
-                f'      <metadata key="instance_id" value="0"/>\n    </model_instance>\n  </plate>\n'
-                f'  <assemble>\n   <assemble_item object_id="3" instance_id="0" transform="{ident}" offset="0 0 0"/>\n'
-                f'  </assemble>\n</config>\n')
+    files, comps, build, settings, plate, assemble = {}, [], [], [], [], []
+    for k, (name, white, black, (bx, by)) in enumerate(items, start=1):
+        lo = np.minimum(white.bounding_box()[:3], black.bounding_box()[:3])
+        hi = np.maximum(white.bounding_box()[3:], black.bounding_box()[3:])
+        off = (-(lo[0] + hi[0]) / 2, -(lo[1] + hi[1]) / 2, -lo[2])  # object origin: bottom centre
+        w, b = white.translate(off), black.translate(off)
+        sub_w, sub_b, oid = 2 * k - 1, 2 * k, 2 * n + k        # ids unique across the package
+        f = f"3D/Objects/object_{k}.model"
+        files[f] = (f'<?xml version="1.0" encoding="UTF-8"?>\n<model unit="millimeter" xml:lang="en-US" {_NS}>\n'
+                    f' <metadata name="BambuStudio:3mfVersion">1</metadata>\n <resources>\n'
+                    f'{_mesh_xml(sub_w, w, name)}{_mesh_xml(sub_b, b, name)} </resources>\n <build/>\n</model>\n')
+        comps.append(f'  <object id="{oid}" p:UUID="{_uid(name, oid)}" type="model">\n   <components>\n'
+                     f'    <component p:path="/{f}" objectid="{sub_w}" p:UUID="{_uid(name, oid, sub_w)}" transform="{ident}"/>\n'
+                     f'    <component p:path="/{f}" objectid="{sub_b}" p:UUID="{_uid(name, oid, sub_b)}" transform="{ident}"/>\n'
+                     f'   </components>\n  </object>\n')
+        build.append(f'  <item objectid="{oid}" p:UUID="{_uid(name, oid, "item")}" '
+                     f'transform="1 0 0 0 1 0 0 0 1 {bx:.3f} {by:.3f} 0" printable="1"/>\n')
+        settings.append(
+            f'  <object id="{oid}">\n    <metadata key="name" value="{name}"/>\n'
+            f'    <metadata key="extruder" value="1"/>\n'
+            f'    <part id="{sub_w}" subtype="normal_part">\n      <metadata key="name" value="{name} white"/>\n'
+            f'      <metadata key="matrix" value="{ident4}"/>\n      <metadata key="extruder" value="1"/>\n'
+            f'    </part>\n    <part id="{sub_b}" subtype="normal_part">\n'
+            f'      <metadata key="name" value="{name} black"/>\n'
+            f'      <metadata key="matrix" value="{ident4}"/>\n      <metadata key="extruder" value="2"/>\n'
+            f'    </part>\n  </object>\n')
+        plate.append(f'    <model_instance>\n      <metadata key="object_id" value="{oid}"/>\n'
+                     f'      <metadata key="instance_id" value="0"/>\n    </model_instance>\n')
+        assemble.append(f'   <assemble_item object_id="{oid}" instance_id="0" '
+                        f'transform="1 0 0 0 1 0 0 0 1 {bx:.3f} {by:.3f} 0" offset="0 0 0"/>\n')
+    # No "Application" metadata: a file that says it is Bambu Studio's must also carry its
+    # project settings, and Bambu Studio 2.9's CLI crashes without them. Without it, Studio
+    # loads the geometry with the parts and filaments below (checked: one object, two parts,
+    # extruders 1 and 2, with BambuStudio 2.9.1.70's --export-3mf).
+    root = (f'<?xml version="1.0" encoding="UTF-8"?>\n<model unit="millimeter" xml:lang="en-US" {_NS}>\n'
+            f' <metadata name="BambuStudio:3mfVersion">1</metadata>\n'
+            f' <metadata name="Title">AprilTag cubes</metadata>\n <resources>\n{"".join(comps)} </resources>\n'
+            f' <build p:UUID="{_uid("build", *[it[0] for it in items])}">\n{"".join(build)} </build>\n</model>\n')
+    config = (f'<?xml version="1.0" encoding="UTF-8"?>\n<config>\n{"".join(settings)}  <plate>\n'
+              f'    <metadata key="plater_id" value="1"/>\n    <metadata key="plater_name" value=""/>\n'
+              f'    <metadata key="locked" value="false"/>\n{"".join(plate)}  </plate>\n'
+              f'  <assemble>\n{"".join(assemble)}  </assemble>\n</config>\n')
     ctypes = ('<?xml version="1.0" encoding="UTF-8"?>\n'
               '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">\n'
               ' <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>\n'
               ' <Default Extension="model" ContentType="application/vnd.ms-package.3dmanufacturing-3dmodel+xml"/>\n'
               ' <Default Extension="config" ContentType="text/xml"/>\n</Types>\n')
     rel = ('<?xml version="1.0" encoding="UTF-8"?>\n'
-           '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">\n'
-           ' <Relationship Target="/{t}" Id="rel-1" '
-           'Type="http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel"/>\n</Relationships>\n')
+           '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">\n{}'
+           '</Relationships>\n')
+    one = (' <Relationship Target="/{t}" Id="rel-{i}" '
+           'Type="http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel"/>\n')
+    def put(z, name, data):  # fixed timestamp: same parts, same bytes
+        z.writestr(zipfile.ZipInfo(name, date_time=(2026, 1, 1, 0, 0, 0)), data, zipfile.ZIP_DEFLATED)
+
     with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
-        z.writestr("[Content_Types].xml", ctypes)
-        z.writestr("_rels/.rels", rel.format(t="3D/3dmodel.model"))
-        z.writestr("3D/_rels/3dmodel.model.rels", rel.format(t=obj_file))
-        z.writestr("3D/3dmodel.model", root)
-        z.writestr(obj_file, objects)
-        z.writestr("Metadata/model_settings.config", settings)
+        put(z, "[Content_Types].xml", ctypes)
+        put(z, "_rels/.rels", rel.format(one.format(t="3D/3dmodel.model", i=1)))
+        put(z, "3D/_rels/3dmodel.model.rels",
+            rel.format("".join(one.format(t=f, i=i) for i, f in enumerate(files, start=1))))
+        put(z, "3D/3dmodel.model", root)
+        for f, body in files.items():
+            put(z, f, body)
+        put(z, "Metadata/model_settings.config", config)
+
+
+def colour_layers(white: "m3d.Manifold", black: "m3d.Manifold", layer: float = 0.2) -> int:
+    """Layers (at `layer` mm, print orientation) that hold both colours: each one costs a
+    filament change in and out on a single-nozzle printer with an AMS."""
+    z0, z1 = black.bounding_box()[2], black.bounding_box()[5]
+    zs = np.arange(layer / 2, white.bounding_box()[5], layer)
+    return int(sum(1 for z in zs if z0 <= z <= z1 and black.slice(float(z)).area() > 1e-3))

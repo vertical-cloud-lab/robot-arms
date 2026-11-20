@@ -11,6 +11,7 @@ Add scripts, notes and results to this folder as the work progresses.
 | `apriltag_locations.jpg` | Recommended tag locations in the cell: fixed anchors (table, arm base, printer), the plate and gripper, and fixtures. |
 | `apriltag_locations_augers.jpg` | Tag locations for swapping the powder doser's auger: table, arm base and gripper, plus the doser (D1–D3), the auger rack (R1–R3, one RS per slot) and each auger's cap (U). Rendered from the Digital Twin (`tools/draw_doser_tags.py`); IDs and sizes are in `Digital Twin/config/powder_doser.yaml`. |
 | `tag_layout_sim.py` | Monte Carlo of how well a tag layout pins the plate's plane and the arm's base, for a pinhole model of mpzy's camera. Needs `numpy` and `opencv-python`. |
+| [`Tag Cubes/`](Tag%20Cubes/) | Black-and-white printed tag cubes with a mount for each spot: table edges (W), a collar around the PiPER's base (A), the shelf's corners (S) and the printer (P). Print files (two-filament 3MF), every tag's corners in its destination's frame, and render checks. See its README. |
 
 The [Digital Twin](../Digital%20Twin/) places the tag set from PR #77 in a simulated cell, and
 `python run_sim.py --scenario camera_check` there renders mpzy's view and reports which tags

@@ -14,6 +14,14 @@
 #              tags in Digital Twin/config/*.yaml use 0-98.
 #   mount      table_edge | base_collar | shelf_corner | adhesive (tag_cubes.py, MOUNTS).
 #              The rest of an entry is that mount's settings.
+#   place      where the part goes in the cell, relative to the Digital Twin's objects
+#              (Digital Twin/config/cell_layout.yaml): cell_view.py puts it there and looks at
+#              it through mpzy's camera. Printing doesn't use it.
+#                edge: back|front|left|right, along: mm along that edge (world x for back and
+#                front, world y for left and right) | arm | corner: front_left|front_right|
+#                back_left|back_right (of the shelf's plate) | printer: [x, y, z] on the A1
+#                mini, printer frame | printer_front: {x: , z: } (tag centre on the base's
+#                front face, printer frame)
 #
 # THE MOUNTS' DIMENSIONS ARE ESTIMATES (the Digital Twin's cell_layout.yaml, AgileX's base
 # mesh). Measure the table's edge, the shelf plate's thickness and the arm's base flange,
@@ -32,10 +40,11 @@ parts:
   # --- W1-W4: the table, centre of each edge (the cell's world frame, and a camera-bump check).
   #     The flange takes two wood screws into the plywood; the lip hangs over the table's edge.
   #     Print lying on its back (the lip side): make_cubes.py turns it that way.
-  - {name: W1, mount: table_edge, tag: 40, first_id: 100, lip_depth: 12}   # back edge
-  - {name: W2, mount: table_edge, tag: 40, first_id: 105, lip_depth: 12}   # right edge
-  - {name: W3, mount: table_edge, tag: 40, first_id: 110, lip_depth: 12}   # left edge
-  - {name: W4, mount: table_edge, tag: 40, first_id: 115, lip_depth: 12}   # front edge
+  #     W1 sits right of the rest stand: the back edge's centre is under it.
+  - {name: W1, mount: table_edge, tag: 40, first_id: 100, lip_depth: 12, place: {edge: back, along: 330}}
+  - {name: W2, mount: table_edge, tag: 40, first_id: 105, lip_depth: 12, place: {edge: right, along: 0}}
+  - {name: W3, mount: table_edge, tag: 40, first_id: 110, lip_depth: 12, place: {edge: left, along: 0}}
+  - {name: W4, mount: table_edge, tag: 40, first_id: 115, lip_depth: 12, place: {edge: front, along: 0}}
 
   # --- A1-A3: one collar around the PiPER's base, a cube in front and on each side. Its
   #     opening is the base's bottom flange (AgileX's mesh: x -55..40, y -40..40 in the arm's
@@ -47,6 +56,7 @@ parts:
     flange_x: [-55, 40]
     flange_y: [-40, 40]
     clearance: 0.4
+    place: arm
     cubes:
       - {name: A1, first_id: 120, side: front}
       - {name: A2, first_id: 125, side: right}
@@ -56,14 +66,14 @@ parts:
   #     plate's corner, so the cube caps it and needs no screws. One design, turned per corner
   #     (front-left 0, front-right 90, back-left -90, back-right 180 degrees).
   #     Printed upside down (the top tag face on the bed).
-  - {name: S1, mount: shelf_corner, tag: 24, first_id: 140, plate_thickness: 5.0}
-  - {name: S2, mount: shelf_corner, tag: 24, first_id: 145, plate_thickness: 5.0}
-  - {name: S3, mount: shelf_corner, tag: 24, first_id: 150, plate_thickness: 5.0}
-  - {name: S4, mount: shelf_corner, tag: 24, first_id: 155, plate_thickness: 5.0}
+  - {name: S1, mount: shelf_corner, tag: 24, first_id: 140, plate_thickness: 5.0, place: {corner: front_left}}
+  - {name: S2, mount: shelf_corner, tag: 24, first_id: 145, plate_thickness: 5.0, place: {corner: front_right}}
+  - {name: S3, mount: shelf_corner, tag: 24, first_id: 150, plate_thickness: 5.0, place: {corner: back_left}}
+  - {name: S4, mount: shelf_corner, tag: 24, first_id: 155, plate_thickness: 5.0, place: {corner: back_right}}
 
   # --- P1-P2: the A1 mini's housing. There's no CAD for it, so these are plain cubes for VHB
-  #     tape: P1 on the base's top right of the plate (taped by its bottom), P2 on the base's
-  #     front face (taped by its back, which has no tag).
-  - {name: P1, mount: adhesive, tag: 24, first_id: 160, mount_face: bottom}
-  - {name: P2, mount: adhesive, tag: 24, first_id: 165, mount_face: back,
-     faces: [top, front, right, left]}
+  #     tape, both on the base's top to the right of the plate, 80 mm apart. (The earlier
+  #     plan's P2 on the base's front face is hidden behind the shelf from mpzy: cell_view.py.)
+  #     Keep them clear of the screen and of the toolhead's path.
+  - {name: P1, mount: adhesive, tag: 24, first_id: 160, mount_face: bottom, place: {printer: [115, -35, 54]}}
+  - {name: P2, mount: adhesive, tag: 24, first_id: 165, mount_face: bottom, place: {printer: [115, -115, 54]}}

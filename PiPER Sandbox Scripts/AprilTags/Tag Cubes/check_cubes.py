@@ -173,6 +173,32 @@ def detect(img, perim=DEFAULT_PERIM):
     return [] if ids is None else [(int(i), c.reshape(4, 2)) for c, i in zip(corners, ids.ravel())]
 
 
+def apriltag_lib_orders(img, part, T_cam, K):
+    """With pupil-apriltags installed (AprilRobotics' detector), check its corner order too:
+    for each tag it finds, which ordering of the stored corners matches its corners."""
+    try:
+        from pupil_apriltags import Detector
+    except ImportError:
+        return None
+    import cv2
+    by_id = {t["id"]: t for t in part.tags}
+    hits = {}
+    for d in Detector(families="tag36h11").detect(cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)):
+        t = by_id.get(int(d.tag_id))
+        if t is None:
+            continue
+        truth = project(t["corners"], T_cam, K)
+        cands = {}
+        for s in range(4):
+            for rev in (False, True):
+                idx = np.roll(np.arange(4)[::-1] if rev else np.arange(4), -s)
+                cands[tuple(int(i) for i in idx)] = np.abs(d.corners - truth[idx]).max()
+        best = min(cands, key=cands.get)
+        if cands[best] < 3:
+            hits[str(list(best))] = hits.get(str(list(best)), 0) + 1
+    return hits
+
+
 def project(P, T_cam, K):
     """Part-frame points (mm) -> pixels, for a camera pose T_cam (OpenCV frame, part frame)."""
     Tc = np.linalg.inv(T_cam)
@@ -328,6 +354,7 @@ def main(argv=None):
             for i, (img, T) in enumerate(zip(imgs, close)):
                 r = analyse(part, img, T, K)
                 r["view"] = ["front", "front-right", "front-left", "from above"][i]
+                r["apriltag_lib_corner_orders"] = apriltag_lib_orders(img, part, T, K)
                 rep["views"].append(r)
             # mpzy at the part's real distance, full resolution.
             dist, elev = MPZY_RANGE.get(part.name, (1.0, 30))
@@ -364,7 +391,8 @@ def main(argv=None):
             print(f"{part.name:9s} close views: {len(s['decoded_in_close_views'])}/{expected} tags decoded, "
                   f"corner error <= {s['max_corner_err_px_close']} px (faces seen < 60 deg off-normal; "
                   f"oblique {s['max_corner_err_px_oblique']}), foreign {s['foreign_ids'] or 'none'}; "
-                  f"order shifts {[v['corner_order_shift'] for v in seen]}; "
+                  f"order shifts {[v['corner_order_shift'] for v in seen]}, "
+                  f"AprilTag lib orders {[v['apriltag_lib_corner_orders'] for v in seen]}; "
                   f"mpzy {dist} m: {n_ok} decoded ({s['mpzy_decoded_opencv_defaults']} with OpenCV's defaults), "
                   f"pose from all {rm.get('all_tags_rot_err_deg')} deg / "
                   f"{rm.get('all_tags_pos_err_mm')} mm, single tags {rm['single_tag_rot_err_deg']} deg")
