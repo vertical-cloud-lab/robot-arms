@@ -1,0 +1,25 @@
+[Unit]
+# One stream per camera on a Pi with several: picam-stream@<name>.service reads
+# my_secrets_<name>.py. A Pi with one camera uses picam-stream.service instead.
+Description=PiPER cell livestream %i with face blurring (livestream/device.py)
+Wants=network-online.target
+After=network-online.target
+StartLimitIntervalSec=3600
+StartLimitBurst=6
+
+[Service]
+User=@USER@
+WorkingDirectory=@HOME@/picam-stream
+Environment=PICAM_INSTANCE=%i
+ExecStart=@HOME@/picam-stream/venv/bin/python -u @HOME@/picam-stream/device.py
+Restart=always
+RestartSec=30
+# Each stream gets at most 2 cores, at a low priority, and is the first thing
+# the OOM killer takes. (No MemoryMax: Raspberry Pi kernels boot with
+# cgroup_disable=memory, so systemd can't cap memory.)
+Nice=10
+CPUQuota=200%
+OOMScoreAdjust=500
+
+[Install]
+WantedBy=multi-user.target

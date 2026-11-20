@@ -63,6 +63,13 @@ arm.
    video if a camera Pi is set. The video shows the camera's whole sensor: left to itself,
    `rpicam-vid` picked a mode that reads only the middle of it, and the arm left the frame as
    it rose. `--cam-mode auto` gives that choice back to `rpicam-vid`.
+   **If that camera is livestreaming** ([`livestream/`](../../livestream/README.md#lending-the-camera),
+   #61), the session borrows it from the stream: there's nothing to stop first. The stream
+   lets go within a second or so and shows a "camera in use" card on YouTube, then takes the
+   camera back 5 s after the session ends, on the same broadcast. If a stream doesn't let go
+   within 10 s (one whose `device.py` predates the hand-off, 2026-11-20), the video fails
+   with `camera N is still held by its livestream`: stop that stream on the Pi
+   (`sudo systemctl stop picam-stream`, or `picam-stream@<name>` on 76zj).
 3. **Hold SPACE to move**; let go to stop. On Windows the key is read directly, so it works
    whichever window has focus; elsewhere SPACE toggles. **Ctrl+SPACE** (Windows) keeps it
    moving with your hands free, through the leader leaving the arm's reach and coming back,
@@ -272,9 +279,12 @@ python teleop.py --fake-leader --local --dry-run --auto 8
       leader's own LeRobot calibration is per computer.
 - [ ] **The cell camera's aim.** The video now uses mpzy's whole sensor, but the arm still
       leaves the top of the frame when raised high: tilt or move the camera.
-- [ ] Video from the gripper: the gripper Pi (76zj) has to be online, with nothing else
-      holding its HQ camera. mpzy's own camera (the imx708 wide, which sees the cell) has
-      streamed into sessions since 2026-11-12, once its livestream was stopped.
+- [ ] Video from the gripper: the gripper Pi (76zj) has to be online (it has been off the
+      tailnet since 2026-11-11). mpzy's own camera (the imx708 wide, which sees the cell) has
+      streamed into sessions since 2026-11-12. Its livestream was stopped by hand for that
+      from 2026-11-13 to 2026-11-20; since then a session borrows the camera from the
+      livestream instead (above). 76zj's streams need the new `device.py` before they lend
+      their cameras.
 - [ ] Tailnet grants for the operator's computer to SSH to mpzy and 76zj.
 - [ ] Close PR #47 once this merges (its code is here now). PR #60 adds its own copy of
       `arm_power.py` and `arm_home.json` at `PiPER Sandbox Scripts/`; keep one copy, in

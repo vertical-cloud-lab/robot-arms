@@ -30,6 +30,7 @@ needs SSH to both: the lab tailnet with a grant, or the lab network.
    the follower holds, then parks on its own after its --lost-s (10 s).
 4. With a camera Pi set, a second SSH connection streams its HQ camera as MJPEG (rpicam-vid)
    into the window. Only the newest frame is decoded and shown, so video never queues up.
+   If the Pi livestreams that camera, the session borrows it from the stream (BORROW).
 5. --record also saves every frame exactly as it arrives, and the window's text, to
    recordings/ beside this file, and once the arm has parked makes camera.mp4 (the camera
    alone) and window.mp4 (the window) from them. While the arm is driven nothing is encoded,
@@ -358,9 +359,10 @@ def camera_cmd(args):
     mode = "" if args.cam_mode == "auto" else args.cam_mode
     if mode == "full":
         mode = ""
-        try:
+        try:  # borrowed too: while a stream holds the camera, its modes list no crops
             out = subprocess.run(ssh(args.cam_host, user, args.ssh_opt,
-                                     f"{pick}; echo IDX=$IDX; rpicam-hello --list-cameras 2>&1"),
+                                     f"{pick}; {BORROW}echo IDX=$IDX; "
+                                     "rpicam-hello --list-cameras 2>&1"),
                                  capture_output=True, text=True, timeout=30).stdout
             idx = re.search(r"^IDX=(\d+)", out, re.M)
             found = idx and full_view_mode(out, int(idx.group(1)))
@@ -373,10 +375,24 @@ def camera_cmd(args):
         else:
             print("camera: couldn't find a whole-sensor mode, so rpicam picks (it may crop)",
                   flush=True)
-    remote = (f"{pick}; exec rpicam-vid -t 0 -n --camera $IDX --codec mjpeg --width {w} "
+    remote = (f"{pick}; {BORROW}exec rpicam-vid -t 0 -n --camera $IDX --codec mjpeg --width {w} "
               f"--height {h} " + (f"--mode {mode} " if mode else "")
               + f"--framerate {args.cam_fps:g} -q {int(args.cam_quality)} --flush -o -")
     return ssh(args.cam_host, user, args.ssh_opt, remote)
+
+
+# The camera Pis livestream their cameras (livestream/device.py, #61), and a stream holds its
+# camera. This borrows camera $IDX from it for as long as the remote shell runs (it becomes
+# rpicam-vid at exec): it writes its PID ($$) to /tmp/picam-pause-$IDX and waits up to 10 s
+# for the stream's own rpicam-vid on that camera to exit. The stream sends a "camera in use"
+# card meanwhile and takes the camera back 5 s after this process has exited, so nothing needs
+# stopping by hand and the stream's YouTube link stays the same. With no stream on that
+# camera, nothing waits. The mode probe borrows it the same way, just before the video does.
+_STREAM_CAM = "pgrep -f 'rpicam-vid .*--codec yuv420 .*--camera '$IDX' ' >/dev/null"
+BORROW = (f"echo $$ 2>/dev/null >/tmp/picam-pause-$IDX; "
+          f"for i in $(seq 100); do {_STREAM_CAM} || break; sleep 0.1; done; "
+          f"if {_STREAM_CAM}; then echo 'camera '$IDX' is still held by its livestream "
+          "(picam-stream): stop that on the Pi, or update its device.py' >&2; exit 1; fi; ")
 
 
 def split_jpegs(buf, stop):
