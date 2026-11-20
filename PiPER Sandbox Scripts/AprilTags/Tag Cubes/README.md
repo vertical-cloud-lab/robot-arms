@@ -62,8 +62,10 @@ purge: about 420 swaps for one W cube. That is hours of swapping and a lot of pu
 filament, so use the A1 mini only for single parts and expect the waste.
 
 - **Files** (in `print/`):
-  - `all_parts_H2D.3mf`: all 11 parts on one H2D plate. The colour changes are per layer, not
-    per part, so one plate costs about the same as one part.
+  - `all_parts_H2D.3mf`: all 11 parts on one H2D plate, white in the left nozzle and black in
+    the right. The colour changes are per layer, not per part, so one plate costs about the
+    same as one part. The back-right corner is left clear for the prime tower; if you
+    re-arrange the plate, check the tower doesn't land on a part.
   - `<part>.3mf`: one part on its own.
   - `<part>_white.stl` / `<part>_black.stl`: the same solids for other slicers. Load both at
     once and say yes to *load as a single object with multiple parts*.
@@ -71,9 +73,13 @@ filament, so use the A1 mini only for single parts and expect the waste.
   In every 3MF, the white body is filament 1 and the black cells are filament 2. Bambu Studio
   2.9.1 opens them that way: its command line loaded and re-exported `all_parts_H2D.3mf` as 11
   objects, each with a white part on filament 1 and a black one on filament 2.
+- **Estimate:** Bambu Studio 2.9.1 sliced `all_parts_H2D.3mf` for the H2D with no errors:
+  **11 h 55 min, 322 g of white and 56 g of black**, prime tower included. That assumed 0.4 mm
+  nozzles, Bambu PLA Matte and its *0.20mm Standard @BBL H2D* process (2 walls, 15 % infill).
+  The sliced file isn't committed: slice for the nozzles actually fitted.
 - **Filament: matte PLA** (black and white). Shiny filament can throw glare that hides a tag;
   matte doesn't. Black PLA covers white within a layer or two, and the 1 mm inlay leaves margin.
-- **Settings:** 0.2 mm layers, 3 walls, 15 % infill, no supports. Ironing on the top faces is
+- **Settings:** Bambu's *0.20mm Standard* process, no supports. Ironing on the top faces is
   optional. Leave *Flush into this object* off for these parts (it is off by default): it
   purges into the part itself, and the colours would mix in the faces.
 - **Nozzles:** this print uses both of the H2D's nozzles, so by this repo's rule both must be

@@ -31,20 +31,32 @@ sys.path.insert(0, HERE)
 import tag_cubes as tc  # noqa: E402
 
 PLA_DENSITY = 1.24  # g/cm^3
-H2D_PLATE = (325.0, 320.0)  # mm the H2D prints with both nozzles (Bambu Lab's spec)
+# Where both of the H2D's nozzles reach (Bambu Studio's H2D profile, extruder_printable_area:
+# left nozzle x 0-325, right 25-350, y 0-320). The back-right corner is kept clear for the
+# prime tower (Bambu Studio 2.9.1 sliced this plate with the tower's corner at x 255, y 245).
+H2D_BOTH = (25.0, 325.0, 0.0, 320.0)
+TOWER_SPOT = (245.0, 325.0, 235.0, 320.0)
 GAP = 10.0                  # mm between parts on the plate
 
 
-def arrange(sizes, plate=H2D_PLATE, gap=GAP):
-    """Shelf-pack footprints (w, d) on the plate; returns their centres, or None if they don't fit."""
+def arrange(sizes, area=H2D_BOTH, keep_clear=TOWER_SPOT, gap=GAP):
+    """Shelf-pack footprints (w, d) into area (x0, x1, y0, y1), around the keep_clear
+    rectangle; returns their centres, or None if they don't fit."""
+    x0, x1, y0, y1 = area
+    kx0, kx1, ky0, ky1 = keep_clear
     order = sorted(range(len(sizes)), key=lambda i: -sizes[i][1])
-    out, x, y, row_d = [None] * len(sizes), gap, gap, 0.0
+    out, x, y, row_d = [None] * len(sizes), x0 + gap, y0 + gap, 0.0
     for i in order:
         w, d = sizes[i]
-        if x + w + gap > plate[0]:
-            x, y, row_d = gap, y + row_d + gap, 0.0
-        if y + d + gap > plate[1]:
-            return None
+        while True:
+            if x + w + gap > x1:
+                x, y, row_d = x0 + gap, y + row_d + gap, 0.0
+            if y + d + gap > y1:
+                return None
+            if x < kx1 and x + w > kx0 and y < ky1 and y + d > ky0:  # would cover the tower spot
+                x = x1  # next row
+                continue
+            break
         out[i] = (x + w / 2, y + d / 2)
         x, row_d = x + w + gap, max(row_d, d)
     return out
@@ -125,7 +137,8 @@ def main(argv=None):
             print("the parts don't fit on one H2D plate: print them in two batches")
         else:
             tc.write_3mf_plate(os.path.join(a.out, "all_parts_H2D.3mf"),
-                               [(n, w, b, xy) for (n, w, b, _), xy in zip(plate_items, spots)])
+                               [(n, w, b, xy) for (n, w, b, _), xy in zip(plate_items, spots)],
+                               filament_maps="1 2")  # white: left nozzle, black: right
             print(f"all {len(plate_items)} parts fit on one H2D plate: print/all_parts_H2D.3mf")
     # cube_tags.yaml covers every part in cubes.yaml, so rebuild it from all of them.
     allp = parts if not a.parts else build_all(cfg)

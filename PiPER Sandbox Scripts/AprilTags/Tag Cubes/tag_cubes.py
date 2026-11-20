@@ -485,12 +485,14 @@ def write_3mf(path: str, name: str, white: "m3d.Manifold", black: "m3d.Manifold"
     write_3mf_plate(path, [(name, white, black, bed_center)])
 
 
-def write_3mf_plate(path: str, items: list):
+def write_3mf_plate(path: str, items: list, filament_maps: str | None = None):
     """A 3MF for Bambu Studio / OrcaSlicer with one object per item, each made of two parts:
     the white body on filament 1 and the black inlays on filament 2.
 
     items: [(name, white, black, (x, y) on the bed)], solids already turned for printing and
-    sitting on z = 0. Same layout Bambu Studio writes: the meshes in 3D/Objects/object_N.model
+    sitting on z = 0. filament_maps: which nozzle each filament goes to on a two-nozzle
+    printer, e.g. "1 2" on the H2D: white in the left nozzle, black in the right, so the
+    colour changes are nozzle switches and need no purging. Same layout Bambu Studio writes: the meshes in 3D/Objects/object_N.model
     (3MF production extension), the parts and their filaments in Metadata/model_settings.config.
     """
     n = len(items)
@@ -534,9 +536,12 @@ def write_3mf_plate(path: str, items: list):
             f' <metadata name="BambuStudio:3mfVersion">1</metadata>\n'
             f' <metadata name="Title">AprilTag cubes</metadata>\n <resources>\n{"".join(comps)} </resources>\n'
             f' <build p:UUID="{_uid("build", *[it[0] for it in items])}">\n{"".join(build)} </build>\n</model>\n')
+    maps = ("" if not filament_maps else
+            f'    <metadata key="filament_map_mode" value="Manual"/>\n'
+            f'    <metadata key="filament_maps" value="{filament_maps}"/>\n')
     config = (f'<?xml version="1.0" encoding="UTF-8"?>\n<config>\n{"".join(settings)}  <plate>\n'
               f'    <metadata key="plater_id" value="1"/>\n    <metadata key="plater_name" value=""/>\n'
-              f'    <metadata key="locked" value="false"/>\n{"".join(plate)}  </plate>\n'
+              f'    <metadata key="locked" value="false"/>\n{maps}{"".join(plate)}  </plate>\n'
               f'  <assemble>\n{"".join(assemble)}  </assemble>\n</config>\n')
     ctypes = ('<?xml version="1.0" encoding="UTF-8"?>\n'
               '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">\n'
