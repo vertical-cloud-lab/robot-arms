@@ -68,6 +68,23 @@
   "video": "/tmp/amp-results/capgym_spill_wipe-ep0.mp4"
  },
  {
+  "episode": "capgym_two_arm_lift-ep0",
+  "instruction": "The two arms should coordinate to lift a pot. Arm 0 should grasp handle 0, and Arm 1 should grasp handle 1. Then both arms should lift the pot up at the same height.",
+  "cells": 24,
+  "cell_errors": 1,
+  "images_shown": 18,
+  "policy_wall_min": 11.9,
+  "last_budget": "[step 266 of 5000, 4734 left; wall 12 min of 60 used]",
+  "outcome_belief": "success",
+  "scored": {
+   "file": "/tmp/amp-run/capgym_two_arm_lift/slot/results/two_arm_lift/log_0_env0.json",
+   "success": true,
+   "final_step": 267
+  },
+  "truth": null,
+  "video": "/tmp/amp-results/capgym_two_arm_lift-ep0.mp4"
+ },
+ {
   "episode": "banana_in_bowl-ep0",
   "instruction": "Pick up the banana and place it in the bowl",
   "cells": 26,
@@ -145,5 +162,40 @@
    }
   },
   "video": "/tmp/amp-results/vial_in_rack-ep0.mp4"
+ },
+ {
+  "episode": "tape_to_shelf-ep0",
+  "instruction": "Pick up the green tape and place it on the black shelf",
+  "cells": 53,
+  "cell_errors": 0,
+  "images_shown": 49,
+  "policy_wall_min": 31.5,
+  "last_budget": "[step 558 of 2250, 1692 left; wall 32 min of 60 used]",
+  "outcome_belief": "unsure",
+  "scored": {
+   "file": "/tmp/amp-run/tape_to_shelf/bench/tape_to_shelf/log_0_env0.json",
+   "success": true,
+   "final_step": 559
+  },
+  "truth": {
+   "success": true,
+   "objects": {
+    "tape": [
+     0.4223,
+     -0.0315,
+     0.0817
+    ]
+   },
+   "meta": {
+    "shelf": [
+     0.43,
+     -0.018361059042552214,
+     0.08,
+     0.07,
+     0.13
+    ]
+   }
+  },
+  "video": "/tmp/amp-results/tape_to_shelf-ep0.mp4"
  }
 ]
