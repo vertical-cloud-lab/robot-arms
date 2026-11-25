@@ -113,7 +113,112 @@ Emergent behaviours with no prompt or skill for them:
 
 ## Results
 
-_Filled in below once the episodes finish._
+One episode per task. Every policy was a fresh Opus 5.5 agent given only AMP1's prompt and SDK
+reference; it got the instruction from `ep.observe()`. **Scored** is the simulator's own check: CaP-Gym's
+for the robosuite tasks, and [`piper_sim.py`](piper/piper_sim.py)'s `success()` for the PiPER tasks.
+**Belief** is what the agent reported before it saw any score. **Cells** counts `python(code)` calls, from the kernel's transcript, not the agent's own count,
+roughly the paper's "model calls". Each episode folder in [`results/`](results/) has the agent's
+report, every code cell it ran with its output (`transcript.jsonl`), and its key images.
+
+### CaP-Gym robosuite: the paper's benchmark, its own scenes and checks
+
+| Task | Robot | Instruction | Scored | Belief | Steps used | Cells | Wall |
+|---|---|---|---|---|---|---|---|
+| [`cube_lifting`](results/capgym_cube_lifting-ep0/) | Panda | pick up the red cube and lift it. | ✅ | success | 251 / 1500 | 14 | 6 min |
+| [`cube_stack`](results/capgym_cube_stack-ep0/) | Panda | Pick up the red cube and gently stack it on top of the green cube, then release it. | ✅ | success | 463 / 1500 | 18 | 8 min |
+| [`cube_restack`](results/capgym_cube_restack-ep0/) | Panda | Gently place the red cube on top of the green cube and then open the gripper. Nothing should be dropped from a height. | ✅ | success | 581 / 1500 | 31 | 9 min |
+| [`spill_wipe`](results/capgym_spill_wipe-ep0/) | Panda + wiper (no fingers) | wipe up the 'brown spill'. | ✅ | success | 587 / 4000 | 16 | 11 min |
+| [`two_arm_lift`](results/capgym_two_arm_lift-ep0/) | two Pandas | The two arms should coordinate to lift a pot. … | ✅ | success | 267 / 5000 | 23 | 12 min |
+| [`nut_assembly`](results/capgym_nut_assembly-ep0/) | Panda | grasp and insert the `brown square nut` onto the `brown square block`. | ✅ | success | 459 / 900 | 33 | 22 min |
+HANDOVER_ROW
+
+The paper reports 100% (Gemini 4 Argon) and 98.4% (Opus 5.5) over 700 robosuite episodes. One episode
+per task can't confirm a rate, but in every task here the policy did what the paper describes, with no
+skills supplied:
+
+- it measured the table and objects from depth instead of trusting perception's boxes;
+- it chose the wrist yaw by IK when the preview refused a half-turn;
+- it judged the finger-sphere "contacts" geometrically;
+- it found the table with the fingerless wiper from a 0.6 mm tracking shortfall;
+- it found the pot's handles by colour after perception merged them into the pot.
+
+### The simulated PiPER: this repo's tasks
+
+| Task | Instruction | Scored | Belief | Steps used | Cells | Wall |
+|---|---|---|---|---|---|---|
+| [`vial_in_rack`](results/vial_in_rack-ep0/) (#21) | Put the vial with the red cap into the empty slot of the blue rack | ✅ seated 1 mm from the slot centre, upright | success | 446 / 2250 | 34 | 16 min |
+| [`banana_in_bowl`](results/banana_in_bowl-ep0/) (paper's demo) | Pick up the banana and place it in the bowl | ✅ with a caveat (below) | success | 359 / 1800 | 25 | 18 min |
+| [`tape_to_shelf`](results/tape_to_shelf-ep0/) (#30) | Pick up the green tape and place it on the black shelf | ⚠️ tape on the shelf, gripper never released | unsure | 559 / 2250 | 52 | 32 min |
+
+- **`vial_in_rack`** is the most instructive episode.
+  - The 2.5 mm pocket clearance was smaller than the simulated PiPER's tracking error. Each joint stops
+    short of its command, about 3 mrad on J1–J3, 6 on J4 and 30 on J5/J6. That is exactly
+    `frictionloss`/`kp` in the Menagerie model (0.3/80, 0.3/40, 0.3/10).
+  - The agent measured those deadbands from images and joint readings and overshot each command by its
+    deadband. It came in from the robot's side of the rack so the hanging vial wouldn't drag through the
+    seated ones, and it inserted to within 0.5 mm.
+  - Nothing in the prompt mentions calibration. It is the same behaviour as the paper's real-robot
+    calibration fixes, here against an actuator error rather than a camera error.
+- **`banana_in_bowl`** is scored a success, but the banana leans out of the bowl. My banana model is
+  about 20 cm long and my bowl's rim about 15 cm across, so no placement fits it fully inside. The agent
+  worked that out before placing ("compare object length with the container's inner rim diameter"). It
+  planned the resting configuration, one end on the bowl floor and the other leaning on the far rim, and
+  released 5 mm above it after correcting an 8 mm sag under load. Fix the scene before reusing this task.
+- **`tape_to_shelf`** is the one real miss, and the agent's own report says why:
+  - The 9 cm ring is wider than the gripper, so it gripped the 1.2 cm wall with one finger inside the
+    hole.
+  - Closing rotated the ring about 35° in the grip. The 13.5 mm gap against 12 mm expected, and the
+    wrist images, showed it, but it carried on instead of re-gripping.
+  - On release, the inner finger swung into the narrow part of the hole and jammed. Six ways of freeing
+    it failed.
+  - My success check didn't require a release, so it scored this as a success. A person wouldn't.
+  - Two things in this sim may make the jam worse than reality: a ring built from 28 box segments, and a
+    gripper that can only be commanded fully open or fully closed.
+
+### Cost and speed
+
+- **Agent work:** each agent took 6–32 minutes of wall clock and roughly 100k–300k tokens.
+- **Simulated motion:** 13–39 s per episode. The paper's real-world average was 69 s of motion and
+  211 s of reasoning.
+- **What the time went to:** almost all of the wall clock was the model reading images and writing
+  code. The CPU simulator was never the bottleneck: one control step with three 640×480 RGB-D renders
+  takes about 0.2 s.
+
+### Toward the real PiPER
+
+What carries over:
+
+- **Embodiment:** AMP's embodiment contract fits the PiPER as is, and the description in `piper_sim.py`
+  is the arm's own URDF via MuJoCo Menagerie. Its joint zeros and limits are `piper_sdk`'s: J2 0–180°,
+  J3 −170–0°, and the parked arm reads about 0 on both (`arm_home.json`).
+- **Actions:** AMP's action is six absolute joint targets plus a 0/1 gripper command every
+  `control_dt`. A real backend would send what `Up_and_Down.py` and the teleop follower already send:
+  `MotionCtrl_2(0x01, 0x01, speed, 0x00)`, then `JointCtrl(*[round(deg * 1000)])`, plus
+  `GripperCtrl(gripper_angle=round(mm * 1000))`. It would run under `arm_power.py run` so the
+  relay/`can0` protocol and the parking checks stay in force.
+
+What has to change first:
+
+- **Gripper.** The lab's sleeved gripper reads 45.6 mm touching and 108.6 mm open, not 0–70 mm, so the
+  `GripperSpec` (stroke, `max_width_m`, `closed_empty`, `held_below`) and the finger geometry need
+  re-measuring. Enable joints 1–6 one at a time, never `EnablePiper()`, which sends this gripper hunting
+  for its zero.
+- **Cameras.** AMP1 expects RGB-D with calibration. The cell has RGB Pi cameras: the HQ camera on the
+  gripper Pi, plus the fixed camera Pis. The paper's `rgb_only` and `no_calibration` overlays still
+  reached 75.8% with Opus 5.5 on RoboLab, by triangulating and self-calibrating the wrist camera from
+  known gripper poses. Adding a depth or stereo camera, or the fiducial calibration from #21/#24, would
+  help more.
+- **Collision model.** The paper's main real-world failure was collisions with hardware the model
+  didn't include: mounts, cables, the table. The gripper-Pi pod and its cable belong in the PiPER
+  description before any real motion.
+- **Error recovery.** The paper added SDK calls to read the arm's state and recover after the Franka's
+  collision reflex. The PiPER equivalents are `GetArmStatus` and re-enabling joints 1–6.
+- **Tracking error.** If the real arm stops short of its commands the way this model does, AMP1
+  compensated for it here. That should be measured on the real arm before relying on it.
+- **A model API key** (`ANTHROPIC_API_KEY`) for AMP's own loop, or this repo's bridge.
+- **Speed.** Expect minutes per task.
+
+None of this was tried on the arm. This request didn't say the workspace is clear.
 
 ## Files
 
