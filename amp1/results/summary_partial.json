@@ -1,0 +1,115 @@
+[
+ {
+  "episode": "capgym_cube_lifting-ep0",
+  "instruction": "pick up the red cube and lift it.",
+  "cells": 15,
+  "cell_errors": 0,
+  "images_shown": 18,
+  "policy_wall_min": 4.7,
+  "last_budget": "[step 250 of 1500, 1250 left; wall 6 min of 60 used]",
+  "outcome_belief": "success",
+  "scored": {
+   "file": "/tmp/amp-run/capgym_cube_lifting/slot/results/cube_lifting/log_0_env0.json",
+   "success": true,
+   "final_step": 251
+  },
+  "truth": null,
+  "video": "/tmp/amp-results/capgym_cube_lifting-ep0.mp4"
+ },
+ {
+  "episode": "capgym_cube_stack-ep0",
+  "instruction": "Pick up the red cube and gently stack it on top of the green cube, then release it.",
+  "cells": 19,
+  "cell_errors": 0,
+  "images_shown": 19,
+  "policy_wall_min": 7.2,
+  "last_budget": "[step 462 of 1500, 1038 left; wall 8 min of 60 used]",
+  "outcome_belief": "success",
+  "scored": {
+   "file": "/tmp/amp-run/capgym_cube_lifting/slot/results/cube_stack/log_0_env0.json",
+   "success": true,
+   "final_step": 463
+  },
+  "truth": null,
+  "video": "/tmp/amp-results/capgym_cube_stack-ep0.mp4"
+ },
+ {
+  "episode": "banana_in_bowl-ep0",
+  "instruction": "Pick up the banana and place it in the bowl",
+  "cells": 26,
+  "cell_errors": 3,
+  "images_shown": 32,
+  "policy_wall_min": 16.1,
+  "last_budget": "[step 358 of 1800, 1442 left; wall 18 min of 60 used]",
+  "outcome_belief": "success",
+  "scored": {
+   "file": "/tmp/amp-run/banana_in_bowl/bench/banana_in_bowl/log_0_env0.json",
+   "success": true,
+   "final_step": 359
+  },
+  "truth": {
+   "success": true,
+   "objects": {
+    "banana": [
+     0.3293,
+     -0.1633,
+     0.0496
+    ],
+    "bowl": [
+     0.2816,
+     -0.1393,
+     -0.0001
+    ]
+   },
+   "meta": {
+    "bowl_xy": [
+     0.2816389409574478,
+     -0.13933889457885884
+    ]
+   }
+  },
+  "video": "/tmp/amp-results/banana_in_bowl-ep0.mp4"
+ },
+ {
+  "episode": "vial_in_rack-ep0",
+  "instruction": "Put the vial with the red cap into the empty slot of the blue rack",
+  "cells": 35,
+  "cell_errors": 0,
+  "images_shown": 33,
+  "policy_wall_min": 15.0,
+  "last_budget": "[step 445 of 2250, 1805 left; wall 16 min of 60 used]",
+  "outcome_belief": "success",
+  "scored": {
+   "file": "/tmp/amp-run/vial_in_rack/bench/vial_in_rack/log_0_env0.json",
+   "success": true,
+   "final_step": 446
+  },
+  "truth": {
+   "success": true,
+   "objects": {
+    "vial_blue1": [
+     0.3627,
+     -0.1046,
+     0.0059
+    ],
+    "vial_blue2": [
+     0.3627,
+     -0.0746,
+     0.0059
+    ],
+    "vial": [
+     0.3617,
+     -0.1344,
+     0.0059
+    ]
+   },
+   "meta": {
+    "slot": [
+     0.3627392337464291,
+     -0.13460426572472262
+    ]
+   }
+  },
+  "video": "/tmp/amp-results/vial_in_rack-ep0.mp4"
+ }
+]

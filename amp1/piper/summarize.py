@@ -23,6 +23,7 @@ for ep_dir in map(Path, sys.argv[2:]):
     task = name.rsplit("-ep", 1)[0]
     capgym = task.startswith("capgym_")
     run = Path("/tmp/amp-run") / task
+    meta = json.loads((ep_dir / ".run.json").read_text()) if (ep_dir / ".run.json").exists() else {}
     cells = [json.loads(x) for x in (ep_dir / "transcript.jsonl").read_text().splitlines() if x]
     report = {}
     if (ep_dir / "report.json").exists():
@@ -32,18 +33,19 @@ for ep_dir in map(Path, sys.argv[2:]):
             report = {"unparsed": str(exc)}
     # the scored outcome: the link client's saved episode record
     result = None
-    for f in sorted(run.rglob("*.json")):
+    res_root = Path(meta["results"]) if meta.get("results") else run
+    for f in sorted(res_root.rglob("*.json")) if res_root.exists() else []:
         if f.name in ("server.json",) or "state" in f.parts:
             continue
         try:
             d = json.loads(f.read_text())
         except (json.JSONDecodeError, UnicodeDecodeError):
             continue
-        if isinstance(d, dict) and ("success" in d) and f.name != f"{task}_truth.json":
-            result = {"file": str(f), **{k: d[k] for k in ("success", "score", "steps", "reason")
-                                         if k in d}}
+        if isinstance(d, dict) and ("success" in d) and not f.name.endswith("_truth.json"):
+            result = {"file": str(f), **{k: d[k] for k in ("success", "score", "steps", "reason",
+                                                           "final_step") if k in d}}
     truth = None
-    tf = run / "frames" / f"{task}_truth.json"
+    tf = Path(meta["truth"]) if meta.get("truth") else run / "frames" / f"{task}_truth.json"
     if tf.exists():
         truth = json.loads(tf.read_text())
     last_budget = cells[-1]["budget"] if cells else ""
@@ -51,12 +53,12 @@ for ep_dir in map(Path, sys.argv[2:]):
     n_images = sum(len(c["images"]) for c in cells)
     wall_s = (cells[-1]["t"] - cells[0]["t"]) if len(cells) > 1 else 0.0
     # video
-    frames = run / "frames" / f"{task}_ep0" if not capgym else run / "frames"
+    frames = Path(meta["frames"]) if meta.get("frames") else run / "frames" / f"{task}_ep0"
     video = None
     if frames.exists() and any(frames.glob("*.jpg")):
         video = out / f"{name}.mp4"
         subprocess.run([FFMPEG, "-y", "-loglevel", "error", "-framerate",
-                        "20" if capgym else "15", "-i", str(frames / "%05d.jpg"),
+                        str(meta.get("fps", 20 if capgym else 15)), "-i", str(frames / "%05d.jpg"),
                         "-vf", "scale=trunc(iw/2)*2:trunc(ih/2)*2", "-c:v", "libx264",
                         "-pix_fmt", "yuv420p", "-crf", "23", str(video)], check=True)
     # keep the policy's report, its transcript and its key images
@@ -76,7 +78,8 @@ for ep_dir in map(Path, sys.argv[2:]):
                 (dst / "images").mkdir(exist_ok=True)
                 shutil.copy(c, dst / "images" / c.name)
                 break
-    rows.append({"episode": name, "cells": len(cells), "cell_errors": errors,
+    instruction = json.loads((ep_dir / "episode.json").read_text()).get("instruction", "")
+    rows.append({"episode": name, "instruction": instruction, "cells": len(cells), "cell_errors": errors,
                  "images_shown": n_images, "policy_wall_min": round(wall_s / 60, 1),
                  "last_budget": last_budget, "outcome_belief": report.get("outcome_belief"),
                  "scored": result, "truth": truth, "video": str(video) if video else None})
