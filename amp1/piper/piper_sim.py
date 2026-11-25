@@ -408,6 +408,8 @@ class PiperAdapter:
         self.task = None
         self.d = None
         self._renderer = None
+        self._frames_dir = None
+        self._nframe = 0
 
     # declarations
     def embodiment(self):
@@ -452,6 +454,12 @@ class PiperAdapter:
         for _ in range(int(0.6 / self.m.opt.timestep)):  # let objects settle
             mujoco.mj_step(self.m, self.d)
         self._renderer = mujoco.Renderer(self.m, CAM_H, CAM_W)
+        rec = os.environ.get("PIPER_FRAMES_DIR")
+        self._nframe = 0
+        self._frames_dir = None
+        if rec:
+            self._frames_dir = Path(rec) / f"{self.task}_ep{int(episode)}"
+            self._frames_dir.mkdir(parents=True, exist_ok=True)
 
     def _ids(self):
         m = self.m
@@ -494,7 +502,23 @@ class PiperAdapter:
         pos = d.xpos[self._flange].copy()
         quat = d.xquat[self._flange].copy()
         cams = {n: self._camera(n) for n in ("left", "right", "wrist")}
+        self._record(cams)
         return Frame.single(q, self.gripper_measured(), pos, quat, cams, ee=HAND)
+
+    def _record(self, cams) -> None:
+        """One composite JPEG per control step (left | right | wrist), for the episode video."""
+        if not self._frames_dir:
+            return
+        import cv2
+        tiles = [cv2.resize(cams[n].rgb, (480, 360), interpolation=cv2.INTER_AREA)
+                 for n in ("left", "right", "wrist")]
+        img = np.concatenate(tiles, axis=1)[:, :, ::-1].copy()
+        t = self._nframe * CONTROL_DT
+        cv2.putText(img, f"{self.task}  t={t:5.1f}s (executed motion)", (8, 22),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2, cv2.LINE_AA)
+        cv2.imwrite(str(self._frames_dir / f"{self._nframe:05d}.jpg"), img,
+                    [cv2.IMWRITE_JPEG_QUALITY, 85])
+        self._nframe += 1
 
     # acting
     def apply(self, action) -> None:
@@ -532,6 +556,11 @@ class PiperAdapter:
                       and R[2, 2] > math.cos(math.radians(12)))
         else:
             ok = False
+        if self._frames_dir:
+            import json
+            (self._frames_dir.parent / f"{self.task}_truth.json").write_text(json.dumps(
+                {"success": ok, "objects": self.ground_truth(), "meta": {
+                    k: list(v) for k, v in self.meta.items()}}, indent=1))
         return ok, float(ok)
 
     def ground_truth(self) -> dict:
