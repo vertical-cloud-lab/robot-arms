@@ -8,6 +8,8 @@ run. Repeat for 30 runs at each of 3 box spots to measure repeatability and accu
         ~/piper-venv/bin/python auger_test.py --spot 1 --runs 30 --go
 
 Without --go nothing moves: it looks, plans, prints the plan and saves results/plan.jpg.
+For the first runs on the real arm, --until above (stop over the auger) and --until grasp
+(close on it and let go, no pull) check the setup one step at a time.
 
 One run:
   1. LOOK   a still from mpzy's camera; find the holder and the box by their AprilTags.
@@ -63,17 +65,24 @@ class Eyes:
             self.camera = sim.camera
         else:
             self.camera = V.Camera.load()
-            if self.camera is None:
+            if self.camera is None and args.go:
                 raise SystemExit(f"no {S.CALIBRATION_FILE}: run calibrate.py first (README)")
+            if self.camera is None:
+                print(f"WARNING: no {S.CALIBRATION_FILE} yet, so positions are settings.py's "
+                      "rough guess of the camera: fine for checking the tags are seen, not for "
+                      "moving", flush=True)
+                self.camera = V.Camera.nominal()
         self.known_z = {}  # each object's height from its last look with 2+ tags
 
     def look(self, name):
         """(holder, box, detections, image): where the holder and the box are (None if not
-        seen), from a new still saved as results/images/<name>.jpg."""
+        seen), from a new still. A 1600 px copy with the tags marked is kept as
+        results/images/<name>.jpg (the full 12 MP still would fill the Pi's card)."""
         path = os.path.join(self.args.results, "images", f"{name}.jpg")
         os.makedirs(os.path.dirname(path), exist_ok=True)
-        image = self.sim.capture(path) if self.sim else V.capture(path)
+        image = self.sim.capture() if self.sim else V.capture("/tmp/powder_doser_w1_still.jpg")
         det = V.detect(image)
+        V.annotate(image, det, self.camera, path=path)
         found = {}
         for key, tags, size in (("holder", S.HOLDER_TAGS, S.HOLDER_TAG_SIZE_MM),
                                 ("box", S.BOX_TAGS, S.BOX_TAG_SIZE_MM)):
@@ -206,29 +215,48 @@ def moved(arm, result, rec, step):
 
 
 def back_up(arm, rec):
-    """After a failed pick or place: open the gripper, go straight up, then to READY. Records
-    a fault (and stops the session) if even that fails."""
+    """After a failed pick or place, or a stop: open the gripper, go straight up, then back to
+    READY. Both moves are checked first; if either isn't safe, or one stops, it records a
+    fault and the arm stays holding. True once at READY."""
     q = arm.joints()
     p = K.tcp(q)
+    up = None
+    try:  # straight up, if the arm is in one of this script's poses (else it can't be lined up)
+        path = K.line(q, p, [p[0], p[1], p[2] + S.APPROACH_MM], K.finger_yaw(q), K.finger_yaw(q))
+        if max(abs(a - b) for a, b in zip(path[0], q)) < 2.0:
+            K.check_path(path, "going straight up")
+            up = path
+    except K.IKError:
+        pass
+    top = up[-1] if up else q
     try:
-        up = K.line(q, p, [p[0], p[1], p[2] + S.APPROACH_MM], K.finger_yaw(q), K.finger_yaw(q))
-        K.check_path(up, "backing up")
+        if up is None and p[2] < 120:
+            raise K.IKError("the gripper is low and not in a pose this script can go straight "
+                            "up from")
+        K.check_path(K.joint_line(top, arm.ready), "back to READY")
     except K.IKError as e:
-        rec["fault"], rec["why"] = True, rec.get("why", "") + f"; can't back up: {e}"
-        return
+        rec["fault"], rec["why"] = True, rec.get("why", "") + f"; not backing up: {e}"
+        return False
     arm.gripper_to(TUBE_READING + S.OPEN_FOR_RELEASE_MM)
-    for path, label in ((up, "back up"), (None, "to READY")):
-        result = arm.follow(up, label) if path else arm.go(arm.ready, label)
+    for path, label in ((up, "straight up"), ([top, arm.ready], "back to READY")):
+        result = arm.follow(path, label) if path else None
         if result:
             rec["fault"], rec["why"] = True, rec.get("why", "") + f"; then {result[1]}"
-            return
+            return False
+    return True
 
 
-def pick(arm, plan, rec):
-    """Steps 3: True if the auger came out of the holder in the gripper."""
+def pick(arm, plan, rec, args):
+    """Step 3: True if the auger came out of the holder in the gripper. With --until above or
+    --until grasp it stops early (rec["practice"]), and the caller backs it up to READY."""
     if not moved(arm, arm.follow(plan.to_pick, "above the auger"), rec, "going to the auger"):
         return False
     arm.gripper_to(TUBE_READING + S.OPEN_FOR_GRASP_MM)
+    if args.until == "above":
+        ask("Above the auger, gripper open. Check the fingers are lined up to close across the "
+            "tube, one each side. Enter = back to READY: ", args)
+        rec["practice"], rec["why"] = True, "stopped above the auger (--until above)"
+        return False
     for path, label, speed in ((plan.down_fast, "down", S.MOVE_MM_S),
                                (plan.down_slow, "down to the auger", S.APPROACH_MM_S)):
         if not moved(arm, arm.follow(path, label, speed), rec, label):
@@ -242,6 +270,10 @@ def pick(arm, plan, rec):
         rec["why"] = f"the fingers stopped at {w:.1f} mm, not on the tube ({TUBE_READING:.1f})"
         return False
     rec["closed_on_auger"] = True
+    if args.until == "grasp":
+        rec["practice"], rec["why"] = True, f"closed on the tube at {w:.1f} mm (expected " \
+            f"{TUBE_READING:.1f}), then let go (--until grasp)"
+        return False
     if not moved(arm, arm.follow(plan.pull, "pull out of the clips", S.PULL_MM_S,
                                  S.PULL_MAX_CURRENT_A), rec, "pulling out of the clips"):
         return False
@@ -270,7 +302,9 @@ def place(arm, plan, rec):
     rec["released"] = True
     for path, label in ((plan.rise, "rise from the box"), (plan.to_ready, "to READY")):
         if not moved(arm, arm.follow(path, label), rec, label):
-            return True  # it was let go in the box; the stop is recorded in "why"
+            rec["stop_after"] = True  # let go in the box, but stuck on the way back
+            return True
+    rec["at_ready"] = True
     return True
 
 
@@ -358,6 +392,7 @@ def one_run(arm, eyes, n, args, session):
     name = f"spot{args.spot}_run{n:02d}"
     holder, box, det, _ = eyes.look(name + "_before")
     rec.update(holder_found=holder, box_found=box, image_before=f"images/{name}_before.jpg")
+    rec["at_ready"] = True  # until the arm moves
     if holder is None:
         rec["why"] = f"the holder's tags weren't seen (saw tags {sorted(det)})"
     elif box is None:
@@ -372,15 +407,14 @@ def one_run(arm, eyes, n, args, session):
             rec["fault"], rec["why"] = True, f"no safe plan: {e}"
             plan = None
         if plan:
-            rec["picked"] = pick(arm, plan, rec)
+            rec["at_ready"] = False
+            rec["picked"] = pick(arm, plan, rec, args)
             if rec["picked"]:
                 place(arm, plan, rec)
-            elif not rec.get("fault"):
-                back_up(arm, rec)
-            if rec.get("picked") and not rec.get("released") and not rec.get("fault"):
-                back_up(arm, rec)
+            if not rec.get("at_ready") and not rec.get("fault") and not rec.get("stop_after"):
+                rec["at_ready"] = back_up(arm, rec)
     rec["seconds"] = time.time() - t0
-    if not rec.get("fault"):  # a still of how it ended (the arm is back at READY)
+    if rec["at_ready"]:  # a still of how it ended (the arm is back at READY)
         _, box_after, det_after, _ = eyes.look(name + "_after")
         rec["image_after"] = f"images/{name}_after.jpg"
         rec["auger_in_box"] = eyes.auger_in_box(det_after, box_after or box)
@@ -393,6 +427,53 @@ def warn_if_moved(holder, box, args):
         off = math.hypot(f.x - x, f.y - y)
         if off > S.SPOT_TOLERANCE_MM:
             print(f"NOTE: the {what} is {off:.0f} mm from where settings.py expects it", flush=True)
+
+
+def recover(arm, args):
+    """After a stop: the arm holds where it is. If the operator agrees, open the gripper, go
+    straight up, back to READY and park, so arm_power.py can switch it off (exit 0). Else
+    leave it holding, motors on (exit 1): the PiPER has no brakes."""
+    if not arm.enabled:  # never switched on: arm_power.py checks it is parked before cutting
+        return 0
+    arm.hold()
+    print(f"holding at {A.UD.fmt(arm.joints())}, motors on", flush=True)
+    try:
+        answer = ask("Clear what stopped it. Enter = open the gripper, go straight up, back to "
+                     "READY and park; q = leave it holding: ", args)
+    except KeyboardInterrupt:
+        answer = "q"
+    if answer.lower().startswith("q"):
+        print("left holding, motors on: the relay stays on. Run this script again later to "
+              "recover, or hold the arm and use the E-stop", flush=True)
+        return 1
+    rec = {}
+    if back_up(arm, rec):
+        try:
+            arm.park()
+            return 0
+        except A.ArmError as e:
+            rec["why"] = str(e)
+    print(f"couldn't park: {rec.get('why')}. Holding, motors on", flush=True)
+    arm.hold()
+    return 1
+
+
+def recover_only(args, sim):
+    """--recover: take over an arm a stopped run left holding, and park it. Where its rest is
+    isn't known any more, so it lands on arm_home.json's typical rest (J2 -1.9, J3 +2.1); if
+    the real rest is higher, the landing stops on it and disables there, as Up_and_Down.py does."""
+    arm = A.connect(args.dry_run, sim, args.can)
+    if not all(arm.piper.GetArmEnableStatus()):
+        print("the motors aren't all on, so there is nothing to recover (arm_power.py run "
+              "switches the power off if the arm is parked)", flush=True)
+        return 0
+    q = arm.joints()
+    arm.enabled, arm.widened = True, True
+    arm.rest = [0.0, -1.9, 2.1, S.J4_DEG, 24.0, S.PARK_J6_DEG]
+    arm.ready = A.UD.level([0.0, S.READY_LIFT_DEG, -S.READY_LIFT_DEG, S.J4_DEG, 24.0,
+                            S.PARK_J6_DEG])
+    print(f"arm holding at {A.UD.fmt(q)}", flush=True)
+    return recover(arm, args)
 
 
 def plan_only(eyes, args, ready):
@@ -420,6 +501,12 @@ def main():
     ap.add_argument("--spot", default="1", help="which box spot this is (a key of settings.SPOTS)")
     ap.add_argument("--runs", type=int, default=1, help="how many runs this session")
     ap.add_argument("--go", action="store_true", help="move the arm (without it: look and plan)")
+    ap.add_argument("--until", choices=("above", "grasp"),
+                    help="first runs: stop above the auger, or after closing on it (no pull), "
+                         "then back to READY and park. Not graded or logged")
+    ap.add_argument("--recover", action="store_true",
+                    help="after a stop left the arm holding (motors on): go straight up, back "
+                         "to READY and park it, so arm_power.py can switch it off")
     ap.add_argument("--yes", action="store_true",
                     help="don't ask: take every suggested grade (for --dry-run and tests)")
     ap.add_argument("--dry-run", action="store_true",
@@ -428,6 +515,8 @@ def main():
     ap.add_argument("--can", default="can0")
     ap.add_argument("--sim", default="", help=argparse.SUPPRESS)  # tests: "missing", "stuck", "nobox"
     args = ap.parse_args()
+    if args.until:
+        args.runs = 1
     if args.spot not in S.SPOTS:
         raise SystemExit(f"--spot must be one of {sorted(S.SPOTS)} (settings.SPOTS)")
     os.makedirs(args.results, exist_ok=True)
@@ -439,6 +528,8 @@ def main():
                                  stuck="stuck" in args.sim,
                                  box=False if "nobox" in args.sim else None)
         print("DRY RUN: simulated arm and camera")
+    if args.recover:
+        return recover_only(args, sim)
     eyes = Eyes(args, sim)
     arm = A.connect(args.dry_run, sim, args.can)
     q0 = arm.joints()
@@ -471,34 +562,24 @@ def main():
                     arm.start()
             print(f"---- run {n} (spot {args.spot})", flush=True)
             rec = one_run(arm, eyes, n, args, session)
+            if rec.get("practice"):  # --until: not a graded run
+                print(f"practice run: {rec['why']}", flush=True)
+                if not rec["at_ready"]:
+                    raise A.ArmError(rec["why"])
+                continue
             g = grade(rec, args)
             log(rec, args)
             print(f"run {n}: {g}  ({rec['why']}), {rec['seconds']:.0f} s", flush=True)
-            if rec.get("fault"):
-                if rec.get("released") or rec["why"].startswith(("the box", "no safe plan")):
-                    continue  # nothing is wrong with the arm: carry on
-                raise A.ArmError(rec["why"])
+            if not rec["at_ready"]:  # carry on only from READY
+                raise A.ArmError(f"run {n} didn't end back at READY: {rec['why']}")
         arm.park()
         rc = 0
     except A.ArmError as e:
         print(f"STOPPED: {e}", flush=True)
-        if arm.enabled:
-            arm.hold()
-            print("the motors are on, holding. Clear what stopped it, then park it (back to "
-                  "READY by hand control or Up_and_Down.py --park --go) and arm_power.py off",
-                  flush=True)
+        rc = recover(arm, args)
     except KeyboardInterrupt:
-        print("Ctrl-C: holding, then parking", flush=True)
-        if arm.enabled:
-            arm.hold()
-            try:
-                q = arm.joints()
-                if K.tcp(q)[2] < 150:
-                    raise A.ArmError("the gripper is low: not moving it unattended")
-                arm.park()
-                rc = 0
-            except A.ArmError as e:
-                print(f"STOPPED: {e}", flush=True)
+        print("Ctrl-C", flush=True)
+        rc = recover(arm, args)
     finally:
         if sim:
             arm.piper.close()

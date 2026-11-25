@@ -249,9 +249,11 @@ def main():
 
     poses_seen = len({tuple(np.round(q, 3)) for q, _, _ in obs})
     print(f"the card was seen in {poses_seen} of {len(plan)} poses")
-    if poses_seen < 8:
-        raise SystemExit("too few sightings to calibrate: is the card facing the camera, and "
-                         "are its tags CAL_TAG_IDS at CAL_TAG_SIZE_MM?")
+    if poses_seen < 8:  # the arm is parked, so exit 0 and let arm_power.py switch it off
+        print("CALIBRATION FAILED, nothing saved: too few sightings. Is the card facing the "
+              "camera, and are its tags CAL_TAG_IDS at CAL_TAG_SIZE_MM? See the stills in "
+              f"{args.images}", flush=True)
+        return 0
     cam0, tags0 = first_guess(obs, S.CAL_TAG_SIZE_MM, camera)
     ids = sorted(tags0)
     cam, tags, f, k1, k2, err = fit(obs, ids, S.CAL_TAG_SIZE_MM, camera.size, cam0, tags0,

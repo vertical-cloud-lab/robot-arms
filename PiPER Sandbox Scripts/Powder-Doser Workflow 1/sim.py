@@ -141,9 +141,13 @@ class SimCell:
         return False
 
     def release(self):
-        """The gripper opened: the auger drops straight down, into the box or not."""
+        """The gripper opened: the auger drops straight down, into the box or not (or, let go
+        before it was lifted, stays in the holder's clips)."""
         mid, axis = self.auger_now()
         self.held = None
+        if self.from_holder and K.tcp(self.piper_joints())[2] < self.grab_z + 5:
+            self.auger = "holder"
+            return
         ok = False
         if self.box is not None:
             c, s = math.cos(math.radians(self.box.yaw)), math.sin(math.radians(self.box.yaw))

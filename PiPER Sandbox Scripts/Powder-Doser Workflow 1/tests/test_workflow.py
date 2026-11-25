@@ -5,7 +5,7 @@
     python tests/test_workflow.py          # or: python -m pytest tests
 
 The whole-session tests run in real time (the simulated arm moves at the real one's speed),
-so the full set takes about 4 minutes.
+so the full set takes about 5 minutes.
 """
 import csv
 import math
@@ -156,6 +156,26 @@ def test_session_two_runs_both_A():
     r = subprocess.run([sys.executable, os.path.join(WF, "report.py"), "--results", d],
                        capture_output=True, text=True)
     assert r.returncode == 0 and "2/2 = 100%" in r.stdout, r.stdout + r.stderr
+
+
+def test_recover_from_a_stop_down_at_the_auger():
+    """A run stopped with the gripper down at the auger: recover() opens, goes straight up,
+    back to READY and parks, with the motors off at the end."""
+    from types import SimpleNamespace
+
+    import arm as A
+    import auger_test as T
+    cell = sim.SimCell("1")
+    arm = A.connect(True, cell)
+    try:
+        arm.start()
+        plan = T.Plan(cell.holder, cell.box, arm.ready)
+        assert arm.follow(plan.to_pick, "above the auger") is None
+        assert arm.follow(plan.down_fast + plan.down_slow, "down to it") is None
+        assert T.recover(arm, SimpleNamespace(yes=True)) == 0
+        assert not any(cell.piper.GetArmEnableStatus())
+    finally:
+        cell.piper.close()
 
 
 def test_no_auger_is_D_stuck_is_C_no_box_is_F():

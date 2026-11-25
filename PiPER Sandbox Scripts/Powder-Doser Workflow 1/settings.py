@@ -27,10 +27,12 @@ GRASP_OFFSET_MM = 0.0            # MEASURE (check it is between the clips)
 # Give each tag's centre in this frame: (x, y, z), z negative because the block's top is below
 # the auger's axis (the clips hold the axis about 29 mm above the block).
 # Two tags, one near each end of the block, give the holder's direction far better than one.
+# Put them on the side of the auger that faces the camera (here -y: the outer side, away from
+# the arm), far enough out that the tube and gear (up to 52 mm above them) don't hide them.
 # --------------------------------------------------------------------------------------------
 HOLDER_TAGS = {                  # tag36h11 id: (x, y, z) of the tag's centre, mm   MEASURE
-    201: (-95.0, 32.0, -29.0),
-    202: (95.0, 32.0, -29.0),
+    201: (-90.0, -55.0, -29.0),
+    202: (90.0, -55.0, -29.0),
 }
 HOLDER_TAG_SIZE_MM = 30.0        # edge of the tag's black square (not the white border)
 # How high the clips' arms reach above the auger's axis: the gripper stays clear of them.
@@ -62,11 +64,13 @@ AUGER_TAG = None                 # e.g. {"id": 205, "size_mm": 20.0, "pos": (-80
 # something is more than SPOT_TOLERANCE_MM from where it should be (the box on the wrong spot).
 # Lay the auger and the box ACROSS the arm's reach (yaw = J1 + 90): see "Orientation" in the
 # README for why.
-HOLDER_EXPECTED = (313.0, -66.5, 78.0)   # 320 mm out at J1 = -12, lying across the reach
+# This example (layout.png) keeps clear of the A1 mini and the black shelf on the arm's right,
+# so it uses the table in front of the arm and to its left: move the big cardboard box.
+HOLDER_EXPECTED = (367.1, 98.4, 90.0)   # 380 mm out at J1 = 15, 15 deg off across the reach
 SPOTS = {                        # name: (x, y, yaw) of the box's centre   MEASURE / choose
-    "1": (208.4, 97.2, 85.0),    # 230 mm out at J1 = 25, turned 30 deg from across the reach
-    "2": (226.3, 226.3, 150.0),  # 320 mm out at J1 = 45, turned 15 deg the other way
-    "3": (166.3, 237.6, 145.0),  # 290 mm out at J1 = 55, across the reach
+    "1": (251.1, 145.0, 90.0),   # 290 mm out at J1 = 30, parallel to the holder
+    "2": (141.4, 141.4, 120.0),  # 200 mm out at J1 = 45, 15 deg off across the reach
+    "3": (114.7, 163.8, 130.0),  # 200 mm out at J1 = 55, 15 deg off across the reach
 }
 SPOT_TOLERANCE_MM = 40.0
 
@@ -106,14 +110,17 @@ J4_DEG = 0.0                     # the forearm roll is held here (centred) the w
 # about -90 deg), and the black shelf at its front right: keep J1 well clear of them.
 J1_RANGE_DEG = (-20.0, 60.0)     # MEASURE: set it from where the printer and shelf really are
 # Boxes no part of the arm (or the auger it carries) may enter, arm frame, mm:
-# (x_min, y_min, z_min, x_max, y_max, z_max). The A1 mini, from the Digital Twin's estimate of
-# the cell (PR #77: printer centre at x = -20, y = -380, 347 x 315 x 365 mm, bed fully
-# forward) plus 50 mm all round.                                              MEASURE
+# (x_min, y_min, z_min, x_max, y_max, z_max). From the Digital Twin's estimate of the cell
+# (PR #77), which mpzy's frame of 2026-11-24 agrees with roughly:            MEASURE both
+# - the A1 mini: centre x = -20, y = -380, 347 x 315 x 365 mm, bed fully forward, + 50 mm;
+# - the black shelf at the arm's front right: 400 x 300 mm, top 65 mm up, + 30 mm (the arm
+#   may pass over it, not into it).
 KEEP_OUT_BOXES = {
     "A1 mini": (-227.0, -603.0, -10.0, 277.0, -157.0, 450.0),
+    "black shelf": (140.0, -495.0, -10.0, 500.0, -35.0, 95.0),
 }
 TABLE_CLEARANCE_MM = 5.0         # nothing below this height (the table is z = 0)
-J5_COMFORT_DEG = 60.0            # the tool tips outward when pointing straight down needs more
+J5_COMFORT_DEG = 65.0            # the tool tips outward when pointing straight down needs more
                                  # J5 than this (J5's limit is 70)
 
 # --------------------------------------------------------------------------------------------

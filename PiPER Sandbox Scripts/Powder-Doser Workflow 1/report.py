@@ -76,12 +76,13 @@ def report(rows):
                      + (f"{st.median(secs):.0f}" if secs else "–") + " |")
     lines += ["", "## Repeatability (mean ± standard deviation over the runs)", "",
               "| Spot | Holder x, y (mm) | Holder yaw (deg) | Box x, y (mm) | Box yaw (deg) "
-              "| Grip on the tube (mm) |", "|---|---|---|---|---|---|"]
+              "| Grip on the tube, A and B runs (mm) |", "|---|---|---|---|---|---|"]
     for spot in spots:
         rs = [r for r in rows if r["spot"] == spot]
         lines.append(f"| {spot} | {spread(rs, 'holder_x')}, {spread(rs, 'holder_y')} | "
                      f"{spread(rs, 'holder_yaw')} | {spread(rs, 'box_x')}, {spread(rs, 'box_y')} | "
-                     f"{spread(rs, 'box_yaw')} | {spread(rs, 'grip_closed_mm')} |")
+                     f"{spread(rs, 'box_yaw')} | "
+                     f"{spread([r for r in rs if r['grade'] in ('A', 'B')], 'grip_closed_mm')} |")
     if any(r.get("auger_in_box_x") for r in rows):
         lines += ["", "## Placement (from the auger's tag, box frame: x along the box)", "",
                   "| Spot | Runs measured | x offset (mm) | y offset (mm) | Turn (deg) | "

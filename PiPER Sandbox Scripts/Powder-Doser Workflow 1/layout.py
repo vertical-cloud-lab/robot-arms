@@ -3,7 +3,8 @@
 boxes, the holder (HOLDER_EXPECTED) and the box at each spot (SPOTS), with the gripper's path
 for each. No arm, camera or Pi needed:
 
-    python layout.py              # plans every spot, prints OK or why not, writes layout.png
+    python layout.py      # plans every spot, prints OK or why not; writes layout.png and
+                          # frames.png (what to measure for the tags)
 
 Use it to choose where the holder and the three box spots go before putting them on the table.
 Then auger_test.py finds where they really are with the tags.
@@ -106,6 +107,57 @@ def draw(holder, plans, path):
     plt.close(fig)
 
 
+def draw_frames(path):
+    """frames.png: the holder and box frames from above, with the tag offsets settings.py
+    asks for, to scale. What to measure when you stick the tags on."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    fig, axes = plt.subplots(1, 2, figsize=(11, 4.6), dpi=130)
+    for ax, title, obj_tags, size in (
+            (axes[0], "HOLDER frame: origin on the auger's axis at its middle,\n"
+             "x toward the gear (outlet) end, z up", S.HOLDER_TAGS, S.HOLDER_TAG_SIZE_MM),
+            (axes[1], "BOX frame: origin at the middle of the inside floor,\n"
+             "x along the long side, z up", S.BOX_TAGS, S.BOX_TAG_SIZE_MM)):
+        o = V.Found(0, 0, 0, 0, [], 0)
+        if obj_tags is S.HOLDER_TAGS:
+            L, r = S.AUGER_LENGTH_MM, S.AUGER_TUBE_DIAMETER_MM / 2
+            ax.add_patch(plt.Rectangle((-L / 2, -r), L, 2 * r, color="0.25"))
+            ax.add_patch(plt.Rectangle((L / 2 - 47, -S.AUGER_GEAR_DIAMETER_MM / 2), 10,
+                                       S.AUGER_GEAR_DIAMETER_MM, color="0.25"))
+            ax.text(L / 2 - 42, S.AUGER_GEAR_DIAMETER_MM / 2 + 4, "gear", ha="center", fontsize=8)
+            g = S.GRASP_OFFSET_MM
+            ax.add_patch(plt.Rectangle((g - 14, -r - 9), 28, 6, color="#e76f51"))
+            ax.add_patch(plt.Rectangle((g - 14, r + 3), 28, 6, color="#e76f51"))
+            ax.text(g, r + 12, f"fingers (GRASP_OFFSET_MM = {g:g})", ha="center", fontsize=7,
+                    color="#e76f51")
+        else:
+            Lb, Wb = S.BOX_INSIDE_MM
+            ax.add_patch(plt.Rectangle((-Lb / 2, -Wb / 2), Lb, Wb, fill=False, lw=2,
+                                       edgecolor="#457b9d"))
+            ax.text(0, Wb / 2 + 4, f"inside {Lb:g} x {Wb:g} mm, {S.BOX_WALL_HEIGHT_MM:g} mm deep",
+                    ha="center", fontsize=8, color="#457b9d")
+        for i, (x, y, z) in obj_tags.items():
+            tag(ax, o, (x, y, z), size, i)
+            ax.annotate(f"({x:g}, {y:g}, {z:g})", (x, y), (x, y + (-38 if y <= 0 else 30)),
+                        ha="center", fontsize=7, arrowprops=dict(arrowstyle="-", lw=0.5))
+        ax.annotate("", (60, 0), (0, 0), arrowprops=dict(arrowstyle="->", color="#2a9d8f", lw=2))
+        ax.annotate("", (0, 60), (0, 0), arrowprops=dict(arrowstyle="->", color="#2a9d8f", lw=2))
+        ax.text(64, 0, "x", color="#2a9d8f", va="center")
+        ax.text(0, 64, "y", color="#2a9d8f", ha="center")
+        ax.set_title(title, fontsize=9)
+        ax.set_aspect("equal")
+        ax.set_xlim(-190, 190)
+        ax.set_ylim(-110, 110)
+        ax.grid(alpha=0.2)
+        ax.set_xlabel("mm")
+    fig.suptitle("Tag centres (x, y, z) in mm, as settings.py takes them: measure yours", fontsize=10)
+    fig.tight_layout()
+    fig.savefig(path)
+    plt.close(fig)
+
+
 def tag(ax, obj, p, size, label, colour="black"):
     import matplotlib.pyplot as plt
     h = size * 10 / 16  # with its white border
@@ -127,7 +179,8 @@ def main():
     path = os.path.join(HERE, "layout.png")
     try:
         draw(holder, plans, path)
-        print(f"drawn: {path}")
+        draw_frames(os.path.join(HERE, "frames.png"))
+        print(f"drawn: {path} and frames.png")
     except ImportError:
         print("(pip install matplotlib to draw layout.png)")
     return 1 if bad else 0
