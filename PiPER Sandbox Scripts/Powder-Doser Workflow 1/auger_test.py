@@ -245,6 +245,7 @@ def pick(arm, plan, rec):
     if not moved(arm, arm.follow(plan.pull, "pull out of the clips", S.PULL_MM_S,
                                  S.PULL_MAX_CURRENT_A), rec, "pulling out of the clips"):
         return False
+    time.sleep(0.3)  # let the gripper's reading settle
     rec["grip_after_pull_mm"] = w = arm.gripper_mm()
     if abs(w - TUBE_READING) > S.GRIP_TOLERANCE_MM:
         rec["why"] = f"lost the auger while pulling (gripper {w:.1f} mm)"
@@ -464,6 +465,8 @@ def main():
                              f"Enter = run {n}, q = finish: ", args)
                 if answer.lower().startswith("q"):
                     break
+                if sim:
+                    sim.reset()
                 if S.BETWEEN_RUNS == "park":
                     arm.start()
             print(f"---- run {n} (spot {args.spot})", flush=True)

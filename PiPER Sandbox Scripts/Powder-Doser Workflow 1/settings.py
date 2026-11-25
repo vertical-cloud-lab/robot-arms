@@ -62,11 +62,11 @@ AUGER_TAG = None                 # e.g. {"id": 205, "size_mm": 20.0, "pos": (-80
 # something is more than SPOT_TOLERANCE_MM from where it should be (the box on the wrong spot).
 # Lay the auger and the box ACROSS the arm's reach (yaw = J1 + 90): see "Orientation" in the
 # README for why.
-HOLDER_EXPECTED = (320.0, -60.0, 79.4)
+HOLDER_EXPECTED = (313.0, -66.5, 78.0)   # 320 mm out at J1 = -12, lying across the reach
 SPOTS = {                        # name: (x, y, yaw) of the box's centre   MEASURE / choose
-    "1": (270.0, 170.0, 122.2),
-    "2": (180.0, 290.0, 148.2),
-    "3": (400.0, 120.0, 106.7),
+    "1": (208.4, 97.2, 85.0),    # 230 mm out at J1 = 25, turned 30 deg from across the reach
+    "2": (226.3, 226.3, 150.0),  # 320 mm out at J1 = 45, turned 15 deg the other way
+    "3": (166.3, 237.6, 145.0),  # 290 mm out at J1 = 55, across the reach
 }
 SPOT_TOLERANCE_MM = 40.0
 
@@ -153,8 +153,8 @@ CAMERA_GUESS_POSITION = (920.0, -170.0, 560.0)  # arm frame (Digital Twin estima
 CAMERA_GUESS_LOOK_AT = (250.0, 60.0, 40.0)
 CALIBRATION_FILE = "calibration.json"
 
-# calibrate.py: a tag held by the gripper on a flat paddle, face down... see README.
-CAL_TAG_ID = 200
+# calibrate.py: the card the gripper holds, a tag on each face (README, "Calibrate").
+CAL_TAG_IDS = (199, 200)
 CAL_TAG_SIZE_MM = 40.0
 
 RESULTS_DIR = "results"

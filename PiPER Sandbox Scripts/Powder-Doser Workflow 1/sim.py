@@ -41,16 +41,28 @@ class SimCell:
         self.held = None            # (axis, middle) in the flange frame while held
         self.stuck = stuck
         self.camera = V.Camera.nominal(scale)
-        self.cal_tag = cal_tag      # show calibrate.py's tag on the gripper
-        # where calibrate.py's tag sits on the flange: 60 mm under the fingertips, 40 mm to
-        # the side, face out of the gripper (up when it points down)
-        self.cal_tag_in_flange = np.array([[1, 0, 0, 0], [0, -1, 0, 40.0],
-                                           [0, 0, -1, S.FINGERTIP_MM + 60.0], [0, 0, 0, 1]])
+        self.cal_tag = cal_tag      # show calibrate.py's card on the gripper
+        # calibrate.py's card: held between the fingers, so it lies across their closing
+        # line, its two tags centred 80 mm below the fingertips, one on each face
+        f = np.array(K.FINGER_AXIS)
+        down = np.array([0.0, 0.0, 1.0])       # the tool's axis, flange frame
+        self.cal_tags_in_flange = {}
+        for i, normal in zip(S.CAL_TAG_IDS, (f, -f)):
+            top = -down                        # the tag's top edge toward the gripper
+            T = np.eye(4)
+            T[:3, :3] = np.column_stack([np.cross(top, normal), top, normal])
+            T[:3, 3] = down * (S.FINGERTIP_MM + 80.0) + normal * 1.5
+            self.cal_tags_in_flange[i] = T
         self.piper = None
 
     def make_arm(self):
         self.piper = SimPiper(self)
         return self.piper
+
+    def reset(self):
+        """What the operator does between runs: the auger back in its holder, the box empty."""
+        if self.auger != "missing":
+            self.auger, self.auger_pose, self.held = "holder", None, None
 
     # ---------------------------------------------------------------- the camera
     def tags(self):
@@ -73,7 +85,8 @@ class SimCell:
             R, flange = K.UD.fk(self.piper_joints())
             T = np.eye(4)
             T[:3, :3], T[:3, 3] = np.array(R), flange
-            out.append((S.CAL_TAG_ID, S.CAL_TAG_SIZE_MM, T @ self.cal_tag_in_flange))
+            for i, tag in self.cal_tags_in_flange.items():
+                out.append((i, S.CAL_TAG_SIZE_MM, T @ tag))
         return out
 
     def capture(self, path=None):
@@ -172,8 +185,15 @@ class SimPiper(FakePiper):
             cmd = max(cmd, TUBE_READING)  # the fingers stop on the tube
         super().GripperCtrl(round(cmd * 1000), gripper_effort, gripper_code, set_zero)
 
+    def JointCtrl(self, *mdeg):
+        self.check_slip()
+        super().JointCtrl(*mdeg)
+
     def GetArmGripperMsgs(self):
-        if self.cell.slipped():
+        self.check_slip()
+        return super().GetArmGripperMsgs()
+
+    def check_slip(self):
+        if self.cell.slipped():  # the fingers close on through where the tube was
             with self.lock:
                 self.grip_cmd = max(0.0, self.requested)
-        return super().GetArmGripperMsgs()
