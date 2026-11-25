@@ -34,6 +34,40 @@
   "video": "/tmp/amp-results/capgym_cube_stack-ep0.mp4"
  },
  {
+  "episode": "capgym_cube_restack-ep0",
+  "instruction": "Gently place the red cube on top of the green cube and then open the gripper. Nothing should be dropped from a height.",
+  "cells": 32,
+  "cell_errors": 3,
+  "images_shown": 21,
+  "policy_wall_min": 9.1,
+  "last_budget": "[step 580 of 1500, 920 left; wall 9 min of 60 used]",
+  "outcome_belief": "success",
+  "scored": {
+   "file": "/tmp/amp-run/capgym_cube_lifting/slot/results/cube_restack/log_0_env0.json",
+   "success": true,
+   "final_step": 581
+  },
+  "truth": null,
+  "video": "/tmp/amp-results/capgym_cube_restack-ep0.mp4"
+ },
+ {
+  "episode": "capgym_spill_wipe-ep0",
+  "instruction": "wipe up the 'brown spill'.",
+  "cells": 17,
+  "cell_errors": 1,
+  "images_shown": 11,
+  "policy_wall_min": 9.2,
+  "last_budget": "[step 586 of 4000, 3414 left; wall 11 min of 60 used]",
+  "outcome_belief": "success",
+  "scored": {
+   "file": "/tmp/amp-run/capgym_spill_wipe/slot/results/spill_wipe/log_0_env0.json",
+   "success": true,
+   "final_step": 587
+  },
+  "truth": null,
+  "video": "/tmp/amp-results/capgym_spill_wipe-ep0.mp4"
+ },
+ {
   "episode": "banana_in_bowl-ep0",
   "instruction": "Pick up the banana and place it in the bowl",
   "cells": 26,
