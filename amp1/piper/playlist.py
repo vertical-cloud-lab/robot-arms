@@ -16,13 +16,21 @@ res, vids, out = Path(sys.argv[1]), Path(sys.argv[2]), Path(sys.argv[3])
 max_stills = int(sys.argv[4]) if len(sys.argv) > 4 else 6
 rows = {r["episode"]: r for r in json.loads((res / "summary.json").read_text())}
 
+
+def started(ep: str) -> float:
+    """When the episode's first kernel cell ran."""
+    first = (res / ep / "transcript.jsonl").read_text().splitlines()[0]
+    return json.loads(first)["t"]
+
+
 ORDER = [
     ("CaP-Gym robosuite", "The paper's benchmark: CaP-X's own scenes and success checks",
      ["capgym_cube_lifting-ep0", "capgym_cube_stack-ep0", "capgym_cube_restack-ep0",
       "capgym_nut_assembly-ep0", "capgym_spill_wipe-ep0", "capgym_two_arm_lift-ep0",
       "capgym_two_arm_handover-ep0"]),
     ("CaP-Gym LIBERO-PRO", "Units drawn with a fixed seed from the 3,000 (60 tasks x 50 initial "
-     "states)", sorted(n for n in rows if n.startswith("capgym_libero"))),
+     "states), in the order run", sorted((n for n in rows if n.startswith("capgym_libero")),
+                                        key=started)),
     ("Simulated AgileX PiPER", "This repo's tasks: #21 vials, #30 tape onto the shelf, and the "
      "paper's banana demo", ["vial_in_rack-ep0", "banana_in_bowl-ep0", "tape_to_shelf-ep0",
                              "tape_to_shelf-ep1"]),
