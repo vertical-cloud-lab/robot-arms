@@ -161,6 +161,26 @@
   "python_calls": 22
  },
  {
+  "episode": "capgym_libero_object_swap.02-ep32",
+  "instruction": "Pick the salad dressing and place it in the basket",
+  "cells": 39,
+  "cell_errors": 1,
+  "images_shown": 31,
+  "policy_wall_min": 16.4,
+  "last_budget": "[step 1228 of 7990, 6762 left; wall 17 min of 60 used]",
+  "outcome_belief": "success",
+  "scored": {
+   "file": "/tmp/amp-run/capgym_libero_object_swap.02/slot/results/libero_object_swap.02/log_32_env0.json",
+   "success": true,
+   "final_step": 1229
+  },
+  "truth": null,
+  "video": "capgym_libero_object_swap.02-ep32.mp4",
+  "frames_kept": true,
+  "operator_cells": 0,
+  "python_calls": 38
+ },
+ {
   "episode": "capgym_libero_spatial_swap.02-ep34",
   "instruction": "Pick the akita black bowl from table center and place it on the plate",
   "cells": 29,
@@ -179,6 +199,26 @@
   "frames_kept": true,
   "operator_cells": 0,
   "python_calls": 28
+ },
+ {
+  "episode": "capgym_libero_spatial_task.05-ep39",
+  "instruction": "Pick the akita black bowl on the cookie box and place it on the plate",
+  "cells": 39,
+  "cell_errors": 1,
+  "images_shown": 56,
+  "policy_wall_min": 28.1,
+  "last_budget": "[step 1578 of 7990, 6412 left; wall 28 min of 60 used]",
+  "outcome_belief": "success",
+  "scored": {
+   "file": "/tmp/amp-run/capgym_libero_spatial_task.05/slot/results/libero_spatial_task.05/log_39_env0.json",
+   "success": true,
+   "final_step": 1579
+  },
+  "truth": null,
+  "video": "capgym_libero_spatial_task.05-ep39.mp4",
+  "frames_kept": true,
+  "operator_cells": 0,
+  "python_calls": 38
  },
  {
   "episode": "vial_in_rack-ep0",

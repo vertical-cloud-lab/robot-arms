@@ -4,6 +4,20 @@ For [#85](https://github.com/vertical-cloud-lab/robot-arms/issues/85): explore
 [apple-aiml-research.github.io/ml-amp](https://apple-aiml-research.github.io/ml-amp/), reproduce what
 can be reproduced, then try it on this repo's tasks. Nothing here talks to the real arm.
 
+**At a glance.** Apple's code runs unchanged on a CPU-only GitHub runner. Each episode's policy was
+a fresh Claude Opus 5.5 agent, given only AMP1's own prompt and SDK reference, and each episode was
+scored by the simulator's own check:
+
+| Suite | Episodes | Scored a success | Paper (AMP1) |
+|---|---|---|---|
+| CaP-Gym robosuite: all 7 tasks, 1 episode each | 7 | **7** | 98.4% (Opus 5.5), 100% (Gemini 4 Argon) |
+| CaP-Gym LIBERO-PRO: units drawn at random from the 3,000 | 4 | **4** | 95.2% |
+| A simulated AgileX PiPER on this repo's tasks (#21 vials, #30 tape) and the paper's banana | 4 | **3** | (new tasks) |
+
+These are single episodes, so they are anecdotes, not success rates. Every miss and caveat is
+written up below. [Video](VIDEO_URL): every episode, with real-time motion where the frames were
+kept.
+
 ## What AMP1 is
 
 [Paper (arXiv 2611.09892, v4, 31 pp)](https://arxiv.org/abs/2611.09892) ·
@@ -182,9 +196,16 @@ wrist camera.
 |---|---|---|---|---|---|---|
 | [`libero_spatial_swap.02`, 34](results/capgym_libero_spatial_swap.02-ep34/) | Pick the akita black bowl from table center and place it on the plate | ✅ | success | 957 / 7990 | 28 | 18 min |
 | [`libero_goal_swap.08`, 15](results/capgym_libero_goal_swap.08-ep15/) | Put the bowl on the plate | ✅ | success | 861 / 7990 | 22 | 14 min |
-LIBERO_ROWS
+| [`libero_object_swap.02`, 32](results/capgym_libero_object_swap.02-ep32/) | Pick the salad dressing and place it in the basket | ✅ | success | 1229 / 7990 | 38 | 17 min |
+| [`libero_spatial_task.05`, 39](results/capgym_libero_spatial_task.05-ep39/) (*task* perturbation) | Pick the akita black bowl on the cookie box and place it on the plate | ✅ | success | 1579 / 7990 | 38 | 28 min |
+
+All four units succeeded. The paper's 95.2% is over 3,000 episodes, so four can't confirm it, but
+none of the four needed anything the paper's harness doesn't give. The draw was
+`rng.choice(3000, 4, replace=False)` over (suite, task, initial state), and units ran in the order
+drawn; no unit was skipped or re-run.
+
 - **Bowls wider than the gripper.** LIBERO's bowls are about 11 cm across, and the Panda opens to
-  7.9 cm. Both bowl policies measured this from the cloud and pinched the rim instead.
+  7.9 cm. All three bowl policies measured this from the cloud and pinched the rim instead.
   - One checked alignment first by projecting its fitted rim circle and planned fingertip points
     into the wrist image.
   - The other's bowl slid to a lip grip and hung about 15° tilted. That policy estimated the
@@ -192,9 +213,30 @@ LIBERO_ROWS
     release 1.6 cm off the plate's centre.
 - **Speed limits.** The harness refused the first, 3 s approach for exceeding joint speed limits,
   and the policy re-timed every move to the preview's `min_duration` (12.5 s for a 25 cm reach).
-- **Held objects drop out of `objects()`.** Both policies found held objects in raw `ep.cloud()`
-  points in a box under the TCP. After placing, perception merged the bowl with the plate, so they
-  checked the result by fitting a circle to the points above the plate.
+- **Held objects drop out of `objects()`.** The bowl policies found held objects in raw
+  `ep.cloud()` points in a box under the TCP. After placing, perception merged the bowl with the
+  plate, so they checked the result by fitting a circle to the points above the plate.
+- **Correcting perception.** In the basket task, perception split the bottle into body and cap and
+  then re-detected the hanging bottle as a new obstacle. The policy merged the parts with
+  `define_object` and dropped the duplicate. It also redefined the held bottle where it actually
+  hung, because an object the agent defines doesn't move with the gripper. It overrode a 1.5–1.9 cm
+  "overlap" with a basket wall that neither camera could see, after checking the measured points.
+  The bottle went in upright.
+- **A task perturbation, a dropped bowl and a recovery.** In `libero_spatial_task.05` the
+  instruction names "the bowl on the cookie box" in a scene built for another goal. The policy
+  identified that bowl from the cloud, set the other black bowl aside as "not on the cookie box",
+  and recorded the reasoning in its report. Its first attempt went wrong twice:
+  - A straight-down pinch touched the flared rim at only two points, and the bowl slipped out
+    during the lift.
+  - The policy then descended again **without reopening the gripper**. The closed fingers shoved
+    the bowl, and the cookie box tipped and settled 1 cm from where it started. Its report calls
+    this "a careless re-grasp descent" and lists it as a lesson: check `gripper_cmd` after a failed
+    grasp.
+
+  It recovered by tilting the gripper so the pads lay flat on the bowl's wall. It measured how the
+  bowl actually hung in the grip and corrected the tilt so the bowl went down upright, 3 mm from
+  the plate's centre. Scored a success, but it is the clearest example here of why the paper's
+  real-world failures were mostly unplanned contact.
 - **CPU cost.** LIBERO-PRO's scenes are heavier than robosuite's. On this 4-core runner a 13.5 s
   motion took over 2 minutes of wall clock, which one policy noticed and handled with longer cell
   timeouts and `ep.wait()`.
@@ -251,6 +293,19 @@ LIBERO_ROWS
     and retracted.
   - 21 code cells, 303 of 2,250 steps (20 s of motion), 11 minutes. Its
     [report](results/tape_to_shelf-ep1/report.json) has the IK scans and five lessons.
+
+### Video
+
+[VIDEO_URL](VIDEO_URL) (VIDEO_PRIVACY, on the lab's YouTube channel) shows every episode in this
+README. Each episode starts with a card giving the instruction and the simulator's verdict.
+- **Episodes from this run** show their executed motion in real time, from the frames recorded
+  during the episode. The simulator pauses while the model thinks, so a 15-minute episode plays in
+  20–60 s.
+- **The first run's episodes** lost their frames with that runner. They show a slideshow of the
+  images the policy itself looked at, with the policy's own captions, then the final frame.
+
+[`piper/playlist.py`](piper/playlist.py) and [`piper/make_video.py`](piper/make_video.py) build it
+from `results/`.
 
 ### Cost and speed
 
