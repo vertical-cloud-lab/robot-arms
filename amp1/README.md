@@ -134,8 +134,9 @@ Emergent behaviours with no prompt or skill for them:
 ## Results
 
 One episode per task. Every policy was a fresh Opus 5.5 agent given only AMP1's prompt and SDK
-reference; it got the instruction from `ep.observe()`. **Scored** is the simulator's own check: CaP-Gym's
-for the robosuite tasks, and [`piper_sim.py`](piper/piper_sim.py)'s `success()` for the PiPER tasks.
+reference; it got the instruction from `ep.observe()`. **Scored** is the simulator's own check: CaP-X's
+for the CaP-Gym tasks, and [`piper_sim.py`](piper/piper_sim.py)'s `success()` for the PiPER tasks.
+[`results/summary.json`](results/summary.json) has every row.
 **Belief** is what the agent reported before it saw any score. **Cells** counts `python(code)` calls, from the kernel's transcript, not the agent's own count,
 roughly the paper's "model calls". Each episode folder in [`results/`](results/) has the agent's
 report, every code cell it ran with its output (`transcript.jsonl`), and its key images.
@@ -150,17 +151,53 @@ report, every code cell it ran with its output (`transcript.jsonl`), and its key
 | [`spill_wipe`](results/capgym_spill_wipe-ep0/) | Panda + wiper (no fingers) | wipe up the 'brown spill'. | ✅ | success | 587 / 4000 | 16 | 11 min |
 | [`two_arm_lift`](results/capgym_two_arm_lift-ep0/) | two Pandas | The two arms should coordinate to lift a pot. … | ✅ | success | 267 / 5000 | 23 | 12 min |
 | [`nut_assembly`](results/capgym_nut_assembly-ep0/) | Panda | grasp and insert the `brown square nut` onto the `brown square block`. | ✅ | success | 459 / 900 | 33 | 22 min |
-HANDOVER_ROW
+| [`two_arm_handover`](results/capgym_two_arm_handover-ep0/) | two Pandas | Arm 0 should pick up the hammer, lift it, and hand it over to Arm 1. Arm 1 should then grasp the hammer handle (not hammer head). … | ✅ | success | 517 / 5000 | 29 | 23 min |
 
-The paper reports 100% (Gemini 4 Argon) and 98.4% (Opus 5.5) over 700 robosuite episodes. One episode
-per task can't confirm a rate, but in every task here the policy did what the paper describes, with no
-skills supplied:
+All seven robosuite tasks succeeded, one episode each. The paper reports 100% (Gemini 4 Argon) and
+98.4% (Opus 5.5) over 700 robosuite episodes. Seven episodes can't confirm a rate, but in every task
+here the policy did what the paper describes, with no skills supplied:
 
 - it measured the table and objects from depth instead of trusting perception's boxes;
 - it chose the wrist yaw by IK when the preview refused a half-turn;
 - it judged the finger-sphere "contacts" geometrically;
 - it found the table with the fingerless wiper from a 0.6 mm tracking shortfall;
-- it found the pot's handles by colour after perception merged them into the pot.
+- it found the pot's handles by colour after perception merged them into the pot;
+- in the handover, it found that two top-down grips on a 19 cm handle put the two wrists into each
+  other. Arm 0 held the hammer out along the line between the robots, and arm 1 came in tilted 45°
+  and took the handle 2.6 cm from its end. It checked arm-to-arm clearance with both arms' collision
+  spheres, because `check()` only tests against perceived objects. The instruction's "z between 0.15
+  and 0.20" doesn't name a frame, so the policy read it in the robot's base frame and recorded the
+  table-relative alternative in its report. CaP-X's check scored it a success.
+
+### CaP-Gym LIBERO-PRO: the paper's headline CaP-Gym suite
+
+LIBERO-PRO perturbs LIBERO so that a policy which memorised the demonstrations fails. *swap*
+units move objects to new places; *task* units change the instruction while keeping the scene.
+The paper reports AMP1 at 95.2% over 3,000 episodes, and π0.5 at 34.9%. Units were drawn with
+`np.random.default_rng(85)` from all 60 tasks × 50 initial states, and run in the order drawn.
+The Panda runs on CPU through AMP's `official` adapter, with the scene camera (`agentview`) and the
+wrist camera.
+
+| Unit (task, initial state) | Instruction | Scored | Belief | Steps used | Cells | Wall |
+|---|---|---|---|---|---|---|
+| [`libero_spatial_swap.02`, 34](results/capgym_libero_spatial_swap.02-ep34/) | Pick the akita black bowl from table center and place it on the plate | ✅ | success | 957 / 7990 | 28 | 18 min |
+| [`libero_goal_swap.08`, 15](results/capgym_libero_goal_swap.08-ep15/) | Put the bowl on the plate | ✅ | success | 861 / 7990 | 22 | 14 min |
+LIBERO_ROWS
+- **Bowls wider than the gripper.** LIBERO's bowls are about 11 cm across, and the Panda opens to
+  7.9 cm. Both bowl policies measured this from the cloud and pinched the rim instead.
+  - One checked alignment first by projecting its fitted rim circle and planned fingertip points
+    into the wrist image.
+  - The other's bowl slid to a lip grip and hung about 15° tilted. That policy estimated the
+    bowl's centre from the rim circle instead of the lowest points, and the bowl levelled on
+    release 1.6 cm off the plate's centre.
+- **Speed limits.** The harness refused the first, 3 s approach for exceeding joint speed limits,
+  and the policy re-timed every move to the preview's `min_duration` (12.5 s for a 25 cm reach).
+- **Held objects drop out of `objects()`.** Both policies found held objects in raw `ep.cloud()`
+  points in a box under the TCP. After placing, perception merged the bowl with the plate, so they
+  checked the result by fitting a circle to the points above the plate.
+- **CPU cost.** LIBERO-PRO's scenes are heavier than robosuite's. On this 4-core runner a 13.5 s
+  motion took over 2 minutes of wall clock, which one policy noticed and handled with longer cell
+  timeouts and `ep.wait()`.
 
 ### The simulated PiPER: this repo's tasks
 
@@ -168,7 +205,8 @@ skills supplied:
 |---|---|---|---|---|---|---|
 | [`vial_in_rack`](results/vial_in_rack-ep0/) (#21) | Put the vial with the red cap into the empty slot of the blue rack | ✅ seated 1 mm from the slot centre, upright | success | 446 / 2250 | 34 | 16 min |
 | [`banana_in_bowl`](results/banana_in_bowl-ep0/) (paper's demo) | Pick up the banana and place it in the bowl | ✅ with a caveat (below) | success | 359 / 1800 | 25 | 18 min |
-| [`tape_to_shelf`](results/tape_to_shelf-ep0/) (#30) | Pick up the green tape and place it on the black shelf | ⚠️ tape on the shelf, gripper never released | unsure | 559 / 2250 | 52 | 32 min |
+| [`tape_to_shelf`](results/tape_to_shelf-ep0/) (#30), episode 0 | Pick up the green tape and place it on the black shelf | ❌ on the shelf, but the gripper never let go (re-scored, below) | unsure | 559 / 2250 | 52 | 32 min |
+| [`tape_to_shelf`](results/tape_to_shelf-ep1/) (#30), episode 1 | Pick up the green tape and place it on the black shelf | ✅ flat on the shelf 1.4 mm from its centre, released | success | 303 / 2250 | 21 | 11 min |
 
 - **`vial_in_rack`** is the most instructive episode.
   - The 2.5 mm pocket clearance was smaller than the simulated PiPER's tracking error. Each joint stops
@@ -211,17 +249,19 @@ skills supplied:
   - After the lift it measured the ring's offset from the TCP in the point cloud and aimed the
     ring's centre at the shelf's. The ring landed 1.4 mm from the centre, and the arm then opened
     and retracted.
-  - 21 code cells, 302 of 2,250 steps (20 s of motion), 11 minutes. Its
+  - 21 code cells, 303 of 2,250 steps (20 s of motion), 11 minutes. Its
     [report](results/tape_to_shelf-ep1/report.json) has the IK scans and five lessons.
 
 ### Cost and speed
 
-- **Agent work:** each agent took 6–32 minutes of wall clock and roughly 100k–300k tokens.
-- **Simulated motion:** 13–39 s per episode. The paper's real-world average was 69 s of motion and
+- **Agent work:** each agent took 6–32 minutes of wall clock and roughly 100k–300k tokens. The
+  second run's agents used 125k–200k tokens each.
+- **Simulated motion:** 13–48 s per episode. The paper's real-world average was 69 s of motion and
   211 s of reasoning.
-- **What the time went to:** almost all of the wall clock was the model reading images and writing
-  code. The CPU simulator was never the bottleneck: one control step with three 640×480 RGB-D renders
-  takes about 0.2 s.
+- **What the time went to:** for robosuite and the PiPER, almost all of the wall clock was the model
+  reading images and writing code. One PiPER control step with three 640×480 RGB-D renders takes
+  about 0.2 s. LIBERO-PRO is the exception: on CPU its motion ran several times slower than real
+  time, with 13.5 s of motion taking over 2 minutes.
 
 ### Toward the real PiPER
 

@@ -92,8 +92,8 @@ card(intro, [("AMP1 (Apple, \"On Agentic Manipulation Policies\", 2026)", 34, Tr
               "#d0d4da"),
              ("Policy: Claude Opus 5.5 through Claude Code, given only AMP1's own prompt and SDK",
               26, False, "#d0d4da"),
-             ("CaP-Gym robosuite tasks from the paper, then a simulated AgileX PiPER on the "
-              "lab's tasks", 26, False, "#d0d4da"),
+             ("CaP-Gym robosuite and LIBERO-PRO tasks from the paper, then a simulated AgileX "
+              "PiPER on the lab's tasks", 26, False, "#d0d4da"),
              ("Motion clips show executed motion in real time: the simulator pauses while the "
               "model thinks. Slideshows show the images the policy looked at.", 21, False,
               "#9aa3ad"),
