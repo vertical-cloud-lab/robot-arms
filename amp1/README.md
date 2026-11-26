@@ -72,13 +72,21 @@ Emergent behaviours with no prompt or skill for them:
 1. **AMP itself, unchanged.** `uv sync --frozen` works on this runner (Python 3.11). The robot
    server, the `amp1_basic` harness and SDK, perception, IK/planning and the collision model all run
    on CPU.
-2. **CaP-Gym robosuite family on CPU**, installed exactly as
-   [docs/capgym.md](https://github.com/apple-aiml-research/ml-amp/blob/main/docs/capgym.md)
-   says, with CaP-X at its pin and the Python 3.10 venv. It renders through Mesa's EGL
-   (llvmpipe) instead of an NVIDIA driver, and nothing in AMP or CaP-X was patched.
-   `cube_lifting` loads through AMP's own adapter (`amp.robots.capgym.official_robosuite`) in 15 s,
-   and `observe()` takes about 90 ms. [`capgym/env.sh`](capgym/env.sh) holds the environment the
-   link client runs in.
+2. **CaP-Gym's two MuJoCo families on CPU: robosuite and LIBERO-PRO.** Both are installed exactly
+   as [docs/capgym.md](https://github.com/apple-aiml-research/ml-amp/blob/main/docs/capgym.md)
+   says: CaP-X at its pin, the Python 3.10 robosuite venv, and the Python 3.12 LIBERO-PRO venv with
+   its dataset. They render through Mesa's EGL (llvmpipe) instead of an NVIDIA driver, and nothing
+   in AMP or CaP-X was patched.
+   - **robosuite:** `cube_lifting` loads through AMP's own adapter
+     (`amp.robots.capgym.official_robosuite`) in 15 s, and `observe()` takes about 90 ms.
+     [`capgym/env.sh`](capgym/env.sh) holds the environment the link client runs in.
+   - **LIBERO-PRO:** set up by [`capgym/libero_setup.sh`](capgym/libero_setup.sh), docs steps 2, 4
+     and 5. The dataset's `SHA256SUMS` check passed. `mv` refused exactly the 2 + 6 directories the
+     docs call expected, those directories matched LIBERO-PRO's own copies, and the checkout stayed
+     clean. [`capgym/env_libero.sh`](capgym/env_libero.sh) holds the client's environment. The
+     catalog lists all 60 tasks (`libero_{object,goal,spatial}_{swap,task}.00`–`.09`, 50 initial
+     states each).
+   - **BEHAVIOR-1K** needs Isaac Sim and a GPU, so it wasn't attempted.
 3. **The PiPER inside AMP's harness** ([`piper/piper_sim.py`](piper/piper_sim.py)).
    - The adapter wraps MuJoCo Menagerie's `agilex_piper` and declares an AMP embodiment: 6 joints,
      the 70 mm parallel jaw, the TCP 115 mm past `link6`, closing along `y` and approaching along `z`.
@@ -110,6 +118,18 @@ Emergent behaviours with no prompt or skill for them:
   the prompt, and the transcripts were audited afterwards.
 - **PiPER tasks are new scenes,** not RoboLab's. Depth is exact and the cameras are calibrated, as
   in the paper's simulation runs.
+- **Two runs, one runner each.** The first run (2026-11-25) ran nine episodes before it ran out of
+  model credits. Its runner was then discarded, so its recorded frames and the simulator's result
+  files were lost. Each of its episodes keeps the policy's report, every code cell with its output,
+  the key images and the final frame, plus the score recorded at the time. The second run
+  (2026-11-26) rebuilt everything from these instructions and ran the remaining episodes. They
+  keep their motion videos, the simulator's own result and ground-truth files, and an
+  [`audit.json`](piper/audit.py). The audit checks that each of the agent's tool calls stayed in
+  its episode folder and that no kernel cell touched files or simulator internals.
+- **LIBERO-PRO ran from a copy of the pinned CaP-X checkout.** It was built while a robosuite
+  episode was running from the original. The two venvs editable-install into the same checkout, and
+  the docs warn never to build them side by side. The copy is at the same commits as the original,
+  and `git status` shows nothing in it but the dataset's untracked files.
 
 ## Results
 
@@ -164,16 +184,35 @@ skills supplied:
   worked that out before placing ("compare object length with the container's inner rim diameter"). It
   planned the resting configuration, one end on the bowl floor and the other leaning on the far rim, and
   released 5 mm above it after correcting an 8 mm sag under load. Fix the scene before reusing this task.
-- **`tape_to_shelf`** is the one real miss, and the agent's own report says why:
+- **`tape_to_shelf`, episode 0, is the one miss**, and the agent's own report says why:
   - The 9 cm ring is wider than the gripper, so it gripped the 1.2 cm wall with one finger inside the
     hole.
   - Closing rotated the ring about 35° in the grip. The 13.5 mm gap against 12 mm expected, and the
     wrist images, showed it, but it carried on instead of re-gripping.
   - On release, the inner finger swung into the narrow part of the hole and jammed. Six ways of freeing
     it failed.
-  - My success check didn't require a release, so it scored this as a success. A person wouldn't.
   - Two things in this sim may make the jam worse than reality: a ring built from 28 box segments, and a
     gripper that can only be commanded fully open or fully closed.
+  - The first run's success check didn't require a release, so it scored this as a success. A person
+    wouldn't. `success()` now also requires zero contacts between the object and the gripper
+    (`link6`, `link7`, `link8`) for all three PiPER tasks. Under that check this episode is a
+    failure, and the table says so. Its final state wasn't kept, so it was re-scored from the
+    agent's own diagnosis and final frame (fingers locked in the ring's wall), not re-run. The
+    other two PiPER episodes' final frames show the gripper open and clear of the object.
+- **`tape_to_shelf`, episode 1** (a new scene: the tape and shelf moved by the episode's seed) was
+  scored by the fixed check and **succeeded**: placed, zero gripper contacts, gripper open.
+  - The policy found the problem the first episode never reached. On this PiPER a straight-down
+    gripper can't hold the ring above the 8 cm shelf: `ik_batch` scans put the highest top-down TCP
+    at z ≈ 0.09 m at x = 0.40 m and none at x = 0.50 m, against z ≈ 0.11 m needed. Joint 5 is
+    limited to ±70°.
+  - It tilted the approach 25° forward and pinched the ring's wall at its ±y side, where the
+    closing axis stays horizontal and normal to the wall under that tilt. It kept the same
+    orientation from grasp to release, so the ring stayed level.
+  - After the lift it measured the ring's offset from the TCP in the point cloud and aimed the
+    ring's centre at the shelf's. The ring landed 1.4 mm from the centre, and the arm then opened
+    and retracted.
+  - 21 code cells, 302 of 2,250 steps (20 s of motion), 11 minutes. Its
+    [report](results/tape_to_shelf-ep1/report.json) has the IK scans and five lessons.
 
 ### Cost and speed
 
@@ -215,6 +254,12 @@ What has to change first:
   collision reflex. The PiPER equivalents are `GetArmStatus` and re-enabling joints 1–6.
 - **Tracking error.** If the real arm stops short of its commands the way this model does, AMP1
   compensated for it here. That should be measured on the real arm before relying on it.
+- **Reach for #30.** The tape episodes found that this model's top-down gripper can't hold a part
+  above an 8 cm shelf 0.43 m out, because joint 5 stops at ±70°. The real arm is no better: the
+  teleop follower's envelope uses J5 ±70°, and its firmware allows −75° to 76°
+  ([`follower.py`](../PiPER%20Sandbox%20Scripts/Teleoperation/follower.py)). A tilted approach
+  worked. Check the real cell's shelf height and distance against that before planning top-down
+  placements.
 - **A model API key** (`ANTHROPIC_API_KEY`) for AMP's own loop, or this repo's bridge.
 - **Speed.** Expect minutes per task.
 
@@ -231,14 +276,22 @@ None of this was tried on the arm. This request didn't say the workspace is clea
 | `piper/capgym_up.sh` | The same for a CaP-Gym robosuite task, with CaP-X's own env through AMP's official adapter |
 | `piper/kernel_bridge.py` | AMP1's tool surface for a Claude Code agent |
 | `piper/compose_prompt.py` | The agent's system prompt: preamble + AMP1's prompt + SDK reference |
+| `piper/capgym_next.sh` | Queues the next CaP-Gym episode on a running stack |
 | `piper/recorder.py` | Saves a camera's frames from the robot server, for videos |
+| `piper/summarize.py` | One row per finished episode (cells, steps, belief, the simulator's score) and its motion video |
+| `piper/collect.py` | Copies an episode's report, transcript, key images and final frame into `results/` |
+| `piper/audit.py` | Checks a policy agent's tool calls and kernel cells against the information policy |
+| `piper/playlist.py`, `piper/make_video.py` | The compilation video: motion clips, or the policy's own images where frames weren't kept |
 | `piper/sdk_smoke.py` | A scripted SDK check (not a policy) |
-| `capgym/` | The CaP-X robosuite environment and smoke test for this runner |
+| `capgym/env.sh`, `capgym/install_env.sh`, `capgym/smoke.py` | The CaP-X robosuite environment and smoke test for this runner |
+| `capgym/libero_setup.sh`, `capgym/env_libero.sh` | The CaP-X LIBERO-PRO venv, dataset and config, and its client environment |
+| `results/summary.json` | Every episode's row: instruction, cells, steps, wall time, belief, score (and re-score) |
 
 ## Running it
 
 ```bash
 # AMP (Python 3.11 venv) and the PiPER model
+curl -LsSf https://astral.sh/uv/install.sh | sh
 git clone https://github.com/apple-aiml-research/ml-amp /tmp/ext/ml-amp && (cd /tmp/ext/ml-amp && uv sync --frozen)
 uv pip install --python /tmp/ext/ml-amp/.venv/bin/python mujoco imageio-ffmpeg
 git clone --depth 1 --filter=blob:none --sparse https://github.com/google-deepmind/mujoco_menagerie /tmp/ext/menagerie/mujoco_menagerie
@@ -248,6 +301,16 @@ cp amp1/piper/*.py amp1/piper/*.sh /tmp/amp-piper/      # the scripts expect /tm
 /tmp/amp-piper/episode_up.sh tape_to_shelf 8766 0       # server + link client + kernel; prints the episode dir
 python /tmp/amp-piper/compose_prompt.py /tmp/amp-episodes/tape_to_shelf-ep0 45
 # then give an agent the system prompt in that directory; it acts with ./py and ./finish_episode
+
+# CaP-Gym: CaP-X at its pin, then the robosuite venv (docs/capgym.md step 3)
+(cd /tmp/ext/ml-amp && make capx-sim)
+source amp1/capgym/install_env.sh && uv python install 3.10 && uv venv $C/venv-robosuite --managed-python --python 3.10
+(cd $X && VIRTUAL_ENV=$C/venv-robosuite uv sync --frozen --active --extra robosuite)
+mkdir -p /tmp/capgym_test && cp amp1/capgym/env*.sh /tmp/capgym_test/
+/tmp/amp-piper/capgym_up.sh two_arm_handover 8772 0 capgym_robosuite_two_arm_handover agentview
+# LIBERO-PRO: its venv, dataset and config (steps 2, 4, 5), then one unit (task, initial state)
+amp1/capgym/libero_setup.sh
+/tmp/amp-piper/capgym_up.sh libero_goal_swap.08 8774 15 capgym_libero agentview /tmp/capgym_test/env_libero.sh
 ```
 
 With an `ANTHROPIC_API_KEY`, AMP's own loop can drive the same robot server instead of the bridge.
