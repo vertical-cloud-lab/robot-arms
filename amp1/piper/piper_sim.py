@@ -537,30 +537,50 @@ class PiperAdapter:
         b = mujoco.mj_name2id(self.m, mujoco.mjtObj.mjOBJ_BODY, name)
         return self.d.xpos[b].copy(), self.d.xmat[b].reshape(3, 3).copy()
 
+    def _finger_contacts(self, name: str) -> int:
+        """Contacts between body `name` and the gripper (link6's pads and both fingers)."""
+        m, d = self.m, self.d
+        obj = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, name)
+        grip = {mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, b)
+                for b in (FLANGE, "link7", "link8")}
+        g = np.asarray(d.contact.geom[:d.ncon], dtype=int).reshape(-1, 2)
+        b = m.geom_bodyid[g] if len(g) else np.zeros((0, 2), dtype=int)
+        return int(sum(1 for b1, b2 in b
+                       if (b1 == obj and b2 in grip) or (b2 == obj and b1 in grip)))
+
     def success(self) -> tuple[bool, float]:
+        """Placed where the instruction says AND let go: a part still held by (or jammed on)
+        the gripper does not count. Before 2026-11-26 the release was not checked, which scored
+        tape_to_shelf-ep0 (gripper still in the tape's hole) as a success."""
         if self.d is None:
             return False, 0.0
+        held = {"banana_in_bowl": "banana", "tape_to_shelf": "tape",
+                "vial_in_rack": "vial"}.get(self.task)
         if self.task == "banana_in_bowl":
             p, _ = self._body("banana")
             k, _ = self._body("bowl")
-            ok = bool(np.hypot(*(p[:2] - k[:2])) < 0.070 and k[2] - 0.01 < p[2] < k[2] + 0.07)
+            placed = bool(np.hypot(*(p[:2] - k[:2])) < 0.070 and k[2] - 0.01 < p[2] < k[2] + 0.07)
         elif self.task == "tape_to_shelf":
             p, R = self._body("tape")
             sx, sy, top, hx, hy = self.meta["shelf"]
-            ok = bool(abs(p[0] - sx) < hx + 0.01 and abs(p[1] - sy) < hy + 0.01
-                      and top - 0.01 < p[2] < top + 0.06)
+            placed = bool(abs(p[0] - sx) < hx + 0.01 and abs(p[1] - sy) < hy + 0.01
+                          and top - 0.01 < p[2] < top + 0.06)
         elif self.task == "vial_in_rack":
             p, R = self._body("vial")
             sx, sy = self.meta["slot"]
-            ok = bool(np.hypot(p[0] - sx, p[1] - sy) < 0.006 and p[2] < 0.012
-                      and R[2, 2] > math.cos(math.radians(12)))
+            placed = bool(np.hypot(p[0] - sx, p[1] - sy) < 0.006 and p[2] < 0.012
+                          and R[2, 2] > math.cos(math.radians(12)))
         else:
-            ok = False
+            placed = False
+        touching = self._finger_contacts(held) if held else 0
+        ok = placed and touching == 0
         if self._frames_dir:
             import json
             (self._frames_dir.parent / f"{self.task}_truth.json").write_text(json.dumps(
-                {"success": ok, "objects": self.ground_truth(), "meta": {
-                    k: list(v) for k, v in self.meta.items()}}, indent=1))
+                {"success": ok, "placed": placed, "gripper_contacts": touching,
+                 "gripper_cmd_closed": float(self.d.ctrl[self._gact] < FINGER_OPEN[0] / 2),
+                 "objects": self.ground_truth(), "meta": {
+                     k: list(v) for k, v in self.meta.items()}}, indent=1))
         return ok, float(ok)
 
     def ground_truth(self) -> dict:
