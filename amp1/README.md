@@ -15,7 +15,7 @@ scored by the simulator's own check:
 | A simulated AgileX PiPER on this repo's tasks (#21 vials, #30 tape) and the paper's banana | 4 | **3** | (new tasks) |
 
 These are single episodes, so they are anecdotes, not success rates. Every miss and caveat is
-written up below. [Video](VIDEO_URL): every episode, with real-time motion where the frames were
+written up below. [Video](https://www.youtube.com/watch?v=_PlBarOj3K4): every episode, with real-time motion where the frames were
 kept.
 
 ## What AMP1 is
@@ -124,7 +124,8 @@ Emergent behaviours with no prompt or skill for them:
 
 ### Differences from the paper's setup (read before comparing numbers)
 
-- **One episode per task, not 10 to 100.** These are anecdotes, not success rates.
+- **One episode per task (two for `tape_to_shelf`), and 4 of LIBERO-PRO's 3,000 units, where the
+  paper ran 10 to 100 per task.** These are anecdotes, not success rates.
 - **The model is called through Claude Code, not the API,** at Claude Code's default settings. The
   paper used `--reasoning high`. Images are viewed with a tool call, not attached to the tool result.
 - **No bubblewrap sandbox and no gateway.** The kernel talks to the robot server directly
@@ -136,8 +137,9 @@ Emergent behaviours with no prompt or skill for them:
   model credits. Its runner was then discarded, so its recorded frames and the simulator's result
   files were lost. Each of its episodes keeps the policy's report, every code cell with its output,
   the key images and the final frame, plus the score recorded at the time. The second run
-  (2026-11-26) rebuilt everything from these instructions and ran the remaining episodes. They
-  keep their motion videos, the simulator's own result and ground-truth files, and an
+  (2026-11-26) rebuilt everything from these instructions and ran the remaining episodes. Their
+  motion is in the [video](#video). Their folders also keep the simulator's own result file
+  (`scored_log_*.json`, or `truth.json` for the PiPER) and an
   [`audit.json`](piper/audit.py). The audit checks that each of the agent's tool calls stayed in
   its episode folder and that no kernel cell touched files or simulator internals.
 - **LIBERO-PRO ran from a copy of the pinned CaP-X checkout.** It was built while a robosuite
@@ -147,7 +149,7 @@ Emergent behaviours with no prompt or skill for them:
 
 ## Results
 
-One episode per task. Every policy was a fresh Opus 5.5 agent given only AMP1's prompt and SDK
+One episode per task (two for `tape_to_shelf`). Every policy was a fresh Opus 5.5 agent given only AMP1's prompt and SDK
 reference; it got the instruction from `ep.observe()`. **Scored** is the simulator's own check: CaP-X's
 for the CaP-Gym tasks, and [`piper_sim.py`](piper/piper_sim.py)'s `success()` for the PiPER tasks.
 [`results/summary.json`](results/summary.json) has every row.
@@ -206,13 +208,15 @@ drawn; no unit was skipped or re-run.
 
 - **Bowls wider than the gripper.** LIBERO's bowls are about 11 cm across, and the Panda opens to
   7.9 cm. All three bowl policies measured this from the cloud and pinched the rim instead.
-  - One checked alignment first by projecting its fitted rim circle and planned fingertip points
-    into the wrist image.
-  - The other's bowl slid to a lip grip and hung about 15° tilted. That policy estimated the
-    bowl's centre from the rim circle instead of the lowest points, and the bowl levelled on
-    release 1.6 cm off the plate's centre.
-- **Speed limits.** The harness refused the first, 3 s approach for exceeding joint speed limits,
-  and the policy re-timed every move to the preview's `min_duration` (12.5 s for a 25 cm reach).
+  - In `goal_swap.08` the policy checked alignment first by projecting its fitted rim circle and
+    planned fingertip points into the wrist image.
+  - In `spatial_swap.02` the bowl slid to a lip grip and hung about 15° tilted. The policy
+    estimated the bowl's centre from the rim circle instead of the lowest points, and the bowl
+    levelled on release 1.6 cm off the plate's centre.
+  - `spatial_task.05` is below.
+- **Speed limits.** In `goal_swap.08` the harness refused the first, 3 s approach for exceeding
+  joint speed limits, and the policy re-timed every move to the preview's `min_duration` (12.5 s
+  for a 25 cm reach). The others did the same.
 - **Held objects drop out of `objects()`.** The bowl policies found held objects in raw
   `ep.cloud()` points in a box under the TCP. After placing, perception merged the bowl with the
   plate, so they checked the result by fitting a circle to the points above the plate.
@@ -235,8 +239,8 @@ drawn; no unit was skipped or re-run.
 
   It recovered by tilting the gripper so the pads lay flat on the bowl's wall. It measured how the
   bowl actually hung in the grip and corrected the tilt so the bowl went down upright, 3 mm from
-  the plate's centre. Scored a success, but it is the clearest example here of why the paper's
-  real-world failures were mostly unplanned contact.
+  the plate's centre. It was scored a success, but it is the clearest example here of unplanned
+  contact, the kind of error behind most of the paper's real-world failures.
 - **CPU cost.** LIBERO-PRO's scenes are heavier than robosuite's. On this 4-core runner a 13.5 s
   motion took over 2 minutes of wall clock, which one policy noticed and handled with longer cell
   timeouts and `ep.wait()`.
@@ -296,11 +300,13 @@ drawn; no unit was skipped or re-run.
 
 ### Video
 
-[VIDEO_URL](VIDEO_URL) (VIDEO_PRIVACY, on the lab's YouTube channel) shows every episode in this
-README. Each episode starts with a card giving the instruction and the simulator's verdict.
+[youtube.com/watch?v=_PlBarOj3K4](https://www.youtube.com/watch?v=_PlBarOj3K4) (public, 8 min 14 s,
+on the BYU Vertical Cloud Lab YouTube channel) shows every episode in this README. Each episode
+starts with a card giving the instruction and the simulator's verdict.
+
 - **Episodes from this run** show their executed motion in real time, from the frames recorded
-  during the episode. The simulator pauses while the model thinks, so a 15-minute episode plays in
-  20–60 s.
+  during the episode. The simulator pauses while the model thinks, so a 15–30 minute episode plays
+  in 20–80 s.
 - **The first run's episodes** lost their frames with that runner. They show a slideshow of the
   images the policy itself looked at, with the policy's own captions, then the final frame.
 
@@ -309,10 +315,10 @@ from `results/`.
 
 ### Cost and speed
 
-- **Agent work:** each agent took 6–32 minutes of wall clock and roughly 100k–300k tokens. The
-  second run's agents used 125k–200k tokens each.
-- **Simulated motion:** 13–48 s per episode. The paper's real-world average was 69 s of motion and
-  211 s of reasoning.
+- **Agent work:** each agent took 6–32 minutes of wall clock. The second run's six agents used
+  125k–212k tokens each, and the first run's roughly 100k–300k.
+- **Simulated motion:** 13–79 s per episode; LIBERO-PRO's were the longest. The paper's real-world
+  average was 69 s of motion and 211 s of reasoning.
 - **What the time went to:** for robosuite and the PiPER, almost all of the wall clock was the model
   reading images and writing code. One PiPER control step with three 640×480 RGB-D renders takes
   about 0.2 s. LIBERO-PRO is the exception: on CPU its motion ran several times slower than real
@@ -368,7 +374,7 @@ None of this was tried on the arm. This request didn't say the workspace is clea
 | `piper/piper_link.py` | Runs the adapter as AMP's link client (`amp.robots.capgym.client.run_benchmark`) |
 | `piper/stack.py` | AMP's robot server with the `amp1_basic` config + the link client; queues an episode |
 | `piper/episode_up.sh` | One PiPER episode end to end: server, link client, kernel bridge, the agent's `py` and `finish_episode` commands |
-| `piper/capgym_up.sh` | The same for a CaP-Gym robosuite task, with CaP-X's own env through AMP's official adapter |
+| `piper/capgym_up.sh` | The same for a CaP-Gym unit (robosuite or LIBERO-PRO), with CaP-X's own env through AMP's official adapter, a frame recorder and the agent's prompt |
 | `piper/kernel_bridge.py` | AMP1's tool surface for a Claude Code agent |
 | `piper/compose_prompt.py` | The agent's system prompt: preamble + AMP1's prompt + SDK reference |
 | `piper/capgym_next.sh` | Queues the next CaP-Gym episode on a running stack |
@@ -392,7 +398,7 @@ uv pip install --python /tmp/ext/ml-amp/.venv/bin/python mujoco imageio-ffmpeg
 git clone --depth 1 --filter=blob:none --sparse https://github.com/google-deepmind/mujoco_menagerie /tmp/ext/menagerie/mujoco_menagerie
 git -C /tmp/ext/menagerie/mujoco_menagerie sparse-checkout set agilex_piper
 sudo apt-get install -y libegl1 libegl-mesa0          # MuJoCo renders through Mesa EGL on CPU
-cp amp1/piper/*.py amp1/piper/*.sh /tmp/amp-piper/      # the scripts expect /tmp/amp-piper
+mkdir -p /tmp/amp-piper && cp amp1/piper/*.py amp1/piper/*.sh /tmp/amp-piper/   # the scripts expect /tmp/amp-piper
 /tmp/amp-piper/episode_up.sh tape_to_shelf 8766 0       # server + link client + kernel; prints the episode dir
 python /tmp/amp-piper/compose_prompt.py /tmp/amp-episodes/tape_to_shelf-ep0 45
 # then give an agent the system prompt in that directory; it acts with ./py and ./finish_episode
@@ -406,6 +412,12 @@ mkdir -p /tmp/capgym_test && cp amp1/capgym/env*.sh /tmp/capgym_test/
 # LIBERO-PRO: its venv, dataset and config (steps 2, 4, 5), then one unit (task, initial state)
 amp1/capgym/libero_setup.sh
 /tmp/amp-piper/capgym_up.sh libero_goal_swap.08 8774 15 capgym_libero agentview /tmp/capgym_test/env_libero.sh
+
+# after an episode: its row and motion video, the information-policy audit, the compilation video
+python amp1/piper/summarize.py /tmp/amp-results /tmp/amp-episodes/EPISODE
+python amp1/piper/audit.py AGENT_TRANSCRIPT.jsonl /tmp/amp-episodes/EPISODE
+python amp1/piper/playlist.py amp1/results /tmp/amp-results /tmp/playlist.json 5
+python amp1/piper/make_video.py amp1_episodes.mp4 /tmp/playlist.json
 ```
 
 With an `ANTHROPIC_API_KEY`, AMP's own loop can drive the same robot server instead of the bridge.
