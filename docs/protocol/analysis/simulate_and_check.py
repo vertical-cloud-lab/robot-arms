@@ -184,29 +184,24 @@ def analyse(e1: list[dict], e2: list[dict], e3: list[dict], rng: np.random.Gener
         L.append(f"| p({c[0]}, {c[1]}) loads | {P_LOAD[c]:.3f} | {k}/{n} = {k / n:.3f} | Wilson {lo:.3f}–{hi:.3f} | {'yes' if inside else 'no'} |")
     # H1
     k_c, n_c = est[("C", "OL")]
-    h1a = "supported" if ps.cp_lower(k_c, n_c) >= 0.99 else ("refuted" if ps.cp_upper(k_c, n_c) < 0.99 else "inconclusive")
+    h1a = ps.h1a_decision(k_c, n_c)
     k2, n2 = est[("V", "OL")]
-    h1b = "supported" if ps.cp_upper(k2, n2) < 0.99 else ("refuted" if ps.cp_lower(k2, n2) >= 0.99 else "inconclusive")
+    h1b = ps.h1b_decision(k2, n2)
     # H3a
     ka, na = est[("V", "AT")]
     p3a = ps.boschloo_greater(ka, na, k2, n2)
+    h3a = ps.h3a_decision(ka, na, k2, n2)
     d, dlo, dhi = ps.newcombe_diff(ka, na, k2, n2)
     true_d = P_LOAD[("V", "AT")] - P_LOAD[("V", "OL")]
     L.append(f"| p(V, AT) − p(V, OL) | {true_d:.3f} | {d:.3f} | Newcombe {dlo:.3f}–{dhi:.3f} | {'yes' if dlo <= true_d <= dhi else 'no'} |")
-    g = ps.gap_closed(k2 / n2, ka / na)
+    g, glo, ghi = ps.gap_closed_interval(k2, n2, ka, na)
     g_true = ps.gap_closed(P_LOAD[("V", "OL")], P_LOAD[("V", "AT")])
-    boot = []
-    for _ in range(2000):
-        po = rng.binomial(n2, k2 / n2) / n2
-        pa = rng.binomial(na, ka / na) / na
-        if po < 0.99:
-            boot.append(ps.gap_closed(po, pa))
-    glo, ghi = np.quantile(boot, [0.025, 0.975])
     L.append(f"| Gap closed G(V) | {g_true:.2f} | {g:.2f} | bootstrap {glo:.2f}–{ghi:.2f} | {'yes' if glo <= g_true <= ghi else 'no'} |")
     # H3c
     t_at = np.array([r["transfer_time_s"] for r in loads[("V", "AT")] if r["success"]], dtype=float)
     t_ol = np.array([r["transfer_time_s"] for r in loads[("V", "OL")] if r["success"]], dtype=float)
     hl, hl_up = ps.hodges_lehmann_upper(t_at, t_ol)
+    h3c = ps.h3c_decision(t_at, t_ol, 5.0)
     L.append(f"| HL time shift, V (s) | {TIME_AT_EXTRA:.1f} | {hl:.2f} | upper 95 % {hl_up:.2f} | {'yes' if TIME_AT_EXTRA <= hl_up else 'no'} |")
     # E2 curves
     decisions = {}
@@ -232,55 +227,37 @@ def analyse(e1: list[dict], e2: list[dict], e3: list[dict], rng: np.random.Gener
                 interval = f"Fieller 90 % {lo90:.2f}–{hi90:.2f}"
                 inside = "yes" if (b0 is not None and lo90 <= (logit(0.9) - b0) / b1 <= hi90) else "no"
             L.append(f"| ED90 {task}-{cond} {axis} (mm) | {true_ed90} | {shown} | {interval} | {inside} |")
-    h2 = all(ps.h2_axis_supported(decisions[("C", "OL", ax)]) for ax in ("x", "y"))
-    h3b_axes = []
-    for ax in ("x", "y"):
-        r_at, r_ol = decisions[("V", "AT", ax)], decisions[("V", "OL", ax)]
-        if r_at.censored:
-            h3b_axes.append(r_ol.ed90_fieller90[1] < r_at.max_offset)
-        else:
-            rs_at = [r for r in e2 if (r["task"], r["condition"]) == ("V", "AT") and r["offset_axis"] in ("0", ax)]
-            rs_ol = [r for r in e2 if (r["task"], r["condition"]) == ("V", "OL") and r["offset_axis"] in ("0", ax)]
-            ba = ps.bootstrap_ed90(np.array([abs(r["offset_value"]) for r in rs_at]),
-                                   np.array([r["success"] for r in rs_at]), 2000, seed=11)
-            bo = ps.bootstrap_ed90(np.array([abs(r["offset_value"]) for r in rs_ol]),
-                                   np.array([r["success"] for r in rs_ol]), 2000, seed=12)
-            diff = np.maximum(ba, 0) - np.maximum(bo, 0)
-            h3b_axes.append(float(np.quantile(diff, 0.05)) > 0)
+    zero_c = [r for r in e2 if (r["task"], r["condition"]) == ("C", "OL") and r["offset_axis"] == "0"]
+    h2 = ps.h2_decision(decisions[("C", "OL", "x")], decisions[("C", "OL", "y")],
+                        sum(r["success"] for r in zero_c), len(zero_c))
+    h3b_axes = [ps.h3b_axis_supported(decisions[("V", "AT", ax)], decisions[("V", "OL", ax)])
+                for ax in ("x", "y")]
+    h3b = ps.h3b_decision(decisions[("V", "AT", "x")], decisions[("V", "OL", "x")],
+                          decisions[("V", "AT", "y")], decisions[("V", "OL", "y")])
     # MTBI
     dur, ev = mtbi_intervals(e1, "V", "OL")
     km = ps.kaplan_meier(dur, ev)
     m, mlo, mhi = ps.rmst(km, 300)
+    tau_used = ps.rmst_tau(km, 300)
     transfers = sum(1 for r in e1 if (r["task"], r["condition"]) == ("V", "OL"))
     q_true = 1 - (P_LOAD[("V", "OL")] + P_UNLOAD[("V", "OL")]) / 2
-    rmst_true = (1 - (1 - q_true) ** 300) / q_true  # geometric renewal, restricted at 300
-    L.append(f"| MTBI V-OL, RMST to 300 transfers | {rmst_true:.1f} | {m:.1f} | Greenwood {mlo:.1f}–{mhi:.1f} | {'yes' if mlo <= rmst_true <= mhi else 'no'} |")
+    rmst_true = (1 - (1 - q_true) ** tau_used) / q_true  # geometric renewal, restricted at tau
+    L.append(f"| MTBI V-OL, RMST to {tau_used:.0f} transfers | {rmst_true:.1f} | {m:.1f} | Greenwood {mlo:.1f}–{mhi:.1f} | {'yes' if mlo <= rmst_true <= mhi else 'no'} |")
     crude, clo, chi = ps.mtbi_crude(transfers, int(ev.sum()))
     L.append(f"| MTBI V-OL, crude | {1 / q_true:.1f} | {crude:.1f} | Garwood {clo:.1f}–{chi:.1f} | {'yes' if clo <= 1 / q_true <= chi else 'no'} |")
     s50 = ps.km_survival_at(km, 50)
     L.append(f"| S(50), V-OL | {(1 - q_true) ** 50:.3f} | {s50:.3f} | — | — |")
     # E3
-    h4a_meets, h4a_cert, h4a_ref = True, True, False
-    boots = {}
+    pose_pts = {}
     for load in (0, 1):
         for k in range(5):
             pts = np.array([[r["x_mm"], r["y_mm"], r["z_mm"]] for r in e3 if r["payload"] == load and r["pose"] == f"P{k + 1}"])
+            pose_pts[(k, load)] = pts
             rp, lo, hi = ps.bootstrap_t_rp(pts, 4000, seed=100 * load + k, conf=0.975)
-            b = ps.bootstrap_rp(pts, 4000, seed=100 * load + k)
-            boots[(load, k)] = b
-            rp_obs_true = math.hypot(RP_TRUE[load][k], U_INST / 2 * (2 * math.sqrt(2 / math.pi) + 3 * math.sqrt(3 - 8 / math.pi)))
-            if load == 0:
-                _r, lo1, hi1 = ps.bootstrap_t_rp(pts, 4000, seed=100 * load + k, conf=0.95)
-                h4a_meets &= rp <= 0.10
-                h4a_cert &= hi1 <= 0.10
-                h4a_ref |= lo1 > 0.10
+            rp_obs_true = math.hypot(RP_TRUE[load][k], U_INST / 2 * ps.RP_PER_SIGMA)
             L.append(f"| RP P{k + 1}, {'loaded' if load else 'unloaded'} (mm) | {RP_TRUE[load][k]:.3f} (arm) / {rp_obs_true:.3f} (with instrument) | {rp:.3f} | bootstrap-t 95 % {lo:.3f}–{hi:.3f} | {'yes' if lo <= rp_obs_true <= hi else 'no'} |")
-    diff = np.mean([boots[(1, k)] - boots[(0, k)] for k in range(5)], axis=0)
-    h4b = float(np.quantile(diff, 0.05)) > 0
-    X = np.column_stack([np.ones(10), np.tile(np.array(REACH) / 100, 2), np.repeat([0.0, 1.0], 5)])
-    Y = np.stack([boots[(load, k)] for load in (0, 1) for k in range(5)])
-    slope = np.linalg.lstsq(X, Y, rcond=None)[0][1]
-    h4c = float(np.quantile(slope, 0.05)) > 0
+    h4a, h4a_cert = ps.h4a_decision([pose_pts[(k, 0)] for k in range(5)], U_INST / 2, U_INST)
+    h4bc = ps.h4bc_decisions(pose_pts, REACH)
 
     L.append("\n## 2. Decisions on the synthetic campaign\n")
     L.append("What the registered rules decide, next to what the true values imply. A test can "
@@ -290,14 +267,13 @@ def analyse(e1: list[dict], e2: list[dict], e3: list[dict], rng: np.random.Gener
     L.append("|---|---|---|---|")
     L.append(f"| H1a | true rate 99.8 %, so ≥ 99 % is true | {h1a} | {k_c}/{n_c} carrier OL loads; exact lower bound {ps.cp_lower(k_c, n_c):.4f} (power is 55 % at this rate) |")
     L.append(f"| H1b | true rate 93 %, so < 99 % is true | {h1b} | {k2}/{n2}; exact upper bound {ps.cp_upper(k2, n2):.4f} |")
-    L.append(f"| H2 | true ED90 2.8 mm > 1.15 mm | {'supported' if h2 else 'not supported'} | Fieller lower bounds x {decisions[('C', 'OL', 'x')].ed90_lower95:.2f}, y {decisions[('C', 'OL', 'y')].ed90_lower95:.2f} mm |")
-    L.append(f"| H3a | 93 % → 98.5 %, a real gain | {'supported' if p3a < 0.05 else 'not supported'} | Boschloo one-sided p = {p3a:.2g} |")
-    L.append(f"| H3b | ED90 0.2 → 3.0 mm, a real gain | {'supported' if all(h3b_axes) else 'not supported'} | x {'passes' if h3b_axes[0] else 'fails'}, y {'passes' if h3b_axes[1] else 'fails'} |")
-    L.append(f"| H3c (cap 5 s) | 3.0 s ≤ 5 s | {'supported' if hl_up <= 5.0 else 'not supported'} | HL upper bound {hl_up:.2f} s |")
-    h4a = "supported" if h4a_meets else ("refuted" if h4a_ref else "inconclusive")
-    L.append(f"| H4a | unloaded RP 0.050–0.065 mm ≤ 0.10 | {h4a}{', certified' if h4a_cert and h4a_meets else ''} | all five poses |")
-    L.append(f"| H4b | payload adds 0.010–0.013 mm | {'supported' if h4b else 'not supported'} | bootstrap lower bound of the mean difference {np.quantile(diff, 0.05):.4f} mm |")
-    L.append(f"| H4c | RP grows 0.0075–0.0081 mm per 100 mm | {'supported' if h4c else 'not supported'} | slope lower bound {np.quantile(slope, 0.05):.4f} mm per 100 mm |")
+    L.append(f"| H2 | true ED90 2.8 mm > 1.15 mm | {h2} | Fieller lower bounds x {decisions[('C', 'OL', 'x')].ed90_lower95:.2f}, y {decisions[('C', 'OL', 'y')].ed90_lower95:.2f} mm |")
+    L.append(f"| H3a | 93 % → 98.5 %, a real gain | {h3a} | Boschloo one-sided p = {p3a:.2g} |")
+    L.append(f"| H3b | ED90 0.2 → 3.0 mm, a real gain | {h3b} | x {'passes' if h3b_axes[0] else 'fails'}, y {'passes' if h3b_axes[1] else 'fails'} |")
+    L.append(f"| H3c (cap 5 s) | 3.0 s ≤ 5 s | {h3c} | HL upper bound {hl_up:.2f} s |")
+    L.append(f"| H4a | unloaded RP 0.050–0.065 mm ≤ 0.10 | {h4a}{', certified' if h4a_cert else ''} | all five poses; instrument U = {U_INST} mm |")
+    L.append(f"| H4b | payload adds 0.010–0.013 mm | {h4bc['h4b']} | bootstrap lower bound of the mean difference {h4bc['h4b_lower']:.4f} mm |")
+    L.append(f"| H4c | RP grows 0.0075–0.0081 mm per 100 mm | {h4bc['h4c']} | slope lower bound {h4bc['h4c_lower']:.4f} mm per 100 mm |")
     return L
 
 
@@ -350,7 +326,6 @@ def coverage(rng: np.random.Generator, reps: int) -> list[str]:
     L.append(f"| Fieller 95 % for ED90 | ED90 1.8 mm, ED50 2.8 mm (gentle) | 95 % | {hit / n_ok:.1%} |")
     # RMST with Greenwood: renewal process with geometric gaps over one configuration
     for q, tau in ((0.04, 300), (0.01, 300), (0.04, 50)):
-        true_rmst = (1 - (1 - q) ** tau) / q
         hit = 0
         for _ in range(reps):
             durs, evs = [], []
@@ -369,9 +344,11 @@ def coverage(rng: np.random.Generator, reps: int) -> list[str]:
             if km.times.size == 0:
                 hit += 1  # no interventions: RMST = tau, and the truth is within [lower, tau]
                 continue
+            tau_used = ps.rmst_tau(km, tau)  # capped at the longest observed interval
+            true_rmst = (1 - (1 - q) ** tau_used) / q
             _m, lo, hi = ps.rmst(km, tau)
             hit += lo <= true_rmst <= hi
-        L.append(f"| RMST 95 % (Greenwood) | {q:.0%} interventions per transfer, 600 transfers, τ = {tau} | 95 % | {hit / reps:.1%} |")
+        L.append(f"| RMST 95 % (Greenwood) | {q:.0%} interventions per transfer, 600 transfers, τ = {tau} (capped at the longest interval) | 95 % | {hit / reps:.1%} |")
     # RP: percentile bootstrap (v1's rule) against bootstrap-t (v2's registered rule)
     rp_true = 0.06
     sigma = rp_true / (2 * math.sqrt(2 / math.pi) + 3 * math.sqrt(3 - 8 / math.pi))
@@ -413,7 +390,7 @@ def main():
     L.append("\n## Notes\n")
     L.append("- **RP and the instrument.** Measured RP includes the instrument's noise, so the "
              "intervals cover the RP of arm plus instrument, not the arm alone. With *U* = 0.025 mm "
-             "that adds 0.005–0.010 mm at these sizes. This is why H4a needs *U* ≤ 0.025 mm.")
+             "that adds 0.012–0.017 mm at these sizes. This is why H4a needs *U* ≤ 0.025 mm.")
     L.append("- **Why the MTBI clock runs across sessions.** v1 censored every interval at the end "
              "of its block. With about 10 units of a cell per block, no interval could be longer "
              "than about 20 transfers, so neither S(50) nor a restricted mean to τ = 300 could be "

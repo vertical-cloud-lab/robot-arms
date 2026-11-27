@@ -1628,143 +1628,207 @@
  "h2_by_width": {
   "0.25": [
    {
-    "ed90": 1.0,
-    "model": 0.0,
+    "ed90": 0.5,
+    "supported": 0.0,
+    "refuted": 1.0,
     "model_free": 0.0,
-    "both": 0.0
+    "v1_combined": 0.0
+   },
+   {
+    "ed90": 0.8,
+    "supported": 0.0,
+    "refuted": 1.0,
+    "model_free": 0.0,
+    "v1_combined": 0.0
+   },
+   {
+    "ed90": 1.0,
+    "supported": 0.0,
+    "refuted": 0.6115,
+    "model_free": 0.0,
+    "v1_combined": 0.0
    },
    {
     "ed90": 1.15,
-    "model": 0.0,
+    "supported": 0.0,
+    "refuted": 0.0085,
     "model_free": 0.0,
-    "both": 0.0
+    "v1_combined": 0.0
    },
    {
     "ed90": 1.5,
-    "model": 0.0,
+    "supported": 0.0,
+    "refuted": 0.0,
     "model_free": 0.0,
-    "both": 0.0
+    "v1_combined": 0.0
    },
    {
     "ed90": 2.0,
-    "model": 1.0,
+    "supported": 1.0,
+    "refuted": 0.0,
     "model_free": 0.0305,
-    "both": 0.0305
+    "v1_combined": 0.0305
    },
    {
     "ed90": 2.5,
-    "model": 1.0,
+    "supported": 1.0,
+    "refuted": 0.0,
     "model_free": 1.0,
-    "both": 1.0
+    "v1_combined": 1.0
    },
    {
     "ed90": 3.0,
-    "model": 1.0,
+    "supported": 1.0,
+    "refuted": 0.0,
     "model_free": 1.0,
-    "both": 1.0
+    "v1_combined": 1.0
    }
   ],
   "0.5": [
    {
-    "ed90": 1.0,
-    "model": 0.0,
+    "ed90": 0.5,
+    "supported": 0.0,
+    "refuted": 1.0,
     "model_free": 0.0,
-    "both": 0.0
+    "v1_combined": 0.0
+   },
+   {
+    "ed90": 0.8,
+    "supported": 0.0,
+    "refuted": 0.9935,
+    "model_free": 0.0,
+    "v1_combined": 0.0
+   },
+   {
+    "ed90": 1.0,
+    "supported": 0.0,
+    "refuted": 0.5035,
+    "model_free": 0.0,
+    "v1_combined": 0.0
    },
    {
     "ed90": 1.15,
-    "model": 0.0,
+    "supported": 0.0,
+    "refuted": 0.053,
     "model_free": 0.0,
-    "both": 0.0
+    "v1_combined": 0.0
    },
    {
     "ed90": 1.5,
-    "model": 0.201,
+    "supported": 0.201,
+    "refuted": 0.0,
     "model_free": 0.0,
-    "both": 0.0
+    "v1_combined": 0.0
    },
    {
     "ed90": 2.0,
-    "model": 1.0,
+    "supported": 1.0,
+    "refuted": 0.0,
     "model_free": 0.033,
-    "both": 0.033
+    "v1_combined": 0.033
    },
    {
     "ed90": 2.5,
-    "model": 1.0,
+    "supported": 1.0,
+    "refuted": 0.0,
     "model_free": 0.986,
-    "both": 0.986
+    "v1_combined": 0.986
    },
    {
     "ed90": 3.0,
-    "model": 1.0,
+    "supported": 1.0,
+    "refuted": 0.0,
     "model_free": 1.0,
-    "both": 1.0
+    "v1_combined": 1.0
    }
   ],
   "1.0": [
    {
-    "ed90": 1.0,
-    "model": 0.0,
+    "ed90": 0.5,
+    "supported": 0.0,
+    "refuted": 1.0,
     "model_free": 0.0,
-    "both": 0.0
+    "v1_combined": 0.0
+   },
+   {
+    "ed90": 0.8,
+    "supported": 0.0,
+    "refuted": 0.785,
+    "model_free": 0.0,
+    "v1_combined": 0.0
+   },
+   {
+    "ed90": 1.0,
+    "supported": 0.0,
+    "refuted": 0.227,
+    "model_free": 0.0,
+    "v1_combined": 0.0
    },
    {
     "ed90": 1.15,
-    "model": 0.0015,
+    "supported": 0.0015,
+    "refuted": 0.035,
     "model_free": 0.0,
-    "both": 0.0
+    "v1_combined": 0.0
    },
    {
     "ed90": 1.5,
-    "model": 0.2035,
+    "supported": 0.2035,
+    "refuted": 0.0,
     "model_free": 0.0,
-    "both": 0.0
+    "v1_combined": 0.0
    },
    {
     "ed90": 2.0,
-    "model": 0.9695,
+    "supported": 0.9695,
+    "refuted": 0.0,
     "model_free": 0.0365,
-    "both": 0.0365
+    "v1_combined": 0.0365
    },
    {
     "ed90": 2.5,
-    "model": 1.0,
+    "supported": 1.0,
+    "refuted": 0.0,
     "model_free": 0.652,
-    "both": 0.652
+    "v1_combined": 0.652
    },
    {
     "ed90": 3.0,
-    "model": 1.0,
+    "supported": 1.0,
+    "refuted": 0.0,
     "model_free": 0.9795,
-    "both": 0.9795
+    "v1_combined": 0.9795
    }
   ]
  },
  "h2_step": [
   {
    "edge_mm": 1.5,
-   "model": 0.0,
+   "supported": 0.0,
+   "refuted": 0.6595,
    "model_free": 0.0,
-   "both": 0.0
+   "v1_combined": 0.0
   },
   {
    "edge_mm": 2.5,
-   "model": 1.0,
+   "supported": 1.0,
+   "refuted": 0.0,
    "model_free": 0.999,
-   "both": 0.999
+   "v1_combined": 0.999
   },
   {
    "edge_mm": 3.0,
-   "model": 1.0,
+   "supported": 1.0,
+   "refuted": 0.0,
    "model_free": 0.9995,
-   "both": 0.9995
+   "v1_combined": 0.9995
   },
   {
    "edge_mm": 3.5,
-   "model": 1.0,
+   "supported": 1.0,
+   "refuted": 0.0,
    "model_free": 0.9995,
-   "both": 0.9995
+   "v1_combined": 0.9995
   }
  ],
  "h3b": [
@@ -1791,23 +1855,32 @@
   {
    "scenario": "no effect: both ED90 0.3 mm",
    "power": 0.0
+  },
+  {
+   "scenario": "no effect: both ED90 0.3 mm, OL sharper (ED50 \u2212 ED90 0.3 vs 1.0 mm)",
+   "power": 0.014
   }
  ],
  "h3b_bootstrap_check": [
   {
    "scenario": "OL ED90 0.3 mm, AT ED90 1.0 mm",
-   "delta": 1.0,
+   "registered": 1.0,
    "bootstrap": 1.0
   },
   {
    "scenario": "OL ED90 0.3 mm, AT ED90 0.6 mm",
-   "delta": 0.015,
-   "bootstrap": 0.88
+   "registered": 0.015,
+   "bootstrap": 0.83
   },
   {
    "scenario": "no effect: both ED90 0.3 mm",
-   "delta": 0.0,
+   "registered": 0.0,
    "bootstrap": 0.01
+  },
+  {
+   "scenario": "no effect: both ED90 0.3 mm, OL sharper (ED50 \u2212 ED90 0.3 vs 1.0 mm)",
+   "registered": 0.01,
+   "bootstrap": 0.1
   }
  ],
  "h3c": [
@@ -1899,36 +1972,67 @@
    "s50_true": 0.36416968008711675
   }
  ],
+ "h4_sims": 500,
  "h4a": [
   {
    "rp_true": 0.04,
    "meets": 1.0,
-   "certified": 0.88
+   "certified": 0.89,
+   "refuted": 0.0
   },
   {
    "rp_true": 0.05,
    "meets": 1.0,
-   "certified": 0.61
+   "certified": 0.622,
+   "refuted": 0.0
   },
   {
    "rp_true": 0.06,
-   "meets": 0.998,
-   "certified": 0.296
+   "meets": 1.0,
+   "certified": 0.262,
+   "refuted": 0.0
   },
   {
    "rp_true": 0.07,
-   "meets": 0.956,
-   "certified": 0.026
+   "meets": 0.936,
+   "certified": 0.038,
+   "refuted": 0.0
   },
   {
    "rp_true": 0.08,
-   "meets": 0.548,
-   "certified": 0.0
+   "meets": 0.536,
+   "certified": 0.0,
+   "refuted": 0.0
   },
   {
    "rp_true": 0.09,
-   "meets": 0.058,
-   "certified": 0.0
+   "meets": 0.054,
+   "certified": 0.0,
+   "refuted": 0.0
+  },
+  {
+   "rp_true": 0.1,
+   "meets": 0.0,
+   "certified": 0.0,
+   "refuted": 0.05
+  },
+  {
+   "rp_true": 0.11,
+   "meets": 0.0,
+   "certified": 0.0,
+   "refuted": 0.374
+  },
+  {
+   "rp_true": 0.12,
+   "meets": 0.0,
+   "certified": 0.0,
+   "refuted": 0.81
+  },
+  {
+   "rp_true": 0.13,
+   "meets": 0.0,
+   "certified": 0.0,
+   "refuted": 0.988
   }
  ],
  "h4bc": [
@@ -1943,8 +2047,8 @@
     270.0,
     430.0
    ],
-   "h4b": 0.23333333333333334,
-   "h4c": 0.41
+   "h4b": 0.27666666666666667,
+   "h4c": 0.4
   },
   {
    "rp_unloaded": 0.06,
@@ -1957,8 +2061,8 @@
     270.0,
     430.0
    ],
-   "h4b": 0.6,
-   "h4c": 0.83
+   "h4b": 0.6066666666666667,
+   "h4c": 0.8266666666666667
   },
   {
    "rp_unloaded": 0.06,
@@ -1971,7 +2075,7 @@
     270.0,
     430.0
    ],
-   "h4b": 0.9766666666666667,
+   "h4b": 0.98,
    "h4c": 1.0
   }
  ],
@@ -1983,6 +2087,5 @@
   "total": 589.0308500638938,
   "vial_OL_if_trimmed_to_2mm_and_2deg": 198.49641960852853
  },
- "runtime_s": 503.68108224868774,
- "h4_sims": 500
+ "runtime_s": 1134.9328162670135
 }

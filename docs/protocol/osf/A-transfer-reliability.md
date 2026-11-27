@@ -41,18 +41,22 @@ where stated; each is reported as supported, refuted or inconclusive (§2).
   one-sided 95 % lower bound is ≥ 0.99.
 - **H2.** For open-loop carriers, the dock's ED90 (the injected offset at which predicted success
   falls to 90 %) exceeds 1.15 mm, the worst-case arm error from the design's error budget, on both
-  x and y. Supported if, on each axis, the Fieller one-sided 95 % lower bound of ED90 from a Firth
-  logistic fit exceeds 1.15 mm. For a right-censored curve (no failures at 4 mm, or fitted success
-  at 4 mm ≥ 90 %), it is supported instead if the exact one-sided 95 % lower bound of pooled
-  success at |offset| ≥ 2 mm is ≥ 0.90. Refuted if on either axis the Fieller one-sided 95 % upper
-  bound is below 1.15 mm, or if the exact one-sided 95 % upper bound of success over the 20
-  zero-offset loads is below 0.90 (capture radius 0).
+  x and y. An axis supports H2 if its Firth logistic slope is significantly negative and the
+  Fieller one-sided 95 % lower bound of ED90 exceeds 1.15 mm. If the curve is right-censored (no
+  failures at 4 mm, or fitted success at 4 mm ≥ 90 %), it supports H2 instead when the exact
+  one-sided 95 % lower bound of pooled success at |offset| ≥ 2 mm is ≥ 0.90. An axis refutes H2,
+  at one-sided 99 % per axis (set by simulation so that H2 is refuted at most about 5 % of the
+  time when the true ED90 is exactly 1.15 mm), if success over the 20 zero-offset loads has an
+  exact upper bound below 0.90, or if the slope is significantly negative and the Fieller upper
+  bound of ED90 is below 1.15 mm. An axis that meets both kinds of rule is inconclusive. Supported
+  if both axes support it, refuted if either refutes it, inconclusive otherwise.
 - **H3a.** AprilTag correction raises single-vial loading success: one-sided Boschloo exact test,
   p < 0.05.
-- **H3b.** Correction widens the single-vial ED90 on both x and y: the one-sided 95 % bootstrap
-  lower bound of max(0, ED90_AT) − max(0, ED90_OL) is > 0 on each axis. If the corrected curve is
-  right-censored, the axis passes when the Fieller one-sided 95 % upper bound of ED90_OL is below
-  4 mm.
+- **H3b.** Correction widens the single-vial ED90 on both x and y. Each capture radius is ED90
+  floored at 0 (0 if fitted success is below 90 % at zero offset). An axis passes if the one-sided
+  95 % delta-method lower bound of radius_AT − radius_OL is > 0, or, when the corrected curve is
+  right-censored, if the Fieller one-sided 95 % upper bound of ED90_OL is below 4 mm. Supported if
+  both axes pass.
 - **H3c.** Correction costs no more than [D8] s per single-vial loading transfer: the one-sided
   95 % upper bound of the Hodges–Lehmann shift in transfer time (corrected − open loop) is ≤ [D8].
 
@@ -66,10 +70,11 @@ exists, and no part will be generated until after this plan is registered.*
 ### Explanation of foreknowledge and managing unintended influences
 
 The arm has run other tasks (picking a tape roll, teleoperation), but nothing it has done involves
-the dock, carriers or vials of this study, which were printed after the protocol was written. Pilot
-runs before registration set eight procedural values by rules fixed in the protocol (R1–R8, §0:
-measured clearances, tag size, timeouts, speed, block length, a contact-stop threshold); they are
-recorded in the first configuration record with their measurements. Pilot data are never pooled
+the dock, carriers or vials of this study. On 2026-11-27 those parts existed only as CAD; they are
+printed after this protocol was written. Pilot runs, before or after registration but always before
+counting, set eight procedural values by rules fixed in the protocol (R1–R8, §0: measured
+clearances, tag size, timeouts, speed, block length, a contact-stop threshold); they are recorded in
+the first configuration record with their measurements. Pilot data are never pooled
 with counted data (§10). During the campaign nobody computes running success rates; the trial
 harness shows counts done and owed, not rates (§10, rule 4). Every cell's sample size is fixed in
 advance, and cells are not extended after a failure.
@@ -94,9 +99,10 @@ changes mass, grasp and fixture at once, so it is reported descriptively (§15).
 ### Blinding of experimental treatments
 
 **Select:** *Subjects will not be aware of the assigned treatment during data collection (either
-because the subjects are not human participants or because of blinding procedures)* and
-*Researchers or observers who code or interpret data for analysis will not be aware of the assigned
-treatments during coding*.
+because the subjects are not human participants or because of blinding procedures)*.
+
+Don't tick the coder option: the operator who scores every transfer knows the condition. The
+blind second review is described in the next answer.
 
 ### Additional blinding during research or analysis
 
@@ -109,7 +115,8 @@ a fixed script registered with this plan (`analysis/prereg_stats.py`).
 
 ### Study design
 
-Two experiments share one cell, one configuration and the same randomized blocks (§5–§9).
+Two experiments share one cell and one configuration (§5–§9). They run in separate blocks, and a
+seeded random sequence assigns each session to E1 or E2.
 
 - **Tasks.** T1, carrier swap between a dock and a shelf; T2, a single vial between a shelf pocket
   and the dock's single-vial pocket. Each *unit* is one loading transfer (into the dock: the
@@ -160,7 +167,7 @@ illuminance are logged per block.
 
 Counting starts with the first block committed as counted after this registration is approved and
 every pre-campaign bench gate is met (PROTOCOL.md §10; `bench-readiness.md`). Expected duration:
-about 70–90 sessions over 8–16 weeks.
+about 70–100 sessions over 8–16 weeks.
 
 Inclusion: every loading and unloading transfer in a counted block. Exclusions: only external
 interruptions and operator errors while restoring the scene (see below).
@@ -174,7 +181,8 @@ Unit of analysis: the loading transfer (unloading transfers are secondary).
 - E2: 20 loading transfers at each of 21 offset levels for each task × condition: 420 per cell,
   1,680 in all (1,480 if [D6] trims single-vial OL to 11 levels). Per axis fit: 20 trials at zero
   plus 40 at each |offset| of 1–4 mm.
-- Sizes are equal across conditions within a task. Units are nested in about 70–90 blocks.
+- Sizes are equal across conditions within a task, except carriers under OL when D5 = 628 and
+  single vials under OL in E2 when D6 trims their levels. Units are nested in about 70–100 blocks.
 
 ### Sample size rationale
 
@@ -188,11 +196,12 @@ request (issue #21). The exact and simulated powers of every registered rule at 
 - H1b at n = 300: 80 % power if the true rate is 97 %, 99 % at 95 %.
 - H3a (Boschloo, 300 per arm): 90 % power for 95 % → 99 %, 72 % for 97 % → 99.5 %, 48 % for
   97 % → 99 %.
-- H2: 97–100 % power when the true ED90 is ≥ 2 mm, 0–20 % at 1.5 mm (no level lies between 1
-  and 2 mm), 0 % at or below 1.15 mm.
-- H3b: 100 % when the corrected ED90 is ≥ 1 mm against an open-loop 0.3 mm, and 88 % for 0.6
-  against 0.3 mm (registered bootstrap rule; 1 % false positives with no difference).
-- H3c: ≥ 99 % if the true extra time is ≤ 4 s against a 5 s cap.
+- H2: supported 97–100 % of the time when the true ED90 is ≥ 2 mm, 0–20 % at 1.5 mm (no level
+  lies between 1 and 2 mm), ≤ 0.2 % at or below 1.15 mm; refuted 0.9–5.3 % of the time at exactly
+  1.15 mm and 79–100 % at 0.8 mm.
+- H3b: 100 % when the corrected ED90 is ≥ 1 mm against an open-loop 0.3 mm; with no true
+  difference, false support 0–1.4 %, including when the two curves' slopes differ.
+- H3c: ≥ 99.6 % if the true extra time is ≤ 4 s against a 5 s cap.
 
 ### Starting and stopping rules
 
@@ -206,8 +215,11 @@ Stop (§10):
 2. Any change to code or hardware ends the block; if it creates a new configuration, all counts
    restart at zero in it, and earlier configurations are reported as development history only.
 3. A Critical or Catastrophic failure (§13.4) stops the block at once.
-4. A run of failures ([D11]: 3 in a row or 5 in the last 20 of one cell), or a unit that can't
+4. A run of failures ([D11]: in E1, 3 failed loads in a row in one cell; in E2, 2 failed
+   zero-offset loads in one block, since E2's offset loads fail by design), or a unit that can't
    start because the arm isn't at its rest pose, stops the block for an inspection.
+5. Each cell's primary estimate comes from the configuration in which it has the most counted
+   loads (the later one if tied).
 
 ---
 
@@ -269,16 +281,17 @@ values from a synthetic campaign in `analysis/out/recovery.md`.
 - **Capture envelope (H2, H3b):** per task × condition × axis (x, y, yaw), logistic regression of
   success on |offset| (both signs pooled, zero level included) by Firth's penalized likelihood.
   ED_q = (logit q − β₀)/β₁; Fieller intervals from the inverse Fisher information (95 % two-sided
-  for reporting; the ends of the 90 % interval as the one-sided 95 % bounds); a percentile
-  bootstrap resampling trials within levels (10,000) as a check and for H3b's difference.
-  Censoring and "not reached" rules as in §14.3.
+  for reporting; the lower end of the 90 % interval supports H2 and the one-sided 99 % upper
+  bound refutes it); delta-method standard errors for H3b's difference; a percentile bootstrap
+  resampling trials within levels (10,000) as a check. Slope-significance, censoring and "not
+  reached" rules as in §14.3.
 - **Time cost (H3c):** two-sample Hodges–Lehmann shift (AT − OL) on successful single-vial loads in
   E1, with its Moses (Mann–Whitney) one-sided 95 % upper bound.
 - **MTBI:** Kaplan–Meier estimate of transfers between interventions per task × condition (E1
   only; E2 reported separately), restricted mean up to τ with a Greenwood-based 95 % interval;
-  cross-check total transfers ÷ interventions with an exact Poisson (Garwood) interval, reported
-  first when a cell has fewer than 10 interventions (the Greenwood interval undercovered then on
-  synthetic data); S(50).
+  the horizon is capped at the cell's longest observed interval; cross-check total transfers ÷
+  interventions with an exact Poisson (Garwood) interval, reported first when a cell has fewer
+  than 10 interventions; S(50).
 - **Positive controls and checks (§14.6):** the logged commanded pose differs from nominal by the
   injected offset to within 0.1 mm and 0.1°; tag detection succeeds at ≥ 99 % of looks under AT;
   operator–reviewer κ ≥ 0.8; E2's zero level agrees with E1 (Newcombe interval). These are
@@ -295,8 +308,10 @@ recoding.
 
 α = 0.05 per hypothesis, one-sided where stated (all decisions are one-sided bounds or one-sided
 tests as listed under Research questions). No multiplicity correction across hypotheses: each
-answers a separate, pre-specified question, and every outcome is reported. Within H2 and H3b the
-"both axes" requirement is an intersection–union test, which needs no adjustment. Each hypothesis
+answers a separate, pre-specified question, and every outcome is reported. Within H2 and H3b,
+support on "both axes" is an intersection–union test, which needs no adjustment; refuting H2 on
+"either axis" is a union, so each axis uses a one-sided 99 % bound (Bonferroni's 97.5 % let false
+refutations at the boundary reach 6–10 % in simulation). Each hypothesis
 is reported as supported, refuted, or inconclusive (contrary or not supported for H3a, not
 supported for H3b and H3c).
 
@@ -312,7 +327,8 @@ configurations and pilot runs are reported but never pooled into the primary est
 
 ### Missing data
 
-A transfer with no operator score and no usable still is missing. The primary analysis uses scored
+A transfer with no operator score and no usable still is missing. Its unit is re-queued, like an
+excluded unit, so every cell still reaches its n scored loads. The primary analysis uses scored
 transfers; a sensitivity analysis counts missing transfers as failures. More than 2 % missing in
 any cell is reported up front.
 

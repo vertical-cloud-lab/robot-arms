@@ -96,5 +96,5 @@ winter break (about 2026-12-19 to 2027-01-05).
 | Register A | 2026-12-04, if RA1 is done and you accept amending after the parts are printed | **2027-01-29** | RA2: printing and test-fitting PR 272's parts |
 | Register B | 2027-01-29 | **2027-02-19** | RB1: building the fixture |
 | First counted block | 2027-02-12 | **2027-03-05** | SF1 (the safety review), SW1–SW2 (harness and correction), HW3–HW4 (wrist camera) |
-| Campaign done (70–90 sessions, about 2 a weekday) | 2027-04-09 | **2027-05-14** | Operator time and resets |
+| Campaign done (70–100 sessions, about 2 a weekday) | 2027-04-09 | **2027-05-14** | Operator time and resets |
 | Results paper submitted | 2027-05-14 | **2027-06-25** | Analysis is scripted; writing and figures |

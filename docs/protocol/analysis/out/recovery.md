@@ -13,7 +13,7 @@ Intervals are 95 % except the ED90 rows, which show the 90 % Fieller interval wh
 | p(V, OL) loads | 0.930 | 282/300 = 0.940 | Wilson 0.907–0.962 | yes |
 | p(V, AT) loads | 0.985 | 298/300 = 0.993 | Wilson 0.976–0.998 | yes |
 | p(V, AT) − p(V, OL) | 0.055 | 0.053 | Newcombe 0.026–0.087 | yes |
-| Gap closed G(V) | 0.92 | 1.07 | bootstrap 0.85–1.29 | yes |
+| Gap closed G(V) | 0.92 | 1.07 | bootstrap 0.83–1.29 | yes |
 | HL time shift, V (s) | 3.0 | 3.10 | upper 95 % 3.28 | yes |
 | ED90 C-OL x (mm) | 2.80 | 2.77 | Fieller 90 % 2.52–2.89 | yes |
 | ED90 C-OL y (mm) | 2.80 | 2.98 | Fieller 90 % 2.79–3.12 | yes |
@@ -23,7 +23,7 @@ Intervals are 95 % except the ED90 rows, which show the 90 % Fieller interval wh
 | ED90 V-OL y (mm) | 0.20 | 0.19 | Fieller 90 % -0.16–0.40 | yes |
 | ED90 V-AT x (mm) | 3.00 | 2.82 | Fieller 90 % 2.56–3.00 | no |
 | ED90 V-AT y (mm) | 3.00 | 2.93 | Fieller 90 % 2.72–3.08 | yes |
-| MTBI V-OL, RMST to 300 transfers | 25.0 | 29.5 | Greenwood 16.7–42.4 | yes |
+| MTBI V-OL, RMST to 135 transfers | 24.9 | 29.5 | Greenwood 16.7–42.4 | yes |
 | MTBI V-OL, crude | 25.0 | 30.0 | Garwood 19.4–49.1 | yes |
 | S(50), V-OL | 0.130 | 0.103 | — | — |
 | RP P1, unloaded (mm) | 0.050 (arm) / 0.067 (with instrument) | 0.071 | bootstrap-t 95 % 0.063–0.083 | yes |
@@ -49,9 +49,9 @@ What the registered rules decide, next to what the true values imply. A test can
 | H3a | 93 % → 98.5 %, a real gain | supported | Boschloo one-sided p = 0.00014 |
 | H3b | ED90 0.2 → 3.0 mm, a real gain | supported | x passes, y passes |
 | H3c (cap 5 s) | 3.0 s ≤ 5 s | supported | HL upper bound 3.28 s |
-| H4a | unloaded RP 0.050–0.065 mm ≤ 0.10 | supported | all five poses |
-| H4b | payload adds 0.010–0.013 mm | not supported | bootstrap lower bound of the mean difference -0.0011 mm |
-| H4c | RP grows 0.0075–0.0081 mm per 100 mm | supported | slope lower bound 0.0010 mm per 100 mm |
+| H4a | unloaded RP 0.050–0.065 mm ≤ 0.10 | supported | all five poses; instrument U = 0.025 mm |
+| H4b | payload adds 0.010–0.013 mm | not supported | bootstrap lower bound of the mean difference -0.0009 mm |
+| H4c | RP grows 0.0075–0.0081 mm per 100 mm | supported | slope lower bound 0.0009 mm per 100 mm |
 
 ## 3. Coverage over repeated synthetic data
 
@@ -68,9 +68,9 @@ Each row repeats one procedure on 1000 fresh synthetic data sets and counts how 
 | Fieller 95 % for ED90 | ED90 2.8 mm, ED50 3.2 mm, 180 trials | 95 % | 95.6% |
 | Fieller one-sided 95 % lower bound | same | ≥ 95 % | 98.7% |
 | Fieller 95 % for ED90 | ED90 1.8 mm, ED50 2.8 mm (gentle) | 95 % | 95.8% |
-| RMST 95 % (Greenwood) | 4% interventions per transfer, 600 transfers, τ = 300 | 95 % | 93.2% |
-| RMST 95 % (Greenwood) | 1% interventions per transfer, 600 transfers, τ = 300 | 95 % | 86.3% |
-| RMST 95 % (Greenwood) | 4% interventions per transfer, 600 transfers, τ = 50 | 95 % | 93.0% |
+| RMST 95 % (Greenwood) | 4% interventions per transfer, 600 transfers, τ = 300 (capped at the longest interval) | 95 % | 97.0% |
+| RMST 95 % (Greenwood) | 1% interventions per transfer, 600 transfers, τ = 300 (capped at the longest interval) | 95 % | 93.0% |
+| RMST 95 % (Greenwood) | 4% interventions per transfer, 600 transfers, τ = 50 (capped at the longest interval) | 95 % | 93.1% |
 | RP percentile bootstrap, one-sided 95 % upper bound (v1) | true RP 0.06 mm, 30 cycles, isotropic (400 data sets) | ≥ 95 % | 75.8% |
 | RP bootstrap-t, one-sided 95 % upper bound (v2, registered) | same | ≥ 95 % | 93.0% |
 | RP bootstrap-t, one-sided 95 % lower bound (v2, registered) | same | ≥ 95 % | 95.5% |
@@ -80,5 +80,5 @@ From a separate run (400 data sets each, `bootstrap_t_rp`): the bootstrap-t uppe
 
 ## Notes
 
-- **RP and the instrument.** Measured RP includes the instrument's noise, so the intervals cover the RP of arm plus instrument, not the arm alone. With *U* = 0.025 mm that adds 0.005–0.010 mm at these sizes. This is why H4a needs *U* ≤ 0.025 mm.
+- **RP and the instrument.** Measured RP includes the instrument's noise, so the intervals cover the RP of arm plus instrument, not the arm alone. With *U* = 0.025 mm that adds 0.012–0.017 mm at these sizes. This is why H4a needs *U* ≤ 0.025 mm.
 - **Why the MTBI clock runs across sessions.** v1 censored every interval at the end of its block. With about 10 units of a cell per block, no interval could be longer than about 20 transfers, so neither S(50) nor a restricted mean to τ = 300 could be estimated. v2 lets a cell's clock run on across sessions within a configuration (PROTOCOL.md §14.4), which this script follows.

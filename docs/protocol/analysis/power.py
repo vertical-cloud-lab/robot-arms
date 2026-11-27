@@ -142,61 +142,27 @@ def simulate_axis(curve, rng, zero_success: np.ndarray):
 
 
 def h2_power(curve, n_sims: int, seed: int) -> dict:
+    """Rates of each registered H2 outcome (prereg_stats.h2_decision), plus the secondary
+    model-free check and what v1's combined rule would have given."""
     rng = np.random.default_rng(seed)
-    model = free = both = 0
+    sup = ref = free = v1 = 0
     p0 = float(curve(0.0))
     for _ in range(n_sims):
         zero = (rng.random(ZERO_TRIALS) < p0).astype(int)
-        ok = []
+        res = []
         fails_at_2 = 0
         for _axis in ("x", "y"):
             d, s = simulate_axis(curve, rng, zero)
-            ok.append(ps.h2_axis_supported(ps.capture_curve(d, s)))
+            res.append(ps.capture_curve(d, s))
             fails_at_2 += int(np.sum(1 - s[d == 2.0]))
-        m = all(ok)
-        f = ps.cp_lower(80 - fails_at_2, 80) >= 0.90
-        model += m
+        dec = ps.h2_decision(res[0], res[1], int(zero.sum()), ZERO_TRIALS)
+        f = ps.h2_model_free_check(fails_at_2)
+        sup += dec == "supported"
+        ref += dec == "refuted"
         free += f
-        both += m and f
-    return {"model": model / n_sims, "model_free": free / n_sims, "both": both / n_sims}
-
-
-def floored_ed90(res: ps.CaptureResult) -> float:
-    return max(0.0, res.ed90)
-
-
-def delta_se_ed90(res: ps.CaptureResult) -> float:
-    b0, b1 = res.fit.beta
-    c = logit(0.9)
-    g = np.array([-1.0 / b1, -(c - b0) / b1 ** 2])
-    return float(math.sqrt(max(g @ res.fit.cov @ g, 0.0)))
-
-
-def h3b_axis_decision(r_at: ps.CaptureResult, r_ol: ps.CaptureResult, method: str = "delta",
-                      d_at=None, s_at=None, d_ol=None, s_ol=None, rng=None, n_boot: int = 400) -> bool:
-    """Registered H3b decision on one axis.
-
-    Censored AT curve (no failures at 4 mm): holds if the Fieller one-sided 95 % upper bound
-    of ED90_OL is below 4 mm. Otherwise the one-sided 95 % lower bound of
-    max(0, ED90_AT) - max(0, ED90_OL) must exceed 0: bootstrap in the analysis, delta method
-    in the power sweep.
-    """
-    if r_at.censored:
-        lo, hi = ps.fieller_interval(r_ol.fit.beta, r_ol.fit.cov, 0.9, ps.Z95_ONE_SIDED)
-        return hi < r_at.max_offset
-    diff = floored_ed90(r_at) - floored_ed90(r_ol)
-    if method == "delta":
-        se = math.hypot(delta_se_ed90(r_at) if r_at.ed90 > 0 else 0.0,
-                        delta_se_ed90(r_ol) if r_ol.ed90 > 0 else 0.0)
-        return diff - ps.Z95_ONE_SIDED * se > 0
-    reps = []
-    for _ in range(n_boot):
-        da, sa = _resample(d_at, s_at, rng)
-        do, so = _resample(d_ol, s_ol, rng)
-        ea = max(0.0, ps.ed(ps.firth_logistic(da, sa).beta, 0.9))
-        eo = max(0.0, ps.ed(ps.firth_logistic(do, so).beta, 0.9))
-        reps.append(ea - eo)
-    return float(np.quantile(reps, 0.05)) > 0
+        v1 += (dec == "supported") and f
+    return {"supported": sup / n_sims, "refuted": ref / n_sims, "model_free": free / n_sims,
+            "v1_combined": v1 / n_sims}
 
 
 def _resample(d, s, rng):
@@ -208,8 +174,23 @@ def _resample(d, s, rng):
     return np.concatenate(out_d), np.concatenate(out_s)
 
 
-def h3b_power(curve_ol, curve_at, n_sims: int, seed: int, method: str = "delta",
-              n_boot: int = 400) -> float:
+def _h3b_bootstrap_axis(r_at, r_ol, d_at, s_at, d_ol, s_ol, rng, n_boot: int) -> bool:
+    """The percentile-bootstrap rule v2 first registered and then rejected (kept for the check)."""
+    if r_at.censored:
+        return r_ol.ed90_fieller90[1] < r_at.max_offset
+    reps = []
+    for _ in range(n_boot):
+        da, sa = _resample(d_at, s_at, rng)
+        do, so = _resample(d_ol, s_ol, rng)
+        ra, ro = ps.capture_curve(da, sa).radius90, ps.capture_curve(do, so).radius90
+        reps.append(ra - ro)
+    return float(np.quantile(reps, 0.05)) > 0
+
+
+def h3b_power(curve_ol, curve_at, n_sims: int, seed: int, method: str = "registered",
+              n_boot: int = 300) -> float:
+    """Chance H3b is supported on both axes: `registered` (prereg_stats.h3b_axis_supported,
+    the delta-method rule) or `bootstrap` (the rejected percentile-bootstrap rule)."""
     rng = np.random.default_rng(seed)
     hits = 0
     for _ in range(n_sims):
@@ -220,7 +201,10 @@ def h3b_power(curve_ol, curve_at, n_sims: int, seed: int, method: str = "delta",
             d_ol, s_ol = simulate_axis(curve_ol, rng, z_ol)
             d_at, s_at = simulate_axis(curve_at, rng, z_at)
             r_ol, r_at = ps.capture_curve(d_ol, s_ol), ps.capture_curve(d_at, s_at)
-            ok &= h3b_axis_decision(r_at, r_ol, method, d_at, s_at, d_ol, s_ol, rng, n_boot)
+            if method == "registered":
+                ok &= ps.h3b_axis_supported(r_at, r_ol)
+            else:
+                ok &= _h3b_bootstrap_axis(r_at, r_ol, d_at, s_at, d_ol, s_ol, rng, n_boot)
         hits += ok
     return hits / n_sims
 
@@ -244,7 +228,7 @@ def h3c_power(delta_s: float, cap_s: float, sd_s: float, n: int, n_sims: int, se
 # H4: ISO 9283 RP (simulation)
 # ---------------------------------------------------------------------------------------
 
-RP_PER_SIGMA = 2 * math.sqrt(2 / math.pi) + 3 * math.sqrt(3 - 8 / math.pi)  # 3.615
+RP_PER_SIGMA = ps.RP_PER_SIGMA  # 3.615
 
 
 def sigma_for_rp(rp: float) -> float:
@@ -253,30 +237,26 @@ def sigma_for_rp(rp: float) -> float:
 
 def h4a_power(rp_true: float, u_inst: float, n_cycles: int, n_sims: int, seed: int,
               n_boot: int = 1000) -> dict:
-    """P(point estimate <= 0.10 at all 5 poses) and P(bootstrap upper 95 % <= 0.10 at all 5)."""
+    """Rates of each registered H4a outcome (prereg_stats.h4a_decision) for an arm whose true RP
+    is `rp_true` at all five poses, seen through an instrument with expanded uncertainty
+    `u_inst` (k = 2), i.e. u = U / 2 per axis."""
     rng = np.random.default_rng(seed)
-    s_tot = math.hypot(sigma_for_rp(rp_true), u_inst / 2)  # instrument u = U / 2 per axis
-    meets = cert = 0
+    u_axis = u_inst / 2
+    s_tot = math.hypot(sigma_for_rp(rp_true), u_axis)
+    sup = cert = ref = 0
     for _ in range(n_sims):
-        m_ok = c_ok = True
-        for _pose in range(5):
-            pts = rng.normal(0, s_tot, (n_cycles, 3))
-            rp = ps.iso9283_rp(pts)
-            m_ok &= rp <= 0.10
-            if c_ok:  # registered rule: bootstrap-t one-sided 95 % upper bound
-                _rp, _lo, ub = ps.bootstrap_t_rp(pts, n_boot, int(rng.integers(1 << 31)))
-                c_ok &= ub <= 0.10
-        meets += m_ok
-        cert += m_ok and c_ok
-    return {"meets": meets / n_sims, "certified": cert / n_sims}
+        poses = [rng.normal(0, s_tot, (n_cycles, 3)) for _pose in range(5)]
+        label, certified = ps.h4a_decision(poses, u_axis, u_inst, n_boot=n_boot,
+                                           seed=int(rng.integers(1 << 30)))
+        sup += label == "supported"
+        cert += certified
+        ref += label == "refuted"
+    return {"meets": sup / n_sims, "certified": cert / n_sims, "refuted": ref / n_sims}
 
 
 def h4bc_power(rp_unloaded: float, d_payload: float, slope_per_100mm: float, reach_mm: np.ndarray,
                u_inst: float, n_cycles: int, n_sims: int, seed: int, n_boot: int = 500) -> dict:
-    """H4b: mean over poses of RP(loaded) - RP(unloaded) > 0; H4c: slope of RP on reach > 0.
-
-    Both use a bootstrap that resamples cycles within each pose x payload cell.
-    """
+    """Chance H4b and H4c are supported (prereg_stats.h4bc_decisions)."""
     rng = np.random.default_rng(seed)
     centre = float(np.mean(reach_mm))
     hits_b = hits_c = 0
@@ -287,24 +267,31 @@ def h4bc_power(rp_unloaded: float, d_payload: float, slope_per_100mm: float, rea
                 rp = rp_unloaded + load * d_payload + slope_per_100mm * (r - centre) / 100
                 s_tot = math.hypot(sigma_for_rp(max(rp, 1e-6)), u_inst / 2)
                 cells[(k, load)] = rng.normal(0, s_tot, (n_cycles, 3))
-        boot = {key: ps.bootstrap_rp(v, n_boot, int(rng.integers(1 << 31))) for key, v in cells.items()}
-        diff = np.mean([boot[(k, 1)] - boot[(k, 0)] for k in range(len(reach_mm))], axis=0)
-        hits_b += np.quantile(diff, 0.05) > 0
-        # slope of RP on reach with payload as a covariate, per bootstrap replicate
-        X = np.column_stack([np.ones(2 * len(reach_mm)),
-                             np.tile(np.asarray(reach_mm) / 100.0, 2),
-                             np.repeat([0.0, 1.0], len(reach_mm))])
-        Y = np.stack([boot[(k, load)] for load in (0, 1) for k in range(len(reach_mm))])  # (10, B)
-        coef = np.linalg.lstsq(X, Y, rcond=None)[0]
-        hits_c += np.quantile(coef[1], 0.05) > 0
+        out = ps.h4bc_decisions(cells, list(reach_mm), n_boot=n_boot, seed=int(rng.integers(1 << 30)))
+        hits_b += out["h4b"] == "supported"
+        hits_c += out["h4c"] == "supported"
     return {"h4b": hits_b / n_sims, "h4c": hits_c / n_sims}
+
+
+def compute_h2(res: dict, sims: int) -> None:
+    res["h2_by_width"] = {}
+    for w in (0.25, 0.5, 1.0):
+        rows = []
+        for e in (0.5, 0.8, 1.0, 1.15, 1.5, 2.0, 2.5, 3.0):
+            r = h2_power(logistic_curve(e, w), sims, seed=int(1000 * e + 10 * w))
+            rows.append({"ed90": e, **r})
+        res["h2_by_width"][str(w)] = rows
+    res["h2_step"] = []
+    for edge in (1.5, 2.5, 3.0, 3.5):
+        r = h2_power(step_curve(edge), sims, seed=int(100 * edge))
+        res["h2_step"].append({"edge_mm": edge, **r})
 
 
 def compute_h4(res: dict, quick: bool) -> None:
     h4sims = 100 if quick else 500
     res["h4_sims"] = h4sims
     res["h4a"] = []
-    for rp in (0.04, 0.05, 0.06, 0.07, 0.08, 0.09):
+    for rp in (0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11, 0.12, 0.13):
         res["h4a"].append({"rp_true": rp, **h4a_power(rp, 0.025, 30, h4sims, seed=int(1000 * rp),
                                                        n_boot=1000)})
     reach = np.array([350.0, 270.0, 430.0, 270.0, 430.0])
@@ -324,7 +311,7 @@ def e2_expected_failures() -> dict:
 
     Scenario (assumptions, not data): carrier OL capture ED90 2.8 mm with ED50 3.2 mm in x
     and y, and 2 and 4 degrees of yaw past the lead-in (byu-vcl PR 272: the lead-in covers
-    about +-1.4 degrees), so 97 % and 100 % fail there. Single-vial OL pocket: 95 % at zero
+    about +-1.4 degrees), so 97 % and 100 % fail there. Single-vial OL pocket: 97.5 % at zero
     offset, ED90 0.2 mm, ED50 0.5 mm, and every yaw level fails. AT cells: 1 % (carrier)
     and 2 % (vial) at every level.
     """
@@ -406,16 +393,15 @@ def fig_h2(res: dict, path: Path):
     fig, ax = plt.subplots(figsize=(6.4, 4.2), dpi=150)
     for i, (w, rows) in enumerate(res["h2_by_width"].items()):
         e = [r["ed90"] for r in rows]
-        pw = [r["model"] for r in rows]
+        pw = [r["supported"] for r in rows]
         # No end labels: all three curves end at 1.0 and the labels would collide. The legend,
         # the marker shapes and the table in power.md identify the series.
         ax.plot(e, pw, color=C[i], lw=2, marker=MARKERS[i], ms=7, label=f"ED50 − ED90 = {w} mm")
     ax.axvline(1.15, color="#9c9c9c", lw=1, ls=":")
-    ax.annotate("threshold 1.15 mm", (1.15, 0.5), textcoords="offset points", xytext=(4, 0),
+    ax.annotate("threshold 1.15 mm", (1.15, 0.72), textcoords="offset points", xytext=(4, 0),
                 fontsize=8, color=TEXT2)
     ax.axhline(0.8, color="#9c9c9c", lw=1, ls="--")
-    _style(ax, "H2: chance the Fieller lower bound of ED90 clears 1.15 mm on x and y",
-           "true ED90 (mm)", "power")
+    _style(ax, "H2: chance H2 is supported (both axes)", "true ED90 (mm)", "probability")
     ax.set_ylim(0, 1.02)
     ax.legend(frameon=False, fontsize=8, loc="lower right")
     fig.tight_layout()
@@ -491,22 +477,23 @@ def fig_h4(res: dict, path: Path):
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
-    fig, ax = plt.subplots(figsize=(6.4, 4.2), dpi=150)
+    fig, ax = plt.subplots(figsize=(6.4, 5.0), dpi=150)
     rows = res["h4a"]
     x = [r["rp_true"] for r in rows]
     ax.plot(x, [r["meets"] for r in rows], color=C[0], lw=2, marker=MARKERS[0], ms=7,
             label="meets: point estimate ≤ 0.10 mm at all 5 poses")
     ax.plot(x, [r["certified"] for r in rows], color=C[1], lw=2, marker=MARKERS[1], ms=7,
             label="certified: bootstrap-t upper bound ≤ 0.10 mm at all 5")
-    ax.annotate("meets", (x[-2], rows[-2]["meets"]), textcoords="offset points", xytext=(6, 4),
-                fontsize=8, color=TEXT)
-    ax.annotate("certified", (x[-3], rows[-3]["certified"]), textcoords="offset points",
-                xytext=(6, -12), fontsize=8, color=TEXT)
+    ax.plot(x, [r.get("refuted", 0.0) for r in rows], color=C[2], lw=2, marker=MARKERS[2], ms=7,
+            label="refuted: bootstrap-t lower bound above the instrument-adjusted threshold")
+    ax.axvline(0.10, color="#9c9c9c", lw=1, ls=":")
+    ax.annotate("spec 0.10 mm", (0.10, 0.5), textcoords="offset points", xytext=(4, 0),
+                fontsize=8, color=TEXT2)
     ax.axhline(0.8, color="#9c9c9c", lw=1, ls="--")
-    _style(ax, "H4a: 30 cycles per pose, instrument U = 0.025 mm (k = 2)",
-           "true arm RP (mm)", "power")
+    _style(ax, "H4a outcomes: 30 cycles per pose, instrument U = 0.025 mm (k = 2)",
+           "true arm RP (mm)", "probability")
     ax.set_ylim(0, 1.02)
-    ax.legend(frameon=False, fontsize=8, loc="lower left")
+    ax.legend(frameon=False, fontsize=7, loc="upper center", bbox_to_anchor=(0.5, -0.14), ncol=1)
     fig.tight_layout()
     fig.savefig(path)
     plt.close(fig)
@@ -520,6 +507,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--quick", action="store_true")
     ap.add_argument("--check-bootstrap", action="store_true")
+    ap.add_argument("--h2-only", action="store_true",
+                    help="recompute only the H2 rows and keep the rest of out/power.json")
     ap.add_argument("--h4-only", action="store_true",
                     help="recompute only the H4 rows and keep the rest of out/power.json")
     ap.add_argument("--figures-only", action="store_true",
@@ -537,6 +526,14 @@ def main():
     sims = 300 if args.quick else 2000
     OUT.mkdir(exist_ok=True)
     t0 = time.time()
+    if args.h2_only:
+        res = json.loads((OUT / "power.json").read_text())
+        compute_h2(res, res["sims"])
+        (OUT / "power.json").write_text(json.dumps(res, indent=1))
+        fig_h2(res, OUT / "fig_power_h2.png")
+        write_markdown(res, OUT / "power.md")
+        print(f"H2 redone in {time.time() - t0:.0f}s")
+        return
     if args.h4_only:
         res = json.loads((OUT / "power.json").read_text())
         compute_h4(res, args.quick)
@@ -604,17 +601,7 @@ def main():
     print(f"H3a done {time.time() - t0:.0f}s", flush=True)
 
     # ---- H2 ---------------------------------------------------------------------------
-    res["h2_by_width"] = {}
-    for w in (0.25, 0.5, 1.0):
-        rows = []
-        for e in (1.0, 1.15, 1.5, 2.0, 2.5, 3.0):
-            r = h2_power(logistic_curve(e, w), sims, seed=int(1000 * e + 10 * w))
-            rows.append({"ed90": e, **r})
-        res["h2_by_width"][str(w)] = rows
-    res["h2_step"] = []
-    for edge in (1.5, 2.5, 3.0, 3.5):
-        r = h2_power(step_curve(edge), sims, seed=int(100 * edge))
-        res["h2_step"].append({"edge_mm": edge, **r})
+    compute_h2(res, sims)
     print(f"H2 done {time.time() - t0:.0f}s", flush=True)
 
     # ---- H3b --------------------------------------------------------------------------
@@ -626,6 +613,8 @@ def main():
         ("OL ED90 0.3 mm, AT ED90 1.0 mm", logistic_curve(0.3, 0.3), logistic_curve(1.0, 0.4)),
         ("OL ED90 0.3 mm, AT ED90 0.6 mm", logistic_curve(0.3, 0.3), logistic_curve(0.6, 0.3)),
         ("no effect: both ED90 0.3 mm", logistic_curve(0.3, 0.3), logistic_curve(0.3, 0.3)),
+        ("no effect: both ED90 0.3 mm, OL sharper (ED50 − ED90 0.3 vs 1.0 mm)",
+         logistic_curve(0.3, 0.3), logistic_curve(0.3, 1.0)),
     ]
     for label, c_ol, c_at in scen_b:
         h3b.append({"scenario": label, "power": h3b_power(c_ol, c_at, sims, seed=len(label))})
@@ -634,8 +623,8 @@ def main():
         chk = []
         for label, c_ol, c_at in scen_b[3:]:
             chk.append({"scenario": label,
-                        "delta": h3b_power(c_ol, c_at, 200, seed=7, method="delta"),
-                        "bootstrap": h3b_power(c_ol, c_at, 200, seed=7, method="bootstrap", n_boot=400)})
+                        "registered": h3b_power(c_ol, c_at, 200, seed=7, method="registered"),
+                        "bootstrap": h3b_power(c_ol, c_at, 200, seed=7, method="bootstrap", n_boot=300)})
         res["h3b_bootstrap_check"] = chk
     print(f"H3b done {time.time() - t0:.0f}s", flush=True)
 
@@ -679,9 +668,11 @@ def write_markdown(res: dict, path: Path):
     ns = res["n_values"]
     L = []
     L.append("# Power analysis: results tables\n")
-    L.append(f"Generated by `power.py` ({res['sims']} simulated campaigns per scenario where simulation "
-             f"is needed; exact otherwise). Every decision rule is the registered one from "
-             f"`prereg_stats.py`. Runtime {res['runtime_s']:.0f} s.\n")
+    L.append(f"Generated by `power.py`. H1 and H3a are exact. Simulated: H2 and H3b with "
+             f"{res['sims']} campaigns per scenario, H3c with {min(res['sims'], 500)}, H4a with "
+             f"{res.get('h4_sims', 500)} sessions per row and H4b/H4c with {min(res.get('h4_sims', 500), 300)}, "
+             f"the H3b bootstrap comparison with 200. Every decision rule is the registered one from "
+             f"`prereg_stats.py`, and seeds are fixed.\n")
     L.append("## H1a: certifying ≥ 99 % (exact one-sided 95 % lower bound ≥ 0.99)\n")
     L.append("| True success rate | " + " | ".join(f"n = {n}" for n in ns) + " |")
     L.append("|---|" + "---|" * len(ns))
@@ -721,34 +712,38 @@ def write_markdown(res: dict, path: Path):
              f"region: {v['in_region']}.\n")
     L.append("## H2: capture radius (ED90 on x and y > 1.15 mm)\n")
     L.append("Logistic capture curves with the given ED90 and a given distance from ED90 to ED50 "
-             "(smaller = sharper edge). 'Model' is the registered Fieller rule on both axes; "
-             "'model-free' is the secondary check, ≤ 3 failures in the 80 trials at ±2 mm; 'both' is what the October draft required (the two together), shown to explain why the check is now secondary.\n")
-    L.append("| ED50 − ED90 | True ED90 | Model | Model-free | Both |")
-    L.append("|---|---|---|---|---|")
+             "(smaller = sharper edge). 'Supported' and 'refuted' are the registered decision "
+             "(`prereg_stats.h2_decision`): support needs both axes, refutation either axis at "
+             "one-sided 99 % each. 'Model-free' is the secondary ±2 mm check (≤ 3 failures in 80); 'v1' is "
+             "v1's rule, which required the two together.\n")
+    L.append("| ED50 − ED90 | True ED90 | Supported | Refuted | Model-free check | v1 rule |")
+    L.append("|---|---|---|---|---|---|")
     for w, rows in res["h2_by_width"].items():
         for r in rows:
-            L.append(f"| {w} mm | {r['ed90']} mm | {pct(r['model'])} | {pct(r['model_free'])} | {pct(r['both'])} |")
+            L.append(f"| {w} mm | {r['ed90']} mm | {pct(r['supported'])} | {pct(r['refuted'])} | {pct(r['model_free'])} | {pct(r['v1_combined'])} |")
     L.append("\nStep-shaped capture (99.5 % inside the edge, 5 % outside), which the logistic model does "
              "not describe exactly:\n")
-    L.append("| Edge | Model | Model-free | Both |")
-    L.append("|---|---|---|---|")
+    L.append("| Edge | Supported | Refuted | Model-free check | v1 rule |")
+    L.append("|---|---|---|---|---|")
     for r in res["h2_step"]:
-        L.append(f"| {r['edge_mm']} mm | {pct(r['model'])} | {pct(r['model_free'])} | {pct(r['both'])} |")
+        L.append(f"| {r['edge_mm']} mm | {pct(r['supported'])} | {pct(r['refuted'])} | {pct(r['model_free'])} | {pct(r['v1_combined'])} |")
     L.append("\n## H3b: correction widens single-vial ED90 (x and y)\n")
-    L.append("Delta-method version of the registered bootstrap rule (see `--check-bootstrap`).\n")
+    L.append("The registered rule (`prereg_stats.h3b_axis_supported`: delta-method bound on the "
+             "radius difference, Fieller if the corrected curve is censored), on both axes. The last "
+             "two rows have no true difference, so they are false-support rates.\n")
     L.append("| Scenario | Power |")
     L.append("|---|---|")
     for r in res["h3b"]:
         L.append(f"| {r['scenario']} | {pct(r['power'])} |")
     if "h3b_bootstrap_check" in res:
-        L.append("\nThe registered bootstrap rule against its delta-method stand-in (200 simulated "
-                 "campaigns each). The delta method is conservative when both curves fall between "
-                 "the 0 and 1 mm levels, so the table above understates power there; the "
-                 "bootstrap's false-positive rate with no effect stays below 5 %.\n")
-        L.append("\n| Scenario | Delta method | Bootstrap (B = 400) |")
+        L.append("\nWhy not a percentile bootstrap: the rule first registered in v2, against the "
+                 "registered one (200 simulated campaigns each). The bootstrap detects more in the "
+                 "0.6 vs 0.3 mm case, but when the two curves share an ED90 and differ in slope it "
+                 "claims a difference far more often than 5 %.\n")
+        L.append("\n| Scenario | Registered (delta) | Percentile bootstrap (B = 300) |")
         L.append("|---|---|---|")
         for r in res["h3b_bootstrap_check"]:
-            L.append(f"| {r['scenario']} | {pct(r['delta'])} | {pct(r['bootstrap'])} |")
+            L.append(f"| {r['scenario']} | {pct(r['registered'])} | {pct(r['bootstrap'])} |")
     L.append("\n## H3c: time cost (HL upper bound ≤ cap)\n")
     L.append("n = 300 per condition, right-skewed transfer times with SD 3 s, cap 5 s.\n")
     L.append("| True extra time | Power |")
@@ -773,11 +768,14 @@ def write_markdown(res: dict, path: Path):
              f"failed loads instead of {b['vial_OL']:.0f}.\n")
     L.append(f"\n## H4: ISO 9283 RP, 30 cycles per pose ({res.get('h4_sims', 1000)} simulated sessions per row)\n")
     L.append("Instrument expanded uncertainty U = 0.025 mm (k = 2), treated as u = 0.0125 mm per axis "
-             "and added in quadrature, so the measured RP is biased upward.\n")
-    L.append("| True arm RP | Meets (point ≤ 0.10 at all 5) | Certified (bootstrap-t upper bound ≤ 0.10 at all 5) |")
-    L.append("|---|---|---|")
+             "and added in quadrature, so the measured RP is biased upward. Outcomes from "
+             "`prereg_stats.h4a_decision`: refuted needs a bootstrap-t one-sided 99 % lower bound "
+             "(Bonferroni over 5 poses) above the RP an arm exactly at 0.10 mm would show through "
+             f"this instrument ({ps.rp_refutation_threshold(0.10, 0.0125):.3f} mm).\n")
+    L.append("| True arm RP | Supported (meets: point ≤ 0.10 at all 5) | Certified (upper bound ≤ 0.10 at all 5) | Refuted |")
+    L.append("|---|---|---|---|")
     for r in res["h4a"]:
-        L.append(f"| {r['rp_true']:.2f} mm | {pct(r['meets'])} | {pct(r['certified'])} |")
+        L.append(f"| {r['rp_true']:.2f} mm | {pct(r['meets'])} | {pct(r['certified'])} | {pct(r.get('refuted', float('nan')))} |")
     L.append("\n| RP unloaded | Payload adds | Slope per 100 mm | H4b power | H4c power |")
     L.append("|---|---|---|---|---|")
     for r in res["h4bc"]:

@@ -1,6 +1,7 @@
-"""Estimators and tests registered in docs/protocol/PROTOCOL.md (section 12).
+"""Estimators, tests and decision rules registered in docs/protocol/PROTOCOL.md (§2, §14).
 
-Every confirmatory number in the reliability campaign comes from a function in this file.
+Every confirmatory number and every supported / refuted / inconclusive label in the reliability
+campaign comes from a function in this file (the `h*_decision` functions at the end).
 `simulate_and_check.py` runs them on synthetic data with known answers, and `power.py` uses
 them to compute the power analysis. Nothing here talks to the arm.
 
@@ -27,7 +28,7 @@ Z95_TWO_SIDED = stats.norm.ppf(0.975)  # 1.9600
 
 
 # ---------------------------------------------------------------------------------------
-# 12.1 Single proportions
+# §14.1 Single proportions
 # ---------------------------------------------------------------------------------------
 
 def wilson(k: int, n: int, conf: float = 0.95) -> tuple[float, float]:
@@ -79,7 +80,7 @@ def min_failures_refuting(n: int, target: float = 0.99, alpha: float = 0.05) -> 
 
 
 # ---------------------------------------------------------------------------------------
-# 12.2 Two proportions
+# §14.2 Two proportions
 # ---------------------------------------------------------------------------------------
 
 def newcombe_diff(k1: int, n1: int, k2: int, n2: int, conf: float = 0.95) -> tuple[float, float, float]:
@@ -107,7 +108,7 @@ def gap_closed(p_ol: float, p_at: float, target: float = 0.99) -> float:
 
 
 # ---------------------------------------------------------------------------------------
-# 12.3 Capture envelope: Firth logistic regression, ED50 / ED90, Fieller and bootstrap
+# §14.3 Capture envelope: Firth logistic regression, ED50 / ED90, Fieller and bootstrap
 # ---------------------------------------------------------------------------------------
 
 @dataclass
@@ -212,20 +213,30 @@ def fieller_interval(beta: np.ndarray, cov: np.ndarray, q: float, z: float) -> t
 class CaptureResult:
     ed50: float
     ed90: float
-    ed90_lower95: float  # registered one-sided 95 % lower bound (Fieller)
+    ed90_lower95: float  # Fieller one-sided 95 % lower bound
     ed90_fieller90: tuple[float, float]  # two-sided 90 %: (one-sided 95 % lower, upper)
+    ed90_fieller95: tuple[float, float]  # two-sided 95 %, for reporting
+    ed90_upper99: float  # Fieller one-sided 99 % upper bound, used to refute H2
     ed50_fieller95: tuple[float, float]
+    slope: float  # b1, per mm (or degree)
+    slope_upper95: float  # one-sided 95 % upper bound of b1 (Wald)
     censored: bool  # the curve has not fallen to 90 % by the largest offset: report "> max"
-    not_reached: bool  # fitted success is below 90 % already at zero offset: report "< 0"
+    not_reached: bool  # fitted success is below 90 % already at zero offset: report "not reached"
     fitted_at_max: float  # fitted success at the largest |d|
-    pooled_lower_ge2: float  # exact lower bound of success pooled over |d| >= 2 mm
+    lower_bound_at_max: float  # exact one-sided 95 % lower bound of success at the largest |d|
+    pooled_lower_ge2: float  # exact one-sided 95 % lower bound of success pooled over |d| >= 2 mm
     max_offset: float
     fit: FirthFit
 
     @property
+    def slope_negative(self) -> bool:
+        """Success falls with offset: the one-sided 95 % upper bound of the slope is below 0."""
+        return self.slope_upper95 < 0
+
+    @property
     def radius90(self) -> float:
-        """ED90 floored at zero, the capture radius used in differences (H3b)."""
-        return max(0.0, self.ed90)
+        """The capture radius used in differences (H3b): ED90 floored at 0, and 0 when not reached."""
+        return 0.0 if self.not_reached else max(0.0, self.ed90)
 
 
 def capture_curve(abs_offset: np.ndarray, success: np.ndarray) -> CaptureResult:
@@ -233,7 +244,7 @@ def capture_curve(abs_offset: np.ndarray, success: np.ndarray) -> CaptureResult:
 
     `abs_offset` holds |d| for every trial on that axis, including the zero level.
 
-    Right-censoring (PROTOCOL.md 12.3): the curve is censored when there are no failures at
+    Right-censoring (PROTOCOL.md §14.3): the curve is censored when there are no failures at
     the largest offset, or when the fitted success there is still >= 0.90. Its ED90 is then
     reported as "> max offset" and never extrapolated.
     """
@@ -254,45 +265,69 @@ def capture_curve(abs_offset: np.ndarray, success: np.ndarray) -> CaptureResult:
         ed90=ed(fit.beta, 0.9),
         ed90_lower95=f90[0],
         ed90_fieller90=f90,
+        ed90_fieller95=fieller_interval(fit.beta, fit.cov, 0.9, Z95_TWO_SIDED),
+        ed90_upper99=fieller_interval(fit.beta, fit.cov, 0.9, float(stats.norm.ppf(0.99)))[1],
         ed50_fieller95=fieller_interval(fit.beta, fit.cov, 0.5, Z95_TWO_SIDED),
+        slope=float(fit.beta[1]),
+        slope_upper95=float(fit.beta[1] + Z95_ONE_SIDED * math.sqrt(fit.cov[1, 1])),
         censored=censored,
         not_reached=fitted_zero < 0.9,
         fitted_at_max=fitted_max,
+        lower_bound_at_max=cp_lower(k_max, n_max),
         pooled_lower_ge2=pooled,
         max_offset=dmax,
         fit=fit,
     )
 
 
-def h2_axis_supported(res: CaptureResult, threshold_mm: float = 1.15) -> bool:
-    """Registered H2 decision for one translation axis (PROTOCOL.md 2, H2).
+def h2_axis_decision(res: CaptureResult, zero_successes: int, zero_trials: int,
+                     threshold_mm: float = 1.15) -> str:
+    """Registered H2 decision for one translation axis (PROTOCOL.md §2, H2).
 
-    * Not censored: supported when the Fieller one-sided 95 % lower bound of ED90 exceeds
-      the threshold.
-    * Censored (the curve has not fallen to 90 % by 4 mm): the logistic fit cannot place
-      ED90, so use monotonicity instead. Success at 1.15 mm is at least the average success
-      over every level at or beyond 2 mm, so H2 is supported when the exact one-sided 95 %
-      lower bound of the pooled success over |d| >= 2 mm is at least 0.90.
+    Returns "supported", "refuted" or "inconclusive".
+
+    Support (one-sided 95 %):
+      * censored curve: the exact lower bound of success pooled over |d| >= 2 mm is >= 0.90
+        (by monotonicity, success at 1.15 mm is at least that average);
+      * otherwise: the slope is significantly negative and the Fieller one-sided 95 % lower
+        bound of ED90 exceeds the threshold.
+    Refutation (one-sided 99 % per axis). H2 is refuted if *either* axis is, a union; Bonferroni
+    would give 97.5 % per axis, but Fieller bounds undercover when ED90 lies between the 1 and
+    2 mm levels, so 97.5 % refuted a true ED90 of exactly 1.15 mm 6-10 % of the time on synthetic
+    data. At 99 % per axis that rate was 1.0-4.7 % (power.py):
+      * the dock misses 90 % even at zero offset: the exact upper bound of success over E2's
+        zero-offset trials is below 0.90 (capture radius 0); or
+      * the curve is not censored, its slope is significantly negative, and the Fieller
+        one-sided 97.5 % upper bound of ED90 is below the threshold.
+    If the data meet both a support and a refutation rule they contradict a monotone capture
+    curve, and the axis is "inconclusive".
     """
+    supported = False
     if res.censored:
-        return res.pooled_lower_ge2 >= 0.90
-    return res.ed90_lower95 > threshold_mm
+        supported = res.pooled_lower_ge2 >= 0.90
+    elif res.slope_negative:
+        supported = res.ed90_lower95 > threshold_mm
+    refuted = cp_upper(zero_successes, zero_trials, alpha=0.01) < 0.90
+    if not refuted and not res.censored and res.slope_negative:
+        refuted = res.ed90_upper99 < threshold_mm
+    if supported and refuted:
+        return "inconclusive"
+    if supported:
+        return "supported"
+    if refuted:
+        return "refuted"
+    return "inconclusive"
 
 
-def h2_axis_refuted(res: CaptureResult, zero_successes: int, zero_trials: int,
-                    threshold_mm: float = 1.15) -> bool:
-    """Registered H2 refutation for one axis: ED90 is shown to be below the threshold.
-
-    Either the Fieller one-sided 95 % upper bound of ED90 is below the threshold, or the dock
-    doesn't reach 90 % even at zero offset: the exact one-sided 95 % upper bound of success over
-    E2's zero-offset trials is below 0.90 (then the capture radius is 0). The second clause
-    covers a curve too flat for Fieller to bound, such as one that fails everywhere.
-    """
-    if cp_upper(zero_successes, zero_trials) < 0.90:
-        return True
-    if res.censored:
-        return False
-    return res.ed90_fieller90[1] < threshold_mm
+def h2_decision(res_x: CaptureResult, res_y: CaptureResult, zero_successes: int,
+                zero_trials: int, threshold_mm: float = 1.15) -> str:
+    """H2 over both axes: supported if both are, refuted if either is, else inconclusive."""
+    ax = [h2_axis_decision(r, zero_successes, zero_trials, threshold_mm) for r in (res_x, res_y)]
+    if "refuted" in ax:
+        return "refuted"
+    if all(a == "supported" for a in ax):
+        return "supported"
+    return "inconclusive"
 
 
 def h2_model_free_check(fail_at_2mm_both_axes: int, n_at_2mm_both_axes: int = 80) -> bool:
@@ -335,7 +370,7 @@ def hodges_lehmann_upper(t_at: np.ndarray, t_ol: np.ndarray, conf: float = 0.95)
 
 
 # ---------------------------------------------------------------------------------------
-# 12.4 MTBI: Kaplan-Meier, restricted mean, Garwood
+# §14.4 MTBI: Kaplan-Meier, restricted mean, Garwood
 # ---------------------------------------------------------------------------------------
 
 @dataclass
@@ -344,6 +379,7 @@ class KMResult:
     surv: np.ndarray  # S(t) just after each event time
     at_risk: np.ndarray
     events: np.ndarray
+    max_time: float  # longest observed interval, event or censored
 
 
 def kaplan_meier(durations: np.ndarray, observed: np.ndarray) -> KMResult:
@@ -354,7 +390,8 @@ def kaplan_meier(durations: np.ndarray, observed: np.ndarray) -> KMResult:
     at_risk = np.array([(t >= u).sum() for u in times])
     events = np.array([((t == u) & (e == 1)).sum() for u in times])
     surv = np.cumprod(1 - events / at_risk)
-    return KMResult(times=times, surv=surv, at_risk=at_risk, events=events)
+    return KMResult(times=times, surv=surv, at_risk=at_risk, events=events,
+                    max_time=float(t.max()) if t.size else 0.0)
 
 
 def km_survival_at(km: KMResult, t: float) -> float:
@@ -363,12 +400,23 @@ def km_survival_at(km: KMResult, t: float) -> float:
     return 1.0 if idx < 0 else float(km.surv[idx])
 
 
+def rmst_tau(km: KMResult, tau: float) -> float:
+    """The horizon actually used: tau, or the cell's longest observed interval if shorter.
+
+    Past the longest interval the Kaplan-Meier curve isn't observed, so it isn't extended
+    (PROTOCOL.md §14.4).
+    """
+    return min(float(tau), km.max_time)
+
+
 def rmst(km: KMResult, tau: float, conf: float = 0.95) -> tuple[float, float, float]:
     """Restricted mean (MTBI up to tau) with a Greenwood-type interval.
 
     Var = sum over event times t_i <= tau of A_i^2 d_i / (n_i (n_i - d_i)), where A_i is the
-    area under S from t_i to tau (Klein and Moeschberger, section 4.5).
+    area under S from t_i to tau (Klein and Moeschberger, section 4.5). `tau` is capped at the
+    longest observed interval (`rmst_tau`); report the cap with the estimate.
     """
+    tau = rmst_tau(km, tau)
     grid = np.concatenate([[0.0], km.times[km.times < tau], [tau]])
     s_vals = np.concatenate([[1.0], km.surv[km.times < tau]])
     widths = np.diff(grid)
@@ -404,7 +452,7 @@ def mtbi_crude(transfers: int, interventions: int, conf: float = 0.95) -> tuple[
 
 
 # ---------------------------------------------------------------------------------------
-# 12.5 ISO 9283 pose repeatability
+# §14.5 ISO 9283 pose repeatability
 # ---------------------------------------------------------------------------------------
 
 def iso9283_rp(points: np.ndarray) -> float:
@@ -442,33 +490,37 @@ def _jackknife_se_rp(x: np.ndarray) -> np.ndarray:
     return np.sqrt((n - 1) / n * np.sum((theta - theta.mean(axis=1, keepdims=True)) ** 2, axis=1))
 
 
-def bootstrap_t_rp(points: np.ndarray, n_boot: int = 10_000, seed: int = 0,
-                   conf: float = 0.95) -> tuple[float, float, float]:
-    """RP with studentized-bootstrap (bootstrap-t) one-sided `conf` lower and upper bounds.
-
-    The registered interval for H4a (PROTOCOL.md 14.5). Each resample is studentized by its own
-    jackknife standard error. On 30 Gaussian points the percentile bootstrap's upper bound
-    covered only 71-76 % in simulation; this one covers 91-94 % (82 % for heavy-tailed t5
-    errors), see simulate_and_check.py.
-    """
+def _bootstrap_t_draws(points: np.ndarray, n_boot: int, seed: int) -> tuple[float, float, np.ndarray]:
+    """RP, its jackknife SE, and the studentized bootstrap draws (RP* - RP) / SE*."""
     rng = np.random.default_rng(seed)
     pts = np.asarray(points, dtype=float)
     n = pts.shape[0]
     rp = float(_rp_batch(pts))
     se = float(_jackknife_se_rp(pts[None])[0])
-    lower, upper = [], []
+    draws = []
     for start in range(0, n_boot, 1000):  # chunks keep memory small
         b = min(1000, n_boot - start)
         xb = pts[rng.integers(0, n, size=(b, n))]
-        t = (_rp_batch(xb) - rp) / _jackknife_se_rp(xb)
-        lower.append(t)
-    t_all = np.concatenate(lower)
+        draws.append((_rp_batch(xb) - rp) / _jackknife_se_rp(xb))
+    return rp, se, np.concatenate(draws)
+
+
+def bootstrap_t_rp(points: np.ndarray, n_boot: int = 10_000, seed: int = 0,
+                   conf: float = 0.95) -> tuple[float, float, float]:
+    """RP with studentized-bootstrap (bootstrap-t) one-sided `conf` lower and upper bounds.
+
+    The registered interval for H4a (PROTOCOL.md §14.5). Each resample is studentized by its own
+    jackknife standard error. On 30 Gaussian points the percentile bootstrap's upper bound
+    covered only 71-76 % in simulation; this one covers 91-94 % (82 % for heavy-tailed t5
+    errors), see simulate_and_check.py.
+    """
+    rp, se, t_all = _bootstrap_t_draws(points, n_boot, seed)
     q_hi, q_lo = np.quantile(t_all, [conf, 1 - conf])
     return rp, rp - q_hi * se, rp - q_lo * se
 
 
 # ---------------------------------------------------------------------------------------
-# Agreement between scorers (section 6)
+# Agreement between scorers (§7, §13.3)
 # ---------------------------------------------------------------------------------------
 
 def cohen_kappa(a: np.ndarray, b: np.ndarray) -> float:
@@ -479,3 +531,162 @@ def cohen_kappa(a: np.ndarray, b: np.ndarray) -> float:
     po = float(np.mean(a == b))
     pe = float(sum(np.mean(a == L) * np.mean(b == L) for L in labels))
     return 1.0 if pe == 1 else (po - pe) / (1 - pe)
+
+
+# ---------------------------------------------------------------------------------------
+# Registered decisions (PROTOCOL.md §2): one function per hypothesis
+# ---------------------------------------------------------------------------------------
+
+N_BOOT = 10_000  # registered number of bootstrap resamples
+SEED = 20261127  # registered seed for every bootstrap below
+
+
+def h1a_decision(k: int, n: int, target: float = 0.99) -> str:
+    """H1a, p >= target: supported if the exact lower bound reaches it, refuted if the exact
+    upper bound falls below it, else inconclusive (both one-sided 95 %)."""
+    if cp_lower(k, n) >= target:
+        return "supported"
+    if cp_upper(k, n) < target:
+        return "refuted"
+    return "inconclusive"
+
+
+def h1b_decision(k: int, n: int, target: float = 0.99) -> str:
+    """H1b, p < target: the mirror image of H1a."""
+    if cp_upper(k, n) < target:
+        return "supported"
+    if cp_lower(k, n) >= target:
+        return "refuted"
+    return "inconclusive"
+
+
+def h3a_decision(k_at: int, n_at: int, k_ol: int, n_ol: int, alpha: float = 0.05) -> str:
+    """H3a, p_AT > p_OL by one-sided Boschloo: supported, contrary (the reverse is
+    significant) or not supported."""
+    if boschloo_greater(k_at, n_at, k_ol, n_ol) < alpha:
+        return "supported"
+    if boschloo_greater(k_ol, n_ol, k_at, n_at) < alpha:
+        return "contrary"
+    return "not supported"
+
+
+def gap_closed_interval(k_ol: int, n_ol: int, k_at: int, n_at: int, target: float = 0.99,
+                        n_boot: int = N_BOOT, seed: int = SEED) -> tuple[float, float, float]:
+    """G = (p_AT - p_OL) / (target - p_OL) with a 95 % percentile-bootstrap interval.
+
+    Resamples the loads of each condition (equivalently, binomial draws at the observed rates);
+    resamples whose open-loop rate reaches the target are dropped, as G is undefined there.
+    Returns (nan, nan, nan) when the observed open-loop rate reaches the target.
+    """
+    p_ol, p_at = k_ol / n_ol, k_at / n_at
+    if p_ol >= target:
+        return float("nan"), float("nan"), float("nan")
+    rng = np.random.default_rng(seed)
+    bo = rng.binomial(n_ol, p_ol, n_boot) / n_ol
+    ba = rng.binomial(n_at, p_at, n_boot) / n_at
+    keep = bo < target
+    g = (ba[keep] - bo[keep]) / (target - bo[keep])
+    lo, hi = np.quantile(g, [0.025, 0.975])
+    return gap_closed(p_ol, p_at, target), float(lo), float(hi)
+
+
+def delta_se_ed90(res: CaptureResult) -> float:
+    """Delta-method standard error of ED90 from the Firth fit's covariance."""
+    b0, b1 = res.fit.beta
+    c = logit(0.9)
+    g = np.array([-1.0 / b1, -(c - b0) / b1 ** 2])
+    return float(math.sqrt(max(g @ res.fit.cov @ g, 0.0)))
+
+
+def h3b_axis_supported(res_at: CaptureResult, res_ol: CaptureResult) -> bool:
+    """Registered H3b decision for one axis (PROTOCOL.md §2, H3b).
+
+    * Corrected curve censored: holds if the Fieller one-sided 95 % upper bound of ED90_OL is
+      below the largest offset tested.
+    * Otherwise: the one-sided 95 % delta-method lower bound of radius90_AT - radius90_OL
+      exceeds 0 (a radius of 0 contributes no variance).
+
+    A percentile bootstrap of the same difference was rejected: on synthetic data with equal
+    ED90s but different slopes it gave false support 11 % of the time on both axes; this rule
+    gave at most 2.8 % (simulate_and_check.py, power.py).
+    """
+    if res_at.censored:
+        return res_ol.ed90_fieller90[1] < res_at.max_offset
+    ra, ro = res_at.radius90, res_ol.radius90
+    se = math.hypot(delta_se_ed90(res_at) if ra > 0 else 0.0,
+                    delta_se_ed90(res_ol) if ro > 0 else 0.0)
+    return (ra - ro) - Z95_ONE_SIDED * se > 0
+
+
+def h3b_decision(at_x: CaptureResult, ol_x: CaptureResult, at_y: CaptureResult,
+                 ol_y: CaptureResult) -> str:
+    """H3b over both axes: supported if both pass, else not supported."""
+    ok = h3b_axis_supported(at_x, ol_x) and h3b_axis_supported(at_y, ol_y)
+    return "supported" if ok else "not supported"
+
+
+def h3c_decision(t_at: np.ndarray, t_ol: np.ndarray, cap_s: float) -> str:
+    """H3c: the one-sided 95 % upper bound of the HL shift (AT - OL) is at most the cap."""
+    _hl, upper = hodges_lehmann_upper(t_at, t_ol)
+    return "supported" if upper <= cap_s else "not supported"
+
+
+RP_PER_SIGMA = 2 * math.sqrt(2 / math.pi) + 3 * math.sqrt(3 - 8 / math.pi)  # RP / sigma, Gaussian
+
+
+def rp_refutation_threshold(spec_mm: float, u_axis_mm: float) -> float:
+    """The measured RP an arm exactly at `spec_mm` would show through an instrument with
+    per-axis standard uncertainty `u_axis_mm` (isotropic Gaussian approximation). The
+    instrument only adds scatter, so refuting the spec needs the measured RP above this."""
+    sigma = spec_mm / RP_PER_SIGMA
+    return RP_PER_SIGMA * math.hypot(sigma, u_axis_mm)
+
+
+def h4a_decision(poses_unloaded: list[np.ndarray], u_axis_mm: float, expanded_u_mm: float,
+                 spec_mm: float = 0.10, n_boot: int = N_BOOT, seed: int = SEED) -> tuple[str, bool]:
+    """H4a over the five unloaded poses. Returns (label, certified).
+
+    Precedence: inconclusive if the instrument's expanded uncertainty exceeds 25 % of the spec
+    (ISO 9283 §6.5); refuted if at any pose the bootstrap-t one-sided 99 % lower bound
+    (Bonferroni over 5 poses) exceeds `rp_refutation_threshold`; supported if every point
+    estimate is <= spec (the instrument can only inflate it); otherwise inconclusive.
+    `certified` adds that every bootstrap-t one-sided 95 % upper bound is <= spec.
+    """
+    if expanded_u_mm > 0.25 * spec_mm:
+        return "inconclusive", False
+    thr = rp_refutation_threshold(spec_mm, u_axis_mm)
+    alpha_pose = 0.05 / len(poses_unloaded)
+    rps, uppers, refuted = [], [], False
+    for i, pts in enumerate(poses_unloaded):
+        rp, se, t_all = _bootstrap_t_draws(pts, n_boot, seed + i)
+        q_refute, q_cert = np.quantile(t_all, [1 - alpha_pose, 0.05])
+        rps.append(rp)
+        uppers.append(rp - q_cert * se)  # one-sided 95 % upper bound
+        refuted |= (rp - q_refute * se) > thr  # one-sided (1 - alpha_pose) lower bound
+    if refuted:
+        return "refuted", False
+    if all(r <= spec_mm for r in rps):
+        return "supported", all(u <= spec_mm for u in uppers)
+    return "inconclusive", False
+
+
+def h4bc_decisions(points: dict, reach_mm: list[float], n_boot: int = N_BOOT,
+                   seed: int = SEED) -> dict:
+    """H4b (RP grows with payload) and H4c (RP grows with reach).
+
+    `points[(pose_index, payload)]` is the (30, 3) array of attained positions, payload 0 or 1.
+    Cycles are resampled within each pose x payload; H4b needs the one-sided 95 % lower bound
+    of the mean over poses of RP(loaded) - RP(unloaded) above 0, and H4c the one-sided 95 %
+    lower bound of the reach slope (per 100 mm, payload as a covariate) above 0.
+    """
+    n_pose = len(reach_mm)
+    boots = {key: bootstrap_rp(v, n_boot, seed + 10 * key[0] + key[1]) for key, v in points.items()}
+    diff = np.mean([boots[(k, 1)] - boots[(k, 0)] for k in range(n_pose)], axis=0)
+    X = np.column_stack([np.ones(2 * n_pose), np.tile(np.asarray(reach_mm) / 100.0, 2),
+                         np.repeat([0.0, 1.0], n_pose)])
+    Y = np.stack([boots[(k, load)] for load in (0, 1) for k in range(n_pose)])
+    slope = np.linalg.lstsq(X, Y, rcond=None)[0][1]
+    lb_b, lb_c = float(np.quantile(diff, 0.05)), float(np.quantile(slope, 0.05))
+    return {"h4b": "supported" if lb_b > 0 else "not supported", "h4b_lower": lb_b,
+            "h4c": "supported" if lb_c > 0 else "not supported", "h4c_lower": lb_c}
+

@@ -26,16 +26,22 @@ registration A, nor A for it.
 Is the arm's positional pose repeatability within the vendor's ±0.1 mm, and does it grow with
 payload and reach? α = 0.05 for each, one-sided (§2, H4).
 
-- **H4a.** Unloaded RP ≤ 0.10 mm at all five poses. Supported ("meets the spec") if the ISO 9283
-  point estimate is ≤ 0.10 mm at every pose, and also reported as "certified" if the one-sided
-  95 % bootstrap-t upper bound is ≤ 0.10 mm at every pose. Refuted if the one-sided 95 %
-  bootstrap-t lower bound exceeds 0.10 mm at any pose. Inconclusive if the instrument's expanded uncertainty exceeds 0.025 mm
-  (ISO 9283 §6.5's 25 % cap).
-- **H4b.** RP grows with payload: the one-sided 95 % bootstrap lower bound of the mean over poses
-  of RP(loaded) − RP(unloaded) is > 0.
+- **H4a.** Unloaded RP ≤ 0.10 mm at all five poses. In this order:
+  1. inconclusive if the instrument's expanded uncertainty U (k = 2, on a static target) exceeds
+     0.025 mm (ISO 9283 §6.5's 25 % cap);
+  2. refuted if at any pose the bootstrap-t one-sided 99 % lower bound (Bonferroni over five
+     poses) exceeds the RP an arm exactly at 0.10 mm would show through this instrument,
+     3.615 × √((0.10/3.615)² + u²) with u = U/2 per axis (0.110 mm at U = 0.025 mm);
+  3. supported ("meets the spec") if the ISO 9283 point estimate is ≤ 0.10 mm at every pose,
+     which is conservative because the instrument only inflates it; also reported as "certified"
+     if every pose's one-sided 95 % bootstrap-t upper bound is ≤ 0.10 mm;
+  4. inconclusive otherwise.
+
+- **H4b.** RP grows with payload: supported if the one-sided 95 % bootstrap lower bound of the mean
+  over poses of RP(loaded) − RP(unloaded) is > 0, not supported otherwise.
 - **H4c.** RP grows with reach (horizontal distance from the J1 axis to the TCP): in a regression
   of RP on reach over 5 poses × 2 payloads with payload as a covariate, the slope's one-sided 95 %
-  bootstrap lower bound is > 0.
+  bootstrap lower bound is > 0; not supported otherwise.
 
 Predictions, recorded for calibration only: Pred-7 and Pred-8 in §2.
 
@@ -115,9 +121,10 @@ positions of one pose × payload.
 
 30 cycles per pose is the ISO 9283 number for pose repeatability, as set in the campaign request
 (issue #21). Simulated power, including instrument noise at U = 0.025 mm (`analysis/out/power.md`):
-"meets" holds at all five poses with 96 % probability if the arm's true RP is 0.07 mm and 55 % at
-0.08 mm; "certified" (bootstrap-t upper bound ≤ 0.10 mm at all five) with 88 % at 0.04 mm, 61 % at
-0.05 mm and 30 % at 0.06 mm, because a valid upper bound from 30 cycles is wide. H4b and H4c have 60 % and 83 %
+"supported" ("meets") holds with 94 % probability if the arm's true RP is 0.07 mm, 54 % at 0.08 mm
+and 5 % at 0.09 mm, because the instrument's noise inflates RP; "certified" with 89 % at 0.04 mm,
+62 % at 0.05 mm and 26 % at 0.06 mm, because a valid upper bound from 30 cycles is wide. An arm
+exactly at 0.10 mm is refuted 5.0 % of the time; at 0.12 mm, 81 %. H4b and H4c have 61 % and 83 %
 power for a 0.01 mm payload effect and a 0.01 mm per 100 mm reach slope, and 98–100 % at 0.02 mm.
 
 ### Starting and stopping rules
@@ -169,8 +176,10 @@ Reach in units of 100 mm; payload coded 0/1. Nothing else is transformed.
 
 ### Inference criteria
 
-One-sided 95 % bootstrap bounds as stated for each hypothesis; no correction across H4a–c, which
-answer separate questions. H4a requires all five poses (an intersection–union rule).
+One-sided bootstrap bounds as stated for each hypothesis; no correction across H4a–c, which
+answer separate questions. Supporting H4a requires all five poses (an intersection–union rule, no
+adjustment); refuting it needs any one pose, a union, so each pose uses a one-sided 99 % bound
+(Bonferroni over five).
 
 ### Data inclusion and exclusion
 
