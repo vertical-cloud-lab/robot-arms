@@ -424,7 +424,7 @@ def d11_e1_cell(q: float, n_loads: int = 300, run: int = 3) -> dict:
 def d11_e1_window(q: float, n_sims: int, seed: int, n_loads: int = 300, k: int = 5,
                   window: int = 20) -> dict:
     """An optional extra E1 clause, simulated: `k` failed loads among a cell's last `window`
-    loads stop the block (v2 had it before the review). The window empties after a stop."""
+    loads stop the block (v1 had it, and v2 until the review). The window empties after a stop."""
     rng = np.random.default_rng(seed)
     stops = any_stop = 0
     first = []
@@ -1006,16 +1006,19 @@ def write_markdown(res: dict, path: Path):
         L.append("| Failure rate per load | Expected stops in 300 loads | Chance of at least one stop | Mean loads to the first stop |")
         L.append("|---|---|---|---|")
         for r in res["d11_e1"]:
-            L.append(f"| {pct(r['q'], 1)} | {r['expected_stops']:.3f} | {pct(r['p_any_stop'], 1)} | {r['mean_loads_to_first_stop']:,.0f} |")
+            wait = r["mean_loads_to_first_stop"]
+            wait_s = "> 100,000" if wait > 1e5 else f"{wait:,.0f}"
+            L.append(f"| {pct(r['q'], 1)} | {r['expected_stops']:.3f} | {pct(r['p_any_stop'], 1)} | {wait_s} |")
         if "d11_e1_window" in res:
             L.append(f"\nAn optional extra E1 clause, not registered: 5 failed loads among the cell's last 20 "
-                     f"(v2 had it before the review), simulated ({res['d11_e1_window'][0]['n_sims']:,} "
+                     f"(v1 had it, and v2 until the review), simulated ({res['d11_e1_window'][0]['n_sims']:,} "
                      f"cells per row). It warns much sooner when a cell degrades, and stops a healthy 93 % "
                      f"cell more often.\n")
-            L.append("| Failure rate per load | Expected stops in 300 loads | Chance of at least one stop | Median loads to the first stop, when there is one |")
+            L.append("| Failure rate per load | Expected stops in 300 loads | Chance of at least one stop | Median loads to the first stop (when ≥ 10 % of cells stop) |")
             L.append("|---|---|---|---|")
             for r in res["d11_e1_window"]:
-                med = "—" if r["median_loads_to_first_stop"] is None else f"{r['median_loads_to_first_stop']:.0f}"
+                med = ("—" if r["median_loads_to_first_stop"] is None or r["p_any_stop"] < 0.1
+                       else f"{r['median_loads_to_first_stop']:.0f}")
                 L.append(f"| {pct(r['q'], 1)} | {r['expected_stops']:.3f} | {pct(r['p_any_stop'], 1)} | {med} |")
         e2rows = res["d11_e2"]
         L.append(f"\n**E2 clause** (2 failed zero-offset loads in one block), simulated on the registered "
@@ -1023,10 +1026,11 @@ def write_markdown(res: dict, path: Path):
                  f"of loads (OL and AT), {e2rows[0]['pairs_per_block']} pairs per block, so a block holds "
                  f"one zero-offset pair or none most of the time. The first two rows are the planning "
                  f"scenario; the rest are a cell gone wrong.\n")
-        L.append("| Zero-offset failure rate, OL / AT | Expected stops over the task's 420 pairs | Chance of at least one stop | Median pairs to the first stop, when there is one |")
+        L.append("| Zero-offset failure rate, OL / AT | Expected stops over the task's 420 pairs | Chance of at least one stop | Median pairs to the first stop (when ≥ 10 % of tasks stop) |")
         L.append("|---|---|---|---|")
         for r in e2rows:
-            med = "—" if r["median_pairs_to_first_stop"] is None else f"{r['median_pairs_to_first_stop']:.0f}"
+            med = ("—" if r["median_pairs_to_first_stop"] is None or r["p_any_stop"] < 0.1
+                   else f"{r['median_pairs_to_first_stop']:.0f}")
             L.append(f"| {pct(r['q_ol'], 1)} / {pct(r['q_at'], 1)} | {r['expected_stops']:.3f} | {pct(r['p_any_stop'], 1)} | {med} |")
     L.append(f"\n## H4: ISO 9283 RP, 30 cycles per pose ({res.get('h4_sims', 1000)} simulated sessions per row)\n")
     L.append("Instrument expanded uncertainty U = 0.025 mm (k = 2), treated as u = 0.0125 mm per axis "

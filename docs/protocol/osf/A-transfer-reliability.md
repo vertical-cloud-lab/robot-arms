@@ -202,6 +202,9 @@ request (issue #21). The exact and simulated powers of every registered rule at 
 - H3b: 100 % when the corrected ED90 is ≥ 1 mm against an open-loop 0.3 mm; with no true
   difference, false support 0–1.4 %, including when the two curves' slopes differ.
 - H3c: ≥ 99.6 % if the true extra time is ≤ 4 s against a 5 s cap.
+- The run-of-failures stop ([D11], not a hypothesis) rarely fires on a healthy cell (a 9 % chance
+  over 300 loads at 93 % success, about 1 % over a task's E2) and stops a cell that fails half its
+  loads within about 14 loads (E1) or 3 blocks (E2); PROTOCOL.md §8.4 gives the full rates.
 
 ### Starting and stopping rules
 
