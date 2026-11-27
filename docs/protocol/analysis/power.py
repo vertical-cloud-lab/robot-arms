@@ -392,9 +392,9 @@ def fig_h2(res: dict, path: Path):
     for i, (w, rows) in enumerate(res["h2_by_width"].items()):
         e = [r["ed90"] for r in rows]
         pw = [r["model"] for r in rows]
+        # No end labels: all three curves end at 1.0 and the labels would collide. The legend,
+        # the marker shapes and the table in power.md identify the series.
         ax.plot(e, pw, color=C[i], lw=2, marker=MARKERS[i], ms=7, label=f"ED50 − ED90 = {w} mm")
-        ax.annotate(f"{w} mm", (e[-1], pw[-1]), textcoords="offset points", xytext=(5, -3 - 6 * i),
-                    fontsize=8, color=TEXT)
     ax.axvline(1.15, color="#9c9c9c", lw=1, ls=":")
     ax.annotate("threshold 1.15 mm", (1.15, 0.5), textcoords="offset points", xytext=(4, 0),
                 fontsize=8, color=TEXT2)
@@ -415,10 +415,10 @@ def fig_h3a(res: dict, path: Path):
 
     fig, ax = plt.subplots(figsize=(6.4, 4.2), dpi=150)
     for i, row in enumerate(res["h3a_curves"]):
+        # Curves converge near 1.0 at the right, so no end labels; legend, markers and the
+        # table in power.md identify them.
         ax.plot(row["n"], row["power"], color=C[i], lw=2, marker=MARKERS[i], ms=6,
                 label=row["label"])
-        ax.annotate(row["label"], (row["n"][-1], row["power"][-1]), textcoords="offset points",
-                    xytext=(-60, 6), fontsize=8, color=TEXT)
     ax.axhline(0.8, color="#9c9c9c", lw=1, ls="--")
     ax.axvline(300, color="#9c9c9c", lw=1, ls=":")
     _style(ax, "H3a: Boschloo one-sided power, AT vs OL single vials", "loads per condition",
@@ -464,7 +464,17 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--quick", action="store_true")
     ap.add_argument("--check-bootstrap", action="store_true")
+    ap.add_argument("--figures-only", action="store_true",
+                    help="re-draw figures and power.md from out/power.json without simulating")
     args = ap.parse_args()
+    if args.figures_only:
+        res = json.loads((OUT / "power.json").read_text())
+        fig_h1(res, OUT / "fig_power_h1.png")
+        fig_h2(res, OUT / "fig_power_h2.png")
+        fig_h3a(res, OUT / "fig_power_h3a.png")
+        fig_h4(res, OUT / "fig_power_h4.png")
+        write_markdown(res, OUT / "power.md")
+        return
     sims = 300 if args.quick else 2000
     OUT.mkdir(exist_ok=True)
     t0 = time.time()
@@ -671,6 +681,10 @@ def write_markdown(res: dict, path: Path):
     for r in res["h3b"]:
         L.append(f"| {r['scenario']} | {pct(r['power'])} |")
     if "h3b_bootstrap_check" in res:
+        L.append("\nThe registered bootstrap rule against its delta-method stand-in (200 simulated "
+                 "campaigns each). The delta method is conservative when both curves fall between "
+                 "the 0 and 1 mm levels, so the table above understates power there; the "
+                 "bootstrap's false-positive rate with no effect stays below 5 %.\n")
         L.append("\n| Scenario | Delta method | Bootstrap (B = 400) |")
         L.append("|---|---|---|")
         for r in res["h3b_bootstrap_check"]:

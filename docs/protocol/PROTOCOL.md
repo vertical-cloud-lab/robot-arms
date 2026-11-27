@@ -431,10 +431,10 @@ simulated, 2,000 campaigns per scenario (1,000 for RP).
 | **H1a** (certify ≥ 99 %) | At *n* = 300 the cell must be perfect. Power: 22 % if the true rate is 99.5 %, 41 % at 99.7 %, **55 % at 99.8 %**, 74 % at 99.9 %. At *n* = 628 (D5): 39 %, 71 %, **87 %**, 97 %. 80 % power at 99.7 % would need 913 |
 | **H1b** (show < 99 %) | At *n* = 300: 99 % power if the true rate is 95 %, 80 % at 97 %, 39 % at 98 % |
 | **H3a** (Boschloo, 300 per arm) | OL → AT: 95 % → 99 %: 90 %. 97 % → 99.5 %: 72 %. 97 % → 99 %: 48 %. So a gain is only reliably detectable if open-loop single vials sit near 95 % or below |
-| **H2** (ED90 > 1.15 mm) | Essentially 100 % if the true ED90 is 2 mm or more; 17–18 % at 1.5 mm, because no level lies between 1 and 2 mm; ≤ 5 % at or below 1.15 mm, as a test should |
-| **H3b** (AT widens ED90) | 100 % when AT's ED90 is 1 mm or more against an OL pocket's 0.3 mm; low (2 %) for 0.6 vs 0.3 mm, which the 1 mm level spacing can't resolve |
-| **H3c** (time cap 5 s) | ≥ 99 % if the true extra time is 4 s or less, 70 % at 4.5 s |
-| **H4a** (30 cycles) | "Meets": 91 % if the true RP is 0.07 mm, 52 % at 0.08 mm. "Certified": 92 % at 0.06 mm, 48 % at 0.07 mm. These include instrument noise at *U* = 0.025 mm |
+| **H2** (ED90 > 1.15 mm) | 97–100 % if the true ED90 is 2 mm or more; 0–20 % at 1.5 mm, because no level lies between 1 and 2 mm; 0 % at or below 1.15 mm, as a test should |
+| **H3b** (AT widens ED90) | 100 % when AT's ED90 is 1 mm or more against an OL pocket's 0.3 mm. For 0.6 vs 0.3 mm the registered bootstrap rule detects it 88 % of the time (200 simulated campaigns); with no difference it says so falsely 1 % of the time |
+| **H3c** (time cap 5 s) | 100 % if the true extra time is 4 s or less, 73 % at 4.5 s |
+| **H4a** (30 cycles) | "Meets": 94 % if the true RP is 0.07 mm, 54 % at 0.08 mm. "Certified": 93 % at 0.06 mm, 52 % at 0.07 mm. These include instrument noise at *U* = 0.025 mm |
 | **H4b, H4c** | 60 % and 83 % power for a 0.01 mm payload effect and 0.01 mm per 100 mm; 98–100 % at 0.02 mm |
 | **MTBI** (600 E1 transfers per cell) | Imprecise by design: at 1 intervention per 100 transfers, the 95 % interval runs from 46 to 272 transfers |
 
