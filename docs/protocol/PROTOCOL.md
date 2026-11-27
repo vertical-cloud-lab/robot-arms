@@ -756,8 +756,6 @@ That is a second field, filled in at review and never by the operator.
 
 ---
 
----
-
 ## 14. Analysis plan
 
 [`analysis/prereg_stats.py`](analysis/prereg_stats.py) implements this section, and
@@ -1006,7 +1004,9 @@ Block ID `______` · cfg `______` · Operator `______` · Date `______`
 | Critical | **Stop the block.** Make it safe and log it. Anything you fix makes a new configuration |
 | Catastrophic | **E-stop.** Make safe per the SOP, stop the campaign, and call D15's contacts before anything else |
 
-- [ ] 3 failures in a row, or 5 in the last 20 of one cell (D11): stop the block and inspect.
+- [ ] The run-of-failures stop (D11): in E1, 3 failed loads in a row in one cell; in E2, 2 failed
+      zero-offset loads in this block. Stop the block and inspect. Failed loads at an E2 offset
+      never count.
 - [ ] The harness refuses a unit because the arm isn't at its rest pose: stop the block.
 
 **Never**

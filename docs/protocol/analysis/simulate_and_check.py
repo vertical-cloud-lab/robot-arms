@@ -364,12 +364,55 @@ def coverage(rng: np.random.Generator, reps: int) -> list[str]:
     L.append(f"| RP percentile bootstrap, one-sided 95 % upper bound (v1) | true RP 0.06 mm, 30 cycles, isotropic ({n_rp} data sets) | ≥ 95 % | {up_pct / n_rp:.1%} |")
     L.append(f"| RP bootstrap-t, one-sided 95 % upper bound (v2, registered) | same | ≥ 95 % | {up_t / n_rp:.1%} |")
     L.append(f"| RP bootstrap-t, one-sided 95 % lower bound (v2, registered) | same | ≥ 95 % | {lo_t / n_rp:.1%} |")
-    L.append("\nFrom a separate run (400 data sets each, `bootstrap_t_rp`): the bootstrap-t upper "
-             "bound covered 93.8 % (isotropic), 92.5 % and 91.0 % (anisotropic, variance ratios "
-             "3:1:1 and 5:2:1) and 81.8 % (heavy-tailed t5); the percentile upper bound covered "
-             "71–76 % in the same Gaussian settings. With no payload effect, H4b's percentile rule "
-             "gave false positives 4.3 % of the time (300 data sets).\n")
+    L += rp_shape_coverage(np.random.default_rng(20261128), n_rp)
+    L += h4b_null_rate(np.random.default_rng(20261129), min(reps, 300))
     return L
+
+
+def _true_rp(draw, n: int = 2_000_000) -> float:
+    """Population RP (mean + 3 SD of the distance from the true centre) by Monte Carlo."""
+    lj = np.linalg.norm(draw(np.random.default_rng(1), n), axis=1)
+    return float(lj.mean() + 3 * lj.std())
+
+
+def rp_shape_coverage(rng: np.random.Generator, reps: int) -> list[str]:
+    """Upper-bound coverage of the registered bootstrap-t and of the rejected percentile bootstrap
+    when the 30 attained positions are not isotropic Gaussian. Each shape is scaled so that its
+    population RP is 0.06 mm."""
+    shapes = {
+        "isotropic Gaussian": lambda g, n: g.normal(0, 1, (n, 3)),
+        "anisotropic Gaussian, variances 3:1:1": lambda g, n: g.normal(0, 1, (n, 3)) * np.sqrt([3, 1, 1]),
+        "anisotropic Gaussian, variances 5:2:1": lambda g, n: g.normal(0, 1, (n, 3)) * np.sqrt([5, 2, 1]),
+        "heavy-tailed, Student t with 5 df": lambda g, n: g.standard_t(5, (n, 3)),
+    }
+    L = [f"\nRP upper bounds when the scatter is not isotropic Gaussian ({reps} data sets of 30 cycles "
+         f"per shape, true RP 0.06 mm):\n",
+         "| Shape | Bootstrap-t upper bound (registered) | Percentile upper bound (v1, rejected) |",
+         "|---|---|---|"]
+    for name, draw in shapes.items():
+        scale = 0.06 / _true_rp(draw)
+        up_t = up_pct = 0
+        for i in range(reps):
+            pts = draw(rng, 30) * scale
+            up_pct += np.quantile(ps.bootstrap_rp(pts, 2000, seed=i), 0.95) >= 0.06
+            up_t += ps.bootstrap_t_rp(pts, 1000, seed=i)[2] >= 0.06
+        L.append(f"| {name} | {up_t / reps:.1%} | {up_pct / reps:.1%} |")
+    return L
+
+
+def h4b_null_rate(rng: np.random.Generator, reps: int) -> list[str]:
+    """How often H4b and H4c are supported when payload and reach change nothing (RP 0.06 mm at
+    every pose and payload, instrument U = 0.025 mm): their false-positive rates."""
+    sigma = math.hypot(0.06 / ps.RP_PER_SIGMA, U_INST / 2)
+    fp_b = fp_c = 0
+    for i in range(reps):
+        cells = {(k, load): rng.normal(0, sigma, (30, 3)) for k in range(5) for load in (0, 1)}
+        out = ps.h4bc_decisions(cells, REACH, n_boot=2000, seed=i)
+        fp_b += out["h4b"] == "supported"
+        fp_c += out["h4c"] == "supported"
+    return [f"\nWith no payload or reach effect ({reps} data sets, 2,000 resamples each), H4b was "
+            f"supported {fp_b / reps:.1%} of the time and H4c {fp_c / reps:.1%}; both should be "
+            f"about 5 % or less.\n"]
 
 
 def main():

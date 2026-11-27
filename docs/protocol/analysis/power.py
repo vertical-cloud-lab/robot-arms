@@ -303,6 +303,191 @@ def compute_h4(res: dict, quick: bool) -> None:
 
 
 # ---------------------------------------------------------------------------------------
+# Rules registered earlier and then rejected, simulated on the same draws (--check-rejected)
+# ---------------------------------------------------------------------------------------
+
+H2_LEVELS = (0.95, 0.975, 0.99)
+
+
+def _h2_axis_label_at(res, zero_k: int, zero_n: int, level: float, threshold: float = 1.15) -> str:
+    """ps.h2_axis_decision with both refutation bounds at one-sided `level` instead of 99 %.
+    At level = 0.99 it is the registered rule, and h2_refutation_by_level checks that."""
+    supported = False
+    if res.censored:
+        supported = res.pooled_lower_ge2 >= 0.90
+    elif res.slope_negative:
+        supported = res.ed90_lower95 > threshold
+    refuted = ps.cp_upper(zero_k, zero_n, alpha=1 - level) < 0.90
+    if not refuted and not res.censored and res.slope_negative:
+        z = float(stats.norm.ppf(level))
+        refuted = ps.fieller_interval(res.fit.beta, res.fit.cov, 0.9, z)[1] < threshold
+    if supported and refuted:
+        return "inconclusive"
+    return "supported" if supported else ("refuted" if refuted else "inconclusive")
+
+
+def h2_refutation_by_level(curve, n_sims: int, seed: int) -> dict:
+    """How often H2 is refuted (either axis) with the per-axis refutation bound at 95 %, 97.5 %
+    and 99 %. Same seed and draw order as h2_power, so the 99 % column equals its 'refuted'."""
+    rng = np.random.default_rng(seed)
+    hits = {lv: 0 for lv in H2_LEVELS}
+    p0 = float(curve(0.0))
+    for _ in range(n_sims):
+        zero = (rng.random(ZERO_TRIALS) < p0).astype(int)
+        res = []
+        for _axis in ("x", "y"):
+            d, s = simulate_axis(curve, rng, zero)
+            res.append(ps.capture_curve(d, s))
+        k0 = int(zero.sum())
+        for lv in H2_LEVELS:
+            hits[lv] += "refuted" in [_h2_axis_label_at(r, k0, ZERO_TRIALS, lv) for r in res]
+        registered = ps.h2_decision(res[0], res[1], k0, ZERO_TRIALS) == "refuted"
+        if registered != ("refuted" in [_h2_axis_label_at(r, k0, ZERO_TRIALS, 0.99) for r in res]):
+            raise AssertionError("the 99 % copy of the H2 rule disagrees with prereg_stats")
+    return {str(lv): hits[lv] / n_sims for lv in H2_LEVELS}
+
+
+def compute_h2_levels(res: dict, sims: int) -> None:
+    """Five times the main table's campaigns, with the same seeds, so the first `sims` of them are
+    the main table's and the boundary rate is known to about +-0.3 percentage points."""
+    n = 5 * sims
+    rows = []
+    for w in (0.25, 0.5, 1.0):
+        for e in (0.8, 1.0, 1.15):
+            rows.append({"width": w, "ed90": e, "n_sims": n,
+                         **h2_refutation_by_level(logistic_curve(e, w), n, seed=int(1000 * e + 10 * w))})
+    res["h2_refutation_levels"] = rows
+
+
+def h4a_rejected_rules(rp_true: float, u_inst: float, n_cycles: int, n_sims: int, seed: int,
+                       n_boot: int = 1000) -> dict:
+    """How often H4a is refuted under four refutation rules, on the same draws as h4a_power:
+    the pre-review rule (one-sided 95 % lower bound above 0.10 mm at any pose), Bonferroni alone
+    (99 % per pose, against 0.10 mm), the instrument adjustment alone (95 %, against
+    rp_refutation_threshold) and the registered rule (99 %, against that threshold)."""
+    rng = np.random.default_rng(seed)
+    u_axis = u_inst / 2
+    s_tot = math.hypot(sigma_for_rp(rp_true), u_axis)
+    thr = ps.rp_refutation_threshold(0.10, u_axis)
+    rules = {"pre_review_95_vs_spec": (0.95, 0.10), "bonferroni_99_vs_spec": (0.99, 0.10),
+             "adjusted_95_vs_threshold": (0.95, thr), "registered_99_vs_threshold": (0.99, thr)}
+    hits = dict.fromkeys(rules, 0)
+    for sim in range(n_sims):
+        poses = [rng.normal(0, s_tot, (n_cycles, 3)) for _pose in range(5)]
+        seed_s = int(rng.integers(1 << 30))
+        refuted = dict.fromkeys(rules, False)
+        for i, pts in enumerate(poses):
+            rp, se, t_all = ps._bootstrap_t_draws(pts, n_boot, seed_s + i)
+            for name, (level, bar) in rules.items():
+                refuted[name] |= bool((rp - float(np.quantile(t_all, level)) * se) > bar)
+        if sim < 25:  # spot-check the copy against the registered function (it costs a second bootstrap)
+            label, _cert = ps.h4a_decision(poses, u_axis, u_inst, n_boot=n_boot, seed=seed_s)
+            if (label == "refuted") != refuted["registered_99_vs_threshold"]:
+                raise AssertionError("the copy of the H4a refutation rule disagrees with prereg_stats")
+        for name in rules:
+            hits[name] += refuted[name]
+    return {"rp_true": rp_true, **{k: v / n_sims for k, v in hits.items()}}
+
+
+def compute_h4a_rejected(res: dict, quick: bool) -> None:
+    n = 100 if quick else 500
+    res["h4a_rejected"] = [h4a_rejected_rules(rp, 0.025, 30, n, seed=int(1000 * rp))
+                           for rp in (0.09, 0.10, 0.11, 0.12)]
+
+
+# ---------------------------------------------------------------------------------------
+# D11: how often the run-of-failures stop fires (PROTOCOL.md §10, rule 3)
+# ---------------------------------------------------------------------------------------
+
+def d11_e1_cell(q: float, n_loads: int = 300, run: int = 3) -> dict:
+    """E1 clause, exact: a cell's loads fail independently with probability q, and `run` failed
+    loads in a row stop the block. The count restarts after a stop. Runs are counted across
+    block boundaries, so these are upper bounds for counting within blocks."""
+    p_all = np.zeros(run)  # P(current run length = j)
+    p_all[0] = 1.0
+    p_clean = p_all.copy()  # the same, on paths with no stop yet
+    expected = 0.0
+    for _ in range(n_loads):
+        stop = q * p_all[-1]
+        expected += stop
+        p_all = np.concatenate([[(1 - q) * p_all.sum() + stop], q * p_all[:-1]])
+        p_clean = np.concatenate([[(1 - q) * p_clean.sum()], q * p_clean[:-1]])
+    mean_wait = sum(q ** -j for j in range(1, run + 1))  # expected loads to the first run
+    return {"q": q, "expected_stops": float(expected), "p_any_stop": 1 - float(p_clean.sum()),
+            "mean_loads_to_first_stop": float(mean_wait)}
+
+
+def d11_e1_window(q: float, n_sims: int, seed: int, n_loads: int = 300, k: int = 5,
+                  window: int = 20) -> dict:
+    """An optional extra E1 clause, simulated: `k` failed loads among a cell's last `window`
+    loads stop the block (v2 had it before the review). The window empties after a stop."""
+    rng = np.random.default_rng(seed)
+    stops = any_stop = 0
+    first = []
+    for _ in range(n_sims):
+        fails = rng.random(n_loads) < q
+        recent: list[bool] = []
+        n_stops = 0
+        for i, f in enumerate(fails):
+            recent.append(bool(f))
+            if len(recent) > window:
+                recent.pop(0)
+            if sum(recent) >= k:
+                n_stops += 1
+                if n_stops == 1:
+                    first.append(i + 1)
+                recent = []
+        stops += n_stops
+        any_stop += n_stops > 0
+    return {"q": q, "n_sims": n_sims, "expected_stops": stops / n_sims, "p_any_stop": any_stop / n_sims,
+            "median_loads_to_first_stop": float(np.median(first)) if first else None}
+
+
+def d11_e2_task(q_ol: float, q_at: float, pairs_per_block: int, n_sims: int, seed: int,
+                passes: int = 20, levels: int = 21) -> dict:
+    """E2 clause, simulated on the registered schedule (§9): for one task, `passes` passes over
+    the 21 levels in random order, each level a pair of loads (OL and AT); blocks of
+    `pairs_per_block` pairs; 2 failed zero-offset loads in one block stop it, and the rest of the
+    schedule goes on in the next block."""
+    rng = np.random.default_rng(seed)
+    stops = 0
+    first_stop_pairs = []
+    for _ in range(n_sims):
+        seq = np.concatenate([rng.permutation(levels) for _p in range(passes)])  # level 0 = zero
+        fails_in_block = in_block = 0
+        n_stops = 0
+        for i, lv in enumerate(seq):
+            if lv == 0:
+                fails_in_block += int(rng.random() < q_ol) + int(rng.random() < q_at)
+            in_block += 1
+            if fails_in_block >= 2:
+                n_stops += 1
+                if n_stops == 1:
+                    first_stop_pairs.append(i + 1)
+                fails_in_block = in_block = 0
+            elif in_block == pairs_per_block:
+                fails_in_block = in_block = 0
+        stops += n_stops
+    caught = len(first_stop_pairs) / n_sims
+    return {"q_ol": q_ol, "q_at": q_at, "pairs_per_block": pairs_per_block,
+            "expected_stops": stops / n_sims, "p_any_stop": caught,
+            "median_pairs_to_first_stop": float(np.median(first_stop_pairs)) if first_stop_pairs else None}
+
+
+def compute_d11(res: dict, quick: bool) -> None:
+    qs = (0.002, 0.01, 0.025, 0.07, 0.15, 0.30, 0.50)
+    n = 2000 if quick else 20000
+    res["d11_e1"] = [d11_e1_cell(q) for q in qs]
+    res["d11_e1_window"] = [d11_e1_window(q, n // 4, seed=12000 + i) for i, q in enumerate(qs)]
+    rows = []
+    # Planning scenario (e2_expected_failures): carriers 0 % OL and 1 % AT at zero offset; single
+    # vials 2.5 % OL and 2 % AT. Then a cell gone wrong: zero-offset success 90 %, 80 %, 50 %.
+    for k, (q_ol, q_at) in enumerate([(0.0, 0.01), (0.025, 0.02), (0.10, 0.10), (0.20, 0.20), (0.50, 0.50)]):
+        rows.append(d11_e2_task(q_ol, q_at, 15, n, seed=11000 + k))
+    res["d11_e2"] = rows
+
+
+# ---------------------------------------------------------------------------------------
 # Expected failures (so, human resets) in E2 under one plausible scenario
 # ---------------------------------------------------------------------------------------
 
@@ -506,11 +691,17 @@ def fig_h4(res: dict, path: Path):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--quick", action="store_true")
-    ap.add_argument("--check-bootstrap", action="store_true")
+    ap.add_argument("--check-rejected", "--check-bootstrap", dest="check_rejected", action="store_true",
+                    help="also simulate the rules that were registered and then rejected, on the same "
+                         "draws: H3b's percentile bootstrap, H2 refuted at 95 %% and 97.5 %% per axis, "
+                         "and H4a's pre-review refutation rules")
     ap.add_argument("--h2-only", action="store_true",
                     help="recompute only the H2 rows and keep the rest of out/power.json")
     ap.add_argument("--h4-only", action="store_true",
                     help="recompute only the H4 rows and keep the rest of out/power.json")
+    ap.add_argument("--extras-only", action="store_true",
+                    help="recompute only the D11 stop rates (and, with --check-rejected, the H2 and H4a "
+                         "rejected-rule rows) and keep the rest of out/power.json")
     ap.add_argument("--figures-only", action="store_true",
                     help="re-draw figures and power.md from out/power.json without simulating")
     args = ap.parse_args()
@@ -542,6 +733,16 @@ def main():
         fig_h4(res, OUT / "fig_power_h4.png")
         write_markdown(res, OUT / "power.md")
         print(f"H4 redone in {time.time() - t0:.0f}s")
+        return
+    if args.extras_only:
+        res = json.loads((OUT / "power.json").read_text())
+        compute_d11(res, args.quick)
+        if args.check_rejected:
+            compute_h2_levels(res, res["sims"])
+            compute_h4a_rejected(res, args.quick)
+        (OUT / "power.json").write_text(json.dumps(res, indent=1))
+        write_markdown(res, OUT / "power.md")
+        print(f"extras redone in {time.time() - t0:.0f}s")
         return
     res: dict = {"sims": sims}
 
@@ -602,6 +803,8 @@ def main():
 
     # ---- H2 ---------------------------------------------------------------------------
     compute_h2(res, sims)
+    if args.check_rejected:
+        compute_h2_levels(res, sims)
     print(f"H2 done {time.time() - t0:.0f}s", flush=True)
 
     # ---- H3b --------------------------------------------------------------------------
@@ -619,7 +822,7 @@ def main():
     for label, c_ol, c_at in scen_b:
         h3b.append({"scenario": label, "power": h3b_power(c_ol, c_at, sims, seed=len(label))})
     res["h3b"] = h3b
-    if args.check_bootstrap:
+    if args.check_rejected:
         chk = []
         for label, c_ol, c_at in scen_b[3:]:
             chk.append({"scenario": label,
@@ -646,8 +849,11 @@ def main():
 
     # ---- H4 ---------------------------------------------------------------------------
     compute_h4(res, args.quick)
+    if args.check_rejected:
+        compute_h4a_rejected(res, args.quick)
     print(f"H4 done {time.time() - t0:.0f}s", flush=True)
 
+    compute_d11(res, args.quick)
     res["e2_burden"] = e2_expected_failures()
     res["runtime_s"] = time.time() - t0
     (OUT / "power.json").write_text(json.dumps(res, indent=1))
@@ -727,6 +933,20 @@ def write_markdown(res: dict, path: Path):
     L.append("|---|---|---|---|---|")
     for r in res["h2_step"]:
         L.append(f"| {r['edge_mm']} mm | {pct(r['supported'])} | {pct(r['refuted'])} | {pct(r['model_free'])} | {pct(r['v1_combined'])} |")
+    if "h2_refutation_levels" in res:
+        n_lv = res["h2_refutation_levels"][0]["n_sims"]
+        L.append(f"\n**Why refutation is at 99 % per axis.** H2 is refuted if either axis is, so the "
+                 f"per-axis level sets the false-refutation rate at the boundary (true ED90 exactly "
+                 f"1.15 mm, which should be refuted at most 5 % of the time). {n_lv:,} simulated "
+                 f"campaigns per row with the seeds above, so the first {res['sims']:,} are the "
+                 f"campaigns in the table above; only the level of the two refutation bounds changes. "
+                 f"The 99 % column is the registered rule, checked against `prereg_stats.h2_decision` "
+                 f"on every campaign. At a 5 % rate the Monte Carlo standard error is "
+                 f"{100 * (0.05 * 0.95 / n_lv) ** 0.5:.1f} percentage points.\n")
+        L.append("| ED50 − ED90 | True ED90 | 95 % per axis | 97.5 % (Bonferroni) | 99 % (registered) |")
+        L.append("|---|---|---|---|---|")
+        for r in res["h2_refutation_levels"]:
+            L.append(f"| {r['width']} mm | {r['ed90']} mm | {pct(r['0.95'], 1)} | {pct(r['0.975'], 1)} | {pct(r['0.99'], 1)} |")
     L.append("\n## H3b: correction widens single-vial ED90 (x and y)\n")
     L.append("The registered rule (`prereg_stats.h3b_axis_supported`: delta-method bound on the "
              "radius difference, Fieller if the corrected curve is censored), on both axes. The last "
@@ -766,6 +986,37 @@ def write_markdown(res: dict, path: Path):
         L.append(f"| {k.replace('_', ' ')} | {b[k]:.0f} |")
     L.append(f"\nIf single-vial OL ran only 0, ±1, ±2 mm and ±2°: {b['vial_OL_if_trimmed_to_2mm_and_2deg']:.0f} "
              f"failed loads instead of {b['vial_OL']:.0f}.\n")
+    if "d11_e1" in res:
+        L.append("\n## D11: how often the run-of-failures stop fires\n")
+        L.append("The stop exists for upkeep: it should rarely fire on a healthy cell and soon on one "
+                 "that has gone wrong. **E1 clause** (3 failed loads in a row in one cell), exact, for "
+                 "one cell's 300 loads failing independently at a given rate. Runs are counted across "
+                 "block boundaries, so these are upper bounds if the count restarts with each block.\n")
+        L.append("| Failure rate per load | Expected stops in 300 loads | Chance of at least one stop | Mean loads to the first stop |")
+        L.append("|---|---|---|---|")
+        for r in res["d11_e1"]:
+            L.append(f"| {pct(r['q'], 1)} | {r['expected_stops']:.3f} | {pct(r['p_any_stop'], 1)} | {r['mean_loads_to_first_stop']:,.0f} |")
+        if "d11_e1_window" in res:
+            L.append(f"\nAn optional extra E1 clause, not registered: 5 failed loads among the cell's last 20 "
+                     f"(v2 had it before the review), simulated ({res['d11_e1_window'][0]['n_sims']:,} "
+                     f"cells per row). It warns much sooner when a cell degrades, and stops a healthy 93 % "
+                     f"cell more often.\n")
+            L.append("| Failure rate per load | Expected stops in 300 loads | Chance of at least one stop | Median loads to the first stop, when there is one |")
+            L.append("|---|---|---|---|")
+            for r in res["d11_e1_window"]:
+                med = "—" if r["median_loads_to_first_stop"] is None else f"{r['median_loads_to_first_stop']:.0f}"
+                L.append(f"| {pct(r['q'], 1)} | {r['expected_stops']:.3f} | {pct(r['p_any_stop'], 1)} | {med} |")
+        e2rows = res["d11_e2"]
+        L.append(f"\n**E2 clause** (2 failed zero-offset loads in one block), simulated on the registered "
+                 f"schedule for one task: 20 passes over the 21 levels in random order, each level a pair "
+                 f"of loads (OL and AT), {e2rows[0]['pairs_per_block']} pairs per block, so a block holds "
+                 f"one zero-offset pair or none most of the time. The first two rows are the planning "
+                 f"scenario; the rest are a cell gone wrong.\n")
+        L.append("| Zero-offset failure rate, OL / AT | Expected stops over the task's 420 pairs | Chance of at least one stop | Median pairs to the first stop, when there is one |")
+        L.append("|---|---|---|---|")
+        for r in e2rows:
+            med = "—" if r["median_pairs_to_first_stop"] is None else f"{r['median_pairs_to_first_stop']:.0f}"
+            L.append(f"| {pct(r['q_ol'], 1)} / {pct(r['q_at'], 1)} | {r['expected_stops']:.3f} | {pct(r['p_any_stop'], 1)} | {med} |")
     L.append(f"\n## H4: ISO 9283 RP, 30 cycles per pose ({res.get('h4_sims', 1000)} simulated sessions per row)\n")
     L.append("Instrument expanded uncertainty U = 0.025 mm (k = 2), treated as u = 0.0125 mm per axis "
              "and added in quadrature, so the measured RP is biased upward. Outcomes from "
@@ -776,6 +1027,18 @@ def write_markdown(res: dict, path: Path):
     L.append("|---|---|---|---|")
     for r in res["h4a"]:
         L.append(f"| {r['rp_true']:.2f} mm | {pct(r['meets'])} | {pct(r['certified'])} | {pct(r.get('refuted', float('nan')))} |")
+    if "h4a_rejected" in res:
+        thr = ps.rp_refutation_threshold(0.10, 0.0125)
+        L.append("\n**Why H4a's refutation rule has both fixes.** How often H4a is refuted under the "
+                 "rule registered before the independent review and under each fix alone, on the same "
+                 "simulated sessions. An arm exactly at 0.10 mm should be refuted at most 5 % of the "
+                 "time. The last column is the registered rule and equals 'Refuted' above.\n")
+        L.append(f"| True arm RP | Pre-review: 95 % per pose, against 0.10 mm | Bonferroni only: 99 %, against 0.10 mm | "
+                 f"Instrument only: 95 %, against {thr:.3f} mm | Registered: 99 %, against {thr:.3f} mm |")
+        L.append("|---|---|---|---|---|")
+        for r in res["h4a_rejected"]:
+            L.append(f"| {r['rp_true']:.2f} mm | {pct(r['pre_review_95_vs_spec'], 1)} | {pct(r['bonferroni_99_vs_spec'], 1)} | "
+                     f"{pct(r['adjusted_95_vs_threshold'], 1)} | {pct(r['registered_99_vs_threshold'], 1)} |")
     L.append("\n| RP unloaded | Payload adds | Slope per 100 mm | H4b power | H4c power |")
     L.append("|---|---|---|---|---|")
     for r in res["h4bc"]:
