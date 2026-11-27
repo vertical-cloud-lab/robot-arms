@@ -386,6 +386,11 @@ transfer.
   real dock from the image. The injected offset never reaches the correction code.
 - **For T2,** a yaw of the dock frame moves the pocket sideways by about *r*·θ (R2).
 
+![E2 design on the planning scenario's curves](analysis/out/fig_design_e2.png)
+
+*The planning scenario behind the power analysis and the reset estimate below. The curves are
+assumptions, not data; the markers are the tested levels.*
+
 **The yaw levels will saturate for open-loop carriers.** With the pins 125 mm either side of the
 datum, a yaw of θ moves each pin 125·sin θ: 4.4 mm at 2° and 8.7 mm at 4°, both past the 3 mm
 lead-in, which covers about ±1.4° (PR 272). The OL carrier's yaw curve will have no informative

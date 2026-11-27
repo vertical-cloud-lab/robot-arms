@@ -445,6 +445,47 @@ def fig_h3a(res: dict, path: Path):
     plt.close(fig)
 
 
+def fig_design_e2(path: Path):
+    """The E2 design over the planning scenario's capture curves (assumptions, not data)."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    d = np.linspace(0, 4.2, 300)
+    curves = [
+        ("Carrier, open loop (ED90 2.8 mm)", logistic_curve(2.8, 0.4)),
+        ("Carrier, corrected (flat 99.5 %)", lambda x: np.full_like(np.asarray(x, float), 0.995)),
+        ("Single vial, open loop (ED90 0.2 mm)", logistic_curve(0.2, 0.3)),
+        ("Single vial, corrected (ED90 3.0 mm)", logistic_curve(3.0, 0.5)),
+    ]
+    label_at = [3.05, 1.6, 0.62, 3.55]
+    fig, ax = plt.subplots(figsize=(7.2, 5.0), dpi=150)
+    for i, (name, f) in enumerate(curves):
+        ax.plot(d, f(d), color=C[i], lw=2, label=name)
+        lv = np.array([0, 1, 2, 3, 4], float)
+        ax.plot(lv, f(lv), ls="none", marker=MARKERS[i], ms=7, color=C[i],
+                markeredgecolor="white", markeredgewidth=1.5)
+        x = label_at[i]
+        ax.annotate(name.split(" (")[0], (x, float(f(x))), textcoords="offset points",
+                    xytext=(6, 6 if i != 2 else -14), fontsize=8, color=TEXT)
+    ax.axhline(0.9, color="#9c9c9c", lw=1, ls="--")
+    ax.annotate("90 % (ED90)", (4.2, 0.9), textcoords="offset points", xytext=(-58, 4),
+                fontsize=8, color=TEXT2)
+    ax.axvline(1.15, color="#9c9c9c", lw=1, ls=":")
+    ax.annotate("±1.15 mm worst-case\narm error (#266)", (1.15, 0.45), textcoords="offset points",
+                xytext=(5, 0), fontsize=8, color=TEXT2)
+    _style(ax, "E2 design: 20 loads at each level, on the planning scenario's curves",
+           "injected offset |d| on x or y (mm)", "probability a load succeeds")
+    ax.set_xticks([0, 1, 2, 3, 4])
+    ax.set_ylim(-0.02, 1.05)
+    ax.legend(frameon=False, fontsize=8, loc="upper center", bbox_to_anchor=(0.5, -0.14), ncol=2)
+    fig.text(0.01, 0.01, "Curves: planning assumptions from power.py, not data. Markers: tested levels "
+             "(20 loads at 0; 40 per axis at 1-4 mm).", fontsize=7, color=TEXT2)
+    fig.tight_layout(rect=(0, 0.03, 1, 1))
+    fig.savefig(path)
+    plt.close(fig)
+
+
 def fig_h4(res: dict, path: Path):
     import matplotlib
     matplotlib.use("Agg")
@@ -490,6 +531,7 @@ def main():
         fig_h2(res, OUT / "fig_power_h2.png")
         fig_h3a(res, OUT / "fig_power_h3a.png")
         fig_h4(res, OUT / "fig_power_h4.png")
+        fig_design_e2(OUT / "fig_design_e2.png")
         write_markdown(res, OUT / "power.md")
         return
     sims = 300 if args.quick else 2000
@@ -624,6 +666,7 @@ def main():
     fig_h2(res, OUT / "fig_power_h2.png")
     fig_h3a(res, OUT / "fig_power_h3a.png")
     fig_h4(res, OUT / "fig_power_h4.png")
+    fig_design_e2(OUT / "fig_design_e2.png")
     write_markdown(res, OUT / "power.md")
     print(f"done in {time.time() - t0:.0f}s")
 

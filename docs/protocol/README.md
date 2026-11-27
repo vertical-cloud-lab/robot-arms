@@ -57,8 +57,8 @@ An update to a registration can't add or remove files, so attach everything at s
 1. Fill in every decision in [PROTOCOL.md §0](PROTOCOL.md#0-decisions-before-locking) and commit.
 2. Tag that commit `prereg-v1`, so the text and the code can be cited by hash.
 3. Build the attachments:
-   `pandoc docs/protocol/PROTOCOL.md -o PROTOCOL.pdf`, and
-   `git archive prereg-v1 docs/protocol/analysis -o analysis.zip`.
+   `pandoc docs/protocol/PROTOCOL.md -o PROTOCOL.pdf` (or open PROTOCOL.md on GitHub at the tag
+   and print it to PDF), and `git archive prereg-v1 docs/protocol/analysis -o analysis.zip`.
 4. On OSF Registries: **Add New** → *OSF Preregistration*. Paste each answer from
    `osf/A-transfer-reliability.md`. Attach `PROTOCOL.pdf` to *Study design* and `analysis.zip` to
    *Statistical models*. Add the contributors. Choose public or an embargo (I'd make it public, so
