@@ -271,9 +271,13 @@ def analyse(e1: list[dict], e2: list[dict], e3: list[dict], rng: np.random.Gener
     L.append(f"| H3a | 93 % → 98.5 %, a real gain | {h3a} | Boschloo one-sided p = {p3a:.2g} |")
     L.append(f"| H3b | ED90 0.2 → 3.0 mm, a real gain | {h3b} | x {'passes' if h3b_axes[0] else 'fails'}, y {'passes' if h3b_axes[1] else 'fails'} |")
     L.append(f"| H3c (cap 5 s) | 3.0 s ≤ 5 s | {h3c} | HL upper bound {hl_up:.2f} s |")
-    L.append(f"| H4a | unloaded RP 0.050–0.065 mm ≤ 0.10 | {h4a}{', certified' if h4a_cert else ''} | all five poses; instrument U = {U_INST} mm |")
-    L.append(f"| H4b | payload adds 0.010–0.013 mm | {h4bc['h4b']} | bootstrap lower bound of the mean difference {h4bc['h4b_lower']:.4f} mm |")
-    L.append(f"| H4c | RP grows 0.0075–0.0081 mm per 100 mm | {h4bc['h4c']} | slope lower bound {h4bc['h4c_lower']:.4f} mm per 100 mm |")
+    rp0, rp1 = np.array(RP_TRUE[0]), np.array(RP_TRUE[1])
+    gain = rp1 - rp0
+    reach100 = np.array(REACH) / 100.0
+    slopes = [float(np.polyfit(reach100, np.array(RP_TRUE[load]), 1)[0]) for load in (0, 1)]
+    L.append(f"| H4a | unloaded RP {rp0.min():.3f}–{rp0.max():.3f} mm ≤ 0.10 | {h4a}{', certified' if h4a_cert else ''} | all five poses; instrument U = {U_INST} mm |")
+    L.append(f"| H4b | payload adds {gain.min():.3f}–{gain.max():.3f} mm | {h4bc['h4b']} | bootstrap lower bound of the mean difference {h4bc['h4b_lower']:.4f} mm |")
+    L.append(f"| H4c | RP grows {min(slopes):.4f}–{max(slopes):.4f} mm per 100 mm (arm alone; less through the instrument) | {h4bc['h4c']} | slope lower bound {h4bc['h4c_lower']:.4f} mm per 100 mm |")
     return L
 
 

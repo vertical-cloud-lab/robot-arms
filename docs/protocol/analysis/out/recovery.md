@@ -51,7 +51,7 @@ What the registered rules decide, next to what the true values imply. A test can
 | H3c (cap 5 s) | 3.0 s ≤ 5 s | supported | HL upper bound 3.28 s |
 | H4a | unloaded RP 0.050–0.065 mm ≤ 0.10 | supported | all five poses; instrument U = 0.025 mm |
 | H4b | payload adds 0.010–0.013 mm | not supported | bootstrap lower bound of the mean difference -0.0009 mm |
-| H4c | RP grows 0.0075–0.0081 mm per 100 mm | supported | slope lower bound 0.0009 mm per 100 mm |
+| H4c | RP grows 0.0047–0.0056 mm per 100 mm (arm alone; less through the instrument) | supported | slope lower bound 0.0009 mm per 100 mm |
 
 ## 3. Coverage over repeated synthetic data
 
