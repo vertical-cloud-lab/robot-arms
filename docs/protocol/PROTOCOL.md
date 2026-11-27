@@ -42,7 +42,7 @@ them.
 | D4 | How E2's offsets are made: in software (the arm's belief about the dock) or with PR 272's offset plates | §8 | Software, with the plates as a physical cross-check (§15). Plates need a person to swap them, which rules out randomizing levels within a block |
 | D5 | *n* for the carrier, open-loop cell of E1 | §8 | **628** (2 failures may still certify 99 %), if the arm time is there. 300 is the minimum #21 sets, and gives H1a 55 % power at a true 99.8 % |
 | D6 | Single-vial open-loop levels in E2: all 21, or only 0, ±1, ±2 mm and ±2° | §8 | All 21, as #21 asks, unless operator time is short. The trimmed set saves about 200 resets for almost no information (§8) |
-| D7 | Predictions for H1–H4 (blanks P1–P8 in §2) | §2 | Yours. They're recorded for calibration only and enter no decision |
+| D7 | Predictions for H1–H4 (blanks Pred-1 to Pred-8 in §2) | §2 | Yours. They're recorded for calibration only and enter no decision |
 | D8 | The time-cost cap for H3c, in seconds per loading transfer | §2 | 5 s |
 | D9 | E3's loaded payload | §8 | A dummy mass equal to a full carrier, at the carrier's centre of gravity |
 | D10 | E3's instrument, with its expanded uncertainty *U* (k = 2) | §8 | Three 0.001 mm digital indicators on a sphere or cube target. *U* must be ≤ 0.025 mm |
@@ -133,13 +133,13 @@ loop, AT = AprilTag-corrected).
 Each hypothesis gets its own α = 0.05, one-sided where stated. There is no correction across
 hypotheses, because each answers a separate question fixed here in advance; within a hypothesis,
 "both axes" is an intersection–union test, which needs none. Every outcome is reported as
-**supported**, **refuted** or **inconclusive**, whatever it is. The predictions (P1–P8) are
-recorded for calibration only and enter no decision. The power of each rule is in [§8.4](#84-power).
+**supported**, **refuted** or **inconclusive**, whatever it is. The predictions (Pred-1 to Pred-8)
+are recorded for calibration only and enter no decision. The power of each rule is in [§8.4](#84-power).
 
 ### H1: the dock reaches 99 %, the tight pocket does not
 
 - **H1a.** Open-loop carriers loaded into the 3 mm lead-in dock succeed at 99 % or better.
-  - Prediction: *p*(C, OL) = `P1: ____ %`.
+  - Prediction: *p*(C, OL) = `Pred-1: ____ %`.
   - **Supported** if the exact (Clopper–Pearson) one-sided 95 % lower bound is ≥ 0.99. At
     *n* = 300 that allows no failures (0/300 gives 0.9901, 1/300 gives 0.9843). At *n* = 628
     it allows two.
@@ -148,7 +148,7 @@ recorded for calibration only and enter no decision. The power of each rule is i
   - **Inconclusive** otherwise. The cell is never extended to resolve it (§10, rule 4).
 - **H1b.** Open-loop single vials loaded into a pocket with ≤ 1 mm diametral clearance (R1)
   stay below 99 %.
-  - Prediction: *p*(V, OL) = `P2: ____ %`.
+  - Prediction: *p*(V, OL) = `Pred-2: ____ %`.
   - **Supported** if the exact one-sided 95 % upper bound is < 0.99 (at *n* = 300, at least 7
     failures). **Refuted** if the exact one-sided 95 % lower bound is ≥ 0.99 (no failures).
     **Inconclusive** otherwise.
@@ -157,7 +157,7 @@ recorded for calibration only and enter no decision. The power of each rule is i
 
 - **Claim.** For open-loop carriers, ED90 is larger than the ±1.15 mm worst-case arm error from
   #266, on both x and y. The capture radius is min(ED90ₓ, ED90ᵧ).
-- **Prediction.** ED90ₓ = `P3: ____ mm`, ED90ᵧ = `____ mm`, ED90 for yaw = `____°`.
+- **Prediction.** ED90ₓ = `Pred-3: ____ mm`, ED90ᵧ = `____ mm`, ED90 for yaw = `____°`.
 - **Decision, per axis** (x and y; yaw is reported but not tested):
   - If the capture curve is **not censored**: the Fieller one-sided 95 % lower bound of ED90 must
     exceed 1.15 mm.
@@ -180,11 +180,11 @@ recorded for calibration only and enter no decision. The power of each rule is i
 ### H3: correction raises single-vial success and widens ED90, at a cost of a few seconds
 
 - **H3a.** *p*(V, AT) > *p*(V, OL).
-  - Prediction: OL `P4: ____ %`, AT `____ %`.
+  - Prediction: OL `Pred-4: ____ %`, AT `____ %`.
   - **Supported** if the one-sided Boschloo exact test gives *p* < 0.05. **Contrary** if the
     same test in the other direction gives *p* < 0.05. **Not supported** otherwise.
 - **H3b.** For single vials, correction widens ED90 on both x and y.
-  - Prediction: `P5: ____ mm` wider.
+  - Prediction: `Pred-5: ____ mm` wider.
   - **Decision, per axis.** ED90 is floored at 0 first: a pocket that is below 90 % even at zero
     offset has a capture radius of 0.
     - If the AT curve is censored (§14.3), H3b holds on that axis when the Fieller one-sided
@@ -193,7 +193,7 @@ recorded for calibration only and enter no decision. The power of each rule is i
       max(0, ED90_AT) − max(0, ED90_OL) must be > 0.
   - **Supported** if both axes pass, **not supported** otherwise.
 - **H3c.** The correction costs no more than `D8` seconds per single-vial loading transfer.
-  - Prediction: `P6: ____ s`.
+  - Prediction: `Pred-6: ____ s`.
   - **Supported** if the one-sided 95 % upper bound of the Hodges–Lehmann shift in transfer time
     (AT − OL, successful E1 loads only) is ≤ D8.
 - **Also reported, not tested.** The same three contrasts for carriers.
@@ -208,11 +208,11 @@ recorded for calibration only and enter no decision. The power of each rule is i
   - **Inconclusive** if the instrument's expanded uncertainty is above 0.025 mm (D10). ISO 9283
     §6.5 caps the total measurement uncertainty at 25 % of the characteristic under test.
 - **H4b.** RP grows with payload.
-  - Prediction: `P7: +____ mm` loaded vs unloaded.
+  - Prediction: `Pred-7: +____ mm` loaded vs unloaded.
   - **Supported** if the mean over poses of RP(loaded) − RP(unloaded) has a one-sided 95 %
     bootstrap lower bound > 0.
 - **H4c.** RP grows with reach (the horizontal distance from the J1 axis to the TCP).
-  - Prediction: `P8: +____ mm per 100 mm`.
+  - Prediction: `Pred-8: +____ mm per 100 mm`.
   - **Supported** if, regressing RP on reach over 5 poses × 2 payloads with payload as a
     covariate, the slope's one-sided 95 % bootstrap lower bound is > 0.
 
@@ -263,7 +263,7 @@ and most changes start a new configuration.
 **Payload.** A full carrier (0.53–0.66 kg, PR 272) plus the finger inserts (67 g) rides on a
 gripper of about 0.5 kg, and the wrist also carries a Pi, two cameras and their mount. #42 reads
 the 1.5 kg rating as including the gripper. The masses are weighed and the total recorded before
-the pilot (bench gate B6).
+the pilot (bench gate HW6).
 
 ---
 

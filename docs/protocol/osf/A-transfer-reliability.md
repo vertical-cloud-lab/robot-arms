@@ -55,7 +55,7 @@ where stated; each is reported as supported, refuted or inconclusive (§2).
 - **H3c.** Correction costs no more than [D8] s per single-vial loading transfer: the one-sided
   95 % upper bound of the Hodges–Lehmann shift in transfer time (corrected − open loop) is ≤ [D8].
 
-Predictions, recorded for calibration only: P1–P6 in §2.
+Predictions, recorded for calibration only: Pred-1 to Pred-6 in §2.
 
 ### Foreknowledge of data or evidence
 
@@ -246,8 +246,10 @@ Stop (§10):
   regression of loading success on |offset|. Capture radius = min(ED90ₓ, ED90ᵧ), each floored at
   0. Right-censored and "not reached" curves are handled as in §14.3.
 - **MTBI:** the Kaplan–Meier restricted mean number of transfers between interventions up to
-  τ = [D13] transfers, per task × condition, from E1. **S(50):** the Kaplan–Meier probability of 50
-  transfers without an intervention.
+  τ = [D13] transfers, per task × condition, from E1. Each cell's clock counts only its own
+  transfers, restarts after each of its interventions, runs on across sessions within a
+  configuration, and is censored when the configuration or the campaign ends. **S(50):** the
+  Kaplan–Meier probability of 50 transfers without an intervention.
 - **Hodges–Lehmann shift** in transfer time, AT − OL.
 
 ---
@@ -273,7 +275,9 @@ values from a synthetic campaign in `analysis/out/recovery.md`.
   E1, with its Moses (Mann–Whitney) one-sided 95 % upper bound.
 - **MTBI:** Kaplan–Meier estimate of transfers between interventions per task × condition (E1
   only; E2 reported separately), restricted mean up to τ with a Greenwood-based 95 % interval;
-  cross-check total transfers ÷ interventions with an exact Poisson (Garwood) interval; S(50).
+  cross-check total transfers ÷ interventions with an exact Poisson (Garwood) interval, reported
+  first when a cell has fewer than 10 interventions (the Greenwood interval undercovered then on
+  synthetic data); S(50).
 - **Positive controls and checks (§14.6):** the logged commanded pose differs from nominal by the
   injected offset to within 0.1 mm and 0.1°; tag detection succeeds at ≥ 99 % of looks under AT;
   operator–reviewer κ ≥ 0.8; E2's zero level agrees with E1 (Newcombe interval). These are

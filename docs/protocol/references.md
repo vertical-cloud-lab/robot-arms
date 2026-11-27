@@ -20,7 +20,7 @@ marked; their links were checked to resolve on 2026-11-27.
    International Organization for Standardization. No DOI. Cited for §6.2 (warm-up), §6.5
    (instrumentation and the 25 % uncertainty cap), §6.6 (load), §6.7 (velocities), §6.8 (test
    poses) and §7.2.2 (RP). Only the [free sample pages](https://cdn.standards.iteh.ai/samples/22244/d058a9d8bacf41cd85def67ab70afc87/ISO-9283-1998.pdf)
-   were read, and they stop before §6.8; see bench gate M2.
+   were read, and they stop before §6.8; see bench gate RB2.
 3. Kuric, I., Tlach, V., Ságová, Z., Císar, M. and Gritsuk, I. (2018). Measurement of industrial
    robot pose repeatability. *MATEC Web of Conferences* 244, 01015.
    [doi:10.1051/matecconf/201824401015](https://doi.org/10.1051/matecconf/201824401015).

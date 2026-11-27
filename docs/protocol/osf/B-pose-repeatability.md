@@ -37,7 +37,7 @@ payload and reach? α = 0.05 for each, one-sided (§2, H4).
   of RP on reach over 5 poses × 2 payloads with payload as a covariate, the slope's one-sided 95 %
   bootstrap lower bound is > 0.
 
-Predictions, recorded for calibration only: P7 and P8 in §2.
+Predictions, recorded for calibration only: Pred-7 and Pred-8 in §2.
 
 ### Foreknowledge of data or evidence
 
