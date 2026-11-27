@@ -34,7 +34,7 @@ within days of registering.
 
 | ID | Gate | Evidence | Suggested owner | Status |
 |---|---|---|---|---|
-| SF1 | PR 23 updated to the cell as it is (mpzy, the relay, the installed E-stop, the wrist camera, about 590 E2 resets), then reviewed. The JHA review team meets and signs; the College Health & Safety Officer reviews the SOP. PR 23's 15 open items are each closed or accepted with a reason | Signed JHA, closed items in `docs/safety/README.md` | sgbaird convenes, jss265 as the person who runs the arm, `@claude` drafts the update | Draft, unreviewed since 2026-10-13 |
+| SF1 | PR 23 updated to the cell as it is (mpzy, the relay, the installed E-stop, the wrist camera, about 660 E2 resets), then reviewed. The JHA review team meets and signs; the College Health & Safety Officer reviews the SOP. PR 23's 15 open items are each closed or accepted with a reason | Signed JHA, closed items in `docs/safety/README.md` | sgbaird convenes, jss265 as the person who runs the arm, `@claude` drafts the update | Draft, unreviewed since 2026-10-13 |
 | SF2 | E-stop tested per SOP §A.2 with the arm at rest: press, twist out, nothing powers up, START. Record whether it sits before or after the relay, and check anti-restart with the relay cycling | Video or log | jss265, chris-policky | Installed 10-26, no test recorded |
 | SF3 | The SOP's measurement M1: transformer clearances (§A.1), the rule's written source, the zone taped. The dock, the shelf and the arm's reach are outside the zone | Photos with tape in frame | jss265, with gage-erickson for the rule | Not measured |
 | SF4 | Arm base bolted and plywood fixed to the table, recorded | Photo | chris-policky | Unverified |
@@ -56,7 +56,7 @@ within days of registering.
 | HW6 | Payload weighed: gripper with inserts, the wrist camera assembly, a full carrier. Compared with AgileX's rating at the reach used | Masses | jss265 | Not started |
 | HW7 | Layout: the dock, shelf and look pose reachable with J1 inside −20° … +60° and J6 inside its wiring window, with ≥ 15° margin at every taught pose; each carrier points at J1 | Joint margins | harness author | Not started |
 | HW8 | J1's zero is stable: 20 relay power cycles from rest, every joint reading within ±0.2° of its rest value. Needs CAN up and an explicit request, but no motion | Log | jss265 with an `@claude` run | Not done; J1 re-zeroed 11-14 |
-| HW9 | The arm's lender agrees to about 6,000 transfers and about 600 power cycles | Message | sgbaird | Not asked |
+| HW9 | The arm's lender agrees to about 6,000 transfers and about 750 power cycles (one per reset, about 660 of them in E2, plus a power-up per session) | Message | sgbaird | Not asked |
 | HW10 | Decide how the arm is shared with the auger-swap work (#42) during the campaign. Every swap of finger inserts and auger sleeves is a configuration change | Decision | sgbaird, jss265 | Open |
 
 ### Software

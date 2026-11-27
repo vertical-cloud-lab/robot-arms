@@ -36,7 +36,7 @@ at `8f2772c`). Each mismatch is either fixed in the protocol (v2) or turned into
 | 18 | **Joint zeros** | J1 was re-zeroed by 15.2° on 2026-11-14 (CLAUDE.md). On 2026-10-16 J1's reading jumped 7.9° on enable and a grasp missed by about 65 mm ([PR 20](https://github.com/vertical-cloud-lab/robot-arms/pull/20#issuecomment-6206324136)) | §5: a rest-pose check before every unit. §15 threat. Gate HW8 |
 | 19 | **Repeatability** | AgileX's 0.1 mm has never been measured here. No fixture exists | E3 measures it (registration B). Gate RB1 |
 | 20 | **Collision protection** | The joint drivers' collision level has never been read. Another user's PiPER reported level 0, no protection ([piper_sdk#20](https://github.com/agilexrobotics/piper_sdk/issues/20)). E2 deliberately misplaces carriers by up to 4 mm and 4°, and about 180 of those loads are expected to fail | R8 (a contact stop on every place descent). Gate SF8 |
-| 21 | **Ownership** | The arm is on loan to the lab ([#1](https://github.com/vertical-cloud-lab/robot-arms/issues/1#issuecomment-6089391974)) | Gate HW9: the lender agrees to about 6,000 transfers and about 600 power cycles |
+| 21 | **Ownership** | The arm is on loan to the lab ([#1](https://github.com/vertical-cloud-lab/robot-arms/issues/1#issuecomment-6089391974)) | Gate HW9: the lender agrees to about 6,000 transfers and about 750 power cycles |
 | 22 | **Competing use** | The finger inserts replace the auger sleeves that #42's auger-swap work needs. jss265 called that work "Priority number 1" ([#42](https://github.com/vertical-cloud-lab/robot-arms/issues/42)) | Swapping end effectors is a configuration change (§10). Gate HW10: decide how the arm is shared |
 
 ## 2. The protocol against PR 23's safety drafts
@@ -45,7 +45,7 @@ at `8f2772c`). Each mismatch is either fixed in the protocol (v2) or turned into
 |---|---|---|
 | **"Workspace clear"** covers one run and expires after 10 minutes. A trained person stands at the E-stop for the whole run (SOP §D) | A block is one run. The person at the arm gives the clear before it starts and again before it resumes after any reset, and stays at the E-stop throughout (§9, App. A) | Aligned in v2 |
 | **Lockout before every reach-in**: the arm at rest, then the E-stop (SOP §C) | App. A's reset: wait for the harness to park, press the E-stop, restore, START, clear again. A planned E-stop between units is not a failure (§7) | Aligned in v2 |
-| The JHA plans for "a person reaches in to reset the scene hundreds of times" | E2 alone is expected to need about 590 resets (§8.2), 400 of them for single vials under OL. D6 can cut that by about 200 | Gate SF1: the review team sees this number. The block log counts reach-ins |
+| The JHA plans for "a person reaches in to reset the scene hundreds of times" | E2 alone is expected to need about 660 resets (§8.2), 400 of them for single vials under OL. D6 can cut that by about 200 | Gate SF1: the review team sees this number. The block log counts reach-ins |
 | JHA H5: no teach mode during a block | App. A. Re-teaching is a configuration change (§10) | Aligned |
 | JHA H6, H15: power cut only at rest; a failed run can leave the arm raised | Park before any power-off; end-of-session check. This happened on 11-14 | Gate SF9 |
 | JHA H9: the dome has no interlock and stays at risk level II | Administrative control only: the person at the E-stop for every block | PR 23's open item 12 is still a decision for the PI |

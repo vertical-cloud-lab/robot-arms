@@ -31,7 +31,9 @@ PROTOCOL.md §0 before pasting.
 How reliable is a low-cost 6-DOF arm (AgileX PiPER) at loading a CubXL deck with vial carriers and
 with single vials, and how much of the gap to 99 % success per loading transfer do (a) a lead-in
 dock and (b) wrist-camera AprilTag correction each close? α = 0.05 for each hypothesis, one-sided
-where stated; each is reported as supported, refuted or inconclusive (§2).
+where stated. Each is reported with one of the labels fixed in §2: supported, refuted or
+inconclusive (H1a, H1b, H2); supported, contrary or not supported (H3a); supported or not supported
+(H3b, H3c).
 
 - **H1a.** Open-loop carriers loaded into the 3 mm × 45° lead-in dock succeed at ≥ 99 %.
   Supported if the exact one-sided 95 % Clopper–Pearson lower bound is ≥ 0.99; refuted if the
@@ -47,18 +49,20 @@ where stated; each is reported as supported, refuted or inconclusive (§2).
   one-sided 95 % lower bound of pooled success at |offset| ≥ 2 mm is ≥ 0.90. An axis refutes H2,
   at one-sided 99 % per axis (set by simulation so that H2 is refuted at most about 5 % of the
   time when the true ED90 is exactly 1.15 mm), if success over the 20 zero-offset loads has an
-  exact upper bound below 0.90, or if the slope is significantly negative and the Fieller upper
-  bound of ED90 is below 1.15 mm. An axis that meets both kinds of rule is inconclusive. Supported
+  exact upper bound below 0.90, or if the curve is not censored, its slope is significantly
+  negative and the Fieller upper bound of ED90 is below 1.15 mm. An axis that meets both kinds of rule is inconclusive. Supported
   if both axes support it, refuted if either refutes it, inconclusive otherwise.
 - **H3a.** AprilTag correction raises single-vial loading success: one-sided Boschloo exact test,
-  p < 0.05.
+  p < 0.05. Contrary if the same test in the other direction gives p < 0.05; not supported
+  otherwise.
 - **H3b.** Correction widens the single-vial ED90 on both x and y. Each capture radius is ED90
-  floored at 0 (0 if fitted success is below 90 % at zero offset). An axis passes if the one-sided
-  95 % delta-method lower bound of radius_AT − radius_OL is > 0, or, when the corrected curve is
-  right-censored, if the Fieller one-sided 95 % upper bound of ED90_OL is below 4 mm. Supported if
-  both axes pass.
+  floored at 0 (0 if fitted success is below 90 % at zero offset). If the corrected curve is
+  right-censored, an axis passes when the Fieller one-sided 95 % upper bound of ED90_OL is below
+  4 mm. Otherwise it passes when the one-sided 95 % delta-method lower bound of
+  radius_AT − radius_OL is > 0. Supported if both axes pass, not supported otherwise.
 - **H3c.** Correction costs no more than [D8] s per single-vial loading transfer: the one-sided
-  95 % upper bound of the Hodges–Lehmann shift in transfer time (corrected − open loop) is ≤ [D8].
+  95 % upper bound of the Hodges–Lehmann shift in transfer time (corrected − open loop) is ≤ [D8];
+  not supported otherwise.
 
 Predictions, recorded for calibration only: Pred-1 to Pred-6 in §2.
 
@@ -159,7 +163,8 @@ reorder units.
 The population is loading transfers by one AgileX PiPER arm (on loan to the lab, firmware recorded
 per configuration) at the lab's spot D, with the dock, carriers, finger inserts and offset plates
 of byu-vcl PR 272, printed vials, and a shelf at the cell. A trained operator stands at the
-hardware E-stop for each block under the lab's SOP; a block is one session of about an hour. The
+hardware E-stop for each block under the lab's SOP; a session of about an hour holds one block,
+or more if a change or a stop ends one early. The
 trial harness logs every transfer's timestamps, outcome, joint states at ≥ 50 Hz, the AprilTag
 correction, and a witness-camera still; the operator records scores, failure codes (LabRobFail
 categories, subtypes and severities, quoted in §13) and interventions. Temperature, humidity and
@@ -182,7 +187,8 @@ Unit of analysis: the loading transfer (unloading transfers are secondary).
   1,680 in all (1,480 if [D6] trims single-vial OL to 11 levels). Per axis fit: 20 trials at zero
   plus 40 at each |offset| of 1–4 mm.
 - Sizes are equal across conditions within a task, except carriers under OL when D5 = 628 and
-  single vials under OL in E2 when D6 trims their levels. Units are nested in about 70–100 blocks.
+  single vials under OL in E2 when D6 trims their levels. Units are nested in blocks, over about
+  70–100 sessions.
 
 ### Sample size rationale
 
@@ -203,8 +209,9 @@ request (issue #21). The exact and simulated powers of every registered rule at 
   difference, false support 0–1.4 %, including when the two curves' slopes differ.
 - H3c: ≥ 99.6 % if the true extra time is ≤ 4 s against a 5 s cap.
 - The run-of-failures stop ([D11], not a hypothesis) rarely fires on a healthy cell (a 9 % chance
-  over 300 loads at 93 % success, about 1 % over a task's E2) and stops a cell that fails half its
-  loads within about 14 loads (E1) or 3 blocks (E2); PROTOCOL.md §8.4 gives the full rates.
+  over 300 loads at 93 % success; at most 0.1 % over a task's E2 in the planning scenario). It
+  stops an E1 cell that fails half its loads within about 14 loads, but is slow to flag one that
+  fails 15–20 %, in E2 above all. PROTOCOL.md §8.4 gives the full rates.
 
 ### Starting and stopping rules
 

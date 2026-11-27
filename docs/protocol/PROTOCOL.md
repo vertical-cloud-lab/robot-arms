@@ -38,7 +38,7 @@ them.
 |---|---|---|---|
 | D1 | Setting: the mock-up v2 deck (real deck's 25 mm pitch, PR 272) or the real CubXL | §4 | Mock-up v2. No CubXL is in or near the cell, and the v1 mock-up's 35.6 mm pitch doesn't match the real 25 mm |
 | D2 | Vials: printed dummies or glass; which height | §4 | Printed dummies of Chris's vial (64.2 mm, Ø27 body, Ø28 cap), solid (46.8 g). PR 272 notes the CubOS deck files say 83 mm; settle which before printing |
-| D3 | Carrier load | §4 | Both carriers full: 8 dummies each, 485 g per carrier with solid dummies (PR 272) |
+| D3 | Carrier load | §4 | Both carriers full: 8 dummies each. PR 272 gives 485 g per carrier with solid dummies (its slicer estimate) and 0.53–0.66 kg depending on the holder's infill; weigh them (HW6) |
 | D4 | How E2's offsets are made: in software (the arm's belief about the dock) or with PR 272's offset plates | §8 | Software, with the plates as a physical cross-check (§15). Plates need a person to swap them, which rules out randomizing levels within a block |
 | D5 | *n* for the carrier, open-loop cell of E1 | §8 | **628** (2 failures may still certify 99 %), if the arm time is there. 300 is the minimum #21 sets, and gives H1a 55 % power at a true 99.8 % |
 | D6 | Single-vial open-loop levels in E2: all 21, or only 0, ±1, ±2 mm and ±2° | §8 | All 21, as #21 asks, unless operator time is short. The trimmed set saves about 200 resets for almost no information (§8) |
@@ -46,7 +46,7 @@ them.
 | D8 | The time-cost cap for H3c, in seconds per loading transfer | §2 | 5 s |
 | D9 | E3's loaded payload | §8 | A dummy mass equal to a full carrier, at the carrier's centre of gravity |
 | D10 | E3's instrument, with its expanded uncertainty *U* (k = 2) | §8 | Three 0.001 mm digital indicators on a sphere or cube target. *U* must be ≤ 0.025 mm; aim for ≤ 0.010 mm, because the instrument's noise inflates measured RP (an arm at 0.10 mm reads 0.110 mm at *U* = 0.025, 0.102 mm at *U* = 0.010) |
-| D11 | Run-of-failures stop. It counts failed loads, never deliberate E2 offsets | §10 | In E1, 3 failed loads in a row in one cell. In E2, 2 failed zero-offset loads in one block. This rarely stops a healthy cell, but is slow to flag one that fails 15–20 % of its loads, in E2 above all ([§8.4](#84-power)). For earlier warning, add a clause such as 5 failed loads among a cell's last 20 |
+| D11 | Run-of-failures stop. It counts failed loads, never deliberate E2 offsets | §10 | In E1, 3 failed loads in a row in one cell. In E2, 2 failed zero-offset loads in one block. This rarely stops a healthy cell, but is slow to flag one that fails 15–20 % of its loads, in E2 above all ([§8.4](#84-power)). For earlier warning in E1, add a clause such as 5 failed loads among a cell's last 20 |
 | D12 | Campaign end date (cells still short then are reported as they stand) | §10 | 16 weeks after the first counted block |
 | D13 | MTBI horizon τ in transfers | §14.4 | 300 |
 | D14 | Where raw logs and videos live | §11 | A Hugging Face dataset under `byu-vcl`, made public with the paper |
@@ -63,7 +63,7 @@ counting anything.
 |---|---|---|
 | R1 | T2's pocket: diametral clearance *c* and entry chamfer | Measured on the printed part with pin gauges and calipers, not taken from CAD. H1b needs *c* ≤ 1.0 mm; PR 272's Cubware pocket squeezes the vial by 0.57 mm, which qualifies |
 | R2 | Dock datum, cone-pin spacing, pocket distance *r* from the datum | Measured as printed. The datum is the midpoint of the cone pins; the design spacing is 250 mm |
-| R3 | AprilTags and the look | `tag36h11`, the largest size with a full white border that fits on the dock blocks, and at least 25 mm (10 mm tags failed 0 of 48 from the fixed camera in PR 40). 5 frames per look, 3 looks at most. The correction is capped at 6 mm and 6°, beyond the largest injected offset. The reprojection-error limit is the 99th percentile of 100 pilot looks |
+| R3 | AprilTags and the look | `tag36h11`, the largest size with a full white border that fits on the dock blocks, and at least 25 mm (10 mm tags decoded in 0 of 48 frames from the fixed camera in PR 40). 5 frames per look, 3 looks at most. The correction is capped at 6 mm and 6°, beyond the largest injected offset (the ±6 and ±8 mm extension in §15 raises it by the same amendment). The reprojection-error limit is the 99th percentile of 100 pilot looks |
 | R4 | Seat check (T1) and cap height (T2) | A 0.2 mm feeler gauge at the four corners of each dock block, or a seat switch if one is fitted. Cap-top height within ±0.5 mm of nominal, by gauge |
 | R5 | Speed | One speed in every condition and experiment: the pilot speed at which 20 nominal carrier loads all succeed, and never above the SOP's cap |
 | R6 | Check delay; timeout | Check 2 s after the arm reaches its clear pose. Timeout per transfer: 3 × the pilot median, rounded up to 5 s |
@@ -234,7 +234,7 @@ recorded for calibration only and enter no decision. The power of each rule is i
      the characteristic under test.
   2. **Refuted** if at any pose the bootstrap-t one-sided 99 % lower bound (§14.5) exceeds the
      RP that an arm exactly at 0.10 mm would show through this instrument:
-     3.615 × √((0.10 / 3.615)² + *u*²), with *u* = *U*/2 per axis. That is 0.110 mm at
+     3.616 × √((0.10 / 3.616)² + *u*²), with *u* = *U*/2 per axis. That is 0.110 mm at
      *U* = 0.025 mm and 0.102 mm at *U* = 0.010 mm. The instrument's noise inflates measured RP,
      so refuting against 0.10 mm itself would refute an arm that is within spec.
   3. **Supported** ("meets the spec") if the ISO 9283 point estimate is ≤ 0.10 mm at every pose.
@@ -296,7 +296,7 @@ and most changes start a new configuration.
 | Environment | Temperature, relative humidity and illuminance at the dock, logged per block |
 | Setting | D1 |
 
-**Payload.** A full carrier (0.53–0.66 kg, PR 272) plus the finger inserts (67 g) rides on a
+**Payload.** A full carrier (485 g with solid dummies by PR 272's slicer estimate, 0.53–0.66 kg by its README depending on infill) plus the finger inserts (67 g) rides on a
 gripper of about 0.5 kg, and the wrist also carries a Pi, two cameras and their mount. #42 reads
 the 1.5 kg rating as including the gripper. The masses are weighed and the total recorded before
 the pilot (bench gate HW6).
@@ -380,9 +380,9 @@ A transfer is scored at the **check**, 2 s after the arm reaches the clear pose 
 - an effort spike that didn't trip the contact stop.
 
 **A planned E-stop is not a failure.** The SOP's lockout (§C of `docs/safety/sop.md`) has the
-person at the arm press the E-stop before every reach-in. A press between units, with the arm
-parked, belongs to the intervention that caused it. A press *during* a transfer fails that
-transfer.
+person at the arm press the E-stop before every reach-in. A press between transfers with the arm
+parked, including the reset after a failed leg (§5), belongs to the intervention that caused it.
+A press *during* a transfer fails that transfer.
 
 **Scoring.**
 1. The operator scores every transfer on the spot (App. A).
@@ -433,8 +433,9 @@ lead-in, which covers about ±1.4° (PR 272). The OL carrier's yaw curve will ha
 points. §15 lists an optional ±0.5° / ±1° extension.
 
 **Expect many failed loads, and a reset for each.** Under one plausible scenario
-([`out/power.md`](analysis/out/power.md)), E2 produces about 590 failed loads: about 180 for
-carriers OL, about 400 for single vials OL, and about 12 for both AT cells together. Each needs a
+([`out/power.md`](analysis/out/power.md)), the one the figure above draws, E2 produces about 660
+failed loads: about 180 for carriers OL, about 400 for single vials OL, about 80 for single vials
+AT (its curve falls past 3 mm) and about 2 for carriers AT. Each needs a
 person to park the arm, press the E-stop, restore the scene and restart (§C of the SOP). Trimming
 single-vial OL to 0, ±1, ±2 mm and ±2° (D6) would cut its failures to about 200. Its ED90 is
 expected below 1 mm, so the dropped levels carry almost no information.
@@ -467,7 +468,8 @@ absolute reference such as a laser tracker) are out of scope.
 The full tables are in [`analysis/out/power.md`](analysis/out/power.md), from
 [`analysis/power.py`](analysis/power.py) (fixed seeds, the registered rules from
 `prereg_stats.py`), rerun on 2026-11-27 after the independent review's corrections. Binomial and
-Boschloo powers are exact. The rest are simulated: 2,000 campaigns per scenario for H2 and H3b
+Boschloo powers are exact; the Boschloo power comes from the test's critical region, computed in
+`power.py` and checked against `scipy.stats.boschloo_exact`, which the registered analysis calls. The rest are simulated: 2,000 campaigns per scenario for H2 and H3b
 (10,000 for H2's false-refutation rate at the boundary), 500 for H3c and H4a, 300 for H4b and
 H4c. `power.py --check-rejected` also simulates the rules that were replaced (§16) on the same
 draws, and checks its copies of the registered rules against `prereg_stats.py`.
@@ -485,7 +487,7 @@ draws, and checks its copies of the registered rules against `prereg_stats.py`.
 | **H4a** (30 cycles, *U* = 0.025 mm) | Supported ("meets"): 94 % if the true RP is 0.07 mm, 54 % at 0.08 mm, 5 % at 0.09 mm, because the instrument's noise inflates RP. "Certified": 89 % at 0.04 mm, 62 % at 0.05 mm, 26 % at 0.06 mm; a valid upper bound from 30 cycles is wide. Refuted: 5.0 % for an arm exactly at 0.10 mm, 37 % at 0.11, 81 % at 0.12, 99 % at 0.13 mm |
 | **H4b, H4c** | 61 % and 83 % power for a 0.01 mm payload effect and 0.01 mm per 100 mm; 98–100 % at 0.02 mm |
 | **MTBI** (600 E1 transfers per cell) | Imprecise by design: at 1 intervention per 100 transfers, the 95 % interval runs from 46 to 272 transfers |
-| **D11** (run-of-failures stop; not a hypothesis) | **It rarely stops a healthy cell:** over 300 loads there's a 0.5 % chance at 97.5 % success and 9 % at 93 %, and about 1 % over a task's E2. **It stops a cell that fails half its loads fast:** within about 14 loads in E1, or about 3 blocks in E2. **It's slow at 15–20 % failure:** 347 loads on average in E1. In E2, a cell failing 20 % at zero offset is stopped only 63 % of the time across the whole task, because most blocks hold one zero-offset pair or none. **An extra E1 clause**, 5 failed loads among a cell's last 20, would flag a 15 % cell within a median 48 loads, but would also stop a 93 % cell 38 % of the time |
+| **D11** (run-of-failures stop; not a hypothesis) | **It rarely stops a healthy cell:** over 300 loads there's a 0.5 % chance at 97.5 % success and 9 % at 93 %, and at most 0.1 % over a task's E2 in the planning scenario. **E1 catches a cell failing half its loads fast,** within about 14 loads. **It's slow at 15–20 % failure:** 347 loads on average in E1. In E2, most blocks hold one zero-offset pair or none. If both conditions fail 20 % at zero offset, only 63 % of tasks see a stop; if only the open-loop condition does, 15 %. Even at 50 % in both conditions, the median is 45 pairs, about 3 blocks. **An extra E1 clause**, 5 failed loads among a cell's last 20, would flag a 15 % cell within a median 48 loads, but would also stop a 93 % cell 38 % of the time |
 
 **Why these sample sizes.** #21 fixes the minimum: 300 per task and condition, 20 per offset
 level, 30 cycles per pose. The tables show what that buys. The one place it falls short of what
@@ -503,7 +505,7 @@ the question needs is H1a: 300 can only certify 99 % if the dock is close to per
 | **Total (D5 = 300)** | | **5,760 transfers** |
 
 At 30 s per transfer that is about 48 h of arm time; at 45 s, about 72 h. Add the human resets:
-about 600 in E2 at 2–3 minutes each, or 20–30 hours. Sessions are about an hour (R7), so the
+about 660 in E2 at 2–3 minutes each, or 22–33 hours. Sessions are about an hour (R7), so the
 campaign is roughly 70–100 sessions.
 
 ---
@@ -575,9 +577,9 @@ met and recorded.
    cell safe per the SOP and record what happened. Resuming always starts a new block.
 3. **Run of failures, or the arm not at rest.** D11 stops the block for an inspection: in E1,
    3 failed loads in a row in one cell; in E2, 2 failed zero-offset loads in one block. E2's
-   offset loads fail by design, so they never count toward it. So does a unit that can't start because the arm doesn't
-   read its rest pose (§5). Anything the inspection fixes is a change under rule 1. Trials before
-   the stop stay in the data.
+   offset loads fail by design, so they never count toward it. A unit that can't start because
+   the arm doesn't read its rest pose (§5) also stops the block. Anything the inspection fixes is
+   a change under rule 1. Trials before the stop stay in the data.
 4. **No stopping on results.** Each cell's *n* is fixed. Don't stop early because it looks good
    or bad. Don't extend past *n* because one failure spoiled the bound: that is optional stopping,
    and it voids the exact bounds. Rules 2 and 3 are the only interim looks, and both are for
@@ -637,8 +639,8 @@ report says so up front, and a sensitivity analysis counts the excluded units as
 
 **Missing data.** A transfer whose outcome can't be scored (no operator score and no usable
 still) is missing. Its unit is re-queued in the ledger like an excluded one, so every cell still
-reaches *n* scored loads: at *n* = 300, H1a can only be supported with 300 scored loads, because
-0.05^(1/298) is below 0.99. The primary analysis uses the scored transfers. A sensitivity
+reaches *n* scored loads: at *n* = 300, H1a can't be supported with fewer than 299 scored loads,
+because 0.05^(1/298) is below 0.99. The primary analysis uses the scored transfers. A sensitivity
 analysis counts missing transfers as failures. More than 2 % missing in any cell is reported up front. In E3, a
 missed reading is retaken in the same cycle if the arm hasn't moved; RP is computed from the
 available cycles if at least 27 of 30 remain, and otherwise that pose × payload run is repeated in
@@ -897,8 +899,9 @@ results, and none of them is a reason to drop data.
 
 ### 14.7 What gets reported whatever happens
 
-All cells and every hypothesis, each as supported, refuted or inconclusive (or contrary, for
-H3a). Every block, including those from superseded configurations. All exclusions, all missing
+All cells and every hypothesis, each with its label from §2: supported, refuted or inconclusive
+for H1a, H1b, H2 and H4a; supported, contrary or not supported for H3a; supported or not supported
+for H3b, H3c, H4b and H4c. Every block, including those from superseded configurations. All exclusions, all missing
 data and all amendments. Anything not in this section is labelled exploratory.
 
 ---
@@ -912,7 +915,7 @@ trial.
 |---|---|---|
 | **The object confounds the dock contrast.** A carrier and a vial differ in mass, grasp and fixture at once | Estimand (i) in §1 overstates or understates what the lead-in itself buys | T2 into a chamfered pocket vs the tight one: same vial, OL, *n* = 300. That isolates the lead-in |
 | **The yaw levels saturate for the OL carrier** (§8.2) | The yaw ED90 is only known to be below 2° | Add ±0.5° and ±1°, 20 trials each |
-| **AT may never fail within ±4 mm** | ED90_AT is censored at > 4 mm | If AT has no failures at ±4 mm on an axis, run ±6 and ±8 mm, 20 trials each, AT only |
+| **AT may never fail within ±4 mm** | ED90_AT is censored at > 4 mm | If AT has no failures at ±4 mm on an axis, run ±6 and ±8 mm, 20 trials each, AT only, with R3's correction cap raised above 8 mm and 8° in the same amendment |
 | **A software offset may not equal a physical one** | E2 may misstate real capture | PR 272's plates: 20 OL carrier trials on `x+2mm` and 20 on `yaw+2deg`, against the same software offsets |
 | **Dummies are not glass, and the deck is a mock-up** | Slip, breakage and the real deck's tolerances are not represented | A confirmation block with glass vials on a real CubXL deck, reported separately |
 | **The operator knows the condition** | Scoring bias | Blind review of the witness stills (§7) |
@@ -946,11 +949,14 @@ follows:
 | §5 | A failed leg is restored to its intended end state and the unit continues | Keeps one load and one unload per unit |
 | §2 | Fixed outcome labels for every hypothesis, each from a `h*_decision` function in `prereg_stats.py` | Independent review: some outcomes had no label, and some rules lived only in the simulation scripts |
 | §2 H2 | Support needs a significantly negative slope; refutation is at 99 % per axis; data that meet both are inconclusive | Independent review: refuting by either axis is a union test (5.3–16.4 % false refutation at the boundary at 95 % per axis, 5.1–10.4 % at Bonferroni's 97.5 %, 1.0–5.1 % at 99 %), a rising curve could be "supported", and one data set could be both |
-| §2 H3b | The delta-method bound replaces the percentile bootstrap | The bootstrap claimed a difference 10–11 % of the time when the ED90s were equal but the slopes differed |
+| §2 H3b | The delta-method bound replaces the percentile bootstrap | The bootstrap claimed a difference 10 % of the time when the ED90s were equal but the slopes differed; the delta-method rule, 1.0–1.4 % |
 | §2 H4a | Rules in a fixed order; refutation at 99 % per pose against an instrument-adjusted threshold | Independent review: at *U* = 0.025 mm an arm exactly at 0.10 mm was "refuted" 82 % of the time. Either fix alone still refuted it 25–39 % of the time; both together, 5.0 % ([`out/power.md`](analysis/out/power.md)) |
-| §0 D11, §10 | The run-of-failures stop counts E1 loads and E2's zero-offset loads only | E2's offset loads fail by design, so the v2 rule would have stopped every E2 block |
+| §0 D11, §10 | The run-of-failures stop counts E1 loads and E2's zero-offset loads only, and v1's second clause (5 failures in the last 20) is dropped | E2's offset loads fail by design, so the v2 rule would have stopped every E2 block |
 | §12 | Missing transfers are re-queued | At *n* = 300, two unscorable loads would have made H1a impossible to support |
 | §9, §10, §14.4 | Trimmed E2 levels, the primary configuration, unattributable interventions and the RMST horizon defined | Ambiguities the review found |
+| §8.4, App. A | Power analysis rerun on the corrected rules: no figure changed. The replaced rules are now simulated on the same draws (`power.py --check-rejected`), and D11's stop rates are added. App. A's stop rule now matches D11 | The "before the fix" rates came from runs that were never committed; the checklist still had the pre-review rule |
+| §8.2, §8.5 | One planning scenario everywhere: the reset estimate now uses the corrected single-vial curve the E2 figure and the synthetic campaign use (about 660 resets, not 590) | A consistency pass found the estimate assumed a flat 2 % for that cell |
+| §2, §7, §10, §12, §14.7, §15, App. A | Wording made to match the code and the body: outcome labels per hypothesis, a planned E-stop between legs, H1a needs at least 299 scored loads, declared spares, the AT extension's correction cap | The same consistency pass |
 
 After the lock:
 
@@ -983,7 +989,8 @@ Block ID `______` · cfg `______` · Operator `______` · Date `______`
       whole block.
 - [ ] Teach-button cover on. Nobody uses teach mode during a block.
 - [ ] The commit on mpzy matches the block's schedule file, and **nothing has changed since the
-      last block.** If something has, stop and record a new configuration.
+      last block.** If something has, it starts a new block, and a new configuration unless it
+      was a declared spare (§10). Record it before you start.
 - [ ] Temperature, RH and lux logged. Witness camera recording.
 - [ ] The cell is at its start state: carrier A in the dock, B in shelf nest 2, the vial in the
       shelf pocket, the dock pocket empty.
@@ -1009,7 +1016,7 @@ Block ID `______` · cfg `______` · Operator `______` · Date `______`
 |---|---|
 | Minor | Log it and continue |
 | Recoverable | The reset above. Log the intervention and continue |
-| Critical | **Stop the block.** Make it safe and log it. Anything you fix makes a new configuration |
+| Critical | **Stop the block.** Make it safe and log it. Anything you fix makes a new configuration, unless you swapped in a declared spare |
 | Catastrophic | **E-stop.** Make safe per the SOP, stop the campaign, and call D15's contacts before anything else |
 
 - [ ] The run-of-failures stop (D11): in E1, 3 failed loads in a row in one cell; in E2, 2 failed
@@ -1020,8 +1027,8 @@ Block ID `______` · cfg `______` · Operator `______` · Date `______`
 **Never**
 - Adjust, tighten, re-teach, recalibrate, clean a lens or swap a part in the middle of a block.
   End the block first.
-- Skip, reorder or rerun a unit. The exception is an excluded unit (§12), which the ledger
-  re-queues.
+- Skip, reorder or rerun a unit. The exceptions are excluded units and units with a transfer
+  that couldn't be scored (§12), which the ledger re-queues.
 - Stop early, or add units, because of how the numbers look.
 
 **End of session**

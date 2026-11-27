@@ -31,7 +31,7 @@ payload and reach? α = 0.05 for each, one-sided (§2, H4).
      0.025 mm (ISO 9283 §6.5's 25 % cap);
   2. refuted if at any pose the bootstrap-t one-sided 99 % lower bound (Bonferroni over five
      poses) exceeds the RP an arm exactly at 0.10 mm would show through this instrument,
-     3.615 × √((0.10/3.615)² + u²) with u = U/2 per axis (0.110 mm at U = 0.025 mm);
+     3.616 × √((0.10/3.616)² + u²) with u = U/2 per axis (0.110 mm at U = 0.025 mm);
   3. supported ("meets the spec") if the ISO 9283 point estimate is ≤ 0.10 mm at every pose,
      which is conservative because the instrument only inflates it; also reported as "certified"
      if every pose's one-sided 95 % bootstrap-t upper bound is ≤ 0.10 mm;
@@ -110,7 +110,9 @@ and finger inserts recorded). The instrument ([D10]: for example three 0.001 mm 
 on a sphere or cube target) must have an expanded uncertainty ≤ 0.025 mm (k = 2), measured on a
 static target before the arm runs. The harness commands each pose and logs the readings with
 timestamps and the joint states. The session runs under the lab's SOP with a trained person at the
-E-stop. Expected duration: one session of about 2–3 hours.
+E-stop. Expected duration: one session of about 2–3 hours (an estimate, not measured: 300 pose
+visits at roughly 10–20 s each with the 2 s settle, plus the 15-minute warm-up, the static check and
+the payload change).
 
 ### Sample size
 
@@ -160,8 +162,9 @@ S_l = √(Σ(l_j − l̄)²/(n − 1)), and **RP = l̄ + 3 S_l** (ISO 9283:1998)
 
 ### Statistical models
 
-`analysis/prereg_stats.py` (`iso9283_rp`, `bootstrap_t_rp`, `bootstrap_rp`): RP per pose × payload
-with studentized-bootstrap (bootstrap-t) bounds, 10,000 resamples of the 30 cycles each studentized
+`analysis/prereg_stats.py`: `iso9283_rp` computes RP, and the decisions are `h4a_decision` (H4a)
+and `h4bc_decisions` (H4b, H4c). RP per pose × payload gets studentized-bootstrap (bootstrap-t)
+bounds, 10,000 resamples of the 30 cycles each studentized
 by its jackknife standard error. On synthetic data its one-sided 95 % upper bound covered 91–93 %
 with Gaussian errors (85 % with heavy-tailed Student t5 errors), against 72–76 % (61 %) for a plain
 percentile bootstrap, which is why the percentile version is not used for H4a. H4b: the bootstrap distribution of the
