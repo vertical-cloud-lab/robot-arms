@@ -1,7 +1,7 @@
-# Keep drafts local until they're turned in. Delete this file to publish them.
+# Keep drafts local until they're turned in. The proposal is published; the paper
+# (and everything else here) stays local until it is turned in.
 *
 !.gitignore
 !README.md
-# Except the Edison query records and source shortlist (issue #64), which are published.
-!edison/
-!edison/**
+!Proposal/
+!Proposal/**

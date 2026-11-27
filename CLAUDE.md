@@ -13,6 +13,27 @@ branch here is the same files squashed into one import commit. byu-vcl's CLAUDE.
 reference for the rest of the lab (stream cams, OT-2, CubXL, Hugging Face Spaces, YouTube
 livestreams). Uploading videos to YouTube from here is covered below.
 
+### Opening a new PR from a run started on a PR
+
+The action's push wrapper (`git-push.sh`) only updates the branch the run
+started on, so on an open PR it can't create a branch for separate work. When
+the request calls for a new PR (a spin-off, a stacked PR, work that doesn't
+belong in this PR's diff), Sterling authorizes this, and it is not a
+workaround of the action:
+
+1. Commit the work on a local branch (base it on `main`, or on this PR's branch
+   for a stacked PR).
+2. `bash <(git show origin/main:scripts/push_new_branch.sh) claude/<slug>`.
+   This runs main's copy, which older PR branches don't have and a PR can't
+   change. It only creates new `claude/*` branches: it refuses any other name
+   and any branch that already exists, and never overwrites.
+3. `gh pr create --head claude/<slug> --base <main or this PR's branch>`, and
+   link the new PR in your comment.
+
+Everything else keeps the wrapper's rule: never push to `main`, to a person's
+branch or to another existing PR's branch, and never force-push. Use the
+wrapper for pushes to this run's own branch as usual.
+
 ### The GitHub token dies at minute 60 (push early, re-mint to continue)
 
 The GitHub App token a session starts with (`GITHUB_TOKEN`/`GH_TOKEN` in the
@@ -190,6 +211,33 @@ print the hostname or any credential in comments, commits, or logs.
 ranges; the Pi's residential IP is not blocked. The Pi is on constrained Wi-Fi and may be
 running the arm, so rate-cap transfers (`curl --limit-rate`) and never run speed tests.
 
+**SO-101 teleop files on mpzy (PR #47, PR #68).** Each session,
+`PiPER Sandbox Scripts/Teleoperation/teleop.py` copies files to `~/so101/` on mpzy over its
+SSH connection: `follower.py`, plus `Up_and_Down.py`, `fake_piper.py`, `arm_power.py` and
+`arm_home.json` from `PiPER Sandbox Scripts/Arm Control/`. A real run goes through the Pi's own
+`~/arm_power.py run`; the `~/so101/` copy of `arm_power.py` is used only if `~/arm_power.py`
+is missing. With `--dry-run` the follower runs directly, against a simulated arm, and touches
+neither the relay nor `can0`. CI dry runs did the copying on 2026-11-06: the first
+copied three files, and the 02:41 UTC run added `arm_power.py` and `arm_home.json`. Nothing
+else on mpzy changed. Delete `~/so101/` to undo it. Before that run, `~/arm_power.py`,
+`~/arm_home.json` and `~/Up_and_Down.py` matched the repo copies byte for byte.
+
+**can0 follows the relay on mpzy (2026-11-12).** `arm_power.py` now brings `can0` up at
+1 Mbit/s just before the relay goes on and takes it down once the relay is off and the arm is
+silent. The repo copy was scp'd to `~/arm_power.py`; the previous one is
+`~/arm_power.py.bak-20261112`, which differed from the repo only in one error message. It needs
+`/etc/sudoers.d/arm-power-can` (root, mode 0440), which lets `vcl` run exactly
+`/usr/bin/ip link set can0 down`, `… up` and `… type can bitrate 1000000` without a password.
+The file's line is in `arm_power.py`'s docstring. Delete that file and restore the backup to
+undo it. `Arm Control/joint_watch.py`, run from `/tmp`, saved the hand-measured joint ranges
+to `~/joint_watch_runs/` the same night. **J1 re-zeroed (2026-11-14 UTC).** With the base centred by eye and every motor disabled,
+`JointConfig(1, set_zero=0xAE)` made J1's position its zero: it read 15.2° and then 0.0°.
+J1's readings before then (the 2026-11-12 hand-measured ranges and `--envelope`'s J1 ±150°)
+may be offset by up to that much, so measure J1's range again with `joint_watch.py`. To undo
+it, centre the base the old way and set the zero again. mpzy's own `~/Up_and_Down.py` is still the
+2026-11-06 copy: it enables with `EnablePiper()`, which also enables the gripper and sets it
+closing onto its finger sleeves, so replace it with the repo copy before running it on its own.
+
 ## Secret inventory
 
 Names and purposes only — **never** echo, grep, or print the values. Every secret below is
@@ -211,7 +259,7 @@ sessions.
 | `EDISON_PLATFORM_API_KEY` | secret | Edison Scientific platform API. |
 | `HF_TOKEN` | secret | Hugging Face `byu-vcl` account, fine-grained read + write on its own repos (LeRobot datasets and policies). |
 | `ONSHAPE_ACCESS_KEY` / `ONSHAPE_SECRET_KEY` | secret | Onshape REST API key pair. Prefer these for anything the API can do; the PiPER mount lives in vcl-shared > 6DOF Robot Arm. |
-| `ONSHAPE_USERNAME` / `ONSHAPE_PASSWORD` | secret | Onshape login, for browser work only (WebGL canvas, so real pointer events on a display on a Pi). |
+| `ONSHAPE_USERNAME` / `ONSHAPE_PASSWORD` | secret | The lab's shared Onshape account (member privileges, no 2FA), for browser work. See [Onshape](#onshape-signing-in-through-the-browser-onshape_username--onshape_password). |
 | `H2D_IP` / `H2D_ACCESS_CODE` / `H2D_SERIAL` | secret | Bambu Lab H2D, LAN mode. On the lab LAN, not the tailnet: connect from the Pi. |
 | `A1_MINI_IP` / `A1_MINI_ACCESS_CODE` / `A1_MINI_SERIAL` | secret | The same for the A1 mini. |
 | `BAMBU_USERNAME` / `BAMBU_PASSWORD` / `BAMBU_TOTP_SEED` | environment secret | Bambu cloud login and its authenticator seed. Only in the `bambu-print` environment, for `claude-print.yml`; not in `claude.yml`. See [Printing on the lab's Bambu Lab printers](#printing-on-the-labs-bambu-lab-printers-claude-print). |
@@ -236,12 +284,15 @@ stream cams' livestream channel. Every `@claude` run has `YOUTUBE_UPLOAD_TOKEN_P
 pip install -r youtube/requirements.txt
 python youtube/yt_service.py                         # confirm channel and scopes
 python youtube/yt_service.py upload clip.mp4 --title "PiPER <what it shows>, <date>" \
-  --description "From <issue/PR link>, commit <sha7>."
+  --description "Commit <sha7>."
 ```
 
-- Uploads are `private` (API uploads from an unaudited Cloud project are locked private
-  anyway). Post the `youtube.com/watch?v=…` link in the comment and say it is private;
-  sgbaird publishes or unlists it from YouTube Studio.
+- Uploads default to `public`; pass `--privacy unlisted` or `--privacy private` when the
+  person asks. Since 2026-11-02 YouTube no longer locks uploads from unaudited API projects
+  to private, so the privacy set at upload is what viewers get. Post the
+  `youtube.com/watch?v=…` link in the comment and say which privacy it has.
+- The description automatically ends with `Requested in <link>`, the exact comment, review
+  or issue that started the run (from `$GITHUB_EVENT_PATH`); don't add it by hand.
 - The token cannot delete, edit metadata, change privacy, or manage playlists. If a run needs
   that, say so in the comment instead of looking for another credential: it takes byu-vcl's
   full-control token, behind `@claude-youtube` there (sgbaird only, each run approved).
@@ -290,13 +341,22 @@ gets that login:
 - **Check the installed nozzle diameters before printing.** Read them off the printer, not
   the slice or an earlier comment: Studio's Device page, or the status report over LAN from
   a Pi. Check while preparing, before you slice, and again in the `@claude-print` run before
-  Send, and put the diameters in the tracking comment next to the fresh frame.
-  For this repo every installed nozzle must be **0.2 or 0.4 mm** (on the H2D, check both
-  left and right), and the slice must be for the diameter of the nozzle that will print it.
-  tensegrity-optimization prints with 0.6 mm nozzles, so a printer may well still have
-  those in.
-  If a diameter is wrong or you can't read it, don't send (and don't re-slice for the wrong
-  nozzle): say what is installed and wait for a person to swap it.
+  Send, and put the diameters (both of them, on the H2D) in the tracking comment next to the
+  fresh frame.
+  For this repo, **every nozzle the print uses must be 0.2 or 0.4 mm**, and the slice must be
+  for the diameter of that nozzle. A nozzle the print doesn't use can be any size
+  (sgbaird, 2026-11-13; this replaces the older rule that both H2D nozzles had to be 0.2 or
+  0.4 mm). On the H2D:
+  - **A single-filament print goes on one nozzle.** Assign it to the left nozzle by default,
+    or to the right one if only the right is 0.2 or 0.4 mm. Check that the sliced file uses
+    only that nozzle (no filament, prime tower or wipe assigned to the other) and that the
+    part fits that nozzle's print area.
+  - **A print that needs both nozzles** needs both to be 0.2 or 0.4 mm.
+  tensegrity-optimization prints with 0.6 mm nozzles, so a printer may well still have one of
+  those in. That's fine as long as the print doesn't use it.
+  If no nozzle the print could use is 0.2 or 0.4 mm, or you can't read a diameter, don't send
+  (and don't re-slice for the wrong nozzle): say what is installed and wait for a person to
+  swap it.
 - **Nobody replies `plate clear` any more (sgbaird, 2026-10-23).** The print run reads the
   plate itself and gives people a window to stop it. This replaces the person's go in rule 1
   and §4.1 of byu-vcl's `bambu/README.md`, which an older branch may still show.
@@ -331,7 +391,7 @@ gets that login:
   verification off and on again to get a new seed (everyone who logs in to the account
   re-scans it), change the password, then update the three secrets in the `bambu-print`
   environment of every repo that has one: byu-vcl, robot-arms, powder-doser,
-  tensegrity-optimization and caliber.
+  tensegrity-optimization, caliber, digital-wetlab and digital-alloy-lab.
 
 ## Receiving files from other repos (`sgbaird/agent-staging`)
 
@@ -362,3 +422,72 @@ GH_TOKEN=$GH_READ_PAT_STAGING gh api "repos/sgbaird/agent-staging/contents/<path
 ## Zenodo
 
 `ZENODO_API_TOKEN` and `ZENODO_SANDBOX_API_TOKEN` can upload *and* publish; `ZENODO_BASE_URL` and `ZENODO_SANDBOX_BASE_URL` end in `/api`. Publishing mints a permanent DOI that only Zenodo support can remove, so test on the sandbox and publish only when asked. `zenodo_client`'s `ensure_zenodo` reads both tokens from env as named: [example](https://github.com/sparks-baird/matsci-opt-benchmarks/blob/c58cd80/notebooks/crabnet_hyperparameter/1.3-sgb-zenodo-upload.ipynb).
+
+## Onshape: signing in through the browser (`ONSHAPE_USERNAME` / `ONSHAPE_PASSWORD`)
+
+`ONSHAPE_USERNAME` and `ONSHAPE_PASSWORD` (job env in `.github/workflows/claude.yml`) are the
+login of the lab's shared Onshape account. It has member privileges in the lab's Onshape
+company, signs in with e-mail and password, and has no two-factor step (checked 2026-11-09).
+Use it to open, export (STL, STEP, Parasolid) or search lab documents that aren't public, such
+as a link someone posts in an issue. The same values are in every core VCL repo; set or rotate
+them in all of them together.
+
+The REST API key pair (`ONSHAPE_ACCESS_KEY` / `ONSHAPE_SECRET_KEY`) is still the first
+choice when it works. Since 2026-10-29 it has returned HTTP 402 "API limit exceeded", because
+the company has used up its yearly allowance
+([powder-doser PR 200](https://github.com/vertical-cloud-lab/powder-doser/pull/200#issuecomment-6596401552)).
+Until that resets, the browser is the only way to export a private document.
+
+**The route that works** is the one byu-vcl used on 2026-09-26
+([PR 234](https://github.com/vertical-cloud-lab/byu-vcl/pull/234#issuecomment-5842335279)):
+headed Chrome on a virtual display on the runner, with its traffic sent out through a lab Pi
+over an SSH SOCKS tunnel, so that Onshape sees the BYU network instead of a datacenter. Its
+rig script is on that PR's branch; fetch it pinned, into `/tmp`, never into this checkout:
+
+```bash
+B=https://raw.githubusercontent.com/vertical-cloud-lab/byu-vcl/49677cfff31a67765d9182c01765bfa994a7545d/ot2-overhead-camera/lid-mount/onshape
+mkdir -p /tmp/onshape-rig/record /tmp/onshape-rig/pi
+curl -fsSL "$B/record/rig.sh" -o /tmp/onshape-rig/record/rig.sh && chmod +x /tmp/onshape-rig/record/rig.sh
+curl -fsSL "$B/pi/xshot.py" -o /tmp/onshape-rig/pi/xshot.py
+PI_USER="$ARM_PI_USERNAME" PI_HOST="$ARM_PI_HOSTNAME" /tmp/onshape-rig/record/rig.sh start
+/tmp/onshape-rig/record/rig.sh check    # the tunnel's exit network (ASN and org only), and a screenshot of the display
+```
+
+`rig.sh start` brings up Xvfb on `:99`, the tunnel on `127.0.0.1:1080` and Chrome with DevTools
+on `127.0.0.1:9222`. Attach with Playwright's `chromium.connect_over_cdp("http://127.0.0.1:9222")`.
+
+The tunnel goes through the arm Pi (`ARM_PI_USERNAME` / `ARM_PI_HOSTNAME`). The Pi only relays
+traffic: nothing is installed or written on it. That Pi hasn't carried this tunnel before
+(byu-vcl used the CubXL Pi), so check that `rig.sh check` names BYU before signing in.
+
+Signing in ([`sign_in()` in `onshape_ui.py`](https://github.com/vertical-cloud-lab/byu-vcl/blob/49677cf/ot2-overhead-camera/lid-mount/onshape/onshape_ui.py#L255-L276), selectors checked live):
+
+1. Go to `https://cad.onshape.com/signin`. Click `input[name='username']`, type the e-mail and
+   click `button.continue-button`.
+2. Click `input[name='password']`, type the password and click `button.os-signin-button`.
+3. Wait up to 60 s for the URL to contain `/documents`.
+
+- **Read the values from the environment inside the script.** Never print them, pass them as
+  command-line arguments, or take a screenshot while the form is filled in. Only take
+  screenshots after you reach `/documents`.
+- **Stop at the first failure: don't retry in a loop.** That covers a reCAPTCHA, a code
+  prompt (`input[name='totpCode']`) and an error message. Take one screenshot, then report
+  what you saw. Repeated failed sign-ins can lock the account, and every repo uses it.
+- **To export,** use Onshape's own Export dialog (right-click the part or tab, then *Export*).
+  The browser saves the file, so set a download directory under `/tmp`. Driving that dialog
+  in headless Chrome worked on
+  [digital-alloy-lab PR 174](https://github.com/vertical-cloud-lab/digital-alloy-lab/pull/174#issuecomment-6532349145).
+- **Sketching and modelling are WebGL on a canvas.** DOM selectors don't reach the geometry,
+  so use pointer moves and drags at screen coordinates, with a screenshot between moves.
+  byu-vcl's `onshape_ui.py` has the techniques that worked.
+- **Keep sessions short.** Do only what the request needs. Onshape's terms forbid automated
+  access (§4(a)(ix)), so use the REST API whenever it can do the job.
+- **Only open Onshape in the tunnelled browser.** The tunnel relays everything the browser
+  loads, so any other site would reach the Pi's network too.
+- **Clean up every time:** sign out from Onshape's user menu (*Sign out*). The redirect
+  lags by a few seconds: wait about 5 s before checking that `/documents` sends you to
+  `/signin`, or check that `/api/v6/users/sessioninfo` returns 204. Then run `rig.sh stop`,
+  which deletes the browser profile, **in a Bash call of its own**. Its `pkill -f` patterns
+  also match any shell whose command line contains the same text, so a `pgrep` naming the
+  profile path in the same call gets that shell killed (digital-alloy-lab PR 180, 2026-11-10).
+  Never save cookies or storage state outside `/tmp`, and never commit them.

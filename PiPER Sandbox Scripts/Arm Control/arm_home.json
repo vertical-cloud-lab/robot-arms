@@ -1,0 +1,19 @@
+{
+  "name": "#54 rest with the gripper rolled toward the side (2026-11-03)",
+  "notes": [
+    "arm_power.py only cuts the arm's power when every joint is inside these ranges, all six motors are disabled, and nothing moves by more than still_deg during the check.",
+    "J2/J3: the arm's own rest, about -2/+2 (J3 has wandered between +0.7 and +2.4 from run to run in #54).",
+    "J5: the gripper drooped onto its rest after disable, +23 to +25 so far.",
+    "J6: the gripper Pi to the side. Up_and_Down.py parks at -52 (the roll jammed at -55 in #54's first run); #54's third photo is about -90. J6 near 0 puts the Pi under the gripper, its plug toward J2, which is not a pose to leave the arm in.",
+    "Edit this file, not arm_power.py, when new parts change the home pose."
+  ],
+  "joint_ranges_deg": {
+    "J1": [-10, 10],
+    "J2": [-4.5, 0.5],
+    "J3": [-0.5, 4.5],
+    "J4": [-15, 15],
+    "J5": [10, 30],
+    "J6": [-95, -45]
+  },
+  "still_deg": 0.3
+}

@@ -1,0 +1,6 @@
+# For teleop.py on the computer the leader is plugged into. Nothing needs installing on the
+# Pis: follower.py uses the piper_sdk venv already on the arm Pi (~/piper-venv), and the video
+# comes from rpicam-vid, which ships with Raspberry Pi OS.
+pyserial>=3.5
+numpy
+opencv-python

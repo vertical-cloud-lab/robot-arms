@@ -1,0 +1,190 @@
+{
+  "piper_joint_types": {
+    "J1": "yaw",
+    "J2": "pitch",
+    "J3": "pitch",
+    "J4": "roll",
+    "J5": "pitch",
+    "J6": "roll"
+  },
+  "so101_joint_types": {
+    "shoulder_pan": "yaw",
+    "shoulder_lift": "pitch",
+    "elbow_flex": "pitch",
+    "wrist_flex": "pitch",
+    "wrist_roll": "roll"
+  },
+  "axis_check": {
+    "so101_max_angle_deg": {
+      "shoulder_lift_vs_elbow_flex": 0.0,
+      "shoulder_lift_vs_wrist_flex": 0.0,
+      "wrist_flex_vs_wrist_roll": 90.0
+    },
+    "piper_max_angle_deg": {
+      "J2_vs_J3": 0.0,
+      "J2_vs_J5_with_J4_at_0": 0.0,
+      "J2_vs_J5_with_J4_free_max": 89.854,
+      "J2_vs_J5_with_J4_free_min": 0.409
+    }
+  },
+  "nominal_map": {
+    "shoulder_pan": {
+      "piper": "J1",
+      "sign": -1,
+      "offset_deg": 0.0
+    },
+    "shoulder_lift": {
+      "piper": "J2",
+      "sign": 1,
+      "offset_deg": 96.2
+    },
+    "elbow_flex": {
+      "piper": "J3",
+      "sign": 1,
+      "offset_deg": -88.4
+    },
+    "(none)": {
+      "piper": "J4",
+      "sign": 0,
+      "offset_deg": 0.0
+    },
+    "wrist_flex": {
+      "piper": "J5",
+      "sign": 1,
+      "offset_deg": -2.8
+    },
+    "wrist_roll": {
+      "piper": "J6",
+      "sign": -1,
+      "offset_deg": 0.0
+    }
+  },
+  "map_check": {
+    "poses": 300,
+    "worst_heading_deg": 0.0,
+    "worst_upper_arm_deg": 0.01,
+    "worst_forearm_deg": 0.0,
+    "worst_hand_deg": 0.0
+  },
+  "ranges": {
+    "shoulder_pan": {
+      "so101_range_deg": [
+        -110.0,
+        110.0
+      ],
+      "maps_to": "J1",
+      "mapped_range_deg": [
+        -110.0,
+        110.0
+      ],
+      "piper_limits_deg": [
+        -150,
+        150
+      ],
+      "share_of_so101_range_usable": 1.0,
+      "piper_range_unreachable_from_leader_deg": 80.0
+    },
+    "shoulder_lift": {
+      "so101_range_deg": [
+        -100.0,
+        100.0
+      ],
+      "maps_to": "J2",
+      "mapped_range_deg": [
+        -3.8,
+        196.2
+      ],
+      "piper_limits_deg": [
+        0,
+        180
+      ],
+      "share_of_so101_range_usable": 0.9,
+      "piper_range_unreachable_from_leader_deg": 0
+    },
+    "elbow_flex": {
+      "so101_range_deg": [
+        -96.8,
+        96.8
+      ],
+      "maps_to": "J3",
+      "mapped_range_deg": [
+        -185.2,
+        8.4
+      ],
+      "piper_limits_deg": [
+        -170,
+        0
+      ],
+      "share_of_so101_range_usable": 0.88,
+      "piper_range_unreachable_from_leader_deg": 0
+    },
+    "wrist_flex": {
+      "so101_range_deg": [
+        -95.0,
+        95.0
+      ],
+      "maps_to": "J5",
+      "mapped_range_deg": [
+        -97.8,
+        92.2
+      ],
+      "piper_limits_deg": [
+        -70,
+        70
+      ],
+      "share_of_so101_range_usable": 0.74,
+      "piper_range_unreachable_from_leader_deg": 0
+    },
+    "wrist_roll": {
+      "so101_range_deg": [
+        -157.2,
+        162.8
+      ],
+      "maps_to": "J6",
+      "mapped_range_deg": [
+        -162.8,
+        157.2
+      ],
+      "piper_limits_deg": [
+        -120,
+        120
+      ],
+      "share_of_so101_range_usable": 0.75,
+      "piper_range_unreachable_from_leader_deg": 0
+    }
+  },
+  "link_lengths": {
+    "so101_mm": {
+      "upper_arm": 116.0,
+      "forearm": 135.0,
+      "wrist_to_gripper_frame": 160.5
+    },
+    "piper_mm": {
+      "upper_arm": 285.0,
+      "forearm_to_wrist_centre": 251.7,
+      "wrist_centre_to_fingertips": 241.0
+    }
+  },
+  "figure_pose": {
+    "so101_deg": {
+      "shoulder_pan": 15.0,
+      "shoulder_lift": -5.0,
+      "elbow_flex": 25.0,
+      "wrist_flex": 45.0,
+      "wrist_roll": 0.0
+    },
+    "piper_deg": [
+      -15.0,
+      91.2,
+      -63.4,
+      0.0,
+      42.2,
+      0.0
+    ]
+  },
+  "sources": {
+    "so101_urdf": "https://raw.githubusercontent.com/TheRobotStudio/SO-ARM100/385e8d7c68e24945df6c60d9bd68837a4b7411ae/Simulation/SO101/so101_new_calib.urdf",
+    "so101_urdf_sha256": "3a65d2d35e68a8d2f0c2cc176d19b884506543c93ba72980145b80abe276022c",
+    "piper_dh": "piper_sdk C_PiperForwardKinematics, dh_is_offset=1"
+  }
+}
