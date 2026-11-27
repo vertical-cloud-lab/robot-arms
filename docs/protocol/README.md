@@ -12,10 +12,11 @@ arm.
 | Protocol text ([`PROTOCOL.md`](PROTOCOL.md)) | **Complete draft, v2.** Every section the registry asks for is written. It is not locked: the PI's decisions in [§0](PROTOCOL.md#0-decisions-before-locking) are still blank |
 | Registry form answers ([`osf/`](osf/)) | Written for both registrations, question by question, ready to paste |
 | Power analysis ([`analysis/power.py`](analysis/power.py), [`analysis/out/power.md`](analysis/out/power.md)) | Done: exact where possible, simulated otherwise, seeds fixed |
-| Analysis code ([`analysis/prereg_stats.py`](analysis/prereg_stats.py)) | Written. [`simulate_and_check.py`](analysis/simulate_and_check.py) runs it on a synthetic campaign with known answers ([`out/recovery.md`](analysis/out/recovery.md)) |
+| Analysis code ([`analysis/prereg_stats.py`](analysis/prereg_stats.py)) | Written. [`simulate_and_check.py`](analysis/simulate_and_check.py) runs it on a synthetic campaign with known answers and checks interval coverage ([`out/recovery.md`](analysis/out/recovery.md)). That dry run caught two flaws in v1, now fixed: the percentile-bootstrap bound for ISO 9283 RP covered only 71–76 % (now a bootstrap-t), and MTBI intervals were cut at every block end, which made S(50) impossible to estimate |
 | Check against the bench and PR 23 ([`hardware-and-safety-check.md`](hardware-and-safety-check.md)) | Done. **Most of the campaign's hardware does not exist yet** (the dock, carriers, finger inserts, shelf, trial harness, correction code and metrology fixture) |
-| Bench readiness ([`bench-readiness.md`](bench-readiness.md)) | Gates listed with suggested owners. None is met yet |
-| References ([`references.md`](references.md)) | Every DOI checked against Crossref ([`analysis/out/crossref.md`](analysis/out/crossref.md)) |
+| Bench readiness ([`bench-readiness.md`](bench-readiness.md)) | Gates listed with suggested owners and realistic dates. None is met yet |
+| Design summary ([`study-design-table.md`](study-design-table.md)) | One row per hypothesis, in PCI RR's column layout |
+| References ([`references.md`](references.md)) | 30 sources. All 23 DOIs match Crossref or DataCite ([`analysis/out/crossref.md`](analysis/out/crossref.md)). One claim is still unchecked: the Ada 97.5 % figure in §1 |
 | Registered | **No.** Nothing has been submitted anywhere |
 
 ## Registry and format: OSF Preregistration, two registrations
@@ -62,11 +63,23 @@ An update to a registration can't add or remove files, so attach everything at s
    `osf/A-transfer-reliability.md`. Attach `PROTOCOL.pdf` to *Study design* and `analysis.zip` to
    *Statistical models*. Add the contributors. Choose public or an embargo (I'd make it public, so
    the timestamp can be checked before the paper is reviewed).
-5. Submit. Every admin contributor gets an e-mail and has 48 hours to approve or cancel.
+5. Submit. OSF e-mails each admin contributor to approve it before it becomes final.
 6. Write the DOI into PROTOCOL.md's header and into #21.
 7. Register B the same way when its gates are met.
 
 The registration is the first irreversible step: once approved, it can be withdrawn but never deleted.
+
+## Realistic dates
+
+From [`bench-readiness.md`](bench-readiness.md#realistic-dates), assuming work starts the week of
+2026-11-30 and little happens over the winter break:
+
+| Milestone | Realistic | Earliest |
+|---|---|---|
+| Register A | **2027-01-29** | 2026-12-04, if you register on the CAD design and accept amending later |
+| Register B | **2027-02-19** | 2027-01-29 |
+| First counted block | **2027-03-05** | 2027-02-12 |
+| Results paper submitted | **2027-06-25** | 2027-05-14 |
 
 ## Target journal
 
