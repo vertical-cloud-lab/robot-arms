@@ -200,9 +200,9 @@ recorded for calibration only and enter no decision. The power of each rule is i
 
 - **H4a.** Unloaded RP ≤ 0.10 mm at all five poses.
   - **Supported** ("meets the spec") if the ISO 9283 point estimate is ≤ 0.10 mm at every pose.
-    This is how manufacturers report RP. It is also reported as **certified** if the bootstrap
-    upper 95 % bound is ≤ 0.10 mm at every pose.
-  - **Refuted** if the bootstrap lower 95 % bound exceeds 0.10 mm at any pose.
+    This is how manufacturers report RP. It is also reported as **certified** if the one-sided
+    95 % bootstrap-t upper bound (§14.5) is ≤ 0.10 mm at every pose.
+  - **Refuted** if the one-sided 95 % bootstrap-t lower bound exceeds 0.10 mm at any pose.
   - **Inconclusive** if the instrument's expanded uncertainty is above 0.025 mm (D10). ISO 9283
     §6.5 caps the total measurement uncertainty at 25 % of the characteristic under test.
 - **H4b.** RP grows with payload.
@@ -284,7 +284,9 @@ cell.
   2. **Unload:** dock pocket → shelf pocket.
 
 A **transfer** is the pick at the source, the place at the destination, and the retreat to the
-clear pose. Before every unit the harness checks that the arm answers, has no driver fault, and
+clear pose. If a leg fails, the person at the arm restores the cell to the state that leg should
+have produced (App. A), and the unit goes on to its next leg, so every unit still has one load and
+one unload. Before every unit the harness checks that the arm answers, has no driver fault, and
 reads its rest pose to within 0.5° on every joint. If not, the unit doesn't start (§10, rule 3).
 
 ---
@@ -773,9 +775,13 @@ Certifying 99 % takes 299 transfers with no failures, 473 with one, 628 with two
 - **Clock.** Each task × condition counts its own transfers (loads and unloads). Interventions
   caused by another cell don't reset it. Interventions that can't be attributed (operator pauses)
   count for every cell.
-  - An interval starts at the start of a block or right after an intervention.
-  - It ends at the next intervention, which is an event, or at the end of the block, where it is
-    censored.
+  - An interval starts at the cell's first counted transfer in a configuration, or right after
+    one of the cell's interventions.
+  - It ends at the cell's next intervention, which is an event. Session ends and planned
+    power-downs are pauses, not ends: the clock runs on across sessions within a configuration,
+    and is censored when the configuration or the campaign ends. (Censoring at every block end,
+    as v1 did, would cap every interval at about 20 transfers, and neither S(50) nor the
+    restricted mean could be estimated.)
   - The primary analysis uses E1 only. E2 provokes failures on purpose, so its interventions are
     reported separately.
   - A secondary analysis counts operating hours instead of transfers.
@@ -783,6 +789,8 @@ Certifying 99 % takes 299 transfers with no failures, 473 with one, 628 with two
   - **MTBI** is the restricted mean up to τ = D13 transfers, with a Greenwood-based 95 %
     interval. The plain KM mean is undefined when the longest interval is censored.
   - **Cross-check:** total transfers ÷ interventions, with an exact Poisson (Garwood) interval.
+    In simulation the Greenwood interval covered 93 % with 24 interventions but 86 % with about
+    6, so when a cell has fewer than 10 interventions the Garwood interval is reported first.
   - Also **S(50)**, the chance of 50 transfers without an intervention, to set against the Ada
     figure in §1.
 - **Assumption.** Each restore leaves the cell as good as before (a renewal process). Checked by
@@ -797,8 +805,14 @@ barycentre (x̄, ȳ, z̄), as ISO 9283 defines it:
 
 $$l_j=\sqrt{(x_j-\bar x)^2+(y_j-\bar y)^2+(z_j-\bar z)^2},\quad \bar l=\frac1n\sum_j l_j,\quad S_l=\sqrt{\frac{\sum_j (l_j-\bar l)^2}{n-1}},\quad RP=\bar l+3S_l$$
 
-- **Intervals.** RP gets a bootstrap 95 % interval from 10,000 resamples of the 30 cycles,
-  reported next to the instrument's *U*. H4b and H4c follow §2.
+- **Intervals for RP (H4a).** A studentized bootstrap (bootstrap-t): 10,000 resamples of the 30
+  cycles, each studentized by its own jackknife standard error. The plain percentile bootstrap was
+  rejected after the synthetic check: on 30 Gaussian points its upper bound covered only 71–76 %
+  of the time; the bootstrap-t's covers 91–94 % (82 % with heavy-tailed errors), so "certified" is
+  reported with that caveat. Each RP is reported next to the instrument's *U*.
+- **H4b and H4c** use percentile-bootstrap bounds on the difference and the slope (10,000
+  resamples of cycles within each pose × payload). With no payload effect, this rule gave false
+  positives 4.3 % of the time in simulation.
 - **Drift.** Position is regressed on cycle number. Any drift of the barycentre during a run is
   reported. ISO 9283 tests drift separately, from a cold start.
 
@@ -860,6 +874,9 @@ follows:
 | §8.4 | Power analysis added | Required by the registry |
 | §9 | Ledger and paired sub-blocks in E2 | Blocks can end early without unbalancing the design |
 | §14.6 | Outcome-neutral checks added | So a null result can be told from a broken set-up |
+| §14.4 | The MTBI clock runs on across sessions within a configuration; Garwood first when a cell has < 10 interventions | Censoring at every block end capped intervals at about 20 transfers; Greenwood undercovers with few events (synthetic check) |
+| §14.5, H4a | RP's interval is a bootstrap-t, not a percentile bootstrap | The percentile upper bound covered 71–76 % on synthetic data (synthetic check) |
+| §5 | A failed leg is restored to its intended end state and the unit continues | Keeps one load and one unload per unit |
 
 After the lock:
 

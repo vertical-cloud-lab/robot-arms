@@ -263,8 +263,8 @@ def h4a_power(rp_true: float, u_inst: float, n_cycles: int, n_sims: int, seed: i
             pts = rng.normal(0, s_tot, (n_cycles, 3))
             rp = ps.iso9283_rp(pts)
             m_ok &= rp <= 0.10
-            if c_ok:
-                ub = np.quantile(ps.bootstrap_rp(pts, n_boot, int(rng.integers(1 << 31))), 0.95)
+            if c_ok:  # registered rule: bootstrap-t one-sided 95 % upper bound
+                _rp, _lo, ub = ps.bootstrap_t_rp(pts, n_boot, int(rng.integers(1 << 31)))
                 c_ok &= ub <= 0.10
         meets += m_ok
         cert += m_ok and c_ok
@@ -298,6 +298,21 @@ def h4bc_power(rp_unloaded: float, d_payload: float, slope_per_100mm: float, rea
         coef = np.linalg.lstsq(X, Y, rcond=None)[0]
         hits_c += np.quantile(coef[1], 0.05) > 0
     return {"h4b": hits_b / n_sims, "h4c": hits_c / n_sims}
+
+
+def compute_h4(res: dict, quick: bool) -> None:
+    h4sims = 100 if quick else 500
+    res["h4_sims"] = h4sims
+    res["h4a"] = []
+    for rp in (0.04, 0.05, 0.06, 0.07, 0.08, 0.09):
+        res["h4a"].append({"rp_true": rp, **h4a_power(rp, 0.025, 30, h4sims, seed=int(1000 * rp),
+                                                       n_boot=1000)})
+    reach = np.array([350.0, 270.0, 430.0, 270.0, 430.0])
+    res["h4bc"] = []
+    for d_pay, slope in ((0.005, 0.005), (0.01, 0.01), (0.02, 0.02)):
+        r = h4bc_power(0.06, d_pay, slope, reach, 0.025, 30, min(h4sims, 300), seed=int(1e4 * d_pay))
+        res["h4bc"].append({"rp_unloaded": 0.06, "payload_increase": d_pay,
+                            "slope_per_100mm": slope, "reach_mm": reach.tolist(), **r})
 
 
 # ---------------------------------------------------------------------------------------
@@ -441,7 +456,7 @@ def fig_h4(res: dict, path: Path):
     ax.plot(x, [r["meets"] for r in rows], color=C[0], lw=2, marker=MARKERS[0], ms=7,
             label="meets: point estimate ≤ 0.10 mm at all 5 poses")
     ax.plot(x, [r["certified"] for r in rows], color=C[1], lw=2, marker=MARKERS[1], ms=7,
-            label="certified: bootstrap upper bound ≤ 0.10 mm at all 5")
+            label="certified: bootstrap-t upper bound ≤ 0.10 mm at all 5")
     ax.annotate("meets", (x[-2], rows[-2]["meets"]), textcoords="offset points", xytext=(6, 4),
                 fontsize=8, color=TEXT)
     ax.annotate("certified", (x[-3], rows[-3]["certified"]), textcoords="offset points",
@@ -464,6 +479,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--quick", action="store_true")
     ap.add_argument("--check-bootstrap", action="store_true")
+    ap.add_argument("--h4-only", action="store_true",
+                    help="recompute only the H4 rows and keep the rest of out/power.json")
     ap.add_argument("--figures-only", action="store_true",
                     help="re-draw figures and power.md from out/power.json without simulating")
     args = ap.parse_args()
@@ -478,6 +495,15 @@ def main():
     sims = 300 if args.quick else 2000
     OUT.mkdir(exist_ok=True)
     t0 = time.time()
+    if args.h4_only:
+        res = json.loads((OUT / "power.json").read_text())
+        compute_h4(res, args.quick)
+        res["runtime_s"] = res.get("runtime_s", 0.0)
+        (OUT / "power.json").write_text(json.dumps(res, indent=1))
+        fig_h4(res, OUT / "fig_power_h4.png")
+        write_markdown(res, OUT / "power.md")
+        print(f"H4 redone in {time.time() - t0:.0f}s")
+        return
     res: dict = {"sims": sims}
 
     # ---- H1 -------------------------------------------------------------------------
@@ -588,16 +614,7 @@ def main():
     res["mtbi"] = rows
 
     # ---- H4 ---------------------------------------------------------------------------
-    h4sims = 200 if args.quick else 1000
-    res["h4a"] = []
-    for rp in (0.04, 0.05, 0.06, 0.07, 0.08, 0.09):
-        res["h4a"].append({"rp_true": rp, **h4a_power(rp, 0.025, 30, h4sims, seed=int(1000 * rp))})
-    reach = np.array([350.0, 270.0, 430.0, 270.0, 430.0])
-    res["h4bc"] = []
-    for d_pay, slope in ((0.005, 0.005), (0.01, 0.01), (0.02, 0.02)):
-        r = h4bc_power(0.06, d_pay, slope, reach, 0.025, 30, min(h4sims, 300), seed=int(1e4 * d_pay))
-        res["h4bc"].append({"rp_unloaded": 0.06, "payload_increase": d_pay,
-                            "slope_per_100mm": slope, "reach_mm": reach.tolist(), **r})
+    compute_h4(res, args.quick)
     print(f"H4 done {time.time() - t0:.0f}s", flush=True)
 
     res["e2_burden"] = e2_expected_failures()
@@ -711,10 +728,10 @@ def write_markdown(res: dict, path: Path):
         L.append(f"| {k.replace('_', ' ')} | {b[k]:.0f} |")
     L.append(f"\nIf single-vial OL ran only 0, ±1, ±2 mm and ±2°: {b['vial_OL_if_trimmed_to_2mm_and_2deg']:.0f} "
              f"failed loads instead of {b['vial_OL']:.0f}.\n")
-    L.append("\n## H4: ISO 9283 RP, 30 cycles per pose\n")
+    L.append(f"\n## H4: ISO 9283 RP, 30 cycles per pose ({res.get('h4_sims', 1000)} simulated sessions per row)\n")
     L.append("Instrument expanded uncertainty U = 0.025 mm (k = 2), treated as u = 0.0125 mm per axis "
              "and added in quadrature, so the measured RP is biased upward.\n")
-    L.append("| True arm RP | Meets (point ≤ 0.10 at all 5) | Certified (upper bound ≤ 0.10 at all 5) |")
+    L.append("| True arm RP | Meets (point ≤ 0.10 at all 5) | Certified (bootstrap-t upper bound ≤ 0.10 at all 5) |")
     L.append("|---|---|---|")
     for r in res["h4a"]:
         L.append(f"| {r['rp_true']:.2f} mm | {pct(r['meets'])} | {pct(r['certified'])} |")

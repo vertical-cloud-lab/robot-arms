@@ -411,6 +411,46 @@ def bootstrap_rp(points: np.ndarray, n_boot: int = 10_000, seed: int = 0) -> np.
     return lj.mean(axis=1) + 3 * lj.std(axis=1, ddof=1)
 
 
+def _rp_batch(x: np.ndarray) -> np.ndarray:
+    """ISO 9283 RP over the last two axes of an (..., n, 3) array."""
+    c = x.mean(axis=-2, keepdims=True)
+    lj = np.linalg.norm(x - c, axis=-1)
+    return lj.mean(axis=-1) + 3 * lj.std(axis=-1, ddof=1)
+
+
+def _jackknife_se_rp(x: np.ndarray) -> np.ndarray:
+    """Jackknife standard error of RP for each (n, 3) sample in a (B, n, 3) array."""
+    n = x.shape[-2]
+    idx = np.array([np.delete(np.arange(n), i) for i in range(n)])
+    theta = _rp_batch(x[:, idx, :])  # (B, n)
+    return np.sqrt((n - 1) / n * np.sum((theta - theta.mean(axis=1, keepdims=True)) ** 2, axis=1))
+
+
+def bootstrap_t_rp(points: np.ndarray, n_boot: int = 10_000, seed: int = 0,
+                   conf: float = 0.95) -> tuple[float, float, float]:
+    """RP with studentized-bootstrap (bootstrap-t) one-sided `conf` lower and upper bounds.
+
+    The registered interval for H4a (PROTOCOL.md 14.5). Each resample is studentized by its own
+    jackknife standard error. On 30 Gaussian points the percentile bootstrap's upper bound
+    covered only 71-76 % in simulation; this one covers 91-94 % (82 % for heavy-tailed t5
+    errors), see simulate_and_check.py.
+    """
+    rng = np.random.default_rng(seed)
+    pts = np.asarray(points, dtype=float)
+    n = pts.shape[0]
+    rp = float(_rp_batch(pts))
+    se = float(_jackknife_se_rp(pts[None])[0])
+    lower, upper = [], []
+    for start in range(0, n_boot, 1000):  # chunks keep memory small
+        b = min(1000, n_boot - start)
+        xb = pts[rng.integers(0, n, size=(b, n))]
+        t = (_rp_batch(xb) - rp) / _jackknife_se_rp(xb)
+        lower.append(t)
+    t_all = np.concatenate(lower)
+    q_hi, q_lo = np.quantile(t_all, [conf, 1 - conf])
+    return rp, rp - q_hi * se, rp - q_lo * se
+
+
 # ---------------------------------------------------------------------------------------
 # Agreement between scorers (section 6)
 # ---------------------------------------------------------------------------------------
