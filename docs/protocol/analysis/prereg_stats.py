@@ -608,8 +608,8 @@ def h3b_axis_supported(res_at: CaptureResult, res_ol: CaptureResult) -> bool:
       exceeds 0 (a radius of 0 contributes no variance).
 
     A percentile bootstrap of the same difference was rejected: on synthetic data with equal
-    ED90s but different slopes it gave false support 11 % of the time on both axes; this rule
-    gave at most 2.8 % (simulate_and_check.py, power.py).
+    ED90s but different slopes it gave false support 10 % of the time on both axes; this rule
+    gave at most 1.4 % (`power.py --check-rejected`).
     """
     if res_at.censored:
         return res_ol.ed90_fieller90[1] < res_at.max_offset

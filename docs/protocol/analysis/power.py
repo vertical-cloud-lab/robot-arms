@@ -232,7 +232,7 @@ def h3c_power(delta_s: float, cap_s: float, sd_s: float, n: int, n_sims: int, se
 # H4: ISO 9283 RP (simulation)
 # ---------------------------------------------------------------------------------------
 
-RP_PER_SIGMA = ps.RP_PER_SIGMA  # 3.615
+RP_PER_SIGMA = ps.RP_PER_SIGMA  # 3.616
 
 
 def sigma_for_rp(rp: float) -> float:
@@ -353,7 +353,7 @@ def h2_refutation_by_level(curve, n_sims: int, seed: int) -> dict:
 
 def compute_h2_levels(res: dict, sims: int) -> None:
     """Five times the main table's campaigns, with the same seeds, so the first `sims` of them are
-    the main table's and the boundary rate is known to about +-0.3 percentage points."""
+    the main table's; at a 5 % rate the Monte Carlo standard error is about 0.2 percentage points."""
     n = 5 * sims
     rows = []
     for w in (0.25, 0.5, 1.0):
@@ -484,11 +484,44 @@ def compute_d11(res: dict, quick: bool) -> None:
     res["d11_e1"] = [d11_e1_cell(q) for q in qs]
     res["d11_e1_window"] = [d11_e1_window(q, n // 4, seed=12000 + i) for i, q in enumerate(qs)]
     rows = []
-    # Planning scenario (e2_expected_failures): carriers 0 % OL and 1 % AT at zero offset; single
-    # vials 2.5 % OL and 2 % AT. Then a cell gone wrong: zero-offset success 90 %, 80 %, 50 %.
-    for k, (q_ol, q_at) in enumerate([(0.0, 0.01), (0.025, 0.02), (0.10, 0.10), (0.20, 0.20), (0.50, 0.50)]):
+    # Planning scenario (e2_expected_failures): carriers 0 % OL and 0.5 % AT at zero offset; single
+    # vials 2.5 % OL and 0 % AT. Then a task gone wrong in both conditions (zero-offset success
+    # 90 %, 80 %, 50 %), and in the open-loop condition only, with AT at 2 %.
+    scen = [(0.0, 0.005), (0.025, 0.0), (0.10, 0.10), (0.20, 0.20), (0.50, 0.50), (0.20, 0.02), (0.50, 0.02)]
+    for k, (q_ol, q_at) in enumerate(scen):
         rows.append(d11_e2_task(q_ol, q_at, 15, n, seed=11000 + k))
     res["d11_e2"] = rows
+
+
+# ---------------------------------------------------------------------------------------
+# Closed-form figures that PROTOCOL.md quotes (no simulation)
+# ---------------------------------------------------------------------------------------
+
+def closed_form() -> dict:
+    """The arithmetic behind figures quoted in PROTOCOL.md §1, §2, §8.2, §14.1 and D10."""
+    def n_to_certify(failures: int, target: float) -> int:
+        n = failures + 1
+        while ps.cp_lower(n - failures, n) < target:
+            n += 1
+        return n
+
+    rows = []
+    for f in range(4):
+        lo, hi = ps.wilson(300 - f, 300)
+        rows.append({"failures": f, "point": (300 - f) / 300, "wilson": [lo, hi],
+                     "exact_lower": ps.cp_lower(300 - f, 300)})
+    return {
+        "p50": {str(p): p ** 50 for p in (0.975, 0.99, 0.995, 0.999)},
+        "table_14_1": rows,
+        "n_certify_99": {str(f): n_to_certify(f, 0.99) for f in (0, 1, 2)},
+        "n_certify_999_no_failures": n_to_certify(0, 0.999),
+        "rp_per_sigma": ps.RP_PER_SIGMA,
+        "h4a_threshold_mm": {"U=0.025": ps.rp_refutation_threshold(0.10, 0.025 / 2),
+                             "U=0.010": ps.rp_refutation_threshold(0.10, 0.010 / 2)},
+        "yaw_pin_shift_mm": {"2deg": 125 * math.sin(math.radians(2)),
+                             "4deg": 125 * math.sin(math.radians(4))},
+        "lead_in_covers_deg": math.degrees(math.asin(3 / 125)),
+    }
 
 
 # ---------------------------------------------------------------------------------------
@@ -498,22 +531,26 @@ def compute_d11(res: dict, quick: bool) -> None:
 def e2_expected_failures() -> dict:
     """Expected failed loads per E2 cell, which is roughly the number of human resets.
 
-    Scenario (assumptions, not data): carrier OL capture ED90 2.8 mm with ED50 3.2 mm in x
-    and y, and 2 and 4 degrees of yaw past the lead-in (byu-vcl PR 272: the lead-in covers
-    about +-1.4 degrees), so 97 % and 100 % fail there. Single-vial OL pocket: 97.5 % at zero
-    offset, ED90 0.2 mm, ED50 0.5 mm, and every yaw level fails. AT cells: 1 % (carrier)
-    and 2 % (vial) at every level.
+    Scenario (assumptions, not data), the same one fig_design_e2 draws and
+    simulate_and_check.py samples from:
+    * carrier OL: ED90 2.8 mm, ED50 3.2 mm in x and y; 2 and 4 degrees of yaw are past the
+      lead-in (byu-vcl PR 272: it covers about +-1.4 degrees), so 97 % and 100 % fail there;
+    * carrier AT: 99.5 % at every x and y level, 99.5 % and 99 % at 2 and 4 degrees;
+    * single-vial OL pocket: 97.5 % at zero offset, ED90 0.2 mm, ED50 0.5 mm, every yaw level fails;
+    * single-vial AT: ED90 3.0 mm, ED50 3.5 mm, and 99 % and 98 % at 2 and 4 degrees.
     """
     xy = np.repeat([1.0, 2.0, 3.0, 4.0], 2 * TRIALS_PER_LEVEL)
+    yaw = 2 * TRIALS_PER_LEVEL  # trials at each |yaw| level
     c_ol = logistic_curve(2.8, 0.4)
     v_ol = logistic_curve(0.2, 0.3)
+    v_at = logistic_curve(3.0, 0.5)
     out = {
         "carrier_OL": float(ZERO_TRIALS * (1 - c_ol(0.0)) + 2 * np.sum(1 - c_ol(xy))
-                            + 2 * TRIALS_PER_LEVEL * (0.97 + 1.0)),
-        "carrier_AT": 0.01 * 420,
-        "vial_OL": float(ZERO_TRIALS * (1 - v_ol(0.0)) + 2 * np.sum(1 - v_ol(xy))
-                         + 2 * TRIALS_PER_LEVEL * 2),
-        "vial_AT": 0.02 * 420,
+                            + yaw * (0.97 + 1.0)),
+        "carrier_AT": float(0.005 * (ZERO_TRIALS + 2 * xy.size) + yaw * (0.005 + 0.01)),
+        "vial_OL": float(ZERO_TRIALS * (1 - v_ol(0.0)) + 2 * np.sum(1 - v_ol(xy)) + yaw * 2),
+        "vial_AT": float(ZERO_TRIALS * (1 - v_at(0.0)) + 2 * np.sum(1 - v_at(xy))
+                         + yaw * (0.01 + 0.02)),
     }
     out["total"] = sum(out.values())
     trimmed = float(ZERO_TRIALS * (1 - v_ol(0.0)) + 2 * np.sum(1 - v_ol(xy[xy <= 2.0]))
@@ -704,8 +741,9 @@ def main():
     ap.add_argument("--h4-only", action="store_true",
                     help="recompute only the H4 rows and keep the rest of out/power.json")
     ap.add_argument("--extras-only", action="store_true",
-                    help="recompute only the D11 stop rates (and, with --check-rejected, the H2 and H4a "
-                         "rejected-rule rows) and keep the rest of out/power.json")
+                    help="recompute only the D11 stop rates, the E2 reset estimate and the closed-form "
+                         "figures (and, with --check-rejected, the H2 and H4a rejected-rule rows), and keep "
+                         "the rest of out/power.json")
     ap.add_argument("--figures-only", action="store_true",
                     help="re-draw figures and power.md from out/power.json without simulating")
     args = ap.parse_args()
@@ -741,6 +779,8 @@ def main():
     if args.extras_only:
         res = json.loads((OUT / "power.json").read_text())
         compute_d11(res, args.quick)
+        res["e2_burden"] = e2_expected_failures()
+        res["closed_form"] = closed_form()
         if args.check_rejected:
             compute_h2_levels(res, res["sims"])
             compute_h4a_rejected(res, args.quick)
@@ -859,6 +899,7 @@ def main():
 
     compute_d11(res, args.quick)
     res["e2_burden"] = e2_expected_failures()
+    res["closed_form"] = closed_form()
     res["runtime_s"] = time.time() - t0
     (OUT / "power.json").write_text(json.dumps(res, indent=1))
     fig_h1(res, OUT / "fig_power_h1.png")
@@ -888,8 +929,10 @@ def write_markdown(res: dict, path: Path):
     L.append(f"Generated by `power.py`. H1, H3a and D11's E1 clause are exact. Simulated: H2 and H3b "
              f"with {res['sims']:,} campaigns per scenario, H3c with {min(res['sims'], 500)}, H4a with "
              f"{res.get('h4_sims', 500)} sessions per row and H4b/H4c with {min(res.get('h4_sims', 500), 300)}, "
-             f"the H3b bootstrap comparison with 200{extra}. Every decision rule is the registered one "
-             f"from `prereg_stats.py`, and seeds are fixed.\n")
+             f"the H3b bootstrap comparison with 200{extra}. Every simulated decision is made by the "
+             f"registered function in `prereg_stats.py`, and seeds are fixed. H3a's exact power uses "
+             f"the Boschloo test's critical region, computed here and checked against "
+             f"`scipy.stats.boschloo_exact` (which `prereg_stats.boschloo_greater` calls) below.\n")
     L.append("## H1a: certifying ≥ 99 % (exact one-sided 95 % lower bound ≥ 0.99)\n")
     L.append("| True success rate | " + " | ".join(f"n = {n}" for n in ns) + " |")
     L.append("|---|" + "---|" * len(ns))
@@ -1025,7 +1068,8 @@ def write_markdown(res: dict, path: Path):
                  f"schedule for one task: 20 passes over the 21 levels in random order, each level a pair "
                  f"of loads (OL and AT), {e2rows[0]['pairs_per_block']} pairs per block, so a block holds "
                  f"one zero-offset pair or none most of the time. The first two rows are the planning "
-                 f"scenario; the rest are a cell gone wrong.\n")
+                 f"scenario (carriers, then single vials); the next three are a task gone wrong in both "
+                 f"conditions, and the last two in the open-loop condition only.\n")
         L.append("| Zero-offset failure rate, OL / AT | Expected stops over the task's 420 pairs | Chance of at least one stop | Median pairs to the first stop (when ≥ 10 % of tasks stop) |")
         L.append("|---|---|---|---|")
         for r in e2rows:
@@ -1059,6 +1103,29 @@ def write_markdown(res: dict, path: Path):
     for r in res["h4bc"]:
         L.append(f"| {r['rp_unloaded']} mm | {r['payload_increase']} mm | {r['slope_per_100mm']} mm | {pct(r['h4b'])} | {pct(r['h4c'])} |")
     L.append(f"\nReach of the five poses assumed: {res['h4bc'][0]['reach_mm']} mm.\n")
+    if "closed_form" in res:
+        c = res["closed_form"]
+        L.append("\n## Closed-form figures quoted in PROTOCOL.md\n")
+        L.append("No simulation: `closed_form()` in `power.py`.\n")
+        L.append("| Per-transfer success | " + " | ".join(f"{float(k):.1%}" for k in c["p50"]) + " |")
+        L.append("|---|" + "---|" * len(c["p50"]))
+        L.append("| 50 transfers with no intervention (p⁵⁰) | " + " | ".join(pct(v) for v in c["p50"].values()) + " |")
+        L.append("\n| Failures in 300 | Point estimate | Wilson 95 % | Exact one-sided 95 % lower bound |")
+        L.append("|---|---|---|---|")
+        for r in c["table_14_1"]:
+            lo, hi = r["wilson"]
+            L.append(f"| {r['failures']} | {100 * r['point']:.2f} % | {100 * lo:.2f}–{100 * hi:.2f} % | {100 * r['exact_lower']:.2f} % |")
+        n99 = c["n_certify_99"]
+        L.append(f"\nTransfers needed to certify 99 % (exact one-sided 95 % lower bound ≥ 0.99): {n99['0']} with "
+                 f"no failures, {n99['1']} with one, {n99['2']} with two; 99.9 % with no failures: "
+                 f"{c['n_certify_999_no_failures']:,}.\n")
+        th = c["h4a_threshold_mm"]
+        L.append(f"RP per σ for isotropic Gaussian scatter: {c['rp_per_sigma']:.3f}. H4a's refutation threshold, "
+                 f"the RP an arm exactly at 0.10 mm shows through the instrument: {th['U=0.025']:.3f} mm at "
+                 f"U = 0.025 mm, {th['U=0.010']:.3f} mm at U = 0.010 mm.\n")
+        y = c["yaw_pin_shift_mm"]
+        L.append(f"Yaw about the dock datum moves each cone pin (125 mm from it) {y['2deg']:.1f} mm at 2° and "
+                 f"{y['4deg']:.1f} mm at 4°; a 3 mm lead-in covers ±{c['lead_in_covers_deg']:.1f}°.\n")
     path.write_text("\n".join(L) + "\n")
 
 

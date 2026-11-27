@@ -2081,10 +2081,10 @@
  ],
  "e2_burden": {
   "carrier_OL": 177.93443134940208,
-  "carrier_AT": 4.2,
+  "carrier_AT": 2.3,
   "vial_OL": 398.49641871449177,
-  "vial_AT": 8.4,
-  "total": 589.0308500638938,
+  "vial_AT": 81.31094800667947,
+  "total": 660.0417980705733,
   "vial_OL_if_trimmed_to_2mm_and_2deg": 198.49641960852853
  },
  "runtime_s": 2721.858655691147,
@@ -2290,21 +2290,21 @@
  "d11_e2": [
   {
    "q_ol": 0.0,
-   "q_at": 0.01,
+   "q_at": 0.005,
    "pairs_per_block": 15,
    "n_sims": 20000,
-   "expected_stops": 0.0001,
-   "p_any_stop": 0.0001,
-   "median_pairs_to_first_stop": 208.5
+   "expected_stops": 5e-05,
+   "p_any_stop": 5e-05,
+   "median_pairs_to_first_stop": 387.0
   },
   {
    "q_ol": 0.025,
-   "q_at": 0.02,
+   "q_at": 0.0,
    "pairs_per_block": 15,
    "n_sims": 20000,
-   "expected_stops": 0.013,
-   "p_any_stop": 0.01295,
-   "median_pairs_to_first_stop": 224.0
+   "expected_stops": 0.0009,
+   "p_any_stop": 0.0009,
+   "median_pairs_to_first_stop": 337.5
   },
   {
    "q_ol": 0.1,
@@ -2332,6 +2332,86 @@
    "expected_stops": 5.43815,
    "p_any_stop": 0.9983,
    "median_pairs_to_first_stop": 45.0
+  },
+  {
+   "q_ol": 0.2,
+   "q_at": 0.02,
+   "pairs_per_block": 15,
+   "n_sims": 20000,
+   "expected_stops": 0.15955,
+   "p_any_stop": 0.1487,
+   "median_pairs_to_first_stop": 194.0
+  },
+  {
+   "q_ol": 0.5,
+   "q_at": 0.02,
+   "pairs_per_block": 15,
+   "n_sims": 20000,
+   "expected_stops": 0.6093,
+   "p_any_stop": 0.471,
+   "median_pairs_to_first_stop": 179.0
   }
- ]
+ ],
+ "closed_form": {
+  "p50": {
+   "0.975": 0.2819881023409169,
+   "0.99": 0.6050060671375364,
+   "0.995": 0.7783125570686419,
+   "0.999": 0.9512056281970314
+  },
+  "table_14_1": [
+   {
+    "failures": 0,
+    "point": 1.0,
+    "wilson": [
+     0.9873570287754538,
+     0.9999999999999998
+    ],
+    "exact_lower": 0.9900639180555423
+   },
+   {
+    "failures": 1,
+    "point": 0.9966666666666667,
+    "wilson": [
+     0.9813633063054688,
+     0.9994113422781488
+    ],
+    "exact_lower": 0.9842854451084161
+   },
+   {
+    "failures": 2,
+    "point": 0.9933333333333333,
+    "wilson": [
+     0.9760224167496929,
+     0.998169851642088
+    ],
+    "exact_lower": 0.9791637694729753
+   },
+   {
+    "failures": 3,
+    "point": 0.99,
+    "wilson": [
+     0.9710165066376601,
+     0.9965933815622847
+    ],
+    "exact_lower": 0.9743586069173904
+   }
+  ],
+  "n_certify_99": {
+   "0": 299,
+   "1": 473,
+   "2": 628
+  },
+  "n_certify_999_no_failures": 2995,
+  "rp_per_sigma": 3.616087956534285,
+  "h4a_threshold_mm": {
+   "U=0.025": 0.1097412383386143,
+   "U=0.010": 0.10162136735320387
+  },
+  "yaw_pin_shift_mm": {
+   "2deg": 4.362437087812621,
+   "4deg": 8.719559218015663
+  },
+  "lead_in_covers_deg": 1.3752307520185663
+ }
 }
