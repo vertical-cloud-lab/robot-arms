@@ -1,0 +1,47 @@
+1. (burger2020amobilerobotic pages 6-12): Benjamin Burger, Phillip M. Maffettone, Vladimir V. Gusev, Catherine M. Aitchison, Yang Bai, Xiaoyan Wang, Xiaobo Li, Ben M. Alston, Buyi Li, Rob Clowes, Nicola Rankin, Brandon Harris, Reiner Sebastian Sprick, and Andrew I. Cooper. A mobile robotic chemist. Nature, 583:237-241, Jul 2020. URL: https://doi.org/10.1038/s41586-020-2442-2, doi:10.1038/s41586-020-2442-2. This article has 2300 citations and is from a highest quality peer-reviewed journal.
+
+2. (burger2023amobilerobotic pages 52-56): Benjamin Burger. A mobile robotic researcher. ArXiv, Jan 2023. URL: https://doi.org/10.17638/03087073, doi:10.17638/03087073. This article has 4 citations.
+
+3. (zhou2025localizationinspectionand pages 3-5): Zhengxue Zhou, Satheeshkumar Veeramani, Francisco Munguia-Galeano, Hatem Fakhruldeen, and Andrew I. Cooper. Localization, inspection, and reasoning (lira) module for autonomous workflows in self-driving laboratories. Communications Chemistry, Nov 2025. URL: https://doi.org/10.1038/s42004-025-01770-1, doi:10.1038/s42004-025-01770-1. This article has 18 citations and is from a peer-reviewed journal.
+
+4. (zhou2025localizationinspectionand pages 7-8): Zhengxue Zhou, Satheeshkumar Veeramani, Francisco Munguia-Galeano, Hatem Fakhruldeen, and Andrew I. Cooper. Localization, inspection, and reasoning (lira) module for autonomous workflows in self-driving laboratories. Communications Chemistry, Nov 2025. URL: https://doi.org/10.1038/s42004-025-01770-1, doi:10.1038/s42004-025-01770-1. This article has 18 citations and is from a peer-reviewed journal.
+
+5. (zhou2025localizationinspectionand pages 5-7): Zhengxue Zhou, Satheeshkumar Veeramani, Francisco Munguia-Galeano, Hatem Fakhruldeen, and Andrew I. Cooper. Localization, inspection, and reasoning (lira) module for autonomous workflows in self-driving laboratories. Communications Chemistry, Nov 2025. URL: https://doi.org/10.1038/s42004-025-01770-1, doi:10.1038/s42004-025-01770-1. This article has 18 citations and is from a peer-reviewed journal.
+
+6. (harazono2024evaluationofmicroplate pages 6-11): Yoritaka Harazono, Haruko Shimono, Kikumi Hata, Toutai Mitsuyama, and Takaaki Horinouchi. Evaluation of microplate handling accuracy for applying robotic arms in laboratory automation. bioRxiv, Jan 2024. URL: https://doi.org/10.1101/2023.12.29.573685, doi:10.1101/2023.12.29.573685. This article has 11 citations.
+
+7. (harazono2024evaluationofmicroplate pages 11-15): Yoritaka Harazono, Haruko Shimono, Kikumi Hata, Toutai Mitsuyama, and Takaaki Horinouchi. Evaluation of microplate handling accuracy for applying robotic arms in laboratory automation. bioRxiv, Jan 2024. URL: https://doi.org/10.1101/2023.12.29.573685, doi:10.1101/2023.12.29.573685. This article has 11 citations.
+
+8. (darvish2025organaarobotic pages 14-15): Kourosh Darvish, Marta Skreta, Yuchi Zhao, Naruki Yoshikawa, Sagnik Som, Miroslav Bogdanovic, Yang Cao, Han Hao, Haoping Xu, Alán Aspuru-Guzik, Animesh Garg, and Florian Shkurti. Organa: a robotic assistant for automated chemistry experimentation and characterization. Matter, 8(2):101897, Feb 2025. URL: https://doi.org/10.1016/j.matt.2024.10.015, doi:10.1016/j.matt.2024.10.015. This article has 256 citations and is from a peer-reviewed journal.
+
+9. (darvish2025organaarobotic pages 7-9): Kourosh Darvish, Marta Skreta, Yuchi Zhao, Naruki Yoshikawa, Sagnik Som, Miroslav Bogdanovic, Yang Cao, Han Hao, Haoping Xu, Alán Aspuru-Guzik, Animesh Garg, and Florian Shkurti. Organa: a robotic assistant for automated chemistry experimentation and characterization. Matter, 8(2):101897, Feb 2025. URL: https://doi.org/10.1016/j.matt.2024.10.015, doi:10.1016/j.matt.2024.10.015. This article has 256 citations and is from a peer-reviewed journal.
+
+10. (burger2020amobilerobotic pages 1-3): Benjamin Burger, Phillip M. Maffettone, Vladimir V. Gusev, Catherine M. Aitchison, Yang Bai, Xiaoyan Wang, Xiaobo Li, Ben M. Alston, Buyi Li, Rob Clowes, Nicola Rankin, Brandon Harris, Reiner Sebastian Sprick, and Andrew I. Cooper. A mobile robotic chemist. Nature, 583:237-241, Jul 2020. URL: https://doi.org/10.1038/s41586-020-2442-2, doi:10.1038/s41586-020-2442-2. This article has 2300 citations and is from a highest quality peer-reviewed journal.
+
+11. (zhou2025localizationinspectionand pages 2-3): Zhengxue Zhou, Satheeshkumar Veeramani, Francisco Munguia-Galeano, Hatem Fakhruldeen, and Andrew I. Cooper. Localization, inspection, and reasoning (lira) module for autonomous workflows in self-driving laboratories. Communications Chemistry, Nov 2025. URL: https://doi.org/10.1038/s42004-025-01770-1, doi:10.1038/s42004-025-01770-1. This article has 18 citations and is from a peer-reviewed journal.
+
+12. (harazono2024evaluationofmicroplate pages 1-6): Yoritaka Harazono, Haruko Shimono, Kikumi Hata, Toutai Mitsuyama, and Takaaki Horinouchi. Evaluation of microplate handling accuracy for applying robotic arms in laboratory automation. bioRxiv, Jan 2024. URL: https://doi.org/10.1101/2023.12.29.573685, doi:10.1101/2023.12.29.573685. This article has 11 citations.
+
+13. (darvish2025organaarobotic pages 9-12): Kourosh Darvish, Marta Skreta, Yuchi Zhao, Naruki Yoshikawa, Sagnik Som, Miroslav Bogdanovic, Yang Cao, Han Hao, Haoping Xu, Alán Aspuru-Guzik, Animesh Garg, and Florian Shkurti. Organa: a robotic assistant for automated chemistry experimentation and characterization. Matter, 8(2):101897, Feb 2025. URL: https://doi.org/10.1016/j.matt.2024.10.015, doi:10.1016/j.matt.2024.10.015. This article has 256 citations and is from a peer-reviewed journal.
+
+14. (wu2026towardresilientselfdriving pages 4-5): Zi-Heng Wu, Adrian Vecina Tercero, Andre A. Fatehi, Abhik Sarkar, B. Giera, E. Duoss, C. Spadaccini, Nikhil Deshpande, and A. Gongora. Toward resilient self-driving laboratories through telerobotic interventions. ArXiv, Nov 2026. URL: https://doi.org/10.48550/arxiv.2611.18496, doi:10.48550/arxiv.2611.18496. This article has 0 citations.
+
+15. (cowling2026from12to pages 1-3): Simon Cowling. From 12 to 200 demonstrations: how act, diffusion policy, smolvla and $\pi _0.5$ scale on a low-cost arm. ArXiv, Oct 2026. URL: https://doi.org/10.48550/arxiv.2610.37170, doi:10.48550/arxiv.2610.37170. This article has 1 citations.
+
+16. (cowling2026from12to pages 9-12): Simon Cowling. From 12 to 200 demonstrations: how act, diffusion policy, smolvla and $\pi _0.5$ scale on a low-cost arm. ArXiv, Oct 2026. URL: https://doi.org/10.48550/arxiv.2610.37170, doi:10.48550/arxiv.2610.37170. This article has 1 citations.
+
+17. (cowling2026from12to pages 7-9): Simon Cowling. From 12 to 200 demonstrations: how act, diffusion policy, smolvla and $\pi _0.5$ scale on a low-cost arm. ArXiv, Oct 2026. URL: https://doi.org/10.48550/arxiv.2610.37170, doi:10.48550/arxiv.2610.37170. This article has 1 citations.
+
+18. (rupp2022establishmentoflowcost pages 5-6): Nicole Rupp, Katrin Peschke, Michael Köppl, David Drissner, and Thole Zuchner. Establishment of low-cost laboratory automation processes using autoit and 4-axis robots. SLAS Technology, 27:312-318, Oct 2022. URL: https://doi.org/10.1016/j.slast.2022.07.001, doi:10.1016/j.slast.2022.07.001. This article has 30 citations and is from a peer-reviewed journal.
+
+19. (vincent2023guaranteesonrobot pages 4-5): Joseph A. Vincent, Aaron O. Feldman, and Mac Schwager. Guarantees on robot system performance using stochastic simulation rollouts. IEEE Transactions on Robotics, 40:3984-4002, Sep 2023. URL: https://doi.org/10.48550/arxiv.2309.10874, doi:10.48550/arxiv.2309.10874. This article has 16 citations and is from a highest quality peer-reviewed journal.
+
+20. (vincent2023guaranteesonrobot pages 2-4): Joseph A. Vincent, Aaron O. Feldman, and Mac Schwager. Guarantees on robot system performance using stochastic simulation rollouts. IEEE Transactions on Robotics, 40:3984-4002, Sep 2023. URL: https://doi.org/10.48550/arxiv.2309.10874, doi:10.48550/arxiv.2309.10874. This article has 16 citations and is from a highest quality peer-reviewed journal.
+
+21. (cowling2026from12to pages 21-24): Simon Cowling. From 12 to 200 demonstrations: how act, diffusion policy, smolvla and $\pi _0.5$ scale on a low-cost arm. ArXiv, Oct 2026. URL: https://doi.org/10.48550/arxiv.2610.37170, doi:10.48550/arxiv.2610.37170. This article has 1 citations.
+
+22. (reed2021labautomationfor pages 48-50): M REED. Lab automation for materials chemistry. Unknown journal, 2021.
+
+23. (tegally2020unlockingtheefficiency pages 1-3): Houriiyah Tegally, James Emmanuel San, Jennifer Giandhari, and Tulio de Oliveira. Unlocking the efficiency of genomics laboratories with robotic liquid-handling. BMC Genomics, Oct 2020. URL: https://doi.org/10.1186/s12864-020-07137-1, doi:10.1186/s12864-020-07137-1. This article has 149 citations and is from a peer-reviewed journal.
+
+24. (thieme2024deepintegrationof pages 5-6): Anton Thieme, Sean Renwick, Michaela Marschmann, Pedro Ivo Guimaraes, Susanne Weissenborn, and Jamie Clifton. Deep integration of low-cost liquid handling robots in an industrial pharmaceutical development environment. SLAS Technology, 29:100180, Oct 2024. URL: https://doi.org/10.1016/j.slast.2024.100180, doi:10.1016/j.slast.2024.100180. This article has 16 citations and is from a peer-reviewed journal.
