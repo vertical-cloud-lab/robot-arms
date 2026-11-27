@@ -477,7 +477,9 @@ campaign is roughly 70–90 sessions.
 - **Block.** A contiguous run of units in one session, under one configuration, following one
   schedule. A new session always starts a new block. A block is one "run" under the SOP: the
   person at the arm gives the "workspace clear" before it starts and again before it resumes after
-  any reset, and stays at the E-stop throughout.
+  any reset, and stays at the E-stop throughout. The person at the cell starts a counted block from
+  the harness, or a remote operator does who is in contact with them. An `@claude` run does not
+  start counted blocks (its job lasts at most six hours and its token one).
 - **Ledger.** A committed file keeps the trials still owed to each task × condition × level.
   Each block's schedule is drawn from it, so a block that ends early just leaves its unrun units
   in the ledger.
