@@ -1,0 +1,8 @@
+# Build outputs: rebuilt from the .tex files, so not kept in history.
+*.pdf
+*.synctex.gz
+*.log
+*.aux
+*.bbl
+*.blg
+*.out

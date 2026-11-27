@@ -6,9 +6,10 @@ later feed into a manuscript.
 
 ## What's here
 
-- **`README.md`**: this page. It is the only file published while the course is running.
-- **Drafts** (`.tex`, `.bib`, figures): kept on my computer until each assignment is turned
-  in, then published here.
+- **`README.md`**: this page.
+- **`Proposal/`**: the proposal draft (`.tex`, `.bib`, figures), published here.
+- **Other drafts** (the paper): kept on my computer until the assignment is turned in, then
+  published here.
 - **`Private/`**: course materials and correspondence. Never published.
 
 ## AI use

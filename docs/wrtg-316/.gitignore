@@ -1,4 +1,7 @@
-# Keep drafts local until they're turned in. Delete this file to publish them.
+# Keep drafts local until they're turned in. The proposal is published; the paper
+# (and everything else here) stays local until it is turned in.
 *
 !.gitignore
 !README.md
+!Proposal/
+!Proposal/**
