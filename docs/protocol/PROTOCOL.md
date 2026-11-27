@@ -1,61 +1,82 @@
-# Pre-registration: how reliably can the PiPER load a CubXL?
+# Pre-registration: how reliably can the PiPER load a CubXL deck with vial carriers and single vials?
 
-**Status: draft, not locked.** No counted trial may run until this file is locked. To lock it,
-fill every `F` field in [§0](#0-fill-in-before-locking), commit, tag the commit `prereg-v1`, and
-write the hash below. Changes made after the lock go in [§14](#14-amendments), dated and with a
-reason. Never rewrite the original text.
+**Status: v2 draft, not locked.** No counted trial may run until this file is locked and registered.
+To lock it, make every decision in [§0](#0-decisions-before-locking), commit, tag the commit
+`prereg-v1`, and register it as described in [`README.md`](README.md#how-to-register-once-the-before-registration-gates-are-met).
+Changes made after the lock go in [§16](#16-amendments), dated and with a reason. Never rewrite the
+original text.
 
 | | |
 |---|---|
-| Locked commit / tag | `F0: ____` / `prereg-v1` |
-| Lock date | `____` |
-| Campaign issue | #21 |
-| Arm | AgileX PiPER: 6-DOF, 1.5 kg payload, 626 mm reach, 0.1 mm repeatability ([AgileX](https://global.agilex.ai/products/piper)) |
-| Design this tests | The dock, the 8 + 1 carrier and the single-vial pockets from [byu-vcl#266](https://github.com/vertical-cloud-lab/byu-vcl/issues/266) ([README](https://github.com/vertical-cloud-lab/byu-vcl/blob/f784f6b/robot-arm/cubxl-vial-handling/README.md)), and the Spot D pick-up shelf (#9) |
+| Version | v2, 2026-11-27. It replaces v1 of 2026-10-10 (`9652c43`, never registered). What changed is listed in [§16](#16-amendments) |
+| Locked commit / tag | `____` / `prereg-v1` |
+| Registry | [OSF Registries](https://osf.io/registries), *OSF Preregistration* template (v4). **A**: E1 and E2, H1–H3 ([form answers](osf/A-transfer-reliability.md)). **B**: E3, H4 ([form answers](osf/B-pose-repeatability.md)) |
+| Registration DOIs | A: `____` · B: `____` |
+| Campaign issue | [#21](https://github.com/vertical-cloud-lab/robot-arms/issues/21) |
+| Arm | AgileX PiPER, 6-DOF, on loan to the lab. Vendor figures: 1.5 kg payload, 626 mm reach (reseller listing), 0.1 mm repeatability. None has been measured here; E3 measures the last |
+| Design under test | The dock blocks (3 mm × 45° lead-in, cone pins 250 mm apart), the 8 + 1 carrier, the finger inserts and the offset plates of [byu-vcl#266](https://github.com/vertical-cloud-lab/byu-vcl/issues/266) and [byu-vcl PR 272](https://github.com/vertical-cloud-lab/byu-vcl/pull/272) |
+| Safety documents | [PR 23](https://github.com/vertical-cloud-lab/robot-arms/pull/23) (`docs/safety/`: hazard analysis, SOP, checklist). Still a draft; it must be reviewed before the first counted block ([`bench-readiness.md`](bench-readiness.md)) |
+| Analysis code | [`analysis/prereg_stats.py`](analysis/prereg_stats.py) implements every confirmatory rule below; [`analysis/simulate_and_check.py`](analysis/simulate_and_check.py) runs it on a synthetic campaign |
 
 This is the plan for the PiPER reliability paper. Before any counted trial, it fixes what we
-measure, how each hypothesis is decided, and when we stop. Later pieces of the campaign land
-on the same PR: the analysis scripts, the trial harness, the repeatability fixture and the
-fiducial correction. Each must do what this file says. Where one can't, amend this file first.
-Nothing in this document moves the arm.
+measure, how each hypothesis is decided, and when we stop. Later pieces of the campaign must do
+what this file says: the trial harness, the repeatability fixture and the fiducial correction.
+Where one can't, amend this file first. Nothing in this document moves the arm.
 
 ---
 
-## 0. Fill in before locking
+## 0. Decisions before locking
 
-Everything marked `F#` below is a number or choice for the PI. Suggestions in the last column
-come from #266 and the arithmetic in this file. They are not decisions.
+Two kinds of blank remain. **Decisions** (D) are for the PI to make before registering.
+**Rules** (R) are already fixed here; the *values* they produce are measured in the pilot and
+written into the `cfg-1` record before the first counted trial, so registration doesn't wait for
+them.
 
-| ID | What | Where used | Suggestion |
+### Decisions for the PI
+
+| ID | Decision | Where | Suggestion |
 |---|---|---|---|
-| F1 | Setting: mock-up v2 or the real CubXL | §3 | Mock-up v2 for E1 and E2, with a short confirmation block on the real CubXL (§13) |
-| F2 | Vials: printed dummies or glass; body OD; mass | §3 | Printed at 100 % infill (≈ 47 g, close to a full vial) |
-| F3 | Carriers A and B: vial load and mass | §3 | Both full of dummies (≈ 0.50–0.63 kg for 8 + 1) |
-| F4 | Dock pocket used by T2; diametral clearance *c* (≤ 1.0 mm); entry chamfer (0 = none) | §3, H1b | Fix both before the lock, and record the measured values, not the CAD ones |
-| F5 | Dock datum, cone-pin spacing, pocket distance *r* from the datum | §7 | Datum at the cone pins' midpoint |
-| F6 | Wrist camera and lens; tag family, size, placement; frames per look; reprojection limit; look attempts; correction cap | §5 | `tag36h11`, 20 mm, non-coplanar bundle on the dock sidewalls; cap larger than the biggest injected offset |
-| F7 | How seating is checked; witness camera | §6 | A seat switch or a 0.2 mm feeler at the corners, plus a fixed witness still after every transfer |
-| F8 | Operating speed and velocity profile | §3 | The same in every condition and experiment |
-| F9 | Check delay after release; per-transfer timeout; cap-height tolerance (T2) | §6 | 2 s; 3× the median transfer time; ±0.5 mm |
-| F10–F17 | Predicted values for H1–H4 | §2 | Yours |
-| F18 | *n* loading transfers per task × condition | §7 | 300. 299 transfers with no failures is the fewest that certifies 99 % (§12.1) |
-| F19 | Units per block | §8 | A whole number of permuted sub-blocks |
-| F20 | Second metrology payload | §7 | A dummy mass equal to a full carrier at the carrier's CG |
-| F21 | Metrology warm-up | §7 | 15 min of cycling over P1–P5 |
-| F22 | Metrology instrument and its expanded uncertainty *U* (k = 2) | §7, H4a | Must be ≤ 0.025 mm |
-| F23 | Run-of-failures stop | §9 | 3 in a row, or 5 in the last 20 |
-| F24 | Campaign end date | §9 | |
-| F25 | MTBI horizon τ (transfers) | §12.4 | 300 |
-| F26 | Where raw logs live | §11 | A Hugging Face dataset under `byu-vcl` |
-| F27 | Who the operator calls after a Catastrophic event | App. A | PI and the College Health and Safety Officer |
+| D1 | Setting: the mock-up v2 deck (real deck's 25 mm pitch, PR 272) or the real CubXL | §4 | Mock-up v2. No CubXL is in or near the cell, and the v1 mock-up's 35.6 mm pitch doesn't match the real 25 mm |
+| D2 | Vials: printed dummies or glass; which height | §4 | Printed dummies of Chris's vial (64.2 mm, Ø27 body, Ø28 cap), solid (46.8 g). PR 272 notes the CubOS deck files say 83 mm; settle which before printing |
+| D3 | Carrier load | §4 | Both carriers full: 8 dummies each, 485 g per carrier with solid dummies (PR 272) |
+| D4 | How E2's offsets are made: in software (the arm's belief about the dock) or with PR 272's offset plates | §8 | Software, with the plates as a physical cross-check (§15). Plates need a person to swap them, which rules out randomizing levels within a block |
+| D5 | *n* for the carrier, open-loop cell of E1 | §8 | **628** (2 failures may still certify 99 %), if the arm time is there. 300 is the minimum #21 sets, and gives H1a 55 % power at a true 99.8 % |
+| D6 | Single-vial open-loop levels in E2: all 21, or only 0, ±1, ±2 mm and ±2° | §8 | All 21, as #21 asks, unless operator time is short. The trimmed set saves about 200 resets for almost no information (§8) |
+| D7 | Predictions for H1–H4 (blanks P1–P8 in §2) | §2 | Yours. They're recorded for calibration only and enter no decision |
+| D8 | The time-cost cap for H3c, in seconds per loading transfer | §2 | 5 s |
+| D9 | E3's loaded payload | §8 | A dummy mass equal to a full carrier, at the carrier's centre of gravity |
+| D10 | E3's instrument, with its expanded uncertainty *U* (k = 2) | §8 | Three 0.001 mm digital indicators on a sphere or cube target. *U* must be ≤ 0.025 mm |
+| D11 | Run-of-failures stop | §10 | 3 in a row in one cell, or 5 in the last 20 units of one cell |
+| D12 | Campaign end date (cells still short then are reported as they stand) | §10 | 16 weeks after the first counted block |
+| D13 | MTBI horizon τ in transfers | §14.4 | 300 |
+| D14 | Where raw logs and videos live | §11 | A Hugging Face dataset under `byu-vcl`, made public with the paper |
+| D15 | People: the operators, the blind reviewer of failures, the adjudicator, and who is called after a Catastrophic event | §7, App. A | The reviewer must not have operated the blocks they review. Call the PI and the College Health & Safety Officer |
+| D16 | Registration contributors, and public or embargoed | README | Public at registration |
+
+### Rules whose values come from the pilot
+
+Each value goes into the `cfg-1` record, with its measurement, before the first counted trial.
+If a rule can't be met (for example the pocket's clearance is over 1 mm), stop and amend before
+counting anything.
+
+| ID | What | Rule |
+|---|---|---|
+| R1 | T2's pocket: diametral clearance *c* and entry chamfer | Measured on the printed part with pin gauges and calipers, not taken from CAD. H1b needs *c* ≤ 1.0 mm; PR 272's Cubware pocket squeezes the vial by 0.57 mm, which qualifies |
+| R2 | Dock datum, cone-pin spacing, pocket distance *r* from the datum | Measured as printed. The datum is the midpoint of the cone pins; the design spacing is 250 mm |
+| R3 | AprilTags and the look | `tag36h11`, the largest size with a full white border that fits on the dock blocks, and at least 25 mm (10 mm tags failed 0 of 48 from the fixed camera in PR 40). 5 frames per look, 3 looks at most. The correction is capped at 6 mm and 6°, beyond the largest injected offset. The reprojection-error limit is the 99th percentile of 100 pilot looks |
+| R4 | Seat check (T1) and cap height (T2) | A 0.2 mm feeler gauge at the four corners of each dock block, or a seat switch if one is fitted. Cap-top height within ±0.5 mm of nominal, by gauge |
+| R5 | Speed | One speed in every condition and experiment: the pilot speed at which 20 nominal carrier loads all succeed, and never above the SOP's cap |
+| R6 | Check delay; timeout | Check 2 s after the arm reaches its clear pose. Timeout per transfer: 3 × the pilot median, rounded up to 5 s |
+| R7 | Units per block | Whole sub-blocks that fit in 50 minutes at the pilot's median unit time. A person can end a session sooner, between units |
+| R8 | Contact stop on the place descent | The descent stops and the transfer aborts when any joint effort exceeds 1.5 × the largest effort in 20 nominal pilot places. It must stop a ±4 mm carrier place on a cone-pin tip before anything breaks, tested in the pilot at the campaign speed |
 
 ---
 
-## 1. Question and estimands
+## 1. Question, estimands and scope
 
-**Question.** How reliable is this arm at loading a CubXL with vial carriers and with single
-vials? And how much of the gap to 99 % per transfer does each of these close: (a) a lead-in
-dock, and (b) wrist-camera AprilTag correction?
+**Question.** How reliable is this arm at loading a CubXL deck with vial carriers and with single
+vials? And how much of the gap to 99 % per transfer does each of these close: (a) a lead-in dock,
+and (b) wrist-camera AprilTag correction?
 
 **Why 99 %.** A self-driving-lab run is a chain of transfers. The chance that 50 transfers
 finish untouched is *p*⁵⁰:
@@ -67,381 +88,507 @@ finish untouched is *p*⁵⁰:
 97.5 % is the rate Ada reports (about one run-ending failure per 40 samples, from the Q1 scan
 in #1). 99 % is roughly where an overnight run becomes more likely than not to finish.
 
-**Why these two interventions.** #266 puts the arm's placement error at ±0.64 mm combined
-(RSS) and ±1.15 mm worst case. The worst case is the linear sum of ±0.10 mm repeatability,
-±0.50 mm gripper, ±0.30 mm teaching and registration, and ±0.25 mm structure and humidity.
-A tight pocket captures about ±0.6 mm. A 3 mm × 45° lead-in nest captures about ±3 mm. So the
-two fixes attack the problem from opposite sides:
+**Why these two interventions.** #266 estimates the arm's placement error at ±0.64 mm combined
+(RSS) and ±1.15 mm worst case. That is an estimate from parts of a budget, not a measurement: the
+linear sum of ±0.10 mm repeatability, ±0.50 mm gripper, ±0.30 mm teaching and registration, and
+±0.25 mm structure and humidity. A tight pocket captures about ±0.6 mm, and a 3 mm × 45° lead-in
+nest about ±3 mm (PR 272). So the two fixes attack the problem from opposite sides:
 
 - **The dock widens capture.**
 - **The correction shrinks error.** It measures where the dock really is, which removes the
-  teaching, registration and structure terms. It can't see the vial's position in the
-  fingers, so the ±0.5 mm gripper term stays. Once corrected, the worst case is about
-  ±0.6 mm plus the tag-pose error. A pocket with 1 mm diametral clearance allows ±0.5 mm. So
-  correction should help single vials without guaranteeing 99 %. This is an expectation,
-  not a hypothesis.
+  teaching, registration and structure terms. It can't see the vial's position in the fingers,
+  so the ±0.5 mm gripper term stays. Once corrected, the worst case is about ±0.6 mm plus the
+  tag-pose error, against ±0.5 mm in a pocket with 1 mm diametral clearance. So correction should
+  help single vials without guaranteeing 99 %. This is an expectation, not a hypothesis.
 
 **Estimands.** *T* is the task (C = carrier, V = single vial). *K* is the condition (OL = open
 loop, AT = AprilTag-corrected).
 
-- *p*(*T*, *K*): the probability that a loading transfer succeeds at zero injected offset.
-  This is the primary endpoint. Unloading is secondary.
+- *p*(*T*, *K*): the probability that a loading transfer succeeds at zero injected offset. The
+  primary endpoint.
 - Gap to 99 %: *g*(*T*, *K*) = max(0, 0.99 − *p*(*T*, *K*)).
-- Share of the gap closed by correction:
-  *G*(*T*) = [*p*(*T*, AT) − *p*(*T*, OL)] / [0.99 − *p*(*T*, OL)]. It is defined only when
-  *p*(*T*, OL) < 0.99.
-- Contribution of the lead-in dock, measured two ways:
-  - (i) The task contrast *p*(C, OL) − *p*(V, OL). This is confounded by the object (§13).
-  - (ii) The mechanism: the dock's ED90 capture radius set against the arm's error budget
-    (H2).
+- Share of the gap closed by correction: *G*(*T*) = [*p*(*T*, AT) − *p*(*T*, OL)] /
+  [0.99 − *p*(*T*, OL)], defined only when *p*(*T*, OL) < 0.99.
+- Contribution of the lead-in dock, two ways:
+  - (i) the task contrast *p*(C, OL) − *p*(V, OL), which the object confounds (§15);
+  - (ii) the mechanism: the dock's ED90 capture radius against the arm's error budget (H2).
 - ED50 and ED90: the injected offset at which predicted success falls to 50 % or 90 %.
 - MTBI: the mean number of transfers between interventions.
-- RP: pose repeatability as defined in ISO 9283.
+- RP: pose repeatability as ISO 9283 defines it.
+
+**Scope.** The claims are about this arm, this dock design and these objects, at spot D:
+
+- **The deck is a mock-up** unless D1 says otherwise. Nobody has put a real CubXL in the cell.
+- **The vials are printed dummies** unless D2 says otherwise. A dummy doesn't slip, chip or
+  shatter like glass.
+- **The arm is the borrowed PiPER** with its firmware as recorded in each configuration.
+- **The CubXL's own motion is out of scope**, and so is anything a vial would hold.
 
 ---
 
-## 2. Hypotheses
+## 2. Hypotheses and decision rules
 
-Each hypothesis gets its own α = 0.05, one-sided where stated. There is no multiplicity
-correction, because each answers a separate question fixed here in advance. Every outcome is
-reported, whether it supports the hypothesis, refutes it or is inconclusive. Predictions are
-recorded for calibration only. They do not enter any decision rule.
+Each hypothesis gets its own α = 0.05, one-sided where stated. There is no correction across
+hypotheses, because each answers a separate question fixed here in advance; within a hypothesis,
+"both axes" is an intersection–union test, which needs none. Every outcome is reported as
+**supported**, **refuted** or **inconclusive**, whatever it is. The predictions (P1–P8) are
+recorded for calibration only and enter no decision. The power of each rule is in [§8.4](#84-power).
 
 ### H1: the dock reaches 99 %, the tight pocket does not
 
 - **H1a.** Open-loop carriers loaded into the 3 mm lead-in dock succeed at 99 % or better.
-  - Prediction: *p*(C, OL) = `F10: ____ %`.
-  - Supported if the exact one-sided 95 % lower bound is ≥ 0.99. At *n* = 300 that allows
-    no failures: 0/300 gives 0.9901, while 1/300 gives 0.9843.
-- **H1b.** Open-loop single vials loaded into dock pockets with ≤ 1 mm diametral clearance
-  (`F4`) stay below 99 %.
-  - Prediction: *p*(V, OL) = `F11: ____ %`.
-  - Supported if the exact one-sided 95 % upper bound is < 0.99. At *n* = 300 that takes
-    at least 7 failures.
-- **Inconclusive band.** At *n* = 300, between 1 and 6 failures certifies neither "≥ 99 %"
-  nor "< 99 %". That is reported as inconclusive, and the cell is not extended (§9, rule 4).
+  - Prediction: *p*(C, OL) = `P1: ____ %`.
+  - **Supported** if the exact (Clopper–Pearson) one-sided 95 % lower bound is ≥ 0.99. At
+    *n* = 300 that allows no failures (0/300 gives 0.9901, 1/300 gives 0.9843). At *n* = 628
+    it allows two.
+  - **Refuted** if the exact one-sided 95 % upper bound is < 0.99: at least 7 failures at
+    *n* = 300, or 12 at *n* = 628.
+  - **Inconclusive** otherwise. The cell is never extended to resolve it (§10, rule 4).
+- **H1b.** Open-loop single vials loaded into a pocket with ≤ 1 mm diametral clearance (R1)
+  stay below 99 %.
+  - Prediction: *p*(V, OL) = `P2: ____ %`.
+  - **Supported** if the exact one-sided 95 % upper bound is < 0.99 (at *n* = 300, at least 7
+    failures). **Refuted** if the exact one-sided 95 % lower bound is ≥ 0.99 (no failures).
+    **Inconclusive** otherwise.
 
 ### H2: the dock's capture radius exceeds the arm's worst-case error
 
-- **Claim.** The dock's ED90 capture radius is larger than the ±1.15 mm worst-case arm error
-  from #266. The capture radius is min(ED90ₓ, ED90ᵧ) for the carrier, open loop.
-- **Prediction.** ED90ₓ = `F12: ____ mm`, ED90ᵧ = `____ mm`, ED90 for yaw = `____°`.
-- **Decision.** Supported if the one-sided 95 % lower bounds of both ED90ₓ and ED90ᵧ exceed
-  1.15 mm. This is an intersection–union test, so it needs no adjustment. Yaw is reported
-  but not tested.
-- **Model-free check.** Supported only if the four ±2 mm translation levels together (80
-  trials) also have an exact one-sided 95 % lower bound of at least 0.90, which allows 3
-  failures at most. That shows directly that at least 90 % of carriers are still caught
-  2 mm off, averaged over the four directions.
+- **Claim.** For open-loop carriers, ED90 is larger than the ±1.15 mm worst-case arm error from
+  #266, on both x and y. The capture radius is min(ED90ₓ, ED90ᵧ).
+- **Prediction.** ED90ₓ = `P3: ____ mm`, ED90ᵧ = `____ mm`, ED90 for yaw = `____°`.
+- **Decision, per axis** (x and y; yaw is reported but not tested):
+  - If the capture curve is **not censored**: the Fieller one-sided 95 % lower bound of ED90 must
+    exceed 1.15 mm.
+  - If it **is censored**, the logistic fit can't place ED90. Censored means no failures at 4 mm,
+    or a fitted success at 4 mm that is still ≥ 90 % (§14.3). Then monotonicity decides instead:
+    success at 1.15 mm is at least the average success over the 2, 3 and 4 mm levels, so the
+    exact one-sided 95 % lower bound of the pooled success at |*d*| ≥ 2 mm (120 trials) must be
+    ≥ 0.90.
+- **Supported** if both axes pass. **Refuted** if on either axis the Fieller one-sided 95 %
+  upper bound of ED90 is below 1.15 mm. **Inconclusive** otherwise.
 - **What the offset means.** It is injected on top of the arm's own error. "ED90 > 1.15 mm"
-  therefore means the dock still catches 90 % of carriers after the arm has been pushed a
-  further 1.15 mm off.
+  therefore means the dock still catches 90 % of carriers after the arm has been pushed a further
+  1.15 mm off.
+- **Secondary check (reported, not decisive).** Whether the four ±2 mm translation levels
+  together (80 trials) have an exact one-sided 95 % lower bound of at least 0.90, which allows 3
+  failures. v1 made this part of the decision. The power analysis showed that the combination
+  tests "ED90 > about 2.5 mm", not "> 1.15 mm": at a true ED90 of 2 mm the combined rule passes
+  4 % of the time, the Fieller rule alone 100 % ([`out/power.md`](analysis/out/power.md)).
 
 ### H3: correction raises single-vial success and widens ED90, at a cost of a few seconds
 
 - **H3a.** *p*(V, AT) > *p*(V, OL).
-  - Prediction: OL `F13: ____ %`, AT `____ %`.
-  - Decision: a one-sided Boschloo exact test with *p* < 0.05.
-  - Power at *n* = 300 per condition, from the one-sided Fisher test (Boschloo is at least
-    as powerful):
+  - Prediction: OL `P4: ____ %`, AT `____ %`.
+  - **Supported** if the one-sided Boschloo exact test gives *p* < 0.05. **Contrary** if the
+    same test in the other direction gives *p* < 0.05. **Not supported** otherwise.
+- **H3b.** For single vials, correction widens ED90 on both x and y.
+  - Prediction: `P5: ____ mm` wider.
+  - **Decision, per axis.** ED90 is floored at 0 first: a pocket that is below 90 % even at zero
+    offset has a capture radius of 0.
+    - If the AT curve is censored (§14.3), H3b holds on that axis when the Fieller one-sided
+      95 % upper bound of ED90_OL is below 4 mm.
+    - Otherwise the one-sided 95 % percentile-bootstrap lower bound of
+      max(0, ED90_AT) − max(0, ED90_OL) must be > 0.
+  - **Supported** if both axes pass, **not supported** otherwise.
+- **H3c.** The correction costs no more than `D8` seconds per single-vial loading transfer.
+  - Prediction: `P6: ____ s`.
+  - **Supported** if the one-sided 95 % upper bound of the Hodges–Lehmann shift in transfer time
+    (AT − OL, successful E1 loads only) is ≤ D8.
+- **Also reported, not tested.** The same three contrasts for carriers.
 
-    | OL → AT | Power |
-    |---|---|
-    | 95 % → 99 % | ≈ 0.87 |
-    | 97 % → 99.5 % | ≈ 0.67 |
-    | 97 % → 99 % | ≈ 0.41 |
-
-    So H3a can only be detected if open-loop single vials are around 95 % or worse.
-- **H3b.** For single vials, ED90 under AT is larger than under OL.
-  - Prediction: `F14: ____ mm` wider.
-  - Decision: for both x and y, the one-sided 95 % bootstrap lower bound of
-    ED90_AT − ED90_OL is > 0.
-  - If AT shows no failures at ±4 mm on an axis, ED90_AT for that axis is censored at
-    "> 4 mm" (§12.3). H3b then holds on that axis if the upper 95 % bound of ED90_OL is
-    below 4 mm.
-- **H3c.** The correction costs no more than `F15: ____ s` per loading transfer.
-  - Decision: the upper 95 % bound of the Hodges–Lehmann shift in transfer time (AT − OL)
-    is ≤ `F15`.
-- **Also reported, not tested.** The same three contrasts for the carrier task.
-
-### H4: ISO 9283 RP is within ±0.1 mm unloaded and grows with payload and reach
+### H4: ISO 9283 RP is within ±0.1 mm unloaded and grows with payload and reach (registration B)
 
 - **H4a.** Unloaded RP ≤ 0.10 mm at all five poses.
-  - Decision: "meets the spec" if the ISO 9283 point estimate is ≤ 0.10 mm at every pose.
-    This is how manufacturers report RP. "Certified" if the bootstrap upper 95 % bound is
-    also ≤ 0.10 mm.
-  - Inconclusive if the instrument's expanded uncertainty is above 0.025 mm (`F22`).
-    ISO 9283 §6.5 caps the total measurement uncertainty at 25 % of the characteristic
-    under test.
+  - **Supported** ("meets the spec") if the ISO 9283 point estimate is ≤ 0.10 mm at every pose.
+    This is how manufacturers report RP. It is also reported as **certified** if the bootstrap
+    upper 95 % bound is ≤ 0.10 mm at every pose.
+  - **Refuted** if the bootstrap lower 95 % bound exceeds 0.10 mm at any pose.
+  - **Inconclusive** if the instrument's expanded uncertainty is above 0.025 mm (D10). ISO 9283
+    §6.5 caps the total measurement uncertainty at 25 % of the characteristic under test.
 - **H4b.** RP grows with payload.
-  - Prediction: `F16: +____ mm` loaded vs unloaded.
-  - Decision: the mean over poses of RP(loaded) − RP(unloaded) has a one-sided 95 %
+  - Prediction: `P7: +____ mm` loaded vs unloaded.
+  - **Supported** if the mean over poses of RP(loaded) − RP(unloaded) has a one-sided 95 %
     bootstrap lower bound > 0.
-- **H4c.** RP grows with reach. Reach is the horizontal distance from the J1 axis to the TCP.
-  - Prediction: `F17: +____ mm per 100 mm`.
-  - Decision: regress RP on reach over 5 poses × 2 payloads, with payload as a covariate.
-    The slope's one-sided 95 % bootstrap lower bound must be > 0.
+- **H4c.** RP grows with reach (the horizontal distance from the J1 axis to the TCP).
+  - Prediction: `P8: +____ mm per 100 mm`.
+  - **Supported** if, regressing RP on reach over 5 poses × 2 payloads with payload as a
+    covariate, the slope's one-sided 95 % bootstrap lower bound is > 0.
 
 ---
 
-## 3. Set-up
+## 3. Outcomes
 
-Everything below is part of the **configuration** (§8). Changing any of it starts a new
-block.
+**Primary outcome.** Success or failure of each *loading* transfer in E1, scored as in §7, per
+task × condition.
+
+**Secondary outcomes.**
+- Success of each *unloading* transfer in E1.
+- Success of each loading transfer in E2, against the injected offset (for ED50 and ED90).
+- Transfer time: from the start of the pick approach to the arm reaching its clear pose after the
+  release.
+- Interventions, for MTBI and S(50).
+- The LabRobFail category, subtype and severity of each failure (§13).
+- ISO 9283 RP per pose and payload (E3, registration B).
+
+**Exploratory, not tested.** Joint efforts and positions over time, the correction applied under
+AT and its residual, tag-detection quality, temperature and humidity effects, drift within a
+block, and anything else in the logs.
+
+---
+
+## 4. Set-up (the configuration)
+
+Everything below is part of the **configuration** (§9). Changing any of it starts a new block,
+and most changes start a new configuration.
 
 | Item | Specification |
 |---|---|
-| Arm | AgileX PiPER. Serial, firmware and the base mounting are recorded per configuration |
-| Fingers | One set of finger inserts that grips a vial and the carrier's handle post the same way (#266). Pads are recorded per configuration; #266 suggests silicone |
-| Wrist camera | `F6`. Mounted and powered in **both** conditions, so mass and cable drag are the same |
-| Dock | A nest with a 3 mm × 45° lead-in and two cone pins (#266), pill-keyed and screwed down. Two single-vial pockets. T2 uses the pocket in `F4` |
-| Carriers | Two identical 8 + 1 carriers, A and B, with a handle post in slot 5. Load and mass: `F3` |
-| Vials | `F2` |
-| Shelf | The Spot D pick-up shelf (#9). Two carrier nests and one single-vial pocket, each chamfered generously so the shelf is never the bottleneck. Geometry recorded |
-| Witness camera | Fixed, looking at the dock. Takes a still at every check (`F7`) |
-| Speed | `F8` |
-| Software | The trial harness commit is recorded per block. Joint positions, efforts and gripper state are logged at 100 Hz, the rate `--trace` already uses in #20 |
+| Arm | AgileX PiPER at spot D, upright on the 48 × 48 in plywood top. Serial, firmware (S-V1.8-1 when last read), joint zero offsets (J1 was re-zeroed on 2026-11-14) and how the base is fixed are recorded per configuration |
+| Controller | Driven over CAN (`can0`, 1 Mbit/s) from the Raspberry Pi 5 `rpi-5-mpzy`, which also switches the arm's supply through an IoT Relay II (`arm_power.py`). The POWERTEC 71970 E-stop is in the same supply. The order of relay and E-stop is recorded |
+| Gripper | AgileX's gripper with PR 272's finger inserts (90° V-blocks with a rib) and 1.5 mm silicone pads, Shore 30–50A. The printed auger sleeves now on the gripper come off for the campaign. Motor 7 (the gripper) must home and enable with the inserts fitted |
+| Wrist camera | The wrist Raspberry Pi (`rpi-5-76zj`) with the HQ camera (6 mm lens, focused and locked) and Camera Module 3 Wide, on PR 10's mount. Mounted and powered in **both** conditions, so the mass and cable drag are the same. Intrinsics and hand–eye calibration are part of the configuration |
+| Dock | PR 272's two dock blocks on `plate_0`, bolted through to a deck strip with the real deck's 25 mm pitch, and the dock's single-vial pocket (R1, R2). AprilTags on the blocks (R3) |
+| Carriers | Two identical PR 272 carriers, A and B, with the handle post at slot 5. Load and mass: D3. Each is weighed |
+| Vials | D2. Each is numbered and weighed |
+| Shelf | At spot D, two carrier nests and one single-vial pocket, each with a generous chamfer so the shelf is never the bottleneck. Geometry recorded. The shelf pocket and nests must be reachable with J1 inside the window that keeps the arm clear of the A1 mini (−20° to +60° in PR 83) |
+| Layout | Each carrier points at J1 at the place (PR 272 found no IK solution for a carrier across the arm's line). Joint margins at every taught pose are recorded |
+| Witness camera | Fixed, looking at the dock. The front camera on `rpi-5-mpzy` if its view covers the dock, otherwise a dedicated one. It takes a still at every check (R4) |
+| Speed | R5 |
+| Software | The trial harness commit is recorded per block. It logs joint positions, efforts and gripper state at ≥ 50 Hz (`Up_and_Down.py --trace` on main runs at 50 Hz; PR 20's runs at 100 Hz) |
 | Environment | Temperature, relative humidity and illuminance at the dock, logged per block |
-| Setting | `F1` |
+| Setting | D1 |
+
+**Payload.** A full carrier (0.53–0.66 kg, PR 272) plus the finger inserts (67 g) rides on a
+gripper of about 0.5 kg, and the wrist also carries a Pi, two cameras and their mount. #42 reads
+the 1.5 kg rating as including the gripper. The masses are weighed and the total recorded before
+the pilot (bench gate B6).
 
 ---
 
-## 4. Tasks
+## 5. Tasks
 
-Each task is run in **units**. Every unit holds exactly one *loading* transfer (into the dock:
-the primary endpoint) and one *unloading* transfer (out of the dock: secondary). A unit leaves
-the cell in a known state, so units of either task can be interleaved.
+Each task runs in **units**. Every unit holds exactly one *loading* transfer (into the dock: the
+primary endpoint) and one *unloading* transfer (out of the dock: secondary). A unit leaves the
+cell in a known state, so units of either task can be interleaved without anyone touching the
+cell.
 
-- **T1: carrier swap between the dock and the shelf.** Carrier A starts in the dock and B in
-  shelf nest 2. Each unit swaps them:
+- **T1: carrier swap between the dock and the shelf.** Carrier A starts in the dock and B in shelf
+  nest 2. Each unit swaps them:
   1. **Unload:** the carrier in the dock goes to the free shelf nest.
   2. **Load:** the other carrier goes from its shelf nest into the dock.
 
   The cell returns to its start state every two units.
-- **T2: single vial between the shelf and the dock pocket.** One vial starts in the shelf
-  pocket. Each unit:
-  1. **Load:** shelf pocket → dock pocket (`F4`).
+- **T2: single vial between the shelf and the dock pocket.** One vial starts in the shelf pocket.
+  Each unit:
+  1. **Load:** shelf pocket → the dock's single-vial pocket (R1).
   2. **Unload:** dock pocket → shelf pocket.
 
 A **transfer** is the pick at the source, the place at the destination, and the retreat to the
-clear pose.
+clear pose. Before every unit the harness checks that the arm answers, has no driver fault, and
+reads its rest pose to within 0.5° on every joint. If not, the unit doesn't start (§10, rule 3).
 
 ---
 
-## 5. Conditions
+## 6. Conditions
 
 - **OL: open loop.** Taught poses only. No camera data reaches the motion.
 - **AT: AprilTag-corrected.**
-  - At the look pose over the dock, the camera grabs `F6` frames and detects the dock's tags.
-    It estimates the dock's pose in the base frame through the hand–eye calibration.
-  - The place pose is corrected in x, y and yaw before every dock-side place. The pick pose
-    is corrected the same way before every dock-side pick. z, roll and pitch stay as taught.
+  - At the look pose over the dock, the wrist camera grabs frames (R3), detects the dock's tags
+    and estimates the dock's pose in the base frame through the hand–eye calibration.
+  - The place pose is corrected in x, y and yaw before every dock-side place, and the pick pose
+    the same way before every dock-side pick. z, roll and pitch stay as taught.
   - The shelf side is open loop in both conditions, because the question is about loading the
-    CubXL.
-  - If no valid pose arrives within `F6` attempts, or the correction exceeds the cap (`F6`),
-    the transfer aborts before descending. That counts as a failure. It never falls back to
-    open loop, which would mix the two conditions.
+    deck.
+  - If no valid pose arrives within the allowed looks, or the correction exceeds its cap (R3),
+    the transfer aborts before descending. That counts as a failure. It never falls back to open
+    loop, which would mix the conditions.
 
-**Both conditions pass through the same look pose and stop there.** OL leaves at once. AT
-dwells there to capture and correct. The only differences between the conditions are the dwell
-and the correction. Settling at a standstill before the final approach can't masquerade as a
-benefit of vision.
+**Both conditions pass through the same look pose and stop there.** OL leaves at once. AT dwells
+to capture and correct. The only differences between the conditions are the dwell and the
+correction, so settling at a standstill can't pass for a benefit of vision.
 
-**No automatic retries in either condition.** Each pick and each place is a single attempt.
-The harness may abort a transfer it judges unsafe, for example a grip effort below threshold
-before the lift (#20). An abort counts as a failure.
+**No automatic retries in either condition.** Each pick and each place is a single attempt. The
+harness aborts a transfer it judges unsafe: a grip effort below threshold before the lift (#20),
+or the contact stop on the place descent (R8). An abort counts as a failure.
 
 ---
 
-## 6. Success
+## 7. Success and scoring
 
-A transfer is scored at the **check**, `F9` s after the arm reaches the clear pose.
+A transfer is scored at the **check**, 2 s after the arm reaches the clear pose (R6).
 
-**Loading, T1: success requires all of the following.**
-1. The carrier is seated: both cone pins are engaged and it sits flat on the nest floor, as
-   checked by `F7`.
+**Loading, T1: success requires all of these.**
+1. The carrier is seated: both cone pins are engaged and it sits flat on the dock blocks (R4).
 2. Every vial is still in its pocket, upright, with its cap on.
-3. The gripper released cleanly, the arm reached the clear pose, and the carrier was not
-   dragged out of its seat.
+3. The gripper released cleanly, the arm reached the clear pose, and the carrier was not dragged
+   out of its seat.
 4. Nobody touched the cell between the start of the transfer and the check.
-5. There was no fault: no controller or CAN error, no E-stop, no collision stop, and no
-   contact with the keep-out frame.
-6. The transfer finished within the timeout `F9`.
+5. There was no fault: no controller or CAN error, no E-stop press, no contact stop (R8), and no
+   contact with the enclosure.
+6. The transfer finished within the timeout (R6).
 
-**Loading, T2: success requires all of the following.**
-1. The vial sits fully in the pocket, with its cap-top height within `F9` of nominal.
+**Loading, T2: success requires all of these.**
+1. The vial sits fully in the pocket, with its cap-top height within ±0.5 mm of nominal (R4).
 2. It is upright, capped and intact.
 3. Criteria 3–6 from T1 hold.
 
 **Unloading:** the same criteria, applied at the shelf.
 
-**These still count as successes.** Each is flagged as a near miss:
-- The lead-in doing its job, for example the carrier landing on the chamfer and sliding home
-  before the check.
-- An effort spike that did not trip a fault.
+**These still count as successes,** each flagged as a near miss:
+- the lead-in doing its job, such as the carrier landing on the chamfer and sliding home before
+  the check;
+- an effort spike that didn't trip the contact stop.
 
-**Adjudication.**
+**A planned E-stop is not a failure.** The SOP's lockout (§C of `docs/safety/sop.md`) has the
+person at the arm press the E-stop before every reach-in. A press between units, with the arm
+parked, belongs to the intervention that caused it. A press *during* a transfer fails that
+transfer.
+
+**Scoring.**
 1. The operator scores every transfer on the spot (App. A).
-2. A second person re-scores every failure and a random 10 % of successes from the witness
+2. A second person (D15) re-scores every failure and a random 10 % of successes from the witness
    stills. The stills are taken after the arm has left, so they don't show the condition.
-3. A third person resolves any disagreement.
+3. A third person resolves any disagreement. The adjudicated score is the one analysed.
 4. Cohen's κ between the operator and the reviewer is reported.
 
 ---
 
-## 7. Experiments and trial counts
+## 8. Experiments, sample size and power
 
-### E1: nominal reliability
+### 8.1 E1: nominal reliability (registration A)
 
 - 2 tasks × 2 conditions, at zero offset.
-- **At least *n* = 300 loading transfers per task × condition** (`F18`). Each comes paired
-  with an unloading transfer.
-- That is 1,200 loading and 1,200 unloading transfers.
+- **Loading transfers per cell:** 300 for C-AT, V-OL and V-AT, and D5 (300 or 628) for C-OL.
+  Each is paired with an unloading transfer.
+- With D5 = 300: 1,200 loads and 1,200 unloads. With D5 = 628: 1,528 of each.
 
-### E2: capture envelope
+### 8.2 E2: capture envelope (registration A)
 
-- **What is offset.** The dock frame the arm *believes* in. The physical dock does not move.
-- **The dock frame.** Its origin is the dock datum (`F5`). x runs along the carrier's long
-  axis, z points up, and yaw is about z through the origin.
-- **Levels.** One axis at a time:
+- **What is offset** (D4 = software). The dock frame the arm *believes* in. The physical dock does
+  not move.
+- **The dock frame.** Its origin is the dock datum (R2). x runs along the carrier's long axis, z
+  points up, and yaw is about z through the origin.
+- **Levels,** one axis at a time:
   - 0;
   - x = ±1, ±2, ±3, ±4 mm;
   - y = ±1, ±2, ±3, ±4 mm;
   - yaw = ±2°, ±4°.
 
-  That is **21 levels × 20 trials = 420 loading transfers per task × condition**, and 1,680
-  in all.
-- **Which leg is offset.** Only the loading leg. The unloading leg runs at the nominal frame.
-  After a successful load the object sits where the dock put it, so the nominal frame is
-  correct.
-- **Under AT,** the look pose moves with the believed frame, and the correction has to find
-  the real dock from the image. The injected offset never reaches the correction code.
-- **For T2,** a yaw of the dock frame moves the pocket sideways by about *r*·θ (`F5`).
+  That is **21 levels × 20 trials = 420 loading transfers per task × condition**, 1,680 in all.
+  With D6 trimmed, single-vial OL runs 11 levels (220 trials) and E2 totals 1,480.
+- **Which leg is offset.** Only the loading leg. The unloading leg runs at the nominal frame:
+  after a successful load the object sits where the dock put it.
+- **Under AT,** the look pose moves with the believed frame, and the correction has to find the
+  real dock from the image. The injected offset never reaches the correction code.
+- **For T2,** a yaw of the dock frame moves the pocket sideways by about *r*·θ (R2).
 
-**Expect the yaw levels to saturate for open-loop carriers.** If the cone pins are 225 mm apart
-(the holder's key spacing), a yaw of θ moves each pin 112.5·sin θ:
+**The yaw levels will saturate for open-loop carriers.** With the pins 125 mm either side of the
+datum, a yaw of θ moves each pin 125·sin θ: 4.4 mm at 2° and 8.7 mm at 4°, both past the 3 mm
+lead-in, which covers about ±1.4° (PR 272). The OL carrier's yaw curve will have no informative
+points. §15 lists an optional ±0.5° / ±1° extension.
 
-| Yaw | 0.5° | 1° | 2° | 4° |
-|---|---|---|---|---|
-| Pin displacement | 1.0 mm | 2.0 mm | 3.9 mm | 7.9 mm |
+**Expect many failed loads, and a reset for each.** Under one plausible scenario
+([`out/power.md`](analysis/out/power.md)), E2 produces about 590 failed loads: about 180 for
+carriers OL, about 400 for single vials OL, and about 12 for both AT cells together. Each needs a
+person to park the arm, press the E-stop, restore the scene and restart (§C of the SOP). Trimming
+single-vial OL to 0, ±1, ±2 mm and ±2° (D6) would cut its failures to about 200. Its ED90 is
+expected below 1 mm, so the dropped levels carry almost no information.
 
-So both ±2° and ±4° are past a 3 mm lead-in, and the OL carrier's yaw curve will probably
-have no informative points. §13 lists an optional ±0.5° / ±1° extension.
+### 8.3 E3: ISO 9283-style metrology (registration B)
 
-### E3: ISO 9283-style metrology
+- **Size.** 5 poses × 30 cycles × 2 payloads: 300 measured pose visits.
+- **Poses.** P1–P5 lie on a diagonal plane of the largest cube that fits the volume the campaign
+  uses, around the dock and the shelf. P1 is at the plane's centre and P2–P5 sit near its
+  corners. Secondary sources put them 10 % ± 2 % of the diagonal in from the corners; check that,
+  and the order of visits, against §6.8 of the standard before building the fixture.
+- **Cycles.** Each cycle visits every pose in a fixed order, approaching each from the same
+  direction, which keeps backlash out of RP. Dwell before measuring: 2 s after the arm reports
+  arrival.
+- **Payloads.** (1) Unloaded: the gripper, inserts and the measuring target. (2) Loaded: D9.
+  ISO 9283 makes 100 % rated load mandatory and 10 % an optional extra, so E3 is ISO 9283-*style*,
+  not conformant. Instrument parts carried by the arm count toward the payload (§6.6).
+- **Speed.** R5, so RP describes the motion the trials use. A third run at 100 % override may be
+  added by amendment.
+- **Warm-up.** 15 minutes cycling over P1–P5 before the first measured cycle. ISO 9283 §6.2 asks
+  for a warm-up if the manufacturer specifies one.
+- **Instrument.** D10, with *U* ≤ 0.025 mm (k = 2), checked on a static target before E3.
+- **Order.** Both payloads in one session, in random order, with temperature logged.
 
-- **Size.** 5 poses × 30 cycles × 2 payloads, which is 300 measured pose visits.
-- **Poses.** P1–P5 lie on the diagonal plane of the largest cube that fits the volume the
-  campaign uses, around the dock and the shelf. P1 is at the plane's centre and P2–P5 sit near
-  its corners. Secondary sources put them at 10 % ± 2 % of the diagonal in from the corners;
-  check that, and the visiting sequence, against §6.8 of the standard before building the
-  fixture.
-- **Cycles.** Each cycle visits every pose in a fixed order, approaching each one from the same
-  direction. That one-way approach is how ISO 9283 keeps backlash out of RP. Dwell before
-  measuring: `F21`.
-- **Payloads.**
-  - (1) Unloaded: the gripper plus the measuring target.
-  - (2) Loaded: `F20`.
+Only positional RP is measured. Orientation repeatability and pose accuracy (AP, which needs an
+absolute reference such as a laser tracker) are out of scope.
 
-  ISO 9283 makes 100 % rated load (1.5 kg) mandatory, and 10 % of it an optional extra test.
-  The loaded case here is the task load, which makes E3 ISO 9283-*style*, not conformant.
-  Instrument parts carried by the arm count toward the payload (§6.6).
-- **Speed.** The campaign speed (`F8`), so RP describes the motion the trials use. ISO 9283
-  asks for 100 % override; add that as a third run if time allows.
-- **Warm-up.** `F21`. ISO 9283 §6.2 asks for an appropriate warm-up if the manufacturer
-  specifies one.
-- **Instrument.** The repeatability fixture, which comes in a later ping. It must resolve the
-  TCP's 3D position with *U* ≤ 0.025 mm (k = 2), as recorded in `F22`.
-- **Order.** Both payloads run in one session, in random order, with temperature logged.
+### 8.4 Power
 
-**Only positional RP is measured.** Orientation repeatability and AP (pose accuracy, which
-needs an absolute reference such as a laser tracker) are out of scope.
+The full tables are in [`analysis/out/power.md`](analysis/out/power.md), from
+[`analysis/power.py`](analysis/power.py) (fixed seeds, the registered rules from
+`prereg_stats.py`). Binomial and Boschloo powers are exact. ED90, timing and RP powers are
+simulated, 2,000 campaigns per scenario (1,000 for RP).
 
-### Budget
+![Power for H1](analysis/out/fig_power_h1.png)
 
-| | Scored | Transfers, including resets |
+| Rule | What *n* buys |
+|---|---|
+| **H1a** (certify ≥ 99 %) | At *n* = 300 the cell must be perfect. Power: 22 % if the true rate is 99.5 %, 41 % at 99.7 %, **55 % at 99.8 %**, 74 % at 99.9 %. At *n* = 628 (D5): 39 %, 71 %, **87 %**, 97 %. 80 % power at 99.7 % would need 913 |
+| **H1b** (show < 99 %) | At *n* = 300: 99 % power if the true rate is 95 %, 80 % at 97 %, 39 % at 98 % |
+| **H3a** (Boschloo, 300 per arm) | OL → AT: 95 % → 99 %: 90 %. 97 % → 99.5 %: 72 %. 97 % → 99 %: 48 %. So a gain is only reliably detectable if open-loop single vials sit near 95 % or below |
+| **H2** (ED90 > 1.15 mm) | Essentially 100 % if the true ED90 is 2 mm or more; 17–18 % at 1.5 mm, because no level lies between 1 and 2 mm; ≤ 5 % at or below 1.15 mm, as a test should |
+| **H3b** (AT widens ED90) | 100 % when AT's ED90 is 1 mm or more against an OL pocket's 0.3 mm; low (2 %) for 0.6 vs 0.3 mm, which the 1 mm level spacing can't resolve |
+| **H3c** (time cap 5 s) | ≥ 99 % if the true extra time is 4 s or less, 70 % at 4.5 s |
+| **H4a** (30 cycles) | "Meets": 91 % if the true RP is 0.07 mm, 52 % at 0.08 mm. "Certified": 92 % at 0.06 mm, 48 % at 0.07 mm. These include instrument noise at *U* = 0.025 mm |
+| **H4b, H4c** | 60 % and 83 % power for a 0.01 mm payload effect and 0.01 mm per 100 mm; 98–100 % at 0.02 mm |
+| **MTBI** (600 E1 transfers per cell) | Imprecise by design: at 1 intervention per 100 transfers, the 95 % interval runs from 46 to 272 transfers |
+
+**Why these sample sizes.** #21 fixes the minimum: 300 per task and condition, 20 per offset
+level, 30 cycles per pose. The tables show what that buys. The one place it falls short of what
+the question needs is H1a: 300 can only certify 99 % if the dock is close to perfect, so D5 offers
+628 for that cell alone (about 330 more units, 6–9 hours of arm time).
+
+### 8.5 Budget
+
+| | Scored | Transfers, including resets of the cell |
 |---|---|---|
-| E1 | 1,200 loads + 1,200 unloads | 2,400 |
+| E1 (D5 = 300) | 1,200 loads + 1,200 unloads | 2,400 |
+| E1 extra if D5 = 628 | 328 loads + 328 unloads | 656 |
 | E2 | 1,680 loads | 3,360 |
 | E3 | 300 pose measurements | — |
-| **Total** | | **5,760 transfers** |
+| **Total (D5 = 300)** | | **5,760 transfers** |
 
-At 30 s per transfer that is about 48 h of arm time. At 45 s it is about 72 h.
+At 30 s per transfer that is about 48 h of arm time; at 45 s, about 72 h. Add the human resets:
+about 600 in E2 at 2–3 minutes each, or 20–30 hours. Sessions are about an hour (R7), so the
+campaign is roughly 70–90 sessions.
 
 ---
 
-## 8. Configurations, blocks and randomization
+## 9. Configurations, blocks and randomization
 
 - **Configuration.** Everything that can change how the arm behaves:
-  - the harness commit, including any code, config or calibration file on the trial path;
-  - the arm, its firmware and its mounting;
+  - the harness commit, including any code, configuration or calibration file on the trial path;
+  - the arm, its firmware, its joint zeros and its mounting;
   - the fingers and pads;
-  - the camera and its mount;
+  - the cameras, their mounts and calibrations;
   - the dock, carriers, vials and shelf, and where each of them sits;
-  - the taught points and the hand–eye calibration.
+  - the taught points.
 
-  Each configuration gets an ID (`cfg-N`) and a record of its commit and hardware. The record
-  can also list **spares**, parts identical to ones in use, that may replace a broken part
-  without creating a new configuration.
+  Each configuration gets an ID (`cfg-N`) and a record of its commit, hardware, measured values
+  (R1–R8) and photos. The record may list **spares**, parts identical to ones in use, that can
+  replace a broken part without creating a new configuration.
 - **Block.** A contiguous run of units in one session, under one configuration, following one
-  schedule. A new session always starts a new block.
-- **Randomization.** The schedule is generated and committed before the block's first unit,
-  from a seed equal to the block ID. Units run in that order. The operator does not choose,
-  skip or reorder them.
-  - **E1 blocks** use permuted sub-blocks of 4 units: T1-OL, T1-AT, T2-OL and T2-AT, each once
-    in random order.
-  - **E2 blocks** use permuted sub-blocks of 84 units: 21 levels × 2 conditions × 2 tasks.
-    Twenty sub-blocks complete E2.
-  - **Block size** is `F19` units.
-- **Block types.** E1 and E2 run in separate blocks. A pre-generated random sequence assigns
-  each session to E1 or E2, so wear, drift and season fall on both.
+  schedule. A new session always starts a new block. A block is one "run" under the SOP: the
+  person at the arm gives the "workspace clear" before it starts and again before it resumes after
+  any reset, and stays at the E-stop throughout.
+- **Ledger.** A committed file keeps the trials still owed to each task × condition × level.
+  Each block's schedule is drawn from it, so a block that ends early just leaves its unrun units
+  in the ledger.
+- **Randomization.** Each block's schedule is generated and committed before its first unit, by
+  the harness's schedule generator, from a seed equal to the block ID. Units run in that order.
+  The operator doesn't choose, skip or reorder them.
+  - **E1 sub-blocks:** C-OL, C-AT, V-OL and V-AT once each, in random order. With D5 = 628, C-OL
+    appears twice in every sub-block, and 28 sub-blocks chosen by the seed carry a third C-OL.
+  - **E2 sub-blocks:** for one task, the pair (level ℓ, OL) and (level ℓ, AT), in random order,
+    with the levels taken in random order without replacement until all 21 have run once. Pairs
+    keep the two conditions side by side in time at every level.
+  - **Block size:** R7. A block is made of whole sub-blocks.
+- **Session types.** E1 and E2 run in separate blocks. A seeded random sequence assigns each
+  session to E1 or E2 in proportion to the work left, so wear, drift and season fall on both. E2
+  sessions alternate tasks in the same way. E3 runs in its own sessions.
 
 ---
 
-## 9. Stop rules
+## 10. Starting and stopping rules
+
+**Pilot and start.** Everything before the first counted block is pilot. Pilot runs set R1–R8 and
+prove the harness, and their data are never pooled with counted data. Counting starts with the
+first block whose schedule is committed as counted, after (a) the registration is approved and
+(b) every "before the first counted trial" gate in [`bench-readiness.md`](bench-readiness.md) is
+met and recorded.
 
 1. **Any change to code or hardware ends the block.** The next unit starts a new block.
-   - **The count restarts.** If the change creates a new configuration, its counts start at
-     zero. Each cell's *n* must be reached within one configuration. Earlier configurations
-     are reported as development history and are never pooled into the primary estimates.
+   - **The count restarts.** If the change makes a new configuration, its counts start at zero.
+     Each cell's *n* must be reached within one configuration. Earlier configurations are
+     reported as development history and never pooled into the primary estimates.
    - **These are changes:**
      - any commit on the trial path;
      - re-teaching a point or recalibrating;
      - replacing, re-printing, re-gluing, tightening or adjusting a part;
-     - moving the arm, table, dock, shelf or CubXL;
-     - a firmware update;
-     - new pads;
-     - cleaning or refocusing the camera.
+     - moving the arm, table, dock, shelf or deck;
+     - a firmware update, or setting a joint zero;
+     - new pads, or swapping the finger inserts for the auger sleeves and back;
+     - cleaning or refocusing a camera.
 
      Swapping in a declared spare ends the block but keeps the configuration.
-   - **These are not changes:** restoring the scene after a failure without adjusting
-     anything (re-seating an object, re-homing, a power cycle). These are interventions
-     (§12.4). They are logged, and the block continues.
-2. **Safety.** A **Critical** or **Catastrophic** event (§10.4) stops the block at once. Make
-   the cell safe per the SOP (#22) and record what happened. Resuming always starts a new
-   block.
-3. **Run of failures.** `F23` (3 in a row, or 5 in the last 20) stops the block for an
-   inspection. Anything the inspection fixes is a change under rule 1. Trials before the stop
-   stay in the data.
+   - **These are not changes:** restoring the scene after a failure without adjusting anything
+     (re-seating an object, re-homing, a power cycle by the E-stop or the relay). They are
+     interventions (§14.4), logged, and the block continues.
+2. **Safety.** A **Critical** or **Catastrophic** event (§13.4) stops the block at once. Make the
+   cell safe per the SOP and record what happened. Resuming always starts a new block.
+3. **Run of failures, or the arm not at rest.** D11 (3 in a row, or 5 in the last 20 of one cell)
+   stops the block for an inspection. So does a unit that can't start because the arm doesn't
+   read its rest pose (§5). Anything the inspection fixes is a change under rule 1. Trials before
+   the stop stay in the data.
 4. **No stopping on results.** Each cell's *n* is fixed. Don't stop early because it looks good
-   or bad. Don't extend past *n* because one failure spoiled the bound: that is optional
-   stopping, and it voids the exact bounds. Rules 2 and 3 are the only interim looks, and both
-   are for safety.
-5. **End.** A cell ends at *n*, or at `F24`. Incomplete cells are reported with their actual
-   *n*. Sessions end between units, never in the middle of one.
-
-**Exclusions.** Only these two kinds are allowed:
-- (a) An external interruption, such as a person entering the workspace, an alarm or a
-  building power cut. The unit is marked *interrupted* and re-queued at the end of the
-  schedule.
-- (b) An operator error while restoring the scene, such as the wrong object or the wrong
-  place. It is marked *operator error*.
-
-Both are logged and counted. If they exceed 5 % of any cell, the report says so up front.
+   or bad. Don't extend past *n* because one failure spoiled the bound: that is optional stopping,
+   and it voids the exact bounds. Rules 2 and 3 are the only interim looks, and both are for
+   safety and upkeep. Nobody computes a cell's running success rate during the campaign; the
+   harness shows counts done and counts owed, not rates.
+5. **End.** A cell ends at its *n*, or at D12. Cells still short then are reported with their
+   actual *n*. Sessions end between units, never in the middle of one.
 
 ---
 
-## 10. Failure coding: LabRobFail
+## 11. Data recorded and availability
+
+- **Per block:**
+  - block ID, configuration ID, harness commit and hardware record;
+  - seed, schedule file and ledger state;
+  - operator, start and end times;
+  - temperature, relative humidity and illuminance.
+- **Per transfer:**
+  - unit ID, task, condition and leg (load or unload);
+  - offset axis and value;
+  - start, look, release and check timestamps;
+  - under AT, the tag detections and the correction applied;
+  - success, and which criterion failed if any;
+  - LabRobFail category, subtype and severity, from both scorers and after adjudication;
+  - whether there was an intervention, with a one-line description;
+  - near-miss flags;
+  - the witness still.
+- **Streams:** joints, efforts and gripper at ≥ 50 Hz; wrist frames at the look pose; witness
+  video.
+- **Storage.** Raw logs, stills and video go to D14. Schedules, the ledger, configuration records
+  and the block log are committed to this repository as the campaign runs.
+
+**Availability (the statement the paper will carry).** All counted and pilot data, the schedules
+and ledger, the configuration records and every analysis script are public by the time the paper
+is submitted: data on D14 with a DOI, code in this repository at a tagged commit archived with a
+DOI. The confirmatory analysis is `analysis/prereg_stats.py` at the registered commit; any change
+to it after registration is an amendment (§16). Witness stills and video are checked before
+release so that no person appears in them.
+
+---
+
+## 12. Exclusions and missing data
+
+**Exclusions.** Only these two kinds are allowed. Each is logged with a reason, the unit is
+re-queued in the ledger, and its transfers leave the primary analysis:
+- (a) **An external interruption:** a person entering the workspace, an alarm, a building power
+  cut, or a network outage that stops the harness between transfers.
+- (b) **An operator error while restoring the scene:** the wrong object, the wrong place or the
+  wrong orientation, confirmed by the reviewer from the stills.
+
+Nothing else is excluded. There is no outlier rule: every counted transfer under the arm's
+control counts, including aborts, timeouts and faults. If exclusions exceed 5 % of any cell, the
+report says so up front, and a sensitivity analysis counts the excluded units as failures.
+
+**Missing data.** A transfer whose outcome can't be scored (no operator score and no usable
+still) is missing. The primary analysis uses the scored transfers. A sensitivity analysis counts
+missing transfers as failures. More than 2 % missing in any cell is reported up front. In E3, a
+missed reading is retaken in the same cycle if the arm hasn't moved; RP is computed from the
+available cycles if at least 27 of 30 remain, and otherwise that pose × payload run is repeated in
+a new session.
+
+---
+
+## 13. Failure coding: LabRobFail
 
 **Source.** Wang, H., Sun, B., Zou, A., Huang, D., Lv, Z., Wang, N., Li, R., Zhou, D., Guo, W.,
 Wang, Z. and Ouyang, W. (2026). *LabRobFail: A Benchmark for Robotic Failure Analysis in
@@ -454,7 +601,7 @@ LabRobFail's 20,000 trajectories are failures injected in simulation, so we take
 and none of its rates. Text in quotation marks is verbatim from v2. Everything labelled *ours*
 is this campaign's rule.
 
-### 10.1 Five categories
+### 13.1 Five categories
 
 From *LabRobFail-Data → Fine-grained Failure Taxonomy*:
 
@@ -482,7 +629,7 @@ The annotation definitions, from Appendix A, Table 8 (Q5, Failure Classification
 | (4) Logic Failure | "Incorrect order or omitted steps" |
 | (5) Safety Failure | "Violating laboratory safety protocols" |
 
-### 10.2 Eleven subtypes
+### 13.2 Eleven subtypes
 
 From Appendix B:
 
@@ -510,7 +657,7 @@ own example from Appendix B, then the rule we apply to this cell.
 | Perception | Operation Position Error | "An Operation Position Error occurs when the gripper moves to the front of the door handle, where misalignment between the gripper and the handle position causes the door-opening operation to fail." | The grasp happens but off-centre, and the transfer fails because of it. Example: the finger rib misses the post's groove and the carrier hangs tilted |
 | Perception | Grasp Target Misalignment | "A Grasp Target Misalignment manifests during the grasping phase: the estimated target position deviates from the actual object position, so the gripper closes beside the object and fails to acquire it, leading to task failure." | The fingers close beside the object, or strike it on the way down, and nothing is picked |
 
-### 10.3 Coding rules (ours)
+### 13.3 Coding rules (ours)
 
 - **Code what was seen, not the presumed cause.** The category names imply causes ("Perception")
   that an open-loop arm doesn't have. We follow the paper's definitions of the observed event,
@@ -520,9 +667,9 @@ own example from Appendix B, then the rule we apply to this cell.
 - **When nothing fits,** code `Other (<category>)` with a description. Example: under AT, the
   tag can't be detected, which is `Other (Perception)`. If more than 10 % of failures are
   `Other`, that gap in the taxonomy's coverage is reported as a finding.
-- **Two coders,** the operator and the reviewer from §6, code every failure. κ is reported.
+- **Two coders,** the operator and the reviewer from §7, code every failure. κ is reported.
 
-### 10.4 Four severities
+### 13.4 Four severities
 
 The paper names its severity levels two different ways, and never maps one onto the other.
 
@@ -548,7 +695,7 @@ operational definitions are ours, because the paper gives none:
 |---|---|---|
 | Minor | The transfer failed its criteria, but the cell could carry on untouched. Example: it finished but ran past the timeout | Log it and continue |
 | Recoverable | A person has to restore the scene, but nothing is damaged and nothing needs changing. Examples: re-seating a carrier, picking up a dropped printed vial, re-homing | An intervention. Restore, log, continue |
-| Critical | The cell can't continue in its current configuration. Examples: something needs repair, adjustment, re-teaching or recalibration; a fault needs diagnosis; glass broke outside the CubXL | Stop the block (§9, rule 2) |
+| Critical | The cell can't continue in its current configuration. Examples: something needs repair, adjustment, re-teaching or recalibration; a fault needs diagnosis; glass broke outside the CubXL | Stop the block (§10, rule 2) |
 | Catastrophic | Damage to the CubXL or the arm, or a person at risk. Examples: an injury or near miss, glass or sample spilled inside the CubXL, a collision with the gantry | E-stop, make safe, stop the campaign until reviewed with the safety officer (#22) |
 
 For comparison with LabRobFail-Data, the reviewer also assigns each failure a Table 8 option.
@@ -556,44 +703,22 @@ That is a second field, filled in at review and never by the operator.
 
 ---
 
-## 11. Data recorded
-
-- **Per block:**
-  - block ID, configuration ID, commit and hardware record;
-  - seed and schedule file;
-  - operator, start and end times;
-  - temperature, relative humidity and illuminance.
-- **Per transfer:**
-  - unit ID, task, condition and leg (load or unload);
-  - offset axis and value;
-  - start, look, release and check timestamps;
-  - under AT, the tag detections and the correction applied;
-  - success, and which criterion failed if any;
-  - LabRobFail category, subtype and severity;
-  - whether there was an intervention, with a one-line description;
-  - near-miss flags;
-  - the witness still.
-- **Streams:** joints, efforts and gripper at 100 Hz; wrist frames at the look pose; witness
-  video.
-- **Storage.** Raw logs go to `F26`. Schedules, configuration records and the block log are
-  committed to this repo.
-
 ---
 
-## 12. Analysis plan
+## 14. Analysis plan
 
-The analysis scripts come in a later ping. They must implement this section. Before the first
-counted trial, they are run on synthetic data with known *p*, ED90 and RP to show they recover
-those values.
+[`analysis/prereg_stats.py`](analysis/prereg_stats.py) implements this section, and
+[`analysis/simulate_and_check.py`](analysis/simulate_and_check.py) shows it recovering known
+values from a synthetic campaign ([`out/recovery.md`](analysis/out/recovery.md)). The analysis
+runs on the adjudicated scores. Variables are coded success = 1, failure = 0; offsets enter as
+the magnitude |*d*| in mm (or degrees for yaw); nothing else is transformed.
 
-### 12.1 Success rates
+### 14.1 Success rates
 
-For each cell, report *k*/*n* with two intervals:
+For each cell, report *k*/*n* with:
 - the **Wilson** 95 % interval;
-- the **exact (Clopper–Pearson) one-sided 95 % lower bound**. When *k* = *n* this is
-  0.05^(1/*n*).
-
-What *n* = 300 buys:
+- the **exact (Clopper–Pearson) one-sided 95 % lower and upper bounds**. When *k* = *n* the lower
+  bound is 0.05^(1/*n*).
 
 | Failures in 300 | Point estimate | Wilson 95 % | Exact one-sided 95 % lower bound |
 |---|---|---|---|
@@ -602,99 +727,141 @@ What *n* = 300 buys:
 | 2 | 99.33 % | 97.60–99.82 % | 97.92 % |
 | 3 | 99.00 % | 97.10–99.66 % | 97.44 % |
 
-How many transfers are needed to certify 99 %: 299 with no failures, 473 with one, 628 with
-two. Certifying 99.9 % takes 2,995 with no failures.
+Certifying 99 % takes 299 transfers with no failures, 473 with one, 628 with two. Certifying
+99.9 % takes 2,995 with no failures.
 
-### 12.2 Comparisons between conditions
+### 14.2 Comparisons between conditions
 
-- **Difference in proportions,** AT − OL, with **Newcombe's** hybrid-score 95 % interval,
-  which is built from the two Wilson intervals.
-- **H3a** uses a one-sided **Boschloo** exact test.
-- **Gap closed, *G*,** gets a percentile bootstrap 95 % interval from 10,000 resamples. It is
-  not reported when *p*(OL) ≥ 0.99.
+- **Difference in proportions,** AT − OL, with **Newcombe's** hybrid-score 95 % interval, built
+  from the two Wilson intervals.
+- **H3a:** a one-sided **Boschloo** exact test (`scipy.stats.boschloo_exact`).
+- **Gap closed, *G*:** a percentile-bootstrap 95 % interval from 10,000 resamples. Not reported
+  when *p*(OL) ≥ 0.99.
+- **Transfer time (H3c):** the two-sample **Hodges–Lehmann** shift with its Moses (Mann–Whitney)
+  one-sided 95 % upper bound, on successful loads.
 - **Sensitivity check:** a logistic regression with a random intercept per block, plus time
-  since power-on and temperature as covariates.
+  since power-on and temperature as covariates. If it disagrees with the primary result about
+  the sign of AT − OL, the report says so.
 
-### 12.3 Capture envelope (ED50 and ED90)
+### 14.3 Capture envelope (ED50 and ED90)
 
-- **Model.** For each task × condition × axis (x, y, yaw), fit **logistic regression** of
-  success on offset magnitude |*d*|. Both signs are pooled and the zero level is included.
-  The fit uses **Firth's** bias-reduced likelihood, so complete separation, such as all
-  successes up to 3 mm and all failures at 4 mm, still gives finite estimates.
+- **Model.** For each task × condition × axis (x, y, yaw), **logistic regression** of success on
+  |*d*|, with both signs pooled and the zero level included. The fit uses **Firth's**
+  bias-reduced likelihood, so complete separation (all successes to 3 mm, all failures at 4 mm)
+  still gives finite estimates.
 - **Estimate.** ED_q = (logit *q* − β₀) / β₁, for *q* = 0.5 and 0.9.
-- **Intervals.** **Fieller** 95 % intervals. As a check, a percentile bootstrap that resamples
-  trials within each level, 10,000 times.
-- **Capture radius:** min(ED90ₓ, ED90ᵧ).
-- **Secondary.** Separate slopes for + and − offsets, to show asymmetry. A probit link as a
-  sensitivity check.
-- **Censoring.** If a curve has no failures at its largest offset, its ED is reported as
-  "> 4 mm" or "> 4°", together with the exact lower bound at that level. It is never
-  extrapolated.
-- **Consistency check.** The zero-offset level of E2 is compared against E1.
+- **Intervals.** **Fieller** intervals from the inverse Fisher information at the estimate: 95 %
+  two-sided for reporting, and the two ends of the 90 % interval as the one-sided 95 % bounds
+  used in H2 and H3b. If the slope can't be told from zero at that level, the interval is
+  unbounded and the rule that uses it is not met. As a check, a percentile bootstrap that
+  resamples trials within each level, 10,000 times.
+- **Censoring.** A curve is right-censored if it has no failures at its largest offset, or if its
+  fitted success there is still ≥ 90 %. Its ED90 is reported as "> 4 mm" (or "> 4°"), with the
+  exact lower bound of success at that level, and never extrapolated.
+- **Not reached.** If fitted success at zero offset is already below 90 %, ED90 is reported as
+  "not reached" and counts as 0 in differences.
+- **Capture radius:** min(ED90ₓ, ED90ᵧ), each floored at 0.
+- **Secondary.** Separate slopes for + and − offsets, to show asymmetry; a probit link as a
+  sensitivity check; the ±2 mm model-free check (H2).
+- **Consistency check.** The zero-offset level of E2 is compared with E1 (Newcombe interval).
 
-### 12.4 MTBI (Kaplan–Meier)
+### 14.4 MTBI (Kaplan–Meier)
 
 - **Intervention.** Any unscheduled human action needed to keep the cell running: touching the
-  arm, an object or a fixture; an E-stop; restarting software; re-homing. Each one is
+  arm, an object or a fixture; an E-stop press; restarting software; re-homing. Each is
   attributed to the task × condition whose failure caused it.
-- **Clock.** Each task × condition counts its own transfers. Interventions caused by another
-  cell don't reset it. Interventions that can't be attributed (operator pauses) count for every
-  cell.
+- **Clock.** Each task × condition counts its own transfers (loads and unloads). Interventions
+  caused by another cell don't reset it. Interventions that can't be attributed (operator pauses)
+  count for every cell.
   - An interval starts at the start of a block or right after an intervention.
-  - It ends at the next intervention, which is an event, or at the end of the block, where it
-    is censored.
-  - The primary analysis uses E1 only. E2 provokes failures on purpose, so its interventions
-    are reported separately.
+  - It ends at the next intervention, which is an event, or at the end of the block, where it is
+    censored.
+  - The primary analysis uses E1 only. E2 provokes failures on purpose, so its interventions are
+    reported separately.
   - A secondary analysis counts operating hours instead of transfers.
 - **Estimator.** A **Kaplan–Meier** curve of transfers between interventions.
-  - **MTBI** is the restricted mean up to τ = `F25` transfers, with a Greenwood-based 95 %
+  - **MTBI** is the restricted mean up to τ = D13 transfers, with a Greenwood-based 95 %
     interval. The plain KM mean is undefined when the longest interval is censored.
-  - **Cross-check:** total transfers ÷ interventions, with an exact Poisson (Garwood)
-    interval.
-  - Also report **S(50)**, the chance of 50 transfers without an intervention, to set against
-    the Ada figure in §1.
-- **Assumption.** Each restore leaves the cell as good as before (a renewal process). This is
-  checked by plotting the hazard against transfers since the block start.
-- **Secondary analyses.** Cumulative incidence for each LabRobFail category
-  (Aalen–Johansen). A log-rank test of OL against AT.
+  - **Cross-check:** total transfers ÷ interventions, with an exact Poisson (Garwood) interval.
+  - Also **S(50)**, the chance of 50 transfers without an intervention, to set against the Ada
+    figure in §1.
+- **Assumption.** Each restore leaves the cell as good as before (a renewal process). Checked by
+  plotting the hazard against transfers since the block start.
+- **Secondary analyses.** Cumulative incidence for each LabRobFail category (Aalen–Johansen), and
+  a log-rank test of OL against AT.
 
-### 12.5 Metrology (RP)
+### 14.5 Metrology (RP, registration B)
 
-For each pose and payload, using the *n* = 30 attained positions (*x_j*, *y_j*, *z_j*) and their
+For each pose and payload, with the *n* = 30 attained positions (*x_j*, *y_j*, *z_j*) and their
 barycentre (x̄, ȳ, z̄), as ISO 9283 defines it:
 
 $$l_j=\sqrt{(x_j-\bar x)^2+(y_j-\bar y)^2+(z_j-\bar z)^2},\quad \bar l=\frac1n\sum_j l_j,\quad S_l=\sqrt{\frac{\sum_j (l_j-\bar l)^2}{n-1}},\quad RP=\bar l+3S_l$$
 
-- **Intervals.** RP gets a bootstrap 95 % interval, resampling the 30 cycles 10,000 times, and
-  is reported next to the instrument's *U*. H4b and H4c follow the rules in §2.
-- **Drift.** Position is regressed on cycle number. If the barycentre drifts during a run, that
-  is reported. ISO 9283 tests drift separately, from a cold start.
+- **Intervals.** RP gets a bootstrap 95 % interval from 10,000 resamples of the 30 cycles,
+  reported next to the instrument's *U*. H4b and H4c follow §2.
+- **Drift.** Position is regressed on cycle number. Any drift of the barycentre during a run is
+  reported. ISO 9283 tests drift separately, from a cold start.
 
-### 12.6 What gets reported whatever happens
+### 14.6 Outcome-neutral checks
 
-All cells and every hypothesis, each as supported, not supported or inconclusive. Every block,
-including those from superseded configurations. All exclusions and all amendments.
+These show whether the data can test the hypotheses at all. They are reported whatever the
+results, and none of them is a reason to drop data.
+- **Offsets reach the arm.** The logged commanded TCP pose at each E2 place differs from nominal
+  by the injected offset to within 0.1 mm and 0.1°.
+- **The correction works at zero offset.** Under AT, tag detection succeeds at ≥ 99 % of looks.
+- **Scoring is reliable.** κ between operator and reviewer is ≥ 0.8; if not, the report leads
+  with it.
+- **E1 and E2 agree at zero offset** (§14.3).
+- **The instrument is good enough.** E3's *U* ≤ 0.025 mm on a static target (H4a).
+
+### 14.7 What gets reported whatever happens
+
+All cells and every hypothesis, each as supported, refuted or inconclusive (or contrary, for
+H3a). Every block, including those from superseded configurations. All exclusions, all missing
+data and all amendments. Anything not in this section is labelled exploratory.
 
 ---
 
-## 13. Known threats and optional extensions
+## 15. Known threats and optional extensions
 
 These are **not in the budget.** Each extension must be added by amendment *before* its first
 trial.
 
 | Threat | Effect | Optional extension |
 |---|---|---|
-| **The object confounds the dock contrast.** A carrier vs a vial differs in mass, grasp and fixture at once | Estimand (i) in §1 overstates or understates what the lead-in itself buys | T2 into a chamfered pocket vs the tight one: same vial, OL, *n* = 300. This isolates the lead-in |
-| **The yaw levels saturate for the OL carrier** (§7) | The yaw ED90 is only known to be below 2° | Add ±0.5° and ±1°, 20 trials each |
+| **The object confounds the dock contrast.** A carrier and a vial differ in mass, grasp and fixture at once | Estimand (i) in §1 overstates or understates what the lead-in itself buys | T2 into a chamfered pocket vs the tight one: same vial, OL, *n* = 300. That isolates the lead-in |
+| **The yaw levels saturate for the OL carrier** (§8.2) | The yaw ED90 is only known to be below 2° | Add ±0.5° and ±1°, 20 trials each |
 | **AT may never fail within ±4 mm** | ED90_AT is censored at > 4 mm | If AT has no failures at ±4 mm on an axis, run ±6 and ±8 mm, 20 trials each, AT only |
-| **A software offset may not equal a physical one** | E2 may misstate real capture | 20 OL carrier trials with the dock shifted +2 mm on a shim, vs the software offset |
-| **Dummies are not glass** | Slip and breakage are not represented | A confirmation block with glass vials on the real CubXL (`F1`), reported separately |
-| **The operator knows the condition** | Scoring bias | Blind review of the witness stills (§6) |
-| **Printed parts wear** over about 5,800 transfers | Reliability drifts | Inspect at block boundaries. A worn part that gets replaced means a new block |
+| **A software offset may not equal a physical one** | E2 may misstate real capture | PR 272's plates: 20 OL carrier trials on `x+2mm` and 20 on `yaw+2deg`, against the same software offsets |
+| **Dummies are not glass, and the deck is a mock-up** | Slip, breakage and the real deck's tolerances are not represented | A confirmation block with glass vials on a real CubXL deck, reported separately |
+| **The operator knows the condition** | Scoring bias | Blind review of the witness stills (§7) |
+| **J1 has jumped before:** its reading moved 7.9° on one enable (PR 20), and it was re-zeroed by 15.2° on 2026-11-14 | Open-loop placements fail after a power cycle for a reason unrelated to the dock | The rest-pose check before every unit (§5), and a stop under rule 3 |
+| **Printed parts wear** over about 6,000 transfers | Reliability drifts | Inspect at block boundaries. A worn part that gets replaced means a new block |
+| **The wrist Pi or its cable fails mid-campaign** (it went offline on 2026-11-13; the J6 roll once jammed on its cable at 16 A) | AT blocks stop; OL is unaffected because the camera is mounted but unused | Spares of the Pi and the cable are declared in the configuration record |
 
 ---
 
-## 14. Amendments
+## 16. Amendments
+
+v2 (2026-11-27), before any registration and before any counted trial, changed v1 (2026-10-10) as
+follows:
+
+| Section | Change | Reason |
+|---|---|---|
+| Header, §0 | Registry chosen (OSF Preregistration, two registrations). Fill-ins split into PI decisions (D) and pilot-set rules (R) | So registration doesn't wait for bench measurements |
+| §2 H1 | Each hypothesis can now be refuted as well as supported | Symmetric reporting |
+| §2 H2 | The ±2 mm model-free check is secondary. A rule for censored curves is added | The combination tested ED90 > about 2.5 mm, not 1.15 mm (power analysis) |
+| §2 H3b | ED90 is floored at 0, and the censored case is defined by the fit as well as by zero failures | A flat AT curve could give a meaningless negative ED90 |
+| §0, §8 | D5 offers *n* = 628 for C-OL; D6 offers trimmed levels for single-vial OL | Power for H1a; operator burden in E2 |
+| §3, §12 | Outcomes, exclusions and missing data get their own sections | The OSF template asks for each |
+| §4 | Set-up updated to the cell as it is: mpzy, relay and E-stop, PR 272 parts, wrist Pi, ≥ 50 Hz logging, payload, layout limits | Checked against the repo on 2026-11-27 ([`hardware-and-safety-check.md`](hardware-and-safety-check.md)) |
+| §7 | A planned E-stop between units is not a failure | Aligns with the SOP's lockout |
+| §8.2 | Yaw pin displacement uses PR 272's 250 mm pin spacing (v1 assumed 225 mm) | PR 272 |
+| §8.4 | Power analysis added | Required by the registry |
+| §9 | Ledger and paired sub-blocks in E2 | Blocks can end early without unbalancing the design |
+| §14.6 | Outcome-neutral checks added | So a null result can be told from a broken set-up |
+
+After the lock:
 
 | Date | Section | Change | Reason | Trials run before it |
 |---|---|---|---|---|
@@ -704,82 +871,62 @@ trial.
 
 ## References
 
-- Wang, H. et al. (2026). LabRobFail: A Benchmark for Robotic Failure Analysis in Chemical
-  Self-driving Laboratory. arXiv:2607.23704v2.
-- ISO 9283:1998. *Manipulating industrial robots: performance criteria and related test
-  methods.* §6.2 (warm-up), §6.5 (instrumentation and the 25 % uncertainty cap), §6.6 (load),
-  §6.7 (velocities), §6.8 (test poses).
-- Kuric, I. et al. (2018). Measurement of industrial robot pose repeatability. *MATEC Web of
-  Conferences* 244, 01015. doi:10.1051/matecconf/201824401015. The ISO cube, the five-pose
-  plane and the one-way approach.
-- Wilson, E. B. (1927). Probable inference, the law of succession, and statistical inference.
-  *JASA* 22, 209–212.
-- Clopper, C. J. and Pearson, E. S. (1934). The use of confidence or fiducial limits
-  illustrated in the case of the binomial. *Biometrika* 26, 404–413.
-- Newcombe, R. G. (1998). Interval estimation for the difference between independent
-  proportions: comparison of eleven methods. *Statistics in Medicine* 17, 873–890.
-- Boschloo, R. D. (1970). Raised conditional level of significance for the 2 × 2-table when
-  testing the equality of two probabilities. *Statistica Neerlandica* 24.
-- Firth, D. (1993). Bias reduction of maximum likelihood estimates. *Biometrika* 80, 27–38.
-- Fieller, E. C. (1954). Some problems in interval estimation. *JRSS B* 16, 175–185.
-- Kaplan, E. L. and Meier, P. (1958). Nonparametric estimation from incomplete observations.
-  *JASA* 53, 457–481.
-- Royston, P. and Parmar, M. K. B. (2013). Restricted mean survival time: an alternative to
-  the hazard ratio. *BMC Medical Research Methodology* 13, 152.
-- Garwood, F. (1936). Fiducial limits for the Poisson distribution. *Biometrika* 28, 437–442.
-- Aalen, O. O. and Johansen, S. (1978). An empirical transition matrix for non-homogeneous
-  Markov chains based on censored observations. *Scandinavian Journal of Statistics* 5,
-  141–150.
-- Olson, E. (2011). AprilTag: a robust and flexible visual fiducial system. *ICRA*, 3400–3407.
-- [byu-vcl#266](https://github.com/vertical-cloud-lab/byu-vcl/issues/266): the dock, carrier,
-  error budget and capture ranges. #1: the Ada figure and the earlier reliability-statistics
-  scan.
+The full list, with every DOI checked against Crossref, is in [`references.md`](references.md).
 
 ---
 
 ## Appendix A. Checklist for the person at the arm
 
-*Print this page. One sheet per block.* Block ID `______` · cfg `______` · Operator `______` ·
-Date `______`
+*Print this page, one sheet per block, and post the SOP's own one-page checklist next to it.*
+Block ID `______` · cfg `______` · Operator `______` · Date `______`
 
 **Before the first unit**
-- [ ] The SOP (#22) is read and signed. The **E-stop (#18) is installed, in reach, and tested
-      today.** No E-stop, no session.
-- [ ] The "workspace clear" sign is up and nobody else is within reach of the arm. The dome
-      has no interlock, so watch it.
-- [ ] On the real CubXL: the gantry is parked and CubOS is holding it.
-- [ ] The commit on the Pi matches the block's schedule file, and **nothing has changed since
-      the last block.** If something has, stop and record a new configuration.
-- [ ] Temperature, RH and lux are logged. The witness camera is recording.
+- [ ] You've done the SOP training and signed it. The **E-stop is in reach, unobstructed and was
+      tested today** (press, twist out, nothing powers up, START). No tested E-stop, no session.
+- [ ] Nobody else is within reach of the arm. The flap is down. You'll stay at the E-stop for the
+      whole block.
+- [ ] Teach-button cover on. Nobody uses teach mode during a block.
+- [ ] The commit on mpzy matches the block's schedule file, and **nothing has changed since the
+      last block.** If something has, stop and record a new configuration.
+- [ ] Temperature, RH and lux logged. Witness camera recording.
 - [ ] The cell is at its start state: carrier A in the dock, B in shelf nest 2, the vial in the
       shelf pocket, the dock pocket empty.
 - [ ] This block's schedule is generated and committed. Run it in order.
+- [ ] Say "workspace clear" with your name, then start the block.
 
 **Every unit**
-- [ ] Hands out of the workspace before you press go.
-- [ ] Don't touch anything during a transfer unless you're stopping it for safety. A stop is
-      an intervention and a failure.
-- [ ] At each check, score the leg against the success criteria (§6). On a failure, record the
-      category, subtype, severity and one line on what you saw.
+- [ ] Hands out of the workspace.
+- [ ] Don't touch anything during a transfer unless you're stopping it for safety. A stop is an
+      intervention and a failure.
+- [ ] At each check, score the leg against §7. On a failure, record the category, subtype,
+      severity and one line on what you saw.
 
-**After a failure**
+**After a failure (the reset)**
+1. Wait for the harness to park the arm at rest. Never press the E-stop with the arm raised
+   unless it's an emergency: it drops.
+2. **Press the E-stop.** Keep fingers away from the wrist and the J2 motor.
+3. Put the objects back where the schedule expects them. Adjust nothing.
+4. Hands and tools out, flap down. Twist the E-stop out, say "arm power on", press START.
+5. Say "workspace clear" again, then resume the block.
 
 | Severity | What to do |
 |---|---|
 | Minor | Log it and continue |
-| Recoverable | Log the intervention. Put the objects back where the schedule expects them, adjust nothing, and continue |
+| Recoverable | The reset above. Log the intervention and continue |
 | Critical | **Stop the block.** Make it safe and log it. Anything you fix makes a new configuration |
-| Catastrophic | **E-stop.** Make safe per the SOP, stop the campaign, and call `F27` before doing anything else |
+| Catastrophic | **E-stop.** Make safe per the SOP, stop the campaign, and call D15's contacts before anything else |
 
-- [ ] 3 failures in a row, or 5 in the last 20 (`F23`): stop the block and inspect.
+- [ ] 3 failures in a row, or 5 in the last 20 of one cell (D11): stop the block and inspect.
+- [ ] The harness refuses a unit because the arm isn't at its rest pose: stop the block.
 
 **Never**
-- Adjust, tighten, re-teach, recalibrate, clean the lens or swap a part in the middle of a
-  block. End the block first.
-- Skip, reorder or rerun a unit. The one exception is an *interrupted* unit, which goes to the
-  end of the schedule.
+- Adjust, tighten, re-teach, recalibrate, clean a lens or swap a part in the middle of a block.
+  End the block first.
+- Skip, reorder or rerun a unit. The exception is an excluded unit (§12), which the ledger
+  re-queues.
 - Stop early, or add units, because of how the numbers look.
 
 **End of session**
-- [ ] Stop between units. Park the arm, using the softer park from #20.
-- [ ] Upload the logs (`F26`), write anything odd in the block log, and push.
+- [ ] Stop between units. Park the arm at rest.
+- [ ] Turn the arm off, or leave it at rest and limp per the SOP.
+- [ ] Upload the logs (D14), write anything odd in the block log, and push.
