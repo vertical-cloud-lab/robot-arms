@@ -115,8 +115,9 @@ positions of one pose × payload.
 
 30 cycles per pose is the ISO 9283 number for pose repeatability, as set in the campaign request
 (issue #21). Simulated power, including instrument noise at U = 0.025 mm (`analysis/out/power.md`):
-"meets" holds at all five poses with 94 % probability if the arm's true RP is 0.07 mm and 54 % at
-0.08 mm; "certified" with 93 % at 0.06 mm and 52 % at 0.07 mm. H4b and H4c have 60 % and 83 %
+"meets" holds at all five poses with 96 % probability if the arm's true RP is 0.07 mm and 55 % at
+0.08 mm; "certified" (bootstrap-t upper bound ≤ 0.10 mm at all five) with 88 % at 0.04 mm, 61 % at
+0.05 mm and 30 % at 0.06 mm, because a valid upper bound from 30 cycles is wide. H4b and H4c have 60 % and 83 %
 power for a 0.01 mm payload effect and a 0.01 mm per 100 mm reach slope, and 98–100 % at 0.02 mm.
 
 ### Starting and stopping rules

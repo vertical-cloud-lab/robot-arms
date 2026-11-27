@@ -158,17 +158,17 @@ One plausible scenario, not data; see `e2_expected_failures()` for the assumptio
 If single-vial OL ran only 0, ±1, ±2 mm and ±2°: 198 failed loads instead of 398.
 
 
-## H4: ISO 9283 RP, 30 cycles per pose
+## H4: ISO 9283 RP, 30 cycles per pose (500 simulated sessions per row)
 
 Instrument expanded uncertainty U = 0.025 mm (k = 2), treated as u = 0.0125 mm per axis and added in quadrature, so the measured RP is biased upward.
 
-| True arm RP | Meets (point ≤ 0.10 at all 5) | Certified (upper bound ≤ 0.10 at all 5) |
+| True arm RP | Meets (point ≤ 0.10 at all 5) | Certified (bootstrap-t upper bound ≤ 0.10 at all 5) |
 |---|---|---|
-| 0.04 mm | 100 % | 100 % |
-| 0.05 mm | 100 % | 100 % |
-| 0.06 mm | 100 % | 93 % |
-| 0.07 mm | 94 % | 52 % |
-| 0.08 mm | 54 % | 4 % |
+| 0.04 mm | 100 % | 88 % |
+| 0.05 mm | 100 % | 61 % |
+| 0.06 mm | 100 % | 30 % |
+| 0.07 mm | 96 % | 3 % |
+| 0.08 mm | 55 % | 0 % |
 | 0.09 mm | 6 % | 0 % |
 
 | RP unloaded | Payload adds | Slope per 100 mm | H4b power | H4c power |

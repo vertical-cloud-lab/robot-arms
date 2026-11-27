@@ -436,7 +436,7 @@ simulated, 2,000 campaigns per scenario (1,000 for RP).
 | **H2** (ED90 > 1.15 mm) | 97–100 % if the true ED90 is 2 mm or more; 0–20 % at 1.5 mm, because no level lies between 1 and 2 mm; 0 % at or below 1.15 mm, as a test should |
 | **H3b** (AT widens ED90) | 100 % when AT's ED90 is 1 mm or more against an OL pocket's 0.3 mm. For 0.6 vs 0.3 mm the registered bootstrap rule detects it 88 % of the time (200 simulated campaigns); with no difference it says so falsely 1 % of the time |
 | **H3c** (time cap 5 s) | 100 % if the true extra time is 4 s or less, 73 % at 4.5 s |
-| **H4a** (30 cycles) | "Meets": 94 % if the true RP is 0.07 mm, 54 % at 0.08 mm. "Certified": 93 % at 0.06 mm, 52 % at 0.07 mm. These include instrument noise at *U* = 0.025 mm |
+| **H4a** (30 cycles) | "Meets": 96 % if the true RP is 0.07 mm, 55 % at 0.08 mm. "Certified" (bootstrap-t upper bound): 88 % at 0.04 mm, 61 % at 0.05 mm, 30 % at 0.06 mm. A valid upper bound from 30 cycles is wide, so certifying 0.1 mm needs an arm well inside it. These include instrument noise at *U* = 0.025 mm |
 | **H4b, H4c** | 60 % and 83 % power for a 0.01 mm payload effect and 0.01 mm per 100 mm; 98–100 % at 0.02 mm |
 | **MTBI** (600 E1 transfers per cell) | Imprecise by design: at 1 intervention per 100 transfers, the 95 % interval runs from 46 to 272 transfers |
 

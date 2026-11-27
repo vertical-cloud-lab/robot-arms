@@ -1903,31 +1903,31 @@
   {
    "rp_true": 0.04,
    "meets": 1.0,
-   "certified": 1.0
+   "certified": 0.88
   },
   {
    "rp_true": 0.05,
    "meets": 1.0,
-   "certified": 0.999
+   "certified": 0.61
   },
   {
    "rp_true": 0.06,
-   "meets": 1.0,
-   "certified": 0.933
+   "meets": 0.998,
+   "certified": 0.296
   },
   {
    "rp_true": 0.07,
-   "meets": 0.936,
-   "certified": 0.521
+   "meets": 0.956,
+   "certified": 0.026
   },
   {
    "rp_true": 0.08,
-   "meets": 0.541,
-   "certified": 0.042
+   "meets": 0.548,
+   "certified": 0.0
   },
   {
    "rp_true": 0.09,
-   "meets": 0.057,
+   "meets": 0.058,
    "certified": 0.0
   }
  ],
@@ -1983,5 +1983,6 @@
   "total": 589.0308500638938,
   "vial_OL_if_trimmed_to_2mm_and_2deg": 198.49641960852853
  },
- "runtime_s": 503.68108224868774
+ "runtime_s": 503.68108224868774,
+ "h4_sims": 500
 }
