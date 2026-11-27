@@ -1,9 +1,19 @@
 # Edison Scientific queries for the WRTG 316 proposal
 
-Raw answers from the eight [Edison Scientific](https://edisonscientific.com/) literature
-queries asked for in [issue #64](https://github.com/vertical-cloud-lab/robot-arms/issues/64)
-(WRTG-Proposal-1), kept verbatim so anyone can see what Edison said before a source was
-checked or cited. The checked shortlist of sources is in [`selection.md`](selection.md).
+Raw answers from two rounds of [Edison Scientific](https://edisonscientific.com/) literature
+queries, kept verbatim so anyone can see what Edison said before a source was checked or cited:
+
+- **Run 1** (this folder's `q1-…` to `q8-…`): the eight queries asked for in
+  [issue #64](https://github.com/vertical-cloud-lab/robot-arms/issues/64) (WRTG-Proposal-1),
+  2026-11-04.
+- **Run 2** ([`run-2/`](run-2/)): the same request re-run on 2026-11-27 in
+  [PR #90](https://github.com/vertical-cloud-lab/robot-arms/pull/90), with the context from
+  `Proposal/user context/proposal questions.md` and a focus on the *automated manual
+  manipulator*. See [Run 2](#run-2-2026-11-27-the-automated-manual-manipulator) below.
+
+The checked shortlist of sources, drawn from both runs, is in [`selection.md`](selection.md).
+
+## Run 1 (2026-11-04)
 
 Every task is `LITERATURE_HIGH` (`job-futurehouse-paperqa3-high`), submitted 2026-11-04 between
 00:22 and 00:23 UTC with
@@ -27,7 +37,7 @@ Each directory holds `query.md` (the exact text sent) and `_task_id.json`, and a
 the answer lives) and the other answer fields as `.json` (`contexts.json` holds the passages
 Edison quoted).
 
-## What each query says
+### What each query says
 
 Every query is: the context paragraph from the issue, a blank line, one question, a blank line,
 the closing paragraph from the issue.
@@ -46,7 +56,7 @@ directory is what Edison received.
 | Q7 "Learned vs scriptedhave imitation-learningpolicies (ACT, diffusion policy, Lrms, and how manydemonstrations did they need? How do they cial-guided motion on the same task?" | "Learned vs scripted: How well have imitation-learning policies (ACT, diffusion policy, LeRobot policies) performed on low-cost arms, and how many demonstrations did they need? How do they compare with scripted or fiducial-guided motion on the same task?" |
 | Q8 "(lower priority) Vibility: What methods and software show a robot's positioningity in 3D (errorellipsoids, repeatability maps,ath), computed fromrobot parameters?" | "(Lower priority) Visualizing repeatability: What methods and software show a robot's positioning accuracy and repeatability in 3D (error ellipsoids, repeatability maps, error along a path), computed from measurements or robot parameters?" |
 
-## Why no question was skipped
+### Why no question was skipped
 
 The issue asked to skip any question already covered by the byu-vcl answers in
 `docs/edison-6dof/` on `claude/issue-199-20260915-0846` and `-0844` (the two branches hold the
@@ -66,6 +76,54 @@ same q1 and q2). Both overlap these questions only in part:
   and lists ISO 9283, the NIST task boards and YCB without industrial-arm results to compare
   against (Q2).
 
+## Run 2 (2026-11-27): the automated manual manipulator
+
+Joshua asked in [PR #90](https://github.com/vertical-cloud-lab/robot-arms/pull/90) for the
+issue #64 query to be re-run with the context from
+[`proposal questions.md`](../Proposal/user%20context/proposal%20questions.md), focusing on the
+*automated manual manipulator*: a robot arm that moves from station to station, calibrates
+itself at each station with a calibration square, and takes on several new automated tasks.
+
+Every task is `LITERATURE_HIGH` (`job-futurehouse-paperqa3-high`), submitted 2026-11-27 between
+22:06:01 and 22:06:29 UTC with the same script and `EDISON_OUT_DIR=docs/wrtg-316/edison/run-2`.
+As in run 1, the "fetched by" times come from a 2-minute poll.
+
+| Directory | Question | From | Edison `task_id` | Status |
+|---|---|---|---|---|
+| `run-2/q1-field-growth/` | How arms are used as automated manual manipulators in SDLs (materials and biology), how fast lab automation is growing, the low-cost movement, where researchers and vendors disagree | Q1; questions 1.1, 1.2.3, 1.2.4 | `2c1f38b6-0a5e-437e-b9f2-48e567e74702` | success, fetched by 22:30 UTC |
+| `run-2/q2-same-purpose/` | Has anyone published tests for evaluating or choosing an arm for this role? Is "automated manual manipulator" a term in use? | new; 1.3.1, 1.3.7 #1 | `17186b74-0000-4359-b673-d26bb83bde38` | success, fetched by 22:39 UTC |
+| `run-2/q3-arm-categories-and-selection-metrics/` | Arm categories; the metrics used to choose or buy an arm; the authorities; datasheet vs measured values | new; 1.3.7 #2–3, 3.1.3, 3.1.6 | `30c7e5b8-3f78-4320-a86d-eb91fb6f1ff4` | success, fetched by 22:24 UTC |
+| `run-2/q4-station-calibration/` | Systems that recalibrate at each station against a cube, square or fiducial; accuracy, protocol, time; AprilTag accuracy at working distance | new (the request's focus); absorbs Q5's AprilTag part | `fb9a39a6-15c8-4b58-ad1a-bb630ff4a986` | success, fetched by 22:37 UTC |
+| `run-2/q5-repeatable-benchmarks/` | Published benchmarks with industrial/research-arm results that a low-cost arm could rerun | Q2 | `3f54576d-62d4-4547-bad3-5049860e404d` | success, fetched by 22:32 UTC |
+| `run-2/q6-low-cost-vs-industrial/` | Measured low-cost vs industrial arm data | Q3 (unchanged) | `97f9cc66-cc99-4a80-a866-5a5113ff0002` | success, fetched by 22:24 UTC |
+| `run-2/q7-case-against/` | The case against low-cost arms, now including station-to-station use | Q4 | `f2f7a48c-25cb-4556-a13b-57aa8490e669` | success, fetched by 22:41 UTC |
+| `run-2/q8-reliability-and-cost-per-task/` | Reporting success rates and CIs; how cost per task, throughput or uptime have been measured | Q6; 1.4.5 | `9f4e317d-a41f-4911-83cf-da7756b59ab2` | success, fetched by 22:28 UTC |
+| `run-2/q9-new-tasks-at-stations/` | One arm taking over several tasks at different instruments; tolerances; scripted, fiducial-guided or learned | Q5 + Q7 | `8ffd6c55-63b0-4fcd-a1ab-9742cb2a8044` | success, fetched by 22:30 UTC |
+
+"From" gives the run-1 question (Q1 to Q8) and the numbered questions in `proposal questions.md`
+that each query carries. Run 1's Q8 (3D visualization of repeatability) was not re-run: the issue
+marked it lower priority, and the paper no longer collects its own data
+(`proposal questions.md` 0.2 and 1.3.4).
+
+### What changed in the queries
+
+**The context paragraph** that opens every query was rewritten from `proposal questions.md`. It
+keeps run 1's description of the arms and adds what the paper is now for (a literature review to
+find the tests, 0.2 and 1.3.4), the automated manual manipulator and its station-to-station
+calibration, the materials-science SDL (1.3.5) and cost per task (1.4.5). Personal details from
+that file (name, course, graduate-school plans) were left out, since the search doesn't need
+them. Every run-2 query starts with:
+
+> We are writing a literature review to discover which tests determine the value of a robot arm used as an automated manual manipulator in a self-driving laboratory (SDL) for materials science. By automated manual manipulator we mean one arm that does the hands-on work a person would otherwise do: it moves from station to station (for example a pipetting gantry, a powder doser, a balance, vial and plate racks), recalibrates itself at each station using a calibration square (a square fiducial target such as an AprilTag, or a square fixture at a known position), and takes on several new automated tasks. The term is ours; the literature may say mobile manipulator, robotic laboratory assistant, robot chemist, or sample- or labware-handling robot. Our arms are a low-cost AgileX PiPER 6-DOF arm (about $2k) and SO-101 leader/follower arms (about $200), with parallel grippers, Raspberry Pi wrist cameras and fixed cameras in an enclosure, AprilTags, and LeRobot-style imitation learning or scripted motion. We want to place these arms in the published literature and find tests that we, or anyone validating an affordable arm, can repeat to compare it with the industry-standard arms used in SDLs (e.g. UR5e, UR3, Franka Panda, ABB YuMi, Kinova, KUKA), including on cost per task.
+
+**The closing paragraph** (peer-reviewed sources from 2015 to 2026, flag preprints, protocol
+detail, DOI and quote for each claim, say where no evidence exists) is run 1's, unchanged.
+
+**Installing the client.** On the runner's Python 3.14, `pip install edison-client` resolved to
+`edison-client` 0.11.1 with `fhlmi` 0.45.3 and `ldp` 1.11.0, which fail to import
+(`No module named 'lmi.config'`). Pinning `ldp==0.45.3` fixed it; newer `edison-client` releases
+need Python below 3.14.
+
 ## Reproducing
 
 ```bash
@@ -73,6 +131,8 @@ python scripts/edison_6dof.py submit   <slug> <prompt-file>     # LITERATURE_HIG
 python scripts/edison_6dof.py wait-all <slug> [<slug> ...]      # one blocking call; fetches each
 python scripts/edison_6dof.py fetch    <slug>                   # answer + all artifacts
 ```
+
+Run 2 sets `EDISON_OUT_DIR=docs/wrtg-316/edison/run-2` for all three commands.
 
 Never run `wait` or `wait-all` in the background on GitHub Actions; the runner is destroyed when
 the final comment is posted.
