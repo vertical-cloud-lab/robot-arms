@@ -443,6 +443,12 @@ def main():
              "than about 20 transfers, so neither S(50) nor a restricted mean to τ = 300 could be "
              "estimated. v2 lets a cell's clock run on across sessions within a configuration "
              "(PROTOCOL.md §14.4), which this script follows.")
+    L.append("- **E1 and E2 are set apart on purpose.** The synthetic E1 rates are chosen to exercise "
+             "H1b and H3a (single vials 93 % open loop, 98.5 % corrected), while the E2 curves are the "
+             "planning scenario that `power.py` uses for the reset estimate (97.5 % and about 100 % at "
+             "zero offset). So this campaign's single-vial E1 and E2 zero-offset rates disagree, which "
+             "a real campaign's E1-against-E2 check (PROTOCOL.md §14.6) would flag. It is a test of "
+             "the code, not a prediction.")
     (OUT / "recovery.md").write_text("\n".join(L) + "\n")
     print("\n".join(L))
 

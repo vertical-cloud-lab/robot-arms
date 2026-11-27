@@ -206,7 +206,7 @@ An optional extra E1 clause, not registered: 5 failed loads among the cell's las
 | 30.0 % | 16.603 | 100.0 % | 16 |
 | 50.0 % | 29.558 | 100.0 % | 10 |
 
-**E2 clause** (2 failed zero-offset loads in one block), simulated on the registered schedule for one task: 20 passes over the 21 levels in random order, each level a pair of loads (OL and AT), 15 pairs per block, so a block holds one zero-offset pair or none most of the time. The first two rows are the planning scenario (carriers, then single vials); the next three are a task gone wrong in both conditions, and the last two in the open-loop condition only.
+**E2 clause** (2 failed zero-offset loads in one block), simulated on the registered schedule for one task: 20 passes over the 21 levels in random order, each level a pair of loads (OL and AT), 15 pairs per block, so a block holds one zero-offset pair or none most of the time. The first two rows are the planning scenario for E2 (carriers, then single vials); the next three are a task gone wrong in both conditions, the next two in the open-loop condition only, and the last uses the single-vial rates of the synthetic E1 campaign in `simulate_and_check.py` (93 % OL, 98.5 % AT).
 
 | Zero-offset failure rate, OL / AT | Expected stops over the task's 420 pairs | Chance of at least one stop | Median pairs to the first stop (when ≥ 10 % of tasks stop) |
 |---|---|---|---|
@@ -217,6 +217,7 @@ An optional extra E1 clause, not registered: 5 failed loads among the cell's las
 | 50.0 % / 50.0 % | 5.438 | 99.8 % | 45 |
 | 20.0 % / 2.0 % | 0.160 | 14.9 % | 194 |
 | 50.0 % / 2.0 % | 0.609 | 47.1 % | 179 |
+| 7.0 % / 1.5 % | 0.034 | 3.4 % | — |
 
 ## H4: ISO 9283 RP, 30 cycles per pose (500 simulated sessions per row)
 
@@ -273,4 +274,6 @@ Transfers needed to certify 99 % (exact one-sided 95 % lower bound ≥ 0.99): 29
 RP per σ for isotropic Gaussian scatter: 3.616. H4a's refutation threshold, the RP an arm exactly at 0.10 mm shows through the instrument: 0.110 mm at U = 0.025 mm, 0.102 mm at U = 0.010 mm.
 
 Yaw about the dock datum moves each cone pin (125 mm from it) 4.4 mm at 2° and 8.7 mm at 4°; a 3 mm lead-in covers ±1.4°.
+
+Budget (§8.5; 30 or 45 s per transfer and 2–3 min per reset are assumptions): E1 2,400 transfers with D5 = 300, plus 656 with D5 = 628 (5.5–8.2 h); E2 3,360; total 5,760, or 48–72 h of arm time. About 660 E2 resets add 22–33 h, so about 70–105 h in hour-long sessions.
 

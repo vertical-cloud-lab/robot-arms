@@ -1,6 +1,6 @@
 """Power analysis for the CubXL reliability pre-registration.
 
-Run:  python power.py --check-rejected   (about 35 minutes on one core; writes out/power.md,
+Run:  python power.py --check-rejected   (about an hour on one core; writes out/power.md,
                                           out/power.json and out/fig_*.png)
       python power.py                    (the registered rules only)
       python power.py --quick            (fewer simulations, for a smoke test)
@@ -487,7 +487,8 @@ def compute_d11(res: dict, quick: bool) -> None:
     # Planning scenario (e2_expected_failures): carriers 0 % OL and 0.5 % AT at zero offset; single
     # vials 2.5 % OL and 0 % AT. Then a task gone wrong in both conditions (zero-offset success
     # 90 %, 80 %, 50 %), and in the open-loop condition only, with AT at 2 %.
-    scen = [(0.0, 0.005), (0.025, 0.0), (0.10, 0.10), (0.20, 0.20), (0.50, 0.50), (0.20, 0.02), (0.50, 0.02)]
+    scen = [(0.0, 0.005), (0.025, 0.0), (0.10, 0.10), (0.20, 0.20), (0.50, 0.50), (0.20, 0.02), (0.50, 0.02),
+            (0.07, 0.015)]  # last: the synthetic E1 campaign's single-vial rates (simulate_and_check.py)
     for k, (q_ol, q_at) in enumerate(scen):
         rows.append(d11_e2_task(q_ol, q_at, 15, n, seed=11000 + k))
     res["d11_e2"] = rows
@@ -521,7 +522,22 @@ def closed_form() -> dict:
         "yaw_pin_shift_mm": {"2deg": 125 * math.sin(math.radians(2)),
                              "4deg": 125 * math.sin(math.radians(4))},
         "lead_in_covers_deg": math.degrees(math.asin(3 / 125)),
+        "budget": budget(),
     }
+
+
+def budget() -> dict:
+    """PROTOCOL.md §8.5: transfers, arm hours at 30 and 45 s per transfer, and reset hours at
+    2-3 minutes each for the E2 reset estimate (assumed times, not measured)."""
+    e1 = 2 * (3 * 300 + 300)  # loads + unloads, D5 = 300
+    e1_extra = 2 * (628 - 300)  # D5 = 628
+    e2 = 2 * 21 * 20 * 4  # 1,680 loads, each with an unload
+    resets = e2_expected_failures()["total"]
+    total = e1 + e2
+    return {"e1_transfers": e1, "e1_extra_if_628": e1_extra, "e2_transfers": e2, "total": total,
+            "arm_hours": [total * 30 / 3600, total * 45 / 3600],
+            "extra_hours_if_628": [e1_extra * 30 / 3600, e1_extra * 45 / 3600],
+            "resets": resets, "reset_hours": [resets * 2 / 60, resets * 3 / 60]}
 
 
 # ---------------------------------------------------------------------------------------
@@ -532,7 +548,7 @@ def e2_expected_failures() -> dict:
     """Expected failed loads per E2 cell, which is roughly the number of human resets.
 
     Scenario (assumptions, not data), the same one fig_design_e2 draws and
-    simulate_and_check.py samples from:
+    simulate_and_check.py samples its synthetic E2 from (its synthetic E1 rates are set apart):
     * carrier OL: ED90 2.8 mm, ED50 3.2 mm in x and y; 2 and 4 degrees of yaw are past the
       lead-in (byu-vcl PR 272: it covers about +-1.4 degrees), so 97 % and 100 % fail there;
     * carrier AT: 99.5 % at every x and y level, 99.5 % and 99 % at 2 and 4 degrees;
@@ -1068,8 +1084,10 @@ def write_markdown(res: dict, path: Path):
                  f"schedule for one task: 20 passes over the 21 levels in random order, each level a pair "
                  f"of loads (OL and AT), {e2rows[0]['pairs_per_block']} pairs per block, so a block holds "
                  f"one zero-offset pair or none most of the time. The first two rows are the planning "
-                 f"scenario (carriers, then single vials); the next three are a task gone wrong in both "
-                 f"conditions, and the last two in the open-loop condition only.\n")
+                 f"scenario for E2 (carriers, then single vials); the next three are a task gone wrong in "
+                 f"both conditions, the next two in the open-loop condition only, and the last uses the "
+                 f"single-vial rates of the synthetic E1 campaign in `simulate_and_check.py` (93 % OL, "
+                 f"98.5 % AT).\n")
         L.append("| Zero-offset failure rate, OL / AT | Expected stops over the task's 420 pairs | Chance of at least one stop | Median pairs to the first stop (when ≥ 10 % of tasks stop) |")
         L.append("|---|---|---|---|")
         for r in e2rows:
@@ -1126,6 +1144,15 @@ def write_markdown(res: dict, path: Path):
         y = c["yaw_pin_shift_mm"]
         L.append(f"Yaw about the dock datum moves each cone pin (125 mm from it) {y['2deg']:.1f} mm at 2° and "
                  f"{y['4deg']:.1f} mm at 4°; a 3 mm lead-in covers ±{c['lead_in_covers_deg']:.1f}°.\n")
+        if "budget" in c:
+            b = c["budget"]
+            ah, xh, rh = b["arm_hours"], b["extra_hours_if_628"], b["reset_hours"]
+            L.append(f"Budget (§8.5; 30 or 45 s per transfer and 2–3 min per reset are assumptions): E1 "
+                     f"{b['e1_transfers']:,} transfers with D5 = 300, plus {b['e1_extra_if_628']:,} with "
+                     f"D5 = 628 ({xh[0]:.1f}–{xh[1]:.1f} h); E2 {b['e2_transfers']:,}; total "
+                     f"{b['total']:,}, or {ah[0]:.0f}–{ah[1]:.0f} h of arm time. About {b['resets']:.0f} "
+                     f"E2 resets add {rh[0]:.0f}–{rh[1]:.0f} h, so about {ah[0] + rh[0]:.0f}–"
+                     f"{ah[1] + rh[1]:.0f} h in hour-long sessions.\n")
     path.write_text("\n".join(L) + "\n")
 
 

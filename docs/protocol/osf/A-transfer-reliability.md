@@ -209,7 +209,7 @@ request (issue #21). The exact and simulated powers of every registered rule at 
   difference, false support 0–1.4 %, including when the two curves' slopes differ.
 - H3c: ≥ 99.6 % if the true extra time is ≤ 4 s against a 5 s cap.
 - The run-of-failures stop ([D11], not a hypothesis) rarely fires on a healthy cell (a 9 % chance
-  over 300 loads at 93 % success; at most 0.1 % over a task's E2 in the planning scenario). It
+  over 300 loads at 93 % success; 0.1–3.4 % over a task's E2, depending on the single vials' zero-offset rates). It
   stops an E1 cell that fails half its loads within about 14 loads, but is slow to flag one that
   fails 15–20 %, in E2 above all. PROTOCOL.md §8.4 gives the full rates.
 
