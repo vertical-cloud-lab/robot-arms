@@ -293,12 +293,13 @@ def h2_axis_decision(res: CaptureResult, zero_successes: int, zero_trials: int,
         bound of ED90 exceeds the threshold.
     Refutation (one-sided 99 % per axis). H2 is refuted if *either* axis is, a union; Bonferroni
     would give 97.5 % per axis, but Fieller bounds undercover when ED90 lies between the 1 and
-    2 mm levels, so 97.5 % refuted a true ED90 of exactly 1.15 mm 6-10 % of the time on synthetic
-    data. At 99 % per axis that rate was 1.0-4.7 % (power.py):
-      * the dock misses 90 % even at zero offset: the exact upper bound of success over E2's
-        zero-offset trials is below 0.90 (capture radius 0); or
+    2 mm levels, so 97.5 % refuted a true ED90 of exactly 1.15 mm 5.1-10.4 % of the time on
+    synthetic data. At 99 % per axis that rate was 1.0-5.1 % (`power.py --check-rejected`,
+    10,000 campaigns for each of three curve shapes):
+      * the dock misses 90 % even at zero offset: the exact one-sided 99 % upper bound of success
+        over E2's zero-offset trials is below 0.90 (capture radius 0); or
       * the curve is not censored, its slope is significantly negative, and the Fieller
-        one-sided 97.5 % upper bound of ED90 is below the threshold.
+        one-sided 99 % upper bound of ED90 is below the threshold.
     If the data meet both a support and a refutation rule they contradict a monotone capture
     curve, and the axis is "inconclusive".
     """
@@ -511,8 +512,8 @@ def bootstrap_t_rp(points: np.ndarray, n_boot: int = 10_000, seed: int = 0,
 
     The registered interval for H4a (PROTOCOL.md §14.5). Each resample is studentized by its own
     jackknife standard error. On 30 Gaussian points the percentile bootstrap's upper bound
-    covered only 71-76 % in simulation; this one covers 91-94 % (82 % for heavy-tailed t5
-    errors), see simulate_and_check.py.
+    covered only 72-76 % in simulation; this one covers 91-93 % (85 % for heavy-tailed t5
+    errors, against 61 %), see simulate_and_check.py.
     """
     rp, se, t_all = _bootstrap_t_draws(points, n_boot, seed)
     q_hi, q_lo = np.quantile(t_all, [conf, 1 - conf])

@@ -10,7 +10,7 @@ first counted trial. This script:
    to the decisions the true values imply;
 3. repeats the key interval procedures on many synthetic data sets and reports their coverage.
 
-Run:  python simulate_and_check.py            (about 3 minutes)
+Run:  python simulate_and_check.py            (about 4 minutes on one core)
 Writes out/recovery.md. Seeds are fixed. Nothing here talks to the arm.
 """
 
@@ -365,7 +365,7 @@ def coverage(rng: np.random.Generator, reps: int) -> list[str]:
     L.append(f"| RP bootstrap-t, one-sided 95 % upper bound (v2, registered) | same | ≥ 95 % | {up_t / n_rp:.1%} |")
     L.append(f"| RP bootstrap-t, one-sided 95 % lower bound (v2, registered) | same | ≥ 95 % | {lo_t / n_rp:.1%} |")
     L += rp_shape_coverage(np.random.default_rng(20261128), n_rp)
-    L += h4b_null_rate(np.random.default_rng(20261129), min(reps, 300))
+    L += h4b_null_rate(np.random.default_rng(20261129), reps)
     return L
 
 

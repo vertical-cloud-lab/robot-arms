@@ -197,8 +197,8 @@ request (issue #21). The exact and simulated powers of every registered rule at 
 - H3a (Boschloo, 300 per arm): 90 % power for 95 % → 99 %, 72 % for 97 % → 99.5 %, 48 % for
   97 % → 99 %.
 - H2: supported 97–100 % of the time when the true ED90 is ≥ 2 mm, 0–20 % at 1.5 mm (no level
-  lies between 1 and 2 mm), ≤ 0.2 % at or below 1.15 mm; refuted 0.9–5.3 % of the time at exactly
-  1.15 mm and 79–100 % at 0.8 mm.
+  lies between 1 and 2 mm), ≤ 0.2 % at or below 1.15 mm; refuted 1.0–5.1 % of the time at exactly
+  1.15 mm (10,000 simulated campaigns per curve shape) and 79–100 % at 0.8 mm.
 - H3b: 100 % when the corrected ED90 is ≥ 1 mm against an open-loop 0.3 mm; with no true
   difference, false support 0–1.4 %, including when the two curves' slopes differ.
 - H3c: ≥ 99.6 % if the true extra time is ≤ 4 s against a 5 s cap.
@@ -311,7 +311,7 @@ tests as listed under Research questions). No multiplicity correction across hyp
 answers a separate, pre-specified question, and every outcome is reported. Within H2 and H3b,
 support on "both axes" is an intersection–union test, which needs no adjustment; refuting H2 on
 "either axis" is a union, so each axis uses a one-sided 99 % bound (Bonferroni's 97.5 % let false
-refutations at the boundary reach 6–10 % in simulation). Each hypothesis
+refutations at the boundary reach 5.1–10.4 % in simulation; 99 % gives 1.0–5.1 %). Each hypothesis
 is reported as supported, refuted, or inconclusive (contrary or not supported for H3a, not
 supported for H3b and H3c).
 

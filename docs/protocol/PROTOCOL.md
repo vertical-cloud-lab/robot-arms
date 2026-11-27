@@ -46,7 +46,7 @@ them.
 | D8 | The time-cost cap for H3c, in seconds per loading transfer | §2 | 5 s |
 | D9 | E3's loaded payload | §8 | A dummy mass equal to a full carrier, at the carrier's centre of gravity |
 | D10 | E3's instrument, with its expanded uncertainty *U* (k = 2) | §8 | Three 0.001 mm digital indicators on a sphere or cube target. *U* must be ≤ 0.025 mm; aim for ≤ 0.010 mm, because the instrument's noise inflates measured RP (an arm at 0.10 mm reads 0.110 mm at *U* = 0.025, 0.102 mm at *U* = 0.010) |
-| D11 | Run-of-failures stop. It counts failed loads, never deliberate E2 offsets | §10 | In E1, 3 failed loads in a row in one cell. In E2, 2 failed zero-offset loads in one block |
+| D11 | Run-of-failures stop. It counts failed loads, never deliberate E2 offsets | §10 | In E1, 3 failed loads in a row in one cell. In E2, 2 failed zero-offset loads in one block. This rarely stops a healthy cell, but is slow to flag one that fails 15–20 % of its loads, in E2 above all ([§8.4](#84-power)). For earlier warning, add a clause such as 5 failed loads among a cell's last 20 |
 | D12 | Campaign end date (cells still short then are reported as they stand) | §10 | 16 weeks after the first counted block |
 | D13 | MTBI horizon τ in transfers | §14.4 | 300 |
 | D14 | Where raw logs and videos live | §11 | A Hugging Face dataset under `byu-vcl`, made public with the paper |
@@ -179,9 +179,10 @@ recorded for calibration only and enter no decision. The power of each rule is i
       1.15 mm.
   - **The axis refutes H2** if either of these holds, each at one-sided 99 %. Bonferroni over
     the two axes would give 97.5 %, but Fieller bounds undercover when ED90 falls between the 1
-    and 2 mm levels, and at 97.5 % H2 was refuted 6–10 % of the time on synthetic data whose
-    true ED90 was exactly 1.15 mm. At 99 % that rate is 0.9–5.3 %
-    ([`out/power.md`](analysis/out/power.md)).
+    and 2 mm levels: at 97.5 %, H2 was refuted 5.1–10.4 % of the time on synthetic data whose
+    true ED90 was exactly 1.15 mm, and at 95 % up to 16.4 %. At 99 % that rate is 1.0–5.1 %
+    (10,000 simulated campaigns for each of three curve shapes,
+    [`out/power.md`](analysis/out/power.md)).
     - The dock misses 90 % even at zero offset: the exact upper bound of success over E2's 20
       zero-offset loads is below 0.90, so the capture radius is 0.
     - The curve is not censored, its slope is significantly negative, and the Fieller upper
@@ -465,8 +466,11 @@ absolute reference such as a laser tracker) are out of scope.
 
 The full tables are in [`analysis/out/power.md`](analysis/out/power.md), from
 [`analysis/power.py`](analysis/power.py) (fixed seeds, the registered rules from
-`prereg_stats.py`). Binomial and Boschloo powers are exact. The rest are simulated: 2,000
-campaigns per scenario for H2 and H3b, 500 for H3c and H4a, 300 for H4b and H4c.
+`prereg_stats.py`), rerun on 2026-11-27 after the independent review's corrections. Binomial and
+Boschloo powers are exact. The rest are simulated: 2,000 campaigns per scenario for H2 and H3b
+(10,000 for H2's false-refutation rate at the boundary), 500 for H3c and H4a, 300 for H4b and
+H4c. `power.py --check-rejected` also simulates the rules that were replaced (§16) on the same
+draws, and checks its copies of the registered rules against `prereg_stats.py`.
 
 ![Power for H1](analysis/out/fig_power_h1.png)
 
@@ -475,12 +479,13 @@ campaigns per scenario for H2 and H3b, 500 for H3c and H4a, 300 for H4b and H4c.
 | **H1a** (certify ≥ 99 %) | At *n* = 300 the cell must be perfect. Power: 22 % if the true rate is 99.5 %, 41 % at 99.7 %, **55 % at 99.8 %**, 74 % at 99.9 %. At *n* = 628 (D5): 39 %, 71 %, **87 %**, 97 %. 80 % power at 99.7 % would need 913 |
 | **H1b** (show < 99 %) | At *n* = 300: 99 % power if the true rate is 95 %, 80 % at 97 %, 39 % at 98 % |
 | **H3a** (Boschloo, 300 per arm) | OL → AT: 95 % → 99 %: 90 %. 97 % → 99.5 %: 72 %. 97 % → 99 %: 48 %. So a gain is only reliably detectable if open-loop single vials sit near 95 % or below |
-| **H2** (ED90 > 1.15 mm) | Supported 97–100 % of the time if the true ED90 is 2 mm or more; 0–20 % at 1.5 mm, because no level lies between 1 and 2 mm; ≤ 0.2 % at or below 1.15 mm. Refuted 0.9–5.3 % of the time at exactly 1.15 mm, 79–100 % at 0.8 mm, 100 % at 0.5 mm |
+| **H2** (ED90 > 1.15 mm) | Supported 97–100 % of the time if the true ED90 is 2 mm or more; 0–20 % at 1.5 mm, because no level lies between 1 and 2 mm; ≤ 0.2 % at or below 1.15 mm. Refuted 1.0–5.1 % of the time at exactly 1.15 mm (10,000 campaigns per curve shape), 79–100 % at 0.8 mm, 100 % at 0.5 mm |
 | **H3b** (AT widens ED90) | 100 % when AT's ED90 is 1 mm or more against an OL pocket's 0.3 mm. 2.5 % for 0.6 vs 0.3 mm, which the 1 mm level spacing can't resolve. With no true difference it claims one 0–1.4 % of the time, including when the slopes differ |
 | **H3c** (time cap 5 s) | ≥ 99.6 % if the true extra time is 4 s or less, 73 % at 4.5 s |
 | **H4a** (30 cycles, *U* = 0.025 mm) | Supported ("meets"): 94 % if the true RP is 0.07 mm, 54 % at 0.08 mm, 5 % at 0.09 mm, because the instrument's noise inflates RP. "Certified": 89 % at 0.04 mm, 62 % at 0.05 mm, 26 % at 0.06 mm; a valid upper bound from 30 cycles is wide. Refuted: 5.0 % for an arm exactly at 0.10 mm, 37 % at 0.11, 81 % at 0.12, 99 % at 0.13 mm |
 | **H4b, H4c** | 61 % and 83 % power for a 0.01 mm payload effect and 0.01 mm per 100 mm; 98–100 % at 0.02 mm |
 | **MTBI** (600 E1 transfers per cell) | Imprecise by design: at 1 intervention per 100 transfers, the 95 % interval runs from 46 to 272 transfers |
+| **D11** (run-of-failures stop; not a hypothesis) | **It rarely stops a healthy cell:** over 300 loads there's a 0.5 % chance at 97.5 % success and 9 % at 93 %, and about 1 % over a task's E2. **It stops a cell that fails half its loads fast:** within about 14 loads in E1, or about 3 blocks in E2. **It's slow at 15–20 % failure:** 347 loads on average in E1. In E2, a cell failing 20 % at zero offset is stopped only 63 % of the time across the whole task, because most blocks hold one zero-offset pair or none. **An extra E1 clause**, 5 failed loads among a cell's last 20, would flag a 15 % cell within a median 48 loads, but would also stop a 93 % cell 38 % of the time |
 
 **Why these sample sizes.** #21 fixes the minimum: 300 per task and condition, 20 per offset
 level, 30 cycles per pose. The tables show what that buys. The one place it falls short of what
@@ -866,12 +871,15 @@ $$l_j=\sqrt{(x_j-\bar x)^2+(y_j-\bar y)^2+(z_j-\bar z)^2},\quad \bar l=\frac1n\s
   cycles, each studentized by its own jackknife standard error. H4a uses the one-sided 95 %
   upper bound (certified) and the one-sided 99 % lower bound (refuted, Bonferroni over five
   poses), against the instrument-adjusted threshold in §2. The plain percentile bootstrap was
-  rejected after the synthetic check: on 30 Gaussian points its upper bound covered only 71–76 %
-  of the time; the bootstrap-t's covers 91–94 % (82 % with heavy-tailed errors), so "certified" is
-  reported with that caveat. Each RP is reported next to the instrument's *U*.
+  rejected after the synthetic check: on 30 Gaussian points its upper bound covered only 72–76 %
+  of the time; the bootstrap-t's covers 91–93 % (85 % with heavy-tailed Student *t*₅ errors,
+  against 61 % for the percentile bootstrap), so "certified" is reported with that caveat
+  ([`out/recovery.md`](analysis/out/recovery.md)). Each RP is reported next to the instrument's
+  *U*.
 - **H4b and H4c** use percentile-bootstrap bounds on the difference and the slope (10,000
-  resamples of cycles within each pose × payload). With no payload effect, this rule gave false
-  positives 4.3 % of the time in simulation.
+  resamples of cycles within each pose × payload). With no payload or reach effect, H4b was
+  supported 4.7 % and H4c 5.4 % of the time on 1,000 synthetic data sets, so their false-positive
+  rates are about the nominal 5 %.
 - **Drift.** Position is regressed on cycle number. Any drift of the barycentre during a run is
   reported. ISO 9283 tests drift separately, from a cold start.
 
@@ -934,12 +942,12 @@ follows:
 | §9 | Ledger and paired sub-blocks in E2 | Blocks can end early without unbalancing the design |
 | §14.6 | Outcome-neutral checks added | So a null result can be told from a broken set-up |
 | §14.4 | The MTBI clock runs on across sessions within a configuration; Garwood first when a cell has < 10 interventions | Censoring at every block end capped intervals at about 20 transfers (synthetic check); the normal approximation is rough with few events |
-| §14.5, H4a | RP's interval is a bootstrap-t, not a percentile bootstrap | The percentile upper bound covered 71–76 % on synthetic data (synthetic check) |
+| §14.5, H4a | RP's interval is a bootstrap-t, not a percentile bootstrap | The percentile upper bound covered 72–76 % on synthetic data (synthetic check) |
 | §5 | A failed leg is restored to its intended end state and the unit continues | Keeps one load and one unload per unit |
 | §2 | Fixed outcome labels for every hypothesis, each from a `h*_decision` function in `prereg_stats.py` | Independent review: some outcomes had no label, and some rules lived only in the simulation scripts |
-| §2 H2 | Support needs a significantly negative slope; refutation is at 99 % per axis; data that meet both are inconclusive | Independent review: refuting by either axis is a union test (6–17 % false refutation at the boundary before the fix, 0.9–5.3 % after), a rising curve could be "supported", and one data set could be both |
+| §2 H2 | Support needs a significantly negative slope; refutation is at 99 % per axis; data that meet both are inconclusive | Independent review: refuting by either axis is a union test (5.3–16.4 % false refutation at the boundary at 95 % per axis, 5.1–10.4 % at Bonferroni's 97.5 %, 1.0–5.1 % at 99 %), a rising curve could be "supported", and one data set could be both |
 | §2 H3b | The delta-method bound replaces the percentile bootstrap | The bootstrap claimed a difference 10–11 % of the time when the ED90s were equal but the slopes differed |
-| §2 H4a | Rules in a fixed order; refutation at 99 % per pose against an instrument-adjusted threshold | Independent review: at *U* = 0.025 mm an arm exactly at 0.10 mm was "refuted" 84 % of the time |
+| §2 H4a | Rules in a fixed order; refutation at 99 % per pose against an instrument-adjusted threshold | Independent review: at *U* = 0.025 mm an arm exactly at 0.10 mm was "refuted" 82 % of the time. Either fix alone still refuted it 25–39 % of the time; both together, 5.0 % ([`out/power.md`](analysis/out/power.md)) |
 | §0 D11, §10 | The run-of-failures stop counts E1 loads and E2's zero-offset loads only | E2's offset loads fail by design, so the v2 rule would have stopped every E2 block |
 | §12 | Missing transfers are re-queued | At *n* = 300, two unscorable loads would have made H1a impossible to support |
 | §9, §10, §14.4 | Trimmed E2 levels, the primary configuration, unattributable interventions and the RMST horizon defined | Ambiguities the review found |

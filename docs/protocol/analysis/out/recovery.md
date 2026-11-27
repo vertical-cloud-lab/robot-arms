@@ -75,7 +75,16 @@ Each row repeats one procedure on 1000 fresh synthetic data sets and counts how 
 | RP bootstrap-t, one-sided 95 % upper bound (v2, registered) | same | ≥ 95 % | 93.0% |
 | RP bootstrap-t, one-sided 95 % lower bound (v2, registered) | same | ≥ 95 % | 95.5% |
 
-From a separate run (400 data sets each, `bootstrap_t_rp`): the bootstrap-t upper bound covered 93.8 % (isotropic), 92.5 % and 91.0 % (anisotropic, variance ratios 3:1:1 and 5:2:1) and 81.8 % (heavy-tailed t5); the percentile upper bound covered 71–76 % in the same Gaussian settings. With no payload effect, H4b's percentile rule gave false positives 4.3 % of the time (300 data sets).
+RP upper bounds when the scatter is not isotropic Gaussian (400 data sets of 30 cycles per shape, true RP 0.06 mm):
+
+| Shape | Bootstrap-t upper bound (registered) | Percentile upper bound (v1, rejected) |
+|---|---|---|
+| isotropic Gaussian | 91.5% | 72.5% |
+| anisotropic Gaussian, variances 3:1:1 | 92.0% | 74.8% |
+| anisotropic Gaussian, variances 5:2:1 | 91.2% | 74.5% |
+| heavy-tailed, Student t with 5 df | 84.5% | 61.3% |
+
+With no payload or reach effect (1000 data sets, 2,000 resamples each), H4b was supported 4.7% of the time and H4c 5.4%; both should be about 5 % or less.
 
 
 ## Notes

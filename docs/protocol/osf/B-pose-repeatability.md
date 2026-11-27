@@ -162,13 +162,15 @@ S_l = √(Σ(l_j − l̄)²/(n − 1)), and **RP = l̄ + 3 S_l** (ISO 9283:1998)
 
 `analysis/prereg_stats.py` (`iso9283_rp`, `bootstrap_t_rp`, `bootstrap_rp`): RP per pose × payload
 with studentized-bootstrap (bootstrap-t) bounds, 10,000 resamples of the 30 cycles each studentized
-by its jackknife standard error. On synthetic data its one-sided 95 % upper bound covered 91–94 %
-with Gaussian errors (82 % heavy-tailed), against 71–76 % for a plain percentile bootstrap, which
-is why the percentile version is not used for H4a. H4b: the bootstrap distribution of the
+by its jackknife standard error. On synthetic data its one-sided 95 % upper bound covered 91–93 %
+with Gaussian errors (85 % with heavy-tailed Student t5 errors), against 72–76 % (61 %) for a plain
+percentile bootstrap, which is why the percentile version is not used for H4a. H4b: the bootstrap distribution of the
 mean over poses of RP(loaded) − RP(unloaded), resampling cycles within each pose × payload. H4c:
 ordinary least squares of RP on reach (per 100 mm) with a payload indicator, refitted in each
-bootstrap replicate; the slope's 5th percentile is the one-sided bound. Drift: position regressed
-on cycle number per pose × payload, reported.
+bootstrap replicate; the slope's 5th percentile is the one-sided bound. With no payload or reach
+effect, these rules were supported 4.7 % (H4b) and 5.4 % (H4c) of the time on 1,000 synthetic data
+sets (`analysis/out/recovery.md`). Drift: position regressed on cycle number per pose × payload,
+reported.
 
 ### Transformations
 
