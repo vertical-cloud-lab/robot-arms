@@ -85,8 +85,10 @@ finish untouched is *p*⁵⁰:
 |---|---|---|---|---|
 | 50 transfers with no intervention | 28 % | 61 % | 78 % | 95 % |
 
-97.5 % is the rate Ada reports (about one run-ending failure per 40 samples, from the Q1 scan
-in #1). 99 % is roughly where an overnight run becomes more likely than not to finish.
+97.5 % is the per-sample rate that the literature scan on #1 attributes to the Ada self-driving
+lab (about one run-ending failure per 40 samples). That figure hasn't been checked against the Ada
+papers yet; check it before the paper cites it ([`references.md`](references.md), item 26). 99 % is
+roughly where an overnight run becomes more likely than not to finish.
 
 **Why these two interventions.** #266 estimates the arm's placement error at ±0.64 mm combined
 (RSS) and ±1.15 mm worst case. That is an estimate from parts of a budget, not a measurement: the
@@ -890,7 +892,12 @@ After the lock:
 
 ## References
 
-The full list, with every DOI checked against Crossref, is in [`references.md`](references.md).
+The full list is in [`references.md`](references.md). Every DOI in it (23 of 23) matches its
+Crossref or DataCite record ([`analysis/out/crossref.md`](analysis/out/crossref.md)). The main
+ones: LabRobFail (Wang et al. 2026, arXiv:2607.23704); ISO 9283:1998; Wilson (1927);
+Clopper and Pearson (1934); Newcombe (1998); Boschloo (1970); Firth (1993); Heinze and Schemper
+(2002); Fieller (1954); Hodges and Lehmann (1963); Kaplan and Meier (1958); Royston and Parmar
+(2013); Garwood (1936); Efron and Tibshirani (1994); Olson (2011); Tsai and Lenz (1989).
 
 ---
 
