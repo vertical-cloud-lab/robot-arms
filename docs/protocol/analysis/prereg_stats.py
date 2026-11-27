@@ -279,6 +279,22 @@ def h2_axis_supported(res: CaptureResult, threshold_mm: float = 1.15) -> bool:
     return res.ed90_lower95 > threshold_mm
 
 
+def h2_axis_refuted(res: CaptureResult, zero_successes: int, zero_trials: int,
+                    threshold_mm: float = 1.15) -> bool:
+    """Registered H2 refutation for one axis: ED90 is shown to be below the threshold.
+
+    Either the Fieller one-sided 95 % upper bound of ED90 is below the threshold, or the dock
+    doesn't reach 90 % even at zero offset: the exact one-sided 95 % upper bound of success over
+    E2's zero-offset trials is below 0.90 (then the capture radius is 0). The second clause
+    covers a curve too flat for Fieller to bound, such as one that fails everywhere.
+    """
+    if cp_upper(zero_successes, zero_trials) < 0.90:
+        return True
+    if res.censored:
+        return False
+    return res.ed90_fieller90[1] < threshold_mm
+
+
 def h2_model_free_check(fail_at_2mm_both_axes: int, n_at_2mm_both_axes: int = 80) -> bool:
     """Secondary (reported, not decisive): >= 90 % caught at +-2 mm on x and y together."""
     return cp_lower(n_at_2mm_both_axes - fail_at_2mm_both_axes, n_at_2mm_both_axes) >= 0.90

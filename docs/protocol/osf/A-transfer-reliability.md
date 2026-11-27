@@ -45,7 +45,8 @@ where stated; each is reported as supported, refuted or inconclusive (§2).
   logistic fit exceeds 1.15 mm. For a right-censored curve (no failures at 4 mm, or fitted success
   at 4 mm ≥ 90 %), it is supported instead if the exact one-sided 95 % lower bound of pooled
   success at |offset| ≥ 2 mm is ≥ 0.90. Refuted if on either axis the Fieller one-sided 95 % upper
-  bound is below 1.15 mm.
+  bound is below 1.15 mm, or if the exact one-sided 95 % upper bound of success over the 20
+  zero-offset loads is below 0.90 (capture radius 0).
 - **H3a.** AprilTag correction raises single-vial loading success: one-sided Boschloo exact test,
   p < 0.05.
 - **H3b.** Correction widens the single-vial ED90 on both x and y: the one-sided 95 % bootstrap

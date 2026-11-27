@@ -167,7 +167,9 @@ are recorded for calibration only and enter no decision. The power of each rule 
     exact one-sided 95 % lower bound of the pooled success at |*d*| ≥ 2 mm (120 trials) must be
     ≥ 0.90.
 - **Supported** if both axes pass. **Refuted** if on either axis the Fieller one-sided 95 %
-  upper bound of ED90 is below 1.15 mm. **Inconclusive** otherwise.
+  upper bound of ED90 is below 1.15 mm, or if the dock doesn't reach 90 % even at zero offset
+  (the exact one-sided 95 % upper bound of success over E2's 20 zero-offset loads is below 0.90),
+  which makes the capture radius 0. **Inconclusive** otherwise.
 - **What the offset means.** It is injected on top of the arm's own error. "ED90 > 1.15 mm"
   therefore means the dock still catches 90 % of carriers after the arm has been pushed a further
   1.15 mm off.
@@ -873,7 +875,7 @@ follows:
 |---|---|---|
 | Header, §0 | Registry chosen (OSF Preregistration, two registrations). Fill-ins split into PI decisions (D) and pilot-set rules (R) | So registration doesn't wait for bench measurements |
 | §2 H1 | Each hypothesis can now be refuted as well as supported | Symmetric reporting |
-| §2 H2 | The ±2 mm model-free check is secondary. A rule for censored curves is added | The combination tested ED90 > about 2.5 mm, not 1.15 mm (power analysis) |
+| §2 H2 | The ±2 mm model-free check is secondary. Rules added for censored curves and for a dock that misses 90 % even at zero offset | The combination tested ED90 > about 2.5 mm, not 1.15 mm (power analysis) |
 | §2 H3b | ED90 is floored at 0, and the censored case is defined by the fit as well as by zero failures | A flat AT curve could give a meaningless negative ED90 |
 | §0, §8 | D5 offers *n* = 628 for C-OL; D6 offers trimmed levels for single-vial OL | Power for H1a; operator burden in E2 |
 | §3, §12 | Outcomes, exclusions and missing data get their own sections | The OSF template asks for each |
