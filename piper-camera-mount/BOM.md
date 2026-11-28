@@ -206,8 +206,15 @@ are really 20 AWG. No listing says, so check it on the arm with `vcgencmd pmic_r
 lead to the carrier 20 to 30 mm from the plug with a 4 in tie; the 8 and 12 in ties hold the service
 loops on the arm.
 
-If the extension fails, the cheapest fix keeps it: a PD step-down board on the carrier asks the
-official supply for 12 V and makes 5 V next to the Pi ($20.99). The fallback after that is 24 V: a
+**Is that enough? For streaming, probably; for a busy Pi, no** (28 November). At the 2 to 2.5 A
+that running a model beside the cameras takes, the extension leaves the Pi at 4.67 to 4.57 V. The
+fix is 12 V up the arm to a Pololu D36V28F5 step-down in a printed housing on the carrier, which
+holds the Pi at about 4.93 V. A 6 V supply doesn't leave the regulator enough headroom. The parts
+come to $48.85 at Pololu, in [Optional](#optional), and the reasoning is in
+[`power/README.md`](power/README.md#is-the-extension-enough-not-for-a-busy-pi-12-v-and-a-pololu-step-down-28-november-2026).
+
+If you'd rather keep the extension, a PD step-down board on the carrier asks the official supply
+for 12 V and makes 5 V next to the Pi ($20.99). The fallback after that is 24 V: a
 supply at the base (36 W or more), a 24 V to 5 V / 5 A USB-C converter on the carrier, and about
 3–4 m of lead. The lab has none of these. Searches on 8 and 24 October found no supply, from any
 maker, that gives 5 V at 3 A or more on a lead long enough to reach the wrist
@@ -230,6 +237,7 @@ longest is Raspberry Pi's 45 W, at 1.5 m (below).
 | Item | When | Where | Price |
 |---|---|---|---|
 | Magnetic right-angle USB-C adapter, 120 W | A breakaway, so a snagged lead pulls apart instead of the socket. It adds another mated pair, about 0.03 V at 1.5 A | [Adafruit 5521](https://www.adafruit.com/product/5521), in stock, 9 October | $14.95 |
+| **12 V route (recommended fix):** Pololu D36V28F5 5 V 3.2 A step-down (#3782), Pololu 12 V 3 A wall adapter (#1774, 1.5 m cord), barrel jack to terminal block (#2449), plus about 2.5 m of two-core 22 AWG or heavier and a 15 cm USB-C plug pigtail | When the Pi needs more than streaming: the extension leaves it at 4.57 V at 2.5 A, and this holds it at about 4.93 V. The regulator goes in a printed PAHT-CF housing on the carrier, not drawn yet. For more margin, the D42V55F5 (#5571, 6 A, $47.95) ([`power/README.md`](power/README.md#is-the-extension-enough-not-for-a-busy-pi-12-v-and-a-pololu-step-down-28-november-2026)) | [Pololu 3782](https://www.pololu.com/product/3782) $23.95 (189 in stock), [1774](https://www.pololu.com/product/1774) $21.95 (1,165), [2449](https://www.pololu.com/product/2449) $2.95 (851), 28 November | $48.85 |
 | PD step-down board, 12 V in from USB-C PD, 5 V / 5 A out (eleUniverse) | If the extension leaves the Pi under-voltage: keep the official supply and the extension, and have the board ask for 12 V and make 5 V on the carrier. 34 g, with a fan; the carrier has no place for it yet | [Amazon B0FR8VRWFJ](https://www.amazon.com/dp/B0FR8VRWFJ), 9 October: no stock line, delivery 28 October to 19 November | $20.99 |
 | 24 V route: Mean Well GST36U24-P1J, PlusRoc 24 V to 5 V USB-C converter, two 1.5 m barrel extensions, a jack to screw terminal | Only if the Pi reports under-voltage through the extension, and you'd rather not rely on PD | [TRC Electronics](https://www.trcelectronics.com/products/mean-well-gst36u24-p1j) $19.48, [Amazon B0FD735LFG](https://www.amazon.com/dp/B0FD735LFG) $15.99, [Adafruit 327](https://www.adafruit.com/product/327) 2 × $2.95, [Adafruit 368](https://www.adafruit.com/product/368) $2.00 (7–8 October) | $43.37 |
 | Raspberry Pi 45 W USB-C supply (SC1731: 5.1 V / 5 A PD, 1.5 m 17 AWG lead) | If the 27 W's lead plus the 2 m extension doesn't reach: with the same extension it reaches 3.5 m and leaves the Pi what the 27 W does at 3.2 m (about 4.77 V streaming). It adds reach, not margin ([`power/README.md`](power/README.md#a-supply-with-a-longer-lead-instead-24-october-2026)) | [PiShop.us](https://www.pishop.us/product/raspberry-pi-45w-usb-c-power-supply-white/), in stock, 24 October; [Adafruit 6320](https://www.adafruit.com/product/6320) $16.50, in stock | $16.95 |

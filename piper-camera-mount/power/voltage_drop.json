@@ -227,5 +227,87 @@
         4.44
       ]
     }
+  ],
+  "step_down_at_the_wrist": [
+    {
+      "supply (V)": 12.0,
+      "amps at the Pi": [
+        1.5,
+        2.0,
+        2.5
+      ],
+      "volts at the regulator": [
+        11.7,
+        11.59,
+        11.49
+      ]
+    },
+    {
+      "supply (V)": 6.0,
+      "amps at the Pi": [
+        1.5,
+        2.0,
+        2.5
+      ],
+      "volts at the regulator": [
+        5.34,
+        5.07,
+        4.76
+      ]
+    },
+    {
+      "regulator": "D36V28F5, 5 V \u00b14 %",
+      "amps at the Pi": [
+        1.5,
+        2.0,
+        2.5
+      ],
+      "volts at the Pi (nominal)": [
+        4.96,
+        4.94,
+        4.93
+      ],
+      "volts at the Pi (lowest in tolerance)": [
+        4.76,
+        4.74,
+        4.73
+      ]
+    },
+    {
+      "regulator": "D42V55F5, 5 V \u00b13 %",
+      "amps at the Pi": [
+        1.5,
+        2.0,
+        2.5
+      ],
+      "volts at the Pi (nominal)": [
+        4.96,
+        4.94,
+        4.93
+      ],
+      "volts at the Pi (lowest in tolerance)": [
+        4.81,
+        4.79,
+        4.78
+      ]
+    },
+    {
+      "regulator": "D42V55F5.3, 5.3 V \u00b13 %",
+      "amps at the Pi": [
+        1.5,
+        2.0,
+        2.5
+      ],
+      "volts at the Pi (nominal)": [
+        5.26,
+        5.24,
+        5.23
+      ],
+      "volts at the Pi (lowest in tolerance)": [
+        5.1,
+        5.08,
+        5.07
+      ]
+    }
   ]
 }

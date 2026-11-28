@@ -10,6 +10,99 @@ A lab Pi 5 has already lost its USB-C socket to a yanked cable
 ([#234](https://github.com/vertical-cloud-lab/byu-vcl/pull/234#issuecomment-5841723129), the CubXL
 Pi). So besides getting power up the arm, the socket must never be what takes the pull.
 
+## Is the extension enough? Not for a busy Pi: 12 V and a Pololu step-down (28 November 2026)
+
+sgbaird asked on [#41](https://github.com/vertical-cloud-lab/robot-arms/pull/41) whether the
+extension is solid, or whether the wrist needs a buck regulator, such as a Pololu in a printed
+housing, fed with 12 V or 6 V. The six AINOPE extensions on ME order 13562 should already be in the
+lab.
+
+- **The extension should be fine for streaming, but not for a busy Pi.**
+  - Streaming both cameras, the 8 GB board drew 1.5 A at most. At that, the model gives 4.78 V
+    at the Pi, 0.15 V over the 4.63 V limit, if the AINOPE's wires really are 20 AWG.
+  - Running a model or the arm's control beside the cameras takes 2 to 2.5 A. That gives
+    4.67 to 4.57 V, at the limit or under it, where the Pi throttles its CPU. Doing that work is
+    why the 8 GB board is on the wrist.
+  - Two USB-C joints flexing on a moving arm only lose margin.
+- **So yes: send 12 V up the arm and make 5 V on the carrier.** At 12 V the lead carries about
+  1.2 A for the Pi's 2.5 A, the regulator sees 11.5 V or more, and the Pi gets the regulator's own
+  output, whatever the lead does.
+- **Not 6 V.** At 6 V the lead carries about as much current as at 5 V, so it drops almost as
+  much. The regulator would see 4.8 to 5.3 V. A 5 V Pololu needs 5 V plus its dropout, which is
+  over 1 V at these loads on Pololu's graph for the D42V55F3.
+
+From [`voltage_drop.py`](voltage_drop.py), with a 3.5 m lead of 22 AWG (the 12 V adapter's 1.5 m
+cord plus 2 m), a 30 mΩ barrel joint, an 85 % efficient regulator, and a 15 cm USB-C pigtail of
+20 AWG to the Pi:
+
+| Supply up 3.5 m (22 AWG) to a Pololu 5 V step-down | at 1.5 A | at 2.0 A | at 2.5 A |
+|---|---|---|---|
+| 12 V supply: volts at the regulator's input | 11.70 V | 11.59 V | 11.49 V |
+| 6 V supply: volts at the regulator's input | 5.34 V (under its minimum) | 5.07 V (under its minimum) | 4.76 V (under its minimum) |
+| 12 V, D36V28F5 (5 V ±4 %): volts at the Pi (lowest unit) | 4.96 V (4.76 V) | 4.94 V (4.74 V) | 4.93 V (4.73 V) |
+| 12 V, D42V55F5 (5 V ±3 %): volts at the Pi (lowest unit) | 4.96 V (4.81 V) | 4.94 V (4.79 V) | 4.93 V (4.78 V) |
+| 12 V, D42V55F5.3 (5.3 V ±3 %): volts at the Pi (lowest unit) | 5.26 V (5.10 V) | 5.24 V (5.08 V) | 5.23 V (5.07 V) |
+| For comparison, the 27 W supply + 2 m extension (20 AWG) | 4.78 V | 4.67 V | 4.57 V (low) |
+
+**What to buy, all from Pololu** (read on 28 November through camera Pi 2, during Pololu's Black
+Friday sale; [`shopping_2026-11-28_pololu.json`](shopping_2026-11-28_pololu.json)):
+
+| Qty | Part | Price | In stock |
+|---|---|---|---|
+| 1 | [D36V28F5, 5 V 3.2 A step-down regulator (#3782)](https://www.pololu.com/product/3782). 5.3 to 50 V in, 5 V ±4 %, 2.5 to 4 A continuous depending on the input, 17.8 × 20.3 × 8.8 mm, two M2 holes. Reverse-voltage, over-current and thermal protection | $23.95 | 189 |
+| 1 | [Wall power adapter, 12 V 3 A, 36 W (#1774)](https://www.pololu.com/product/1774). UL-listed, 100 to 240 V AC, 1.5 m cord, 5.5 × 2.1 mm centre-positive plug | $21.95 | 1,165 |
+| 1 | [DC barrel jack to 2-pin terminal block (#2449)](https://www.pololu.com/product/2449). Takes the adapter's plug at the base of the arm; the lead up the arm goes into its screw terminals | $2.95 | 851 |
+| | **Pololu subtotal** (shipping is free in the US over $75) | **$48.85** | |
+
+Plus, from campus or the lab:
+
+- **The lead:** about 2.5 m of two-core wire, 22 AWG or heavier. High-flex silicone wire suits the
+  service loops best. The ELC sells 16 to 18 AWG hookup wire at $0.13 a foot.
+- **A USB-C plug pigtail** of about 15 cm, from the regulator's VOUT and GND to the Pi. No Pololu
+  part does this. The ELC's 24-pin USB-C male breakout ($2.20) is another way to make one.
+
+Choices and cautions:
+
+- **For more margin, the [D42V55F5 (#5571)](https://www.pololu.com/product/5571):** 5 V ±3 %,
+  6 A, 25.4 mm square with three M2 holes, $47.95, 103 in stock. At 2.5 A it's far from its limit,
+  so it runs cooler inside a closed housing. Its [5.3 V version (#5572)](https://www.pololu.com/product/5572)
+  would put the Pi at about 5.2 V, like the official supply, but Pololu had only 4.
+- **Not the D36V50F5** (5 V 5.5 A, $44.95). It's on backorder.
+- **None of these offers USB-PD,** so the Pi assumes a 3 A supply and caps its USB ports at
+  600 mA. The CSI cameras don't use them. Leave `PSU_MAX_CURRENT` alone with the D36V28F5, since
+  3.2 A is all it gives. With a D42V55F5, `PSU_MAX_CURRENT=5000` is honest.
+- **The 24 V supply already in the BOM's optional list works with the same regulators** (they take
+  up to 50 and 60 V). At 12 V the regulator wastes less as heat.
+
+**The housing** (not drawn yet):
+
+- **The board:** the D36V28F5 is 17.8 × 20.3 × 8.8 mm with two Ø2.2 mm holes for M2, the D42V55F5
+  25.4 mm square with three. Take the hole positions from Pololu's dimension diagram.
+- **Heat:** about 1.5 to 2 W at 2.5 A. Pololu warns the board can get hot enough to burn, so print
+  the housing in PAHT-CF like the other arm parts, not PLA, give it vent slots, and hold the board
+  on standoffs.
+- **Strain relief:** clamp the 12 V lead where it enters, so a pull loads the housing and the
+  carrier, not the solder joints. The same goes for the pigtail where it leaves, with 10 to 15 cm
+  of slack to the Pi's socket.
+- **On the carrier:** screw or zip-tie the housing beside the Pi, clear of the Active Cooler's
+  intake.
+
+**A check that needs no purchase:** when the 8 GB board is back online (it and the arm Pi were
+offline on 28 November), power it from a 27 W supply through one of the lab's AINOPE extensions,
+stream both cameras, add `stress-ng --cpu 4`, and read `vcgencmd pmic_read_adc EXT5V_V` and
+`vcgencmd get_throttled`. If it holds above about 4.75 V, the extension is enough for now. If not,
+the parts above settle it.
+
+**How the search ran:** headed Chromium on camera Pi 2's desktop, driven from the runner with
+mouse moves, clicks and typed searches, with downloads capped at 300 KB/s
+([screenshot](headed-chromium_camera-pi-2_2026-11-28.png),
+[D36V28F5 page](pololu_d36v28f5_2026-11-28.jpg)).
+
+- **Pololu loaded fine.** DigiKey answered with a Cloudflare check.
+- **Use the 8 GB board for heavier sites.** Camera Pi 2 is a 1 GB board running a livestream.
+  While DigiKey's check ran, its swap filled, so I closed Chromium after one try. The livestream
+  kept running.
+
 ## The plan: extend the official supply (24 October 2026)
 
 sgbaird's call on [#10](https://github.com/vertical-cloud-lab/robot-arms/pull/10): keep Raspberry

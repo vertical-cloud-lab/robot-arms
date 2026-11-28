@@ -101,6 +101,40 @@ def main() -> None:
         out["longer_leads"].append({"route": name, "reach (m)": round(reach, 2), "amps": list(amps),
                                     "volts at the Pi": [round(x, 2) for x in v]})
         print(f"| {name} | {reach:.2f} m | " + " | ".join(f"{x:.2f} V{'' if x > UV else ' (low)'}" for x in v) + " |")
+    # 28 November 2026: 12 V (or 6 V) up the arm to a Pololu step-down regulator on the carrier
+    # (power/shopping_2026-11-28_pololu.json). Pololu's 12 V 3 A adapter (#1774) has a 1.5 m cord;
+    # a 2 m two-wire lead through its barrel-jack-to-terminal adapter (#2449) takes it to 3.5 m. No
+    # gauge is given for the cord, so both legs are taken as 22 AWG, and the barrel pair as 30 mOhm.
+    # The regulator is taken as 85 % efficient. Its minimum input is Pololu's: 5.3 V for the
+    # D36V28F5, plus a dropout that grows with load (D42V55F3's graph: 1.1 V at 1 A, 1.4 V at 2 A).
+    # After it, a 0.15 m USB-C pigtail (20 AWG) and the Pi's socket.
+    out["step_down_at_the_wrist"] = []
+    r_lead = 2 * (1.5 * OHM_PER_M[22] + 2.0 * OHM_PER_M[22]) + 0.030
+    r_pigtail = 2 * 0.15 * OHM_PER_M[20] + R_MATED
+    print(f"\n| Supply up 3.5 m (22 AWG) to a Pololu 5 V step-down | " + " | ".join(f"at {a} A" for a in amps) + " |")
+    print("|---|" + "---|" * len(amps))
+    for v0 in (12.0, 6.0):
+        vin, row = [], []
+        for a in amps:
+            # input current depends on the input voltage: solve v = v0 - r * P / (eff * v)
+            p_in = 5.0 * a / 0.85
+            v = v0
+            for _ in range(50):
+                v = v0 - r_lead * p_in / v
+            vin.append(v)
+        out["step_down_at_the_wrist"].append({"supply (V)": v0, "amps at the Pi": list(amps),
+                                              "volts at the regulator": [round(x, 2) for x in vin]})
+        print(f"| {v0:.0f} V supply: volts at the regulator's input | " + " | ".join(
+            f"{x:.2f} V{'' if x >= 5.3 + 1.0 else ' (under its minimum)'}" for x in vin) + " |")
+    for name, vout, tol in (("D36V28F5, 5 V ±4 %", 5.0, 0.04), ("D42V55F5, 5 V ±3 %", 5.0, 0.03),
+                            ("D42V55F5.3, 5.3 V ±3 %", 5.3, 0.03)):
+        v = [vout - a * r_pigtail for a in amps]
+        lo = [vout * (1 - tol) - a * r_pigtail for a in amps]
+        out["step_down_at_the_wrist"].append({"regulator": name, "amps at the Pi": list(amps),
+                                              "volts at the Pi (nominal)": [round(x, 2) for x in v],
+                                              "volts at the Pi (lowest in tolerance)": [round(x, 2) for x in lo]})
+        print(f"| 12 V, {name}: volts at the Pi (lowest unit) | " + " | ".join(
+            f"{x:.2f} V ({y:.2f} V)" for x, y in zip(v, lo)) + " |")
     (Path(__file__).with_suffix(".json")).write_text(json.dumps(out, indent=2) + "\n")
 
 
