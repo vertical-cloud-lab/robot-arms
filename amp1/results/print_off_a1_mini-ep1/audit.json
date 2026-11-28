@@ -1,0 +1,23 @@
+{
+ "tools": {
+  "Bash": 59,
+  "Read": 92,
+  "Write": 1
+ },
+ "bash": 59,
+ "reads": 92,
+ "writes": 1,
+ "outside_or_other": [
+  [
+   "Bash",
+   "wc -l /tmp/amp-episodes/print_off_a1_mini-ep1/SYSTEM_PROMPT.md; ls -la /tmp/amp-episodes/print_off_a1_mini-ep1/"
+  ],
+  [
+   "Bash",
+   "cd /tmp/amp-episodes/print_off_a1_mini-ep1 && cat episode.json && ./py <<'PY'"
+  ]
+ ],
+ "n_outside": 2,
+ "cells": 58,
+ "flagged_cells": []
+}
