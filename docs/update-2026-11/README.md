@@ -17,7 +17,45 @@ checks are in [`verification.md`](verification.md).
 
 ## The short version
 
-<!-- SHORT-VERSION -->
+1. **The cell has barely started, and the lab's own analyses ask for the same thing the literature does: measured
+   handling.**
+   - The cell: the PiPER has done 10 tape-pick attempts and a few teleop sessions, and nothing since 11-14. Most of
+     its cameras are offline, and its E-stop has never been tested.
+   - byu-vcl's digital twin says robot transport doesn't bind and its handling times are stand-ins.
+   - DAL's schedule says the 10–15 person-hours after each atomizer run are the bottleneck, and none of it is timed.
+2. **The field's most-repeated unmet request is measured reliability.** 14 of 29 central papers ask for it, and ADePT
+   (2026) asks explicitly. Nobody has yet published interventions per operation for an arm in a real SDL, or a
+   time-and-motion breakdown of an atomize → sieve → SEM workflow. **Projects 1 and 2 below produce both, starting
+   this month.**
+3. **What's new since September:**
+   - Coding agents now beat VLAs on manipulation benchmarks but take minutes per task (AMP1, CaP-X, ACE-CaP-0).
+   - The PiPER became the default low-cost arm in lab-manipulation papers, and none reports its accuracy.
+   - Independent SO-101 numbers came in well below launch claims, and success detection became an off-the-shelf part.
+   - Cloud-lab and metals-SDL funding landed, including CMU automating Al powder on the same rePOWDER atomizer DAL uses.
+   - Liverpool and LLNL are working on the same questions.
+4. **Printer tending is not new, but measuring it is.** BU's BEAR did it with a UR5e in 2020, MAMA BEAR ran 25,387
+   experiments, and SmartLab ran it remotely. None of them reports a handling success rate; the only number is 20 of
+   21 prints removed in a 2022 IEEE RAM paper. Nobody reports how often a plate-clear check is wrong. A $2.5k arm
+   clearing consumer printers with logged interventions is new, and the December toy drive is the occasion.
+5. **For DAL, the PiPER is a courier, not a process tool.** It can move sealed jars, weigh, check labels and move SEM
+   stubs and coupons between purpose-built stations. It stays out of the atomizer and open powder until an EHS review.
+6. **Robots restocking consumables** is future work in 6 of the 29 papers, and no follow-up exists. The CubXL
+   campaign already preregisters exactly this; frame it that way.
+7. **"An agent designs the fixture and writes the workflow, and the arm runs it"** (the AI for Science proposal) has
+   no published precedent in lab automation. AI-designed tools and fingers have been printed and tested outside labs
+   (RobotSmith 2025, Xu et al. 2024). The control half is crowded: frozen agent code already reached 221/240 on PiPER X
+   arms (ACE-CaP-0). The hardware half is open. Freeze code once it works, run at least 25 trials per condition, and
+   include a human-expert baseline.
+8. **Interventions as training data** (a person takes over with the SO-101 leader, and the takeover trains a recovery
+   policy) is unpublished on low-cost arms and in labs. LeRobot already ships the pieces.
+9. **A PiPER metrology paper would be widely cited.** An Annin AR4 study (Oct 2026) took the "first sub-$5k arm" claim,
+   but there is still nothing on the PiPER that everyone now uses.
+10. **Edison's "no published evidence" claims need checking.** Two of U1's failed: printer tending (BEAR) and remote
+    operation (TeleopLab, PUPPET). A-Lab's headline numbers were revised by a 2026 correction, and several headline
+    results turned out to be simulated or design targets ([section 5](#5-corrections)).
+
+**First, the safety gates:** test the E-stop end to end, stop a Pi reboot from dropping the arm mid-move, and get the
+hazard analysis reviewed.
 
 ## 1. Where the lab stands
 
@@ -281,15 +319,18 @@ checking the full text are in [section 5](#5-corrections) and [`verification.md`
 **U4: robotic printer tending and design–print–test loops** ([`u4-…`](../edison-6dof/u4-printer-tending-and-print-test-loops/answer.md), `2dc50277`)
 - **BU's BEAR line:**
   - BEAR (2020): a UR5e, five MakerGear printers, a scale and an Instron, in a closed loop.
-  - MAMA BEAR (2024): 25,387 experiments. An arm camera checks the bed is clear, with up to 10 scraper retries before
-    it disables the printer and calls a person. PLA and PETG parts are removed at 30 °C.
-  - Neither reports a handling success rate or a plate-check false-clear rate.
+  - MAMA BEAR (2024): 25,387 experiments, 13,250 of them valid, with about 60% uptime. An arm camera checks the bed
+    is clear, with up to 10 scraper retries before it disables the printer and calls a person. PLA and PETG parts are
+    removed at 30 °C, because pulling them off a hot bed deformed them. BEAR (2020) retrieved PLA below 40 °C.
+  - Neither reports a handling success rate or a plate-check false-clear rate. A 2022 IEEE RAM paper
+    (Detect-Remove-Replace) reports a robot removing 20 of 21 prints and swapping the steel sheet, which U4 missed.
 - **SmartLab (2025)** lifts the whole bed with suction, swaps to fingers and places parts in a tensile tester (268 µm,
   0.19°). It made and tested 90 specimens, and 21 students in Tanzania ran two full cycles remotely. Its battery
   lasted 8 cycles.
 - **Simpler mechanisms:**
-  - A thesis rig flexed Prusa sheets: 15.5 N to break the magnetic hold, 6.8 N to slide. Flexing was the most
-    reliable method; scraping chipped small parts.
+  - A 2020 WPI undergraduate project flexed Prusa sheets: 15.5–16 N to break the magnetic hold, 6.8 N to slide. That
+    is above the PiPER's roughly 15 N grip, so peel from an edge. Its cycle only ever ran on an empty bed; Covid
+    stopped real removals. Scraping chipped small parts.
   - ATCAM ejected 3,000 coupons with a printed spring the toolhead cocks.
 - **No peer-reviewed study** gives throughput, uptime or cost for a robot-tended farm, and nobody has measured PLA
   adhesion on textured PEI (PETG on PEI took 53 ± 8 N to tear off).
@@ -300,23 +341,29 @@ checking the full text are in [section 5](#5-corrections) and [`verification.md`
 - **Systems that ran model-written code on real lab hardware:**
   - Coscientist on an OT-2: it hallucinated a heater-shaker API call, then fixed it from the docs.
   - CLAIRify, MATTERIX (9/12 picks, 9/10 pours) and LabscriptAI (a 96.7% simulator pass rate; a preprint).
-  - WetRobo on PiPER arms: adapting to a door took 2 h 40 min the first time and 3 min 27 s on reuse.
-  - ACE-CaP-0: frozen agent code scored 221/240 on real tasks with no human or agent during evaluation.
+  - WetRobo on PiPER arms. In its first lab, adapting a door-opening task took 2 h 40 min and reusing the code took
+    3 min 27 s; the door task failed in the second lab. Cap lifting went 10/10 in both labs on repeat runs, against
+    0/10 for a VLA in the second lab.
+  - ACE-CaP-0, on two AgileX PiPER X arms: frozen agent code scored 221/240 on eight real tasks, with no human or
+    agent during evaluation.
   - **SPINE** ([arXiv:2607.13049](https://arxiv.org/abs/2607.13049)): an agent diagnosed and restored teleoperation
     faults on **four PiPER arms**, fixing 5/5 scenarios 38% faster than humans, with a novice doing the physical steps.
-- **Safeguards with numbers** (most come via one 2026 survey; I haven't checked them against their primary papers):
+- **Safeguards with numbers,** mostly via one survey (Li et al., [arXiv:2611.22291](https://arxiv.org/abs/2611.22291));
+  the checked numbers match their primary papers:
   - NeSyRo: an SMT solver plus a PDDL precondition check raised real-robot success from 10.6% to 57.5% and cut
     irreversible actions from 53 to 7.
-  - RoboGuard: cut jailbroken unsafe execution from over 92% to below 3%.
+  - RoboGuard: cut jailbroken unsafe execution from over 92% to below 3%, on a ground vehicle rather than an arm.
   - LEASH: staged gates.
-  - Chemist Eye: a VLM safety monitor at 97% hazard spotting.
+  - Chemist Eye: a VLM safety monitor in *Digital Discovery*, at 88% hazard spotting (97% in the preprint).
   - Against all of these: LabSafety Bench finds no model above 70% on realistic hazard identification, and one
-    learned verifier was wrong on 91% of later rollouts.
+    learned verifier was wrong on 91% of later rollouts (in simulation).
 - **Frozen versus regenerated code:** there is no controlled comparison, but the indirect evidence favours freezing
   code once it works and regression-testing it when the skill library changes.
 - **The biggest gap for the AI for Science proposal:** no published study has a language model design a lab fixture,
   holder, gripper or adapter that was then printed and tested on a real lab robot. CADSmith, IterCAD and AgentsCAD
-  stop at geometry. **"An agent designs the fixture and writes the workflow, and the arm runs it" has no precedent.**
+  stop at geometry. The check confirmed this for lab automation. Outside labs, AI-designed tools and gripper fingers
+  have been printed and tested on real robots (RobotSmith 2025, Xu et al. 2024). **"An agent designs the fixture and
+  writes the workflow, and the arm runs it" has no precedent in a lab.**
 - **Provenance:**
   - WetRobo keeps trials as git branches.
   - "La Agente Óptima" appends every state transition to a SHA-256 hash-chained ledger.
@@ -328,7 +375,31 @@ checking the full text are in [section 5](#5-corrections) and [`verification.md`
   - expectations: 75–92% physical success, 2–5 iterations to a first fixture fit, and 10–15% of simulated successes
     failing on hardware.
 
-<!-- U6-U7 -->
+**U6: measured handling times for byu-vcl's twin, and robots restocking consumables** ([`u6-…`](../edison-6dof/u6-handling-times-and-restocking/answer.md), `6304f40d`)
+- **No SDL paper publishes per-operation handling times with spread.** The best available:
+  - NIMS's structural-metals cell (Xie et al. 2026): about 60 s to load the furnace, 40 s to weigh and move a sample
+    to XRD, and 180 s to recover a fractured sample, with no variance given.
+  - Lunt et al.'s mobile PXRD workflow, from video timestamps: 12–42 s per door, load or delivery, and about 88 s to
+    handle a vial cap.
+  - A 2018 mobile-robot round trip over 50 runs: 11 min 26 s with fine pose correction, 15 min 32 s without.
+  - LLNL's MARS cell: 86.2 min per experiment, with transport sub-operations varying only 2.2%. Its campaign failure
+    rate fell from 29–43% to 4.4–7.2% after gripper fixes.
+- **Its "gaps" are the twin's inputs:**
+  - no validated discrete-event model of an SDL built on measured handling times;
+  - no sensitivity analysis splitting throughput into handling, instrument and decision time;
+  - **no published measurement of how long people take to make the next decision in an SDL.** byu-vcl's 77 h median
+    has no published counterpart.
+- **Asynchronous and pipelined Bayesian optimization** cut the algorithm's own latency (ELF-BO, PipeBO, non-blocking
+  expert feedback, PROTOCOL for cloud labs). None measures the human's.
+- **Restocking consumables:** no published system has a robot restock tips, vials, plates or powders with measured
+  success. Seifrid 2022, Moran 2026 and others list it as future work, which confirms the citation analysis.
+- **The method:**
+  - a stopwatch study with 20–30 observations per element, at 95% confidence and ±5–10% precision;
+  - work sampling with n = Z²P(1−P)/E² (384 random observations for ±5%) to split hands-on, waiting, transport,
+    decision, rework and idle time;
+  - validating the distributions against 2–3 real campaigns before they go into the twin.
+
+<!-- U7 -->
 
 ## 5. Corrections
 
@@ -375,7 +446,34 @@ Checked against full text by separate agents ([`verification.md`](verification.m
   published campaign.
 - **Unverified:** Sirius's 0.32 intervention ratio, 2.80 interventions per trajectory and 15.28 steps per intervention
   appear only in the journal version, which couldn't be opened.
-<!-- CORRECTIONS-U4-U7 -->
+- **U4 has MAMA BEAR's bed temperature backwards.** It says bed heating was introduced after height-check failures.
+  In fact, removing parts from a hot bed deformed them, and the fix was cooling to 30 °C. BEAR (2020) does give a
+  release temperature ("below 40°C"). MAMA BEAR's 25,387 experiments include 13,250 valid ones, at about 60% uptime.
+- **U4's sheet-flexing source** is a 2020 WPI undergraduate project report ([digital.wpi.edu](https://digital.wpi.edu/downloads/bg257h749)),
+  not peer reviewed. Its automated cycle only ran on an empty bed. The 15.5–16 N to break the magnetic hold is above
+  the PiPER's roughly 15 N grip, not "well within" it.
+- **U4 missed a success count:** Detect-Remove-Replace (IEEE Robotics & Automation Magazine, 2022) reports a robot
+  removing 20 of 21 prints and swapping the steel sheet. Its claim of no farm-scale throughput, uptime or cost data
+  still stands.
+- **AMP1's real-robot result is 104/108 on a Franka,** at 280 s per task against 62 s for π0.5. U5's "9/9 each, 94–208
+  s" covers four of its twelve real tasks.
+- **ACE-CaP-0 ran on two AgileX PiPER X arms,** which makes it closer to this lab than U5 suggests.
+- **WetRobo:** the door-opening task failed in the second lab. Cap lifting went 10/10 in both labs on repeat runs; the
+  VLA scored 0/10 in the second lab.
+- **Chemist Eye is peer reviewed** (*Digital Discovery*). Its journal abstract says 88% hazard spotting; 97% is the
+  preprint's figure.
+- **LabscriptAI's figures mix versions.** The 96.7% on 90 tasks is from the September 2026 version, while "CV < 5%,
+  R² > 0.999" is from the 2025 versions; the newer one gives R² 0.985–0.999.
+- **U5's safeguard numbers come via a survey,** Li et al. ([arXiv:2611.22291](https://arxiv.org/abs/2611.22291)). They
+  match their primary papers, but RoboGuard was tested on a ground vehicle, and the 699-rollout verifier was in
+  simulation.
+- **U5's "no AI-designed lab hardware" holds for lab automation** as far as the check could search. AI-designed tools
+  and gripper fingers have been printed and tested on real robots outside labs (RobotSmith 2025; Xu et al. 2024).
+  The search budget ran out before this and U4's gap claims were fully searched.
+- **U6 says no publication reports a robot idle fraction.** U1's own source does: Burger et al. 2020 report the robot
+  "charged but idle" about 32% of the time, waiting for the GC (checked). MAMA BEAR's roughly 60% uptime is a
+  utilization figure too. U6 also repeats A-Lab's uncorrected 41 of 58 targets.
+<!-- CORRECTIONS-U7 -->
 
 ## 6. Ranked projects
 
@@ -408,7 +506,12 @@ The arm isn't needed to start. The same ledger takes the arm's own trials once t
 - **There is no time-and-motion breakdown** of an atomize → sieve → split → SEM workflow anywhere (U2), so DAL's
   10–15 person-hours per run is a plausible guess.
 - **byu-vcl's twin runs on stand-in handling times** and finds people's decision time (median 77 h) binding. Measured
-  hands-on time and decision latency would replace its biggest guesses.
+  hands-on time and decision latency would replace its biggest guesses. U6 found nobody has published:
+  - per-operation handling times with spread;
+  - a discrete-event model of an SDL validated against measurements;
+  - a measured human decision latency.
+
+  All three come straight out of this ledger.
 - **U3 supplies the method:**
   - from driving disengagements: who initiated it, its cause, normalized by exposure;
   - from fleet learning: return on human effort;
@@ -418,6 +521,9 @@ The arm isn't needed to start. The same ledger takes the arm's own trials once t
 **Ties.** DAL's Jan 4 – Feb 9 run block (about 20 runs) is enough to time each workup step. robot-arms #21 already
 codes failures with LabRobFail. Every agent session is already recorded on GitHub, so the decision delays are partly
 logged today.
+
+**Method (U6).** Use stopwatch timing with 20–30 observations per element, plus work sampling (384 random
+observations gives ±5% at 95% confidence) to split hands-on, waiting, decision, rework and idle time.
 
 **First two weeks.** Write the schema as an issue template plus a tiny timestamping script. Log the next printer
 plate clears (who, when, how long the part sat), the CubXL's manual loads, and DAL's restart runs (Dec 11–18).
@@ -439,15 +545,18 @@ called the plate clear.
 - **It is the most timely task in the org.** sgbaird has already proposed it ([PR 402](https://github.com/vertical-cloud-lab/byu-vcl/pull/402)).
 - **It is safe.** There's no powder, the parts weigh grams, and the workflow already refuses to print until a frame
   shows the plate clear.
-- **It is literature-new in the ways that matter (U4).** BEAR, MAMA BEAR and SmartLab tend printers with industrial
-  arms, but none reports a handling success rate or a false-clear rate. No research group has published a low-cost
-  arm tending consumer printers since 2023, and no study gives robot-tended farm throughput or cost.
+- **It is literature-new in the ways that matter (U4).**
+  - BEAR, MAMA BEAR and SmartLab tend printers with industrial arms, but none reports a handling success rate or a
+    false-clear rate.
+  - The one success count is 20 of 21 prints removed (Detect-Remove-Replace, IEEE RAM 2022).
+  - No research group has published a low-cost arm tending consumer printers since 2023, and no study gives
+    robot-tended farm throughput or cost.
 - **It is the cheapest way to produce the arm's first real intervention numbers.**
 
 **How.** U4 and the thesis rig it found:
 - cool to room temperature (MAMA BEAR removes PLA and PETG at 30 °C);
-- peel the magnetic sheet from an edge: breaking a Prusa sheet's full hold took 15.5 N, which is at the PiPER's
-  limit, while sliding took 6.8 N;
+- peel the magnetic sheet from an edge: breaking a Prusa sheet's full hold took 15.5–16 N, just above the PiPER's
+  roughly 15 N grip, while sliding took 6.8 N;
 - flex the sheet to release the parts, return it, and verify with a camera frame;
 - approach from the side, because J5 can't reach straight down.
 
@@ -498,7 +607,8 @@ holder. Keep open-powder dispersion out of the arm's scope until the EHS review.
 consumables**: vials and carriers into the CubXL, and later tip racks for the CubXL and OT-2.
 
 **Why.**
-- **Six of the 29 central papers name restocking as future work, and the citation screen found no follow-up at all.**
+- **Six of the 29 central papers name restocking as future work.** Neither the citation screen nor U6 found any
+  system that restocks consumables with measured success.
 - **Unattended SDL runs are often consumable-limited** (Ada: 40–60 experiments).
 - **byu-vcl's #266 already specifies the task** (a 3 mm lead-in dock, an 8 + 1 carrier, a ±1.15 mm error budget), and
   the preregistration and power analysis are written.
@@ -569,8 +679,10 @@ against a fine-tuned VLA and against scripted-plus-fixtures on the same real pri
 Use N ≥ 20 per cell, and record the time and money per run. Extend it to the AI for Science question of whether an
 agent can also design the fixture.
 
-**Why.** No real-lab comparison of a coding agent and a VLA on a low-cost arm with repeated trials exists. AMP1 is
-Franka-only, and WetRobo reports no statistics. This is the experimental core of the AI for Science arm cell, and the
+**Why.** No real-lab comparison of a coding agent and a VLA on a low-cost arm with repeated trials exists.
+- AMP1's 104/108 is on a Franka.
+- ACE-CaP-0 shows frozen agent code reaching 221/240 on PiPER X arms, but on general tasks, not lab ones.
+- WetRobo's lab tasks on the PiPER have few trials. This is the experimental core of the AI for Science arm cell, and the
 lab already runs hundreds of agent sessions a month.
 
 **Risk.** It is crowded and moving fast (Apple, NVIDIA, Berkeley, Tsuda's lab). Agent runs take minutes and cost about
@@ -642,4 +754,25 @@ result.
 | Mar 14–18 | TMS 2027, Orlando | talks |
 | AI for Science months 2–4 (if funded) | arm cell | projects 6–7 |
 
-<!-- LIMITS -->
+## 8. Limits of this update
+
+- **The Edison answers are machine syntheses.** The load-bearing claims of U1–U5 were checked against full text, and
+  the rest were not. Where a publisher blocked automated access (RSC, ACS, Elsevier, Wiley and ChemRxiv often do), a
+  check rests on the abstract or on Edison's quoted passage, and [`verification.md`](verification.md) says so.
+- **Many of the 2026 items are preprints or press releases,** marked as such in [`surveys/lit-latest.md`](surveys/lit-latest.md).
+- **The surveys are agent-compiled snapshots of fast-moving repositories.** Check a claim against its linked thread
+  before acting on it.
+- **No hardware was touched.** The only contact with lab machines was a read-only status check of the second camera
+  Pi (its `can0` was down, so the arm was off) and a rate-capped SSH SOCKS tunnel through it, so papers could be read
+  through BYU's network. Nothing was installed or changed on it.
+- **The rankings are judgment calls.** They weigh the evidence above against the lab's stated goals and capacity as
+  of 2026-11-28. A change in funding (Genesis, AI for Science) or in who is working on the arm would reorder them.
+
+## Files
+
+- [`README.md`](README.md): this synthesis.
+- [`verification.md`](verification.md): Edison claims checked against full text.
+- [`surveys/`](surveys/): the survey notes it rests on (lab repositories, latest literature, future-work mining, and
+  the digest of earlier Edison answers).
+- [`../edison-6dof/`](../edison-6dof/): every Edison answer for issue #1, with trajectory artifacts and a provenance
+  table.
