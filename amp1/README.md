@@ -18,8 +18,9 @@ scored by the simulator's own check:
 | The simulated PiPER on three lab workflows (#87): [A1 mini print removal, auger swap, atomizer charge](#lab-workflows-on-the-simulated-piper-a1-mini-print-removal-auger-swap-atomizer-charge) | 7 | **4** | (new tasks) |
 
 These are one or two episodes per task, so they are anecdotes, not success rates. Every miss and caveat is
-written up below. [Video](https://www.youtube.com/watch?v=_PlBarOj3K4): every episode, with real-time motion where the frames were
-kept.
+written up below. Videos: [the first 15 episodes](https://www.youtube.com/watch?v=_PlBarOj3K4) and
+[the seven lab-workflow episodes](https://www.youtube.com/watch?v=sYAtdW0rxBI), with real-time motion where the
+frames were kept.
 
 ## What AMP1 is
 
@@ -544,17 +545,19 @@ column and X arm block high-elbow approaches to the plate.
 ### Video
 
 [youtube.com/watch?v=_PlBarOj3K4](https://www.youtube.com/watch?v=_PlBarOj3K4) (public, 8 min 14 s,
-on the BYU Vertical Cloud Lab YouTube channel) shows every episode in this README. Each episode
-starts with a card giving the instruction and the simulator's verdict.
+on the BYU Vertical Cloud Lab YouTube channel) shows the 15 episodes before the lab workflows.
+[youtube.com/watch?v=sYAtdW0rxBI](https://www.youtube.com/watch?v=sYAtdW0rxBI) (public, 14 min 40 s,
+same channel) shows the seven lab-workflow episodes, all with their motion. Each episode starts
+with a card giving the instruction and the simulator's verdict.
 
-- **Episodes from this run** show their executed motion in real time, from the frames recorded
-  during the episode. The simulator pauses while the model thinks, so a 15–30 minute episode plays
-  in 20–80 s.
+- **Episodes from the second and third runs** show their executed motion in real time, from the
+  frames recorded during the episode. The simulator pauses while the model thinks, so a 15–60
+  minute episode plays in 20 s to 3 minutes.
 - **The first run's episodes** lost their frames with that runner. They show a slideshow of the
   images the policy itself looked at, with the policy's own captions, then the final frame.
 
-[`piper/playlist.py`](piper/playlist.py) and [`piper/make_video.py`](piper/make_video.py) build it
-from `results/`.
+[`piper/playlist.py`](piper/playlist.py) and [`piper/make_video.py`](piper/make_video.py) build them
+from `results/`; `playlist.py ... 5 "Lab workflows"` keeps only that section.
 
 ### Cost and speed
 
