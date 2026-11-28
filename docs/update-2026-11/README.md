@@ -10,7 +10,7 @@ byu-vcl and digital-alloy-lab (DAL). Everything here is a snapshot as of 2026-11
 and PR listed, about 260 threads read in full), the literature from May to November 2026 (80 checked entries), and the
 stated future work of 29 central papers, checked against the 11,095 works that cite them since January 2025. A
 seventh condensed the 24 Edison answers already on record so they would not be asked again. Then this round sent new
-high-effort Edison queries one at a time, each written against the answers before it (U1 to U6, in
+high-effort Edison queries one at a time, each written against the answers before it (U1 to U9, in
 [`../edison-6dof/`](../edison-6dof/)). Separate agents checked their load-bearing claims against the papers' full
 text, read through a tunnel that exits from BYU's network. The survey notes are in [`surveys/`](surveys/) and the
 checks are in [`verification.md`](verification.md).
@@ -441,7 +441,27 @@ checking the full text are in [section 5](#5-corrections) and [`verification.md`
 | An LLM agent designing a lab fixture that is printed and validated on a real lab robot, against human-designed parts (project 7) | **Narrow it** | RoboBuilder ([arXiv:2611.23855](https://arxiv.org/abs/2611.23855)): agents designed 135 robots with printed parts; 0 of 15 simulation-passing designs worked at first, rising to 73% and then 93% after redesign from failure videos | Lab-specific fixtures, holders or instrument adapters, with predefined fit and function criteria and a matched human-designed baseline |
 | Takeovers during scripted lab-arm operation used to train a recovery policy, with the intervention rate tracked (project 6) | **False as written** | RaC, TRANSIC, HACTS and Mandlekar 2020 all learn from teleoperated takeovers | First in a scientific lab workflow: takeovers interrupt a scripted or fiducial-guided arm, train a recovery policy, and the intervention rate (with denominator and interval) is tracked across the campaign |
 
-<!-- U9 -->
+**U9: how to test the safety gates** ([`u9-…`](../edison-6dof/u9-safety-verification-tests/answer.md), `7c172f03`)
+- **No stop-time, drop or collision data exist for the PiPER or any sub-$3k arm.** Every safety number has to be
+  measured locally, and doing so is itself original characterization.
+- **The supply-line E-stop is a stop category 0 on a brakeless arm,** so it won't reliably leave the arm in a
+  mechanically safe state. Make the normal shutdown path a controlled stop to a supported park pose, then power off.
+- **Its staged plan, with at least 3 repetitions per condition** (the COVR rule):
+  - Phase 1, before operating near people:
+    - V-01: an E-stop functional test, with supply voltage traced on a scope and the stop-plus-drop envelope filmed;
+    - V-02: a gravity-drop characterization, by pose and payload, filmed against a scale;
+    - V-03: a controlled park before de-energizing;
+    - V-04: Pi-reboot and recovery tests, checking that nothing moves, replays or resumes on its own.
+  - Phase 2: collision screening and training.
+    - V-05: a calibrated ≥1 kHz load cell behind a body-region spring pad, plus Prescale film. Cheap resistive force
+      sensors go nonlinear above about 150 N, so they don't count.
+    - V-07: an SOP walkthrough and an emergency drill for every user.
+  - Phase 3 (V-06, V-08): perimeter sensing and periodic re-verification, before anything unattended.
+- **Frameworks to cite:** an SDL safety case study (Mariano et al. 2026, *SLAS Technology*) warns that "collaborative
+  robots should not be presumed safe". A proposed autonomy ladder (Safe-SDL, a preprint) asks for "hundreds of
+  incident-free operations" before moving up a level. University EHS robot policies are mostly unpublished, so the
+  plan should be built with BYU's EHS office.
+
 
 ## 5. Corrections
 
@@ -538,7 +558,6 @@ Checked against full text by separate agents ([`verification.md`](verification.m
     are Edison's arithmetic.
 - **Gemini Robotics ER 2's 82.4%** is from DeepMind's model card (2026-07-30), a vendor chart with no sample size or
   method.
-<!-- CORRECTIONS-U8 -->
 
 ## 6. Ranked projects
 
@@ -549,8 +568,15 @@ analyses say the missing input is measured handling, and the field's most-repeat
 The first projects therefore produce those numbers.
 
 **Before any of them: the safety gates.** The E-stop has never been tested. A reboot of the arm Pi cuts power mid-move
-on an arm with no brakes. The hazard analysis is unreviewed. Test the E-stop end to end, make power loss land the arm
-somewhere harmless, and get PR #23 reviewed. Keep the arm out of the atomizer and out of any open-powder enclosure
+on an arm with no brakes. The hazard analysis is unreviewed. U9 gives a staged test plan, and its Phase 1 is a week of
+work with a scope, a camera and a scale:
+- V-01: test the E-stop end to end;
+- V-02: measure the gravity drop by pose and payload;
+- V-03: make a controlled stop to a supported park the normal shutdown;
+- V-04: test that a Pi reboot can't move, replay or resume anything.
+
+Then get PR #23 reviewed. No stop, drop or collision data exist for any sub-$3k arm, so these measurements are
+publishable in their own right. Keep the arm out of the atomizer and out of any open-powder enclosure
 until BYU's industrial hygienist has reviewed the cell (U2; DAL's own guidance).
 
 ### 1. The intervention ledger: time and log every human touch, starting now
@@ -754,7 +780,7 @@ against a fine-tuned VLA and against scripted-plus-fixtures on the same real pri
 - vial seat;
 - stub insert.
 
-Use N ≥ 20 per cell, and record the time and money per run. Extend it to the AI for Science question of whether an
+Use N ≥ 25 per cell (U5), and record the time and money per run. Extend it to the AI for Science question of whether an
 agent can also design the fixture.
 
 **Why.** No real-lab comparison of a coding agent and a VLA on a low-cost arm with repeated trials exists.
@@ -817,13 +843,13 @@ result. U7 gives the guardrails:
 
 | # | Project | Start | Serves | Literature status | First output |
 |---|---|---|---|---|---|
-| 1 | Intervention ledger | now | byu-vcl twin, DAL campaign, every arm study | most-requested, unpublished | timed DAL runs and plate clears by mid-December |
-| 2 | A1-mini plate clearing | Dec | byu-vcl toy drive, DAL EAGER concept, tensegrity later | precedent on industrial arms only; no success or false-clear rates | N logged clears and a success rate by Dec 18 |
+| 1 | Intervention ledger | now | byu-vcl twin, DAL campaign, every arm study | most-requested; survives U8 | timed DAL runs and plate clears by mid-December |
+| 2 | A1-mini plate clearing | Dec | byu-vcl toy drive, DAL EAGER concept, tensegrity later | survives as a combined benchmark (industrial-arm precedents only: 10/10, 20/21) | N logged clears and a success rate by Dec 18 |
 | 3 | DAL courier (stubs, jars, weighing) | Jan | DAL campaign, caliber, AI for Science fixtures | no robotic AM-powder logistics with metrics | stub-holder loading during the Jan–Feb runs |
-| 4 | Restocking the CubXL (reframed #21) | Mar (register Jan 29) | byu-vcl CubXL, TMS | stated by 6 papers, no follow-up | first counted block Mar 5 |
-| 5 | PiPER metrology | Jan | everyone using a PiPER, WRTG test selection | partly scooped (AR4), nothing on PiPER | ISO 9283 dataset |
-| 6 | Interventions as training data | spring | cloud supervisors, LeRobot community | unpublished on low-cost arms and in labs | a HIL pilot on one primitive |
-| 7 | Agent vs VLA vs script | spring | AI for Science arm cell | open on low-cost arms in real labs | N ≥ 20 per cell on 3 primitives |
+| 4 | Restocking the CubXL (reframed #21) | Mar (register Jan 29) | byu-vcl CubXL, TMS | gantry-deck restocking unclaimed (a GC-station precedent exists) | first counted block Mar 5 |
+| 5 | PiPER metrology | Jan | everyone using a PiPER, WRTG test selection | survives U8 for the PiPER and SO-101 (AR4 took "first sub-$5k") | ISO 9283 dataset |
+| 6 | Interventions as training data | spring | cloud supervisors, LeRobot community | takeover learning is prior art; the lab version is open | a HIL pilot on one primitive |
+| 7 | Agent vs VLA vs script | spring | AI for Science arm cell | open in real labs; agent-designed lab fixtures unclaimed | N ≥ 25 per cell on 3 primitives |
 
 ## 7. Calendar, December 2026 – March 2027
 
@@ -850,8 +876,8 @@ commitments.
 
 ## 8. Limits of this update
 
-- **The Edison answers are machine syntheses.** The load-bearing claims of U1–U5 were checked against full text, and
-  the rest were not. Where a publisher blocked automated access (RSC, ACS, Elsevier, Wiley and ChemRxiv often do), a
+- **The Edison answers are machine syntheses.** The load-bearing claims of U1–U7 were checked against full text. U8's
+  verdicts and U9's plan were not checked, and the rest of each answer was not either. Where a publisher blocked automated access (RSC, ACS, Elsevier, Wiley and ChemRxiv often do), a
   check rests on the abstract or on Edison's quoted passage, and [`verification.md`](verification.md) says so.
 - **Many of the 2026 items are preprints or press releases,** marked as such in [`surveys/lit-latest.md`](surveys/lit-latest.md).
 - **The surveys are agent-compiled snapshots of fast-moving repositories.** Check a claim against its linked thread

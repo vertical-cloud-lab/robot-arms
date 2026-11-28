@@ -34,7 +34,7 @@ finished up to a few minutes earlier.
 | `u6-handling-times-and-restocking/` | Measured handling times; validated SDL twins; human decision latency; robots restocking consumables; time-study methods | byu-vcl's twin (#407), the future-work analysis | `6304f40d-d416-4f86-9176-0b108760f45a` | 11:32 | ~12:06 |
 | `u7-cameras-that-verify-and-log/` | Vision and VLM outcome checks, automatic intervention logging, insertion verification, calibration drift, gating false-clear rates, lab-video privacy | U4's missing plate-check rate, project 1's logging burden | `0d3b4d1d-8287-4648-9600-b89152862ee0` | 12:07 | ~12:31 |
 | `u8-novelty-check-of-six-claims/` | Tests the six novelty claims behind the ranked projects against prior work of any year or field | U1–U7 and the surveys | `c7a6638a-e902-44f4-80f6-2cd0c8bdc77d` | 12:31 | ~12:53 |
-| `u9-safety-verification-tests/` | How to test and document the safety gates: E-stop and stop-time tests, power loss on a brakeless arm, cheap collision measurement, university EHS requirements | the hardware-and-safety state of the cell | `7c172f03-6fca-45dd-a90b-56b188476a95` | 12:53 | <!-- U9-BACK --> |
+| `u9-safety-verification-tests/` | How to test and document the safety gates: E-stop and stop-time tests, power loss on a brakeless arm, cheap collision measurement, university EHS requirements | the hardware-and-safety state of the cell | `7c172f03-6fca-45dd-a90b-56b188476a95` | 12:53 | ~13:24 |
 
 ## Earlier rounds
 
