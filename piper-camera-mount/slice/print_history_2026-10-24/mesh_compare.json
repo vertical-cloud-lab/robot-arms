@@ -1,0 +1,202 @@
+{
+ "head_stls": {
+  "bracket": {
+   "tris": 9242,
+   "volume_mm3": 51819.91,
+   "area_mm2": 18085.22
+  },
+  "pod": {
+   "tris": 17034,
+   "volume_mm3": 18845.56,
+   "area_mm2": 10678.99
+  },
+  "carrier": {
+   "tris": 9244,
+   "volume_mm3": 52588.61,
+   "area_mm2": 19089.08
+  },
+  "spacers": {
+   "tris": 4032,
+   "volume_mm3": 442.15,
+   "area_mm2": 729.72
+  },
+  "tag_wedge": {
+   "tris": 12,
+   "volume_mm3": 123.97,
+   "area_mm2": 171.57
+  }
+ },
+ "801431a_stls": {
+  "bracket": {
+   "tris": 9360,
+   "volume_mm3": 57058.11,
+   "area_mm2": 18136.57
+  },
+  "pod": {
+   "tris": 17034,
+   "volume_mm3": 18845.56,
+   "area_mm2": 10678.99
+  },
+  "carrier": {
+   "tris": 9244,
+   "volume_mm3": 52588.61,
+   "area_mm2": 19089.08
+  },
+  "spacers": {
+   "tris": 4032,
+   "volume_mm3": 442.15,
+   "area_mm2": 729.72
+  },
+  "tag_wedge": {
+   "tris": 12,
+   "volume_mm3": 123.97,
+   "area_mm2": 171.57
+  }
+ },
+ "plates": {
+  "2026-10-08 (source plate 801431a = byu-vcl b3dba57)": [
+   {
+    "object": "object_1.model",
+    "tris": 9360,
+    "volume_mm3": 57058.11,
+    "area_mm2": 18136.57,
+    "same_as_HEAD_stl": [],
+    "same_as_801431a_stl": [
+     "bracket"
+    ]
+   },
+   {
+    "object": "object_2.model",
+    "tris": 9244,
+    "volume_mm3": 52588.61,
+    "area_mm2": 19089.08,
+    "same_as_HEAD_stl": [
+     "carrier"
+    ],
+    "same_as_801431a_stl": [
+     "carrier"
+    ]
+   },
+   {
+    "object": "object_3.model",
+    "tris": 17034,
+    "volume_mm3": 18845.56,
+    "area_mm2": 10678.99,
+    "same_as_HEAD_stl": [
+     "pod"
+    ],
+    "same_as_801431a_stl": [
+     "pod"
+    ]
+   },
+   {
+    "object": "object_4.model",
+    "tris": 4032,
+    "volume_mm3": 442.15,
+    "area_mm2": 729.72,
+    "same_as_HEAD_stl": [
+     "spacers"
+    ],
+    "same_as_801431a_stl": [
+     "spacers"
+    ]
+   },
+   {
+    "object": "object_5.model",
+    "tris": 12,
+    "volume_mm3": 123.97,
+    "area_mm2": 171.57,
+    "same_as_HEAD_stl": [
+     "tag_wedge"
+    ],
+    "same_as_801431a_stl": [
+     "tag_wedge"
+    ]
+   },
+   {
+    "object": "object_6.model",
+    "tris": 12,
+    "volume_mm3": 123.97,
+    "area_mm2": 171.57,
+    "same_as_HEAD_stl": [
+     "tag_wedge"
+    ],
+    "same_as_801431a_stl": [
+     "tag_wedge"
+    ]
+   }
+  ],
+  "2026-10-13 (plate b6e2da0, same bytes at HEAD)": [
+   {
+    "object": "object_1.model",
+    "tris": 9242,
+    "volume_mm3": 51819.91,
+    "area_mm2": 18085.22,
+    "same_as_HEAD_stl": [
+     "bracket"
+    ],
+    "same_as_801431a_stl": []
+   },
+   {
+    "object": "object_2.model",
+    "tris": 9244,
+    "volume_mm3": 52588.61,
+    "area_mm2": 19089.08,
+    "same_as_HEAD_stl": [
+     "carrier"
+    ],
+    "same_as_801431a_stl": [
+     "carrier"
+    ]
+   },
+   {
+    "object": "object_3.model",
+    "tris": 17034,
+    "volume_mm3": 18845.56,
+    "area_mm2": 10678.99,
+    "same_as_HEAD_stl": [
+     "pod"
+    ],
+    "same_as_801431a_stl": [
+     "pod"
+    ]
+   },
+   {
+    "object": "object_4.model",
+    "tris": 4032,
+    "volume_mm3": 442.15,
+    "area_mm2": 729.72,
+    "same_as_HEAD_stl": [
+     "spacers"
+    ],
+    "same_as_801431a_stl": [
+     "spacers"
+    ]
+   },
+   {
+    "object": "object_5.model",
+    "tris": 12,
+    "volume_mm3": 123.97,
+    "area_mm2": 171.57,
+    "same_as_HEAD_stl": [
+     "tag_wedge"
+    ],
+    "same_as_801431a_stl": [
+     "tag_wedge"
+    ]
+   },
+   {
+    "object": "object_6.model",
+    "tris": 12,
+    "volume_mm3": 123.97,
+    "area_mm2": 171.57,
+    "same_as_HEAD_stl": [
+     "tag_wedge"
+    ],
+    "same_as_801431a_stl": [
+     "tag_wedge"
+    ]
+   }
+  ]
+ }
+}

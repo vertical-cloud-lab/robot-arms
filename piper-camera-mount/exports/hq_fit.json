@@ -1,0 +1,45 @@
+{
+  "source": "Raspberry Pi RP-008200-DS-1 (HQ Camera CS mechanical drawing), measured off the PDF's linework; screw heads placed from Raspberry Pi's photos",
+  "pocket clearance (mm)": 1.0,
+  "pods": {
+    "printed 13 October": {
+      "shoulders and foot of the tripod mount": {
+        "overlap_mm3": 225.2,
+        "gap_mm": 0.0
+      },
+      "screws in the shoulders": {
+        "overlap_mm3": 72.6,
+        "gap_mm": 0.15
+      },
+      "focus-lock block": {
+        "overlap_mm3": 2.5,
+        "gap_mm": 0.0
+      },
+      "round housing and focus ring": {
+        "overlap_mm3": 0.0,
+        "gap_mm": 0.5
+      }
+    },
+    "now": {
+      "shoulders and foot of the tripod mount": {
+        "overlap_mm3": 0.0,
+        "gap_mm": 1.0
+      },
+      "screws in the shoulders": {
+        "overlap_mm3": 0.0,
+        "gap_mm": 1.0
+      },
+      "focus-lock block": {
+        "overlap_mm3": 0.0,
+        "gap_mm": 1.0
+      },
+      "round housing and focus ring": {
+        "overlap_mm3": 0.0,
+        "gap_mm": 0.5
+      }
+    }
+  },
+  "housing, top of the lock block to the end of the foot (mm)": 51.9,
+  "shoulders across (mm)": 24.14,
+  "screw heads across, outside to outside (mm)": 25.93
+}
