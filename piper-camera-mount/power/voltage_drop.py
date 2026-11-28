@@ -70,6 +70,79 @@ def main() -> None:
         out["buck"].append({"route": name, "supply (V)": 12.0, "volts at the converter": round(12.0 - drop, 2),
                             "lost (%)": round(100 * drop / 12.0, 2)})
         print(f"| {name} | 5.10 V | 5.10 V (board sees {12.0 - drop:.2f} V, {100 * drop / 12.0:.1f} % lost) |")
+    # 24 October 2026: the official supply through one 240 W (5 A) extension, by extension length,
+    # at the 8 GB board's measured draw streaming both cameras (about 1.5 A), with more CPU (2.0 A)
+    # and the 2.5 A worst case. Extension conductors taken as 20 AWG; no listing gives them.
+    amps = (1.5, 2.0, 2.5)
+    out["extension_by_length"] = []
+    print(f"\n| Official 27 W supply + one 240 W extension (20 AWG) | " + " | ".join(f"at {a} A" for a in amps) + " |")
+    print("|---|" + "---|" * len(amps))
+    for metres in (1.0, 1.5, 2.0, 3.0):
+        v = [usb(V_OFFICIAL, [(1.2, 17), (metres, 20)], 2, a) for a in amps]
+        out["extension_by_length"].append({"extension (m)": metres, "reach (m)": round(1.2 + metres, 1),
+                                           "amps": list(amps), "volts at the Pi": [round(x, 2) for x in v]})
+        print(f"| {metres:g} m extension, {1.2 + metres:.1f} m in all | "
+              + " | ".join(f"{x:.2f} V{'' if x > UV else ' (low)'}" for x in v) + " |")
+    # 24 October 2026, second search: supplies with a longer lead than the 27 W's 1.2 m
+    # (power/shopping_2026-10-24_long-leads.json). The 45 W and its 17 AWG are from Raspberry Pi's
+    # spec; the iUniker's and JSAUX's gauges are guesses, as above.
+    out["longer_leads"] = []
+    print(f"\n| Supply and lead | Reach | " + " | ".join(f"at {a} A" for a in amps) + " |")
+    print("|---|---|" + "---|" * len(amps))
+    for name, v0, legs, mated in (
+        ("Raspberry Pi 27 W (1.2 m, 17 AWG) + 2 m extension: the plan", V_OFFICIAL, [(1.2, 17), (2.0, 20)], 2),
+        ("Raspberry Pi 45 W (1.5 m, 17 AWG) + 1.5 m extension", V_OFFICIAL, [(1.5, 17), (1.5, 20)], 2),
+        ("Raspberry Pi 45 W (1.5 m, 17 AWG) + 2 m extension", V_OFFICIAL, [(1.5, 17), (2.0, 20)], 2),
+        ("iUniker 5.25 V / 4 A (1.5 m, if 18 AWG) + 2 m extension", 5.25, [(1.5, 18), (2.0, 20)], 2),
+        ("JSAUX 45 W, its own 10 ft lead at 5 V / 3 A (if 20 AWG), no extension", 5.0, [(3.05, 20)], 1),
+    ):
+        v = [usb(v0, legs, mated, a) for a in amps]
+        reach = sum(m for m, _ in legs)
+        out["longer_leads"].append({"route": name, "reach (m)": round(reach, 2), "amps": list(amps),
+                                    "volts at the Pi": [round(x, 2) for x in v]})
+        print(f"| {name} | {reach:.2f} m | " + " | ".join(f"{x:.2f} V{'' if x > UV else ' (low)'}" for x in v) + " |")
+    # 28 November 2026: 12 V (or 6 V) up the arm to a Pololu step-down regulator on the carrier
+    # (power/shopping_2026-11-28_pololu.json). Pololu's 12 V 3 A adapter (#1774) has a 1.5 m cord;
+    # a 2 m two-wire lead through its barrel-jack-to-terminal adapter (#2449) takes it to 3.5 m. No
+    # gauge is given for the cord, so both legs are taken as 22 AWG, and the barrel pair as 30 mOhm.
+    # The regulator is taken as 85 % efficient (Pololu's graph for the D36V28F5 at 12 V in gives
+    # 93 % at 2.5 A, so this overstates the lead's current). Its minimum input is 5 V plus its
+    # dropout, which Pololu's D36V28F5 graph puts at about 0.95 V at 1 A, 1.1 V at 2 A and 1.3 V at
+    # 3 A. After it, a 0.15 m USB-C pigtail (20 AWG) and the Pi's socket.
+    out["step_down_at_the_wrist"] = []
+    r_lead = 2 * (1.5 * OHM_PER_M[22] + 2.0 * OHM_PER_M[22]) + 0.030
+    r_pigtail = 2 * 0.15 * OHM_PER_M[20] + R_MATED
+
+    def dropout(a: float) -> float:  # D36V28F5, volts, read from Pololu's graph
+        pts = [(0.5, 0.9), (1.0, 0.95), (2.0, 1.1), (3.0, 1.3)]
+        for (a0, d0), (a1, d1) in zip(pts, pts[1:]):
+            if a <= a1:
+                return d0 + (d1 - d0) * (a - a0) / (a1 - a0)
+        return pts[-1][1]
+    print(f"\n| Supply up 3.5 m (22 AWG) to a Pololu 5 V step-down | " + " | ".join(f"at {a} A" for a in amps) + " |")
+    print("|---|" + "---|" * len(amps))
+    for v0 in (12.0, 6.0):
+        vin, row = [], []
+        for a in amps:
+            # input current depends on the input voltage: solve v = v0 - r * P / (eff * v)
+            p_in = 5.0 * a / 0.85
+            v = v0
+            for _ in range(50):
+                v = v0 - r_lead * p_in / v
+            vin.append(v)
+        out["step_down_at_the_wrist"].append({"supply (V)": v0, "amps at the Pi": list(amps),
+                                              "volts at the regulator": [round(x, 2) for x in vin]})
+        print(f"| {v0:.0f} V supply: volts at the regulator's input | " + " | ".join(
+            f"{x:.2f} V{'' if x >= 5.0 + dropout(a) else ' (under its minimum)'}" for x, a in zip(vin, amps)) + " |")
+    for name, vout, tol in (("D36V28F5, 5 V ±4 %", 5.0, 0.04), ("D42V55F5, 5 V ±3 %", 5.0, 0.03),
+                            ("D42V55F5.3, 5.3 V ±3 %", 5.3, 0.03)):
+        v = [vout - a * r_pigtail for a in amps]
+        lo = [vout * (1 - tol) - a * r_pigtail for a in amps]
+        out["step_down_at_the_wrist"].append({"regulator": name, "amps at the Pi": list(amps),
+                                              "volts at the Pi (nominal)": [round(x, 2) for x in v],
+                                              "volts at the Pi (lowest in tolerance)": [round(x, 2) for x in lo]})
+        print(f"| 12 V, {name}: volts at the Pi (lowest unit) | " + " | ".join(
+            f"{x:.2f} V ({y:.2f} V)" for x, y in zip(v, lo)) + " |")
     (Path(__file__).with_suffix(".json")).write_text(json.dumps(out, indent=2) + "\n")
 
 

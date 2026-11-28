@@ -10,7 +10,223 @@ A lab Pi 5 has already lost its USB-C socket to a yanked cable
 ([#234](https://github.com/vertical-cloud-lab/byu-vcl/pull/234#issuecomment-5841723129), the CubXL
 Pi). So besides getting power up the arm, the socket must never be what takes the pull.
 
+## Is the extension enough? Not for a busy Pi: 12 V and a Pololu step-down (28 November 2026)
+
+sgbaird asked on [#41](https://github.com/vertical-cloud-lab/robot-arms/pull/41) whether the
+extension is solid, or whether the wrist needs a buck regulator, such as a Pololu in a printed
+housing, fed with 12 V or 6 V. The six AINOPE extensions on ME order 13562 should already be in the
+lab.
+
+- **The extension should be fine for streaming, but not for a busy Pi.**
+  - Streaming both cameras, the 8 GB board drew 1.5 A at most. At that, the model gives 4.78 V
+    at the Pi, 0.15 V over the 4.63 V limit, if the AINOPE's wires really are 20 AWG.
+  - Running a model or the arm's control beside the cameras takes 2 to 2.5 A. That gives
+    4.67 to 4.57 V, at the limit or under it, where the Pi throttles its CPU. Doing that work is
+    why the 8 GB board is on the wrist.
+  - Two USB-C joints flexing on a moving arm only lose margin.
+- **So yes: send 12 V up the arm and make 5 V on the carrier.** At 12 V the lead carries about
+  1.2 A for the Pi's 2.5 A, the regulator sees 11.5 V or more, and the Pi gets the regulator's own
+  output, whatever the lead does.
+- **Not 6 V.** At 6 V the lead carries about as much current as at 5 V, so it drops almost as
+  much. The regulator would see 4.8 to 5.3 V. The D36V28F5 needs 5 V plus its dropout, which
+  Pololu's graph puts at 1.0 to 1.2 V at these loads, so 6.0 to 6.2 V.
+
+From [`voltage_drop.py`](voltage_drop.py), with a 3.5 m lead of 22 AWG (the 12 V adapter's 1.5 m
+cord plus 2 m), a 30 mΩ barrel joint, an 85 % efficient regulator (Pololu's graph gives 93 %, so
+this is cautious), and a 15 cm USB-C pigtail of 20 AWG to the Pi:
+
+| Supply up 3.5 m (22 AWG) to a Pololu 5 V step-down | at 1.5 A | at 2.0 A | at 2.5 A |
+|---|---|---|---|
+| 12 V supply: volts at the regulator's input | 11.70 V | 11.59 V | 11.49 V |
+| 6 V supply: volts at the regulator's input | 5.34 V (under its minimum) | 5.07 V (under its minimum) | 4.76 V (under its minimum) |
+| 12 V, D36V28F5 (5 V ±4 %): volts at the Pi (lowest unit) | 4.96 V (4.76 V) | 4.94 V (4.74 V) | 4.93 V (4.73 V) |
+| 12 V, D42V55F5 (5 V ±3 %): volts at the Pi (lowest unit) | 4.96 V (4.81 V) | 4.94 V (4.79 V) | 4.93 V (4.78 V) |
+| 12 V, D42V55F5.3 (5.3 V ±3 %): volts at the Pi (lowest unit) | 5.26 V (5.10 V) | 5.24 V (5.08 V) | 5.23 V (5.07 V) |
+| For comparison, the 27 W supply + 2 m extension (20 AWG) | 4.78 V | 4.67 V | 4.57 V (low) |
+
+**What to buy, all from Pololu** (read on 28 November through camera Pi 2, during Pololu's Black
+Friday sale; [`shopping_2026-11-28_pololu.json`](shopping_2026-11-28_pololu.json)):
+
+| Qty | Part | Price | In stock |
+|---|---|---|---|
+| 1 | [D36V28F5, 5 V 3.2 A step-down regulator (#3782)](https://www.pololu.com/product/3782). 5.3 to 50 V in, 5 V ±4 %. At 12 V in, Pololu's graphs give about 4 A continuous and 93 % efficiency at 2.5 A. 17.8 × 20.3 × 8.8 mm, two M2 holes. Reverse-voltage, over-current and thermal protection | $23.95 | 189 |
+| 1 | [Wall power adapter, 12 V 3 A, 36 W (#1774)](https://www.pololu.com/product/1774). UL-listed, 100 to 240 V AC, 1.5 m cord, 5.5 × 2.1 mm centre-positive plug | $21.95 | 1,165 |
+| 1 | [DC barrel jack to 2-pin terminal block (#2449)](https://www.pololu.com/product/2449). Takes the adapter's plug at the base of the arm; the lead up the arm goes into its screw terminals | $2.95 | 851 |
+| | **Pololu subtotal** (shipping is free in the US over $75) | **$48.85** | |
+
+Plus, from campus or the lab:
+
+- **The lead:** 2 to 2.5 m of two-core wire, 22 AWG or heavier. High-flex silicone wire suits the
+  service loops best. The ELC sells 16 to 18 AWG hookup wire at $0.13 a foot.
+- **A USB-C plug pigtail** of about 15 cm, from the regulator's VOUT and GND to the Pi. No Pololu
+  part does this. The ELC's 24-pin USB-C male breakout ($2.20) is another way to make one.
+
+Choices and cautions:
+
+- **For more margin, the [D42V55F5 (#5571)](https://www.pololu.com/product/5571):** 5 V ±3 %,
+  6 A, 25.4 mm square with three M2 holes, $47.95, 103 in stock. At 2.5 A it's far from its limit,
+  so it runs cooler inside a closed housing. Its [5.3 V version (#5572)](https://www.pololu.com/product/5572)
+  would put the Pi at about 5.2 V, like the official supply, but Pololu had only 4.
+- **Not the D36V50F5** (5 V 5.5 A, $44.95). It's on backorder.
+- **None of these offers USB-PD,** so the Pi assumes a 3 A supply and caps its USB ports at
+  600 mA. The CSI cameras don't use them. Leave `PSU_MAX_CURRENT` alone with the D36V28F5, since
+  3.2 A is all it gives. With a D42V55F5, `PSU_MAX_CURRENT=5000` is honest.
+- **The 24 V supply already in the BOM's optional list works with the same regulators** (they take
+  up to 50 and 60 V). At 12 V the regulator wastes less as heat.
+
+**The housing** (not drawn yet):
+
+- **The board:** the D36V28F5 is 17.8 × 20.3 × 8.8 mm with two Ø2.2 mm holes for M2, the D42V55F5
+  25.4 mm square with three. Take the hole positions from Pololu's dimension diagram.
+- **Heat:** about 1 W at 2.5 A from 12 V. Pololu warns the board can get hot enough to burn, so print
+  the housing in PAHT-CF like the other arm parts, not PLA, give it vent slots, and hold the board
+  on standoffs.
+- **Strain relief:** clamp the 12 V lead where it enters, so a pull loads the housing and the
+  carrier, not the solder joints. The same goes for the pigtail where it leaves, with 10 to 15 cm
+  of slack to the Pi's socket.
+- **On the carrier:** screw or zip-tie the housing beside the Pi, clear of the Active Cooler's
+  intake.
+
+**A check that needs no purchase:** when the 8 GB board is back online (it and the arm Pi were
+offline on 28 November), power it from a 27 W supply through one of the lab's AINOPE extensions,
+stream both cameras, add `stress-ng --cpu 4`, and read `vcgencmd pmic_read_adc EXT5V_V` and
+`vcgencmd get_throttled`. If it holds above about 4.75 V, the extension is enough for now. If not,
+the parts above settle it.
+
+**How the search ran:** headed Chromium on camera Pi 2's desktop, driven from the runner with
+mouse moves, clicks and typed searches, with downloads capped at 300 KB/s
+([screenshot](headed-chromium_camera-pi-2_2026-11-28.png),
+[D36V28F5 page](pololu_d36v28f5_2026-11-28.jpg)).
+
+- **Pololu loaded fine.** DigiKey answered with a Cloudflare check.
+- **Use the 8 GB board for heavier sites.** Camera Pi 2 is a 1 GB board running a livestream.
+  While DigiKey's check ran, its swap filled, so I closed Chromium after one try. The livestream
+  kept running.
+
+## The plan: extend the official supply (24 October 2026)
+
+sgbaird's call on [#10](https://github.com/vertical-cloud-lab/robot-arms/pull/10): keep Raspberry
+Pi's 27 W supply and add a USB-C extension. The 12 V and 24 V routes further down stay as the
+fallbacks if the Pi sags.
+
+**What to buy:** [AINOPE USB-C extension, 240 W, 6.6 ft (2 m), B09FDWG61C](https://www.amazon.com/dp/B09FDWG61C),
+$8.99, in stock on 24 October ([`shopping_2026-10-24.json`](shopping_2026-10-24.json)).
+
+- **It's rated 5 A** (48 V / 5 A), which is the most the supply can push. It's male to female with
+  all 24 pins, so the CC line carries the supply's 5.1 V / 5 A USB-PD offer through to the Pi.
+- **Reach:** with the supply's 1.2 m lead, 3.2 m. It has 4.7 stars from 33,714 ratings (model H338-2M).
+- **Shorter, if the supply can plug in nearer the arm:** [Faracent 240 W, 5 ft (1.5 m), B0BX34WY6W](https://www.amazon.com/dp/B0BX34WY6W)
+  ($12.23) or [Cable Matters USB4 240 W, 3.3 ft (1 m), B0CNY9NJ4B](https://www.amazon.com/dp/B0CNY9NJ4B)
+  ($13.99). Each metre less gives the Pi about 0.1 V more at 1.5 A.
+- **Not** the UGREEN 30205: its title says 100 W, but its spec table says 3 A.
+- **Distributors:** Tripp Lite's USB-C extensions (the U421 series) are 3 A / 60 W parts, and Adafruit's
+  2 m one (5216, also at DigiKey) lists 31/32 AWG wire and no current rating, so neither.
+- **McMaster-Carr** turned up no plain USB-C extension: a search of its site found only active USB
+  extenders (a transmitter and a receiver). Its catalogue pages need JavaScript, so I couldn't read
+  part numbers from it.
+- **No listing gives the gauge of the power wires**, so the voltages below assume 20 AWG.
+
+**The draw, measured on the 8 GB board** ([`measured_2026-10-24.json`](measured_2026-10-24.json)).
+Camera Pi 1 has the HQ Camera and the Camera Module 3 Wide. Both ran for 30 s, encoding H.264 in
+software at 30 fps (2028 × 1520 and 2304 × 1296), with the output thrown away.
+
+- The PMIC's own rail readings went from 2.1 W idle to 4.4–5.9 W. Taking 85 % for the PMIC's
+  efficiency, that's about 0.5 A idle and 1.1 to 1.5 A streaming at the input, 1.3 A on average.
+  That's within the 1.5 A this page has always used.
+- Robot control or vision models on the same board push it toward 2 to 2.5 A.
+
+**What it leaves at the Pi** ([`voltage_drop.py`](voltage_drop.py)): the official supply at 5.1 V
+plus one 240 W extension.
+
+| Official 27 W supply + one 240 W extension (20 AWG) | at 1.5 A | at 2.0 A | at 2.5 A |
+|---|---|---|---|
+| 1 m extension, 2.2 m in all | 4.88 V | 4.81 V | 4.73 V |
+| 1.5 m extension, 2.7 m in all | 4.83 V | 4.74 V | 4.65 V |
+| 2 m extension, 3.2 m in all | 4.78 V | 4.67 V | 4.57 V (low) |
+| 3 m extension, 4.2 m in all | 4.68 V | 4.54 V (low) | 4.40 V (low) |
+
+- **Streaming two cameras, the 2 m extension leaves 4.78 V,** 0.15 V above the 4.63 V limit. At a
+  busier 2.5 A it goes under, and only the 1 m one keeps a clear margin.
+- **The 27 W supplies on the arm Pi and camera Pi 2 read 5.12 to 5.15 V at the Pi, idle,** a little
+  above the 5.1 V the model uses.
+
+**The 8 GB board isn't on a 27 W supply now.** Camera Pi 1's supply offers no USB-PD, so the Pi
+assumes 3 A. It has flagged under-voltage since this boot (`throttled=0x50000`), and in the test it
+sagged to 4.67–4.82 V, which is no better than the extension should give. The arm Pi and camera Pi 2
+are on Raspberry Pi 27 W supplies (PD vendor 0x2e8a, offering 5.1 V / 5 A). Move the 8 GB board to
+one of the lab's 27 W supplies now, without waiting for the extension.
+
+**Which board rides on the wrist** (sgbaird, 24 October): the 8 GB, or else the 8 GB goes on
+whichever camera Pi streams and controls the arm. Either way the 8 GB board does the most work, so
+it's the one the extension has to carry. Swapping SD cards between boards is fine: the hostname,
+Tailscale identity and logins live on the card, so the role moves with the card and the RAM stays
+with the board.
+
+**Checking it on the arm:**
+
+1. Plug the extension between the 27 W supply's lead and the Pi, with the lead clamped to the
+   carrier ([below](#stopping-a-yank-from-reaching-the-socket)).
+2. Check that the Pi still sees 5 A: `od -An -tu4 --endian=big /proc/device-tree/chosen/power/max_current`
+   should print 5000. It prints 3000 if the extension drops the PD offer.
+3. Stream both cameras, run the real job, and read `vcgencmd pmic_read_adc EXT5V_V` and
+   `vcgencmd get_throttled`. Above about 4.7 V, with bits 0 and 16 clear after a fresh boot, it's
+   fine.
+4. If not, keep the supply and the extension and add the PD step-down board
+   ([below](#supplies-not-made-by-raspberry-pi-8-october-2026)): it asks the same supply for 12 V
+   and makes 5 V on the carrier.
+
+## A supply with a longer lead instead? (24 October 2026)
+
+sgbaird asked on [#41](https://github.com/vertical-cloud-lab/robot-arms/pull/41) whether a different
+supply with a longer cable could do it. At 5 V, no. A third search through camera Pi 2 ran 17
+Amazon searches (360 results), opened 10 product pages, and checked PiShop.us, Adafruit, SparkFun
+and Vilros. DigiKey, Mouser, Newark, Jameco and Micro Center answered 403 to the Pi. The results
+are in [`shopping_2026-10-24_long-leads.json`](shopping_2026-10-24_long-leads.json).
+
+- **Every supply that gives 5 V at 3 A or more has a captive lead of 1.5 m at most.**
+  - Pi 5 supplies (5.1 V / 5 A): Raspberry Pi's 45 W has 1.5 m of 17 AWG, Argon's 27 W 1.5 m,
+    TRASKIT's 59 in and Vilros's 27 W 5 ft. The others that give a length are 1.2 m.
+  - Vilros's own page says its cable is attached, which answers the question left open on
+    8 October. No Pi 5 listing describes a USB-C socket that would take a longer cable.
+  - Pi 4 supplies (3 to 4 A) are no longer: CanaKit's 3.5 A has 5 ft of 18 AWG, and Adafruit's
+    5 V / 4 A has 1.5 m of 20 AWG.
+- **Everything with a lead of 8 ft or more gives 3 A or less at 5 V.**
+  - The 10 ft and 16 ft 5 V adapters are 1 to 2 A, for security cameras.
+  - JSAUX's 45 W Steam Deck charger ([B0BHYN49SV](https://www.amazon.com/dp/B0BHYN49SV), $25.99)
+    has a 10 ft captive cable, but its 5 V profile is 3 A.
+  - Phone and laptop chargers sold with 10 or 15 ft cables give 5 V at 3 A at most. That's the "any
+    PD charger" row [below](#why-not-a-usb-c-extension).
+
+What the longer leads would leave at the Pi ([`voltage_drop.py`](voltage_drop.py), same model):
+
+| Supply and lead | Reach | at 1.5 A | at 2.0 A | at 2.5 A |
+|---|---|---|---|---|
+| Raspberry Pi 27 W (1.2 m, 17 AWG) + 2 m extension: the plan | 3.2 m | 4.78 V | 4.67 V | 4.57 V (low) |
+| Raspberry Pi 45 W (1.5 m, 17 AWG) + 1.5 m extension | 3.0 m | 4.81 V | 4.72 V | 4.62 V (low) |
+| Raspberry Pi 45 W (1.5 m, 17 AWG) + 2 m extension | 3.5 m | 4.77 V | 4.65 V | 4.54 V (low) |
+| iUniker 5.25 V / 4 A (1.5 m, if 18 AWG) + 2 m extension | 3.5 m | 4.90 V | 4.78 V | 4.66 V |
+| JSAUX 45 W, its own 10 ft lead at 5 V / 3 A (if 20 AWG), no extension | 3.05 m | 4.67 V | 4.55 V (low) | 4.44 V (low) |
+
+- **If 3.2 m turns out short, use Raspberry Pi's 45 W supply** (SC1731): $16.95 and in stock at
+  [PiShop.us](https://www.pishop.us/product/raspberry-pi-45w-usb-c-power-supply-white/), $16.50
+  and in stock at [Adafruit](https://www.adafruit.com/product/6320). It makes the same 5.1 V / 5 A
+  PD offer as the 27 W, on a lead 0.3 m longer and just as thick. With the same 2 m extension it
+  reaches 3.5 m, the far end of the run, and leaves the Pi what the 27 W does at 3.2 m. It adds
+  reach, not margin.
+- **A longer lead can't add margin on its own.** Each metre of 20 AWG costs about 0.1 V at 1.5 A,
+  so the Pi only gets more if the supply starts higher. The iUniker's 5.25 V (its 8 October
+  listing) does that, but it has no PD, so the Pi assumes 3 A. It's already in the BOM as the other
+  cheap test.
+- **The JSAUX's single 10 ft cable is worse than the extension.** A charger's 5 V profile is
+  nominally 5.0 V, not 5.1 V, and no listing gives the wire, so 20 AWG is the best case.
+- **One cable with real margin means sending more than 5 V:** 12 V over USB-C to the PD step-down
+  board, 24 V to a buck converter, or PoE ([below](#what-people-do-instead-send-a-higher-voltage-and-convert-at-the-pi)).
+
 ## Why not a USB-C extension
+
+The background from 27 September and 8 October, and the reason the plan above gets checked on the
+arm.
+
 
 - **At 5 V, every milliohm counts.** The Pi 5 flags under-voltage below **4.63 V**, measured after
   its input fuse. A 5.1 V supply leaves 0.47 V for everything between the supply and the board.

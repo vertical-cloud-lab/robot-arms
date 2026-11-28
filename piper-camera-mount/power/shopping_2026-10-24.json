@@ -1,0 +1,361 @@
+{
+ "date": "2026-10-24",
+ "method": "curl on camera Pi 2 (rpi-5-mpzy), rate-capped at 300 kB/s, over Tailscale SSH from the CI runner; HTML parsed on the runner. No bot checks.",
+ "amazon_searches": {
+  "usb c extension cable 240w male to female": [
+   {
+    "asin": "B071DMMW4J",
+    "title": "USB C Extension Cable (20Gbps/240W/3.3Ft), Faracent 4K@60Hz USB 3.2",
+    "price": "$8.07",
+    "rating": "4.6",
+    "reviews": "13,141",
+    "sponsored": false
+   },
+   {
+    "asin": "B0DPKFWLDJ",
+    "title": "Silkland 40Gbps USB4 USB C Extension Cable 240W for Thunderbolt 4, 3.3 FT",
+    "price": "$15.99",
+    "rating": "4.7",
+    "reviews": "910",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FPFYZPR9",
+    "title": "Silkland 80Gbps USB4 USB C Extension Cable 240W for Thunderbolt 5/4, 3.3FT",
+    "price": "$23.97",
+    "rating": "4.7",
+    "reviews": "260",
+    "sponsored": false
+   },
+   {
+    "asin": "B09FDWG61C",
+    "title": "AINOPE USB C Extension Cable 6.6FT/20Gbps/240W/4K@60Hz USBC Extension Cable",
+    "price": "$8.99",
+    "rating": "4.7",
+    "reviews": "33,714",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CNY9NJ4B",
+    "title": "Cable Matters 40Gbps USB4 Extension Cable 3.3ft, Thunderbolt 4/5 Compatible",
+    "price": "$13.99",
+    "rating": "4.7",
+    "reviews": "940",
+    "sponsored": false
+   },
+   {
+    "asin": "B0GXZJMJDR",
+    "title": "Short USB C Extension Cable 0.5FT, Full-Function Type C Male to Female Extender Cord, USB 3.2 Gen 2 20Gbps, 240W PD Fast Charge, 4K@60Hz Video for Laptop, Monitor, Phone, Tablet",
+    "price": "$6.29",
+    "rating": "4.6",
+    "reviews": "591",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BX34WY6W",
+    "title": "USB C Extension Cable 4K@60Hz (20Gbps/240W/5FT/1.5M)",
+    "price": "$12.23",
+    "rating": "4.6",
+    "reviews": "13,141",
+    "sponsored": false
+   },
+   {
+    "asin": "B0GRN44K3L",
+    "title": "6.6FT USBC Extension Cable Right Angle Compatible with Thunderbolt 4/3,USB4 40Gbps Data Transfer,90 Degree USB C Male to Female Cable,Type C Extension 240W Fast Charging,8K/4K Video Display.",
+    "price": "$25.99",
+    "rating": "4.1",
+    "reviews": "192",
+    "sponsored": false
+   },
+   {
+    "asin": "B0DRF51WLK",
+    "title": "USB C Extension Cable 240W, 1.5FT, 2 Packs, 40Gbps Data, 8K Video",
+    "price": "$9.99",
+    "rating": "4.5",
+    "reviews": "180",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BX3ZGHXJ",
+    "title": "USB C Extension Cable (20Gbps/240W/5FT/1.5M)",
+    "price": "$12.23",
+    "rating": "4.6",
+    "reviews": "13,141",
+    "sponsored": false
+   },
+   {
+    "asin": "B0D12DB5X4",
+    "title": "240W USB C Extension Cable 2ft, Right Angle USB C 3.2 Male to Female Cable",
+    "price": "$8.19",
+    "rating": "4.4",
+    "reviews": "81",
+    "sponsored": false
+   },
+   {
+    "asin": "B07MBWH7QG",
+    "title": "USB C Extender Adapter (2 Pack) 40Gbps 240W Cable Extension Type-C Low Profile Male to Female Thunderbolt QC & Data Transfer for USB-C Devices",
+    "price": "$7.99",
+    "rating": "4.6",
+    "reviews": "5,558",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FLQ41J2Q",
+    "title": "aceyoon USB C Extension Cable 3.3ft, 240W 90 Degree USB C Extender Cord, 4K@60Hz 20Gbps Video Output Braided Type C Male to Female Extension Cable for MacBook, for iPhone 16 15, for Galaxy S25 S24",
+    "price": "$8.19",
+    "rating": "4.2",
+    "reviews": "12",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F7R965WG",
+    "title": "USB C 3.2 Gen 2 Male to Female Extension Monitor Cable-3.3FT",
+    "price": "$6.99",
+    "rating": "4.7",
+    "reviews": "89",
+    "sponsored": false
+   },
+   {
+    "asin": "B0BHHG4GGP",
+    "title": "AINOPE USB C Extension Cable, 20Gbps/USB3.2 Fast Transfer USB Type C Extender 240W Charging Compatible with iPhone 16 pro max/PSVR2/USB C Hub/MacBook Air M2 Pro/iPad/Magsafe Charger,10FT,Black",
+    "price": "$14.99",
+    "rating": "4.5",
+    "reviews": "100",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CTT1FJL6",
+    "title": "240W USB C Coupler (2 Pack), USB Type C Female to Female Adapter Extender Compatible with Thunderbolt 4/3 Support up to 240W Charging, 40Gbps Data Transfer and 8K@60Hz Video",
+    "price": "$6.99",
+    "rating": "4.3",
+    "reviews": "874",
+    "sponsored": false
+   }
+  ],
+  "usb c extension cable 5a 20awg": [
+   {
+    "asin": "B0GF9J5MVL",
+    "title": "Yeebline USB C Male 2 Pin Bare Cable, 4-Pack 11inch 20AWG Replacement USB Type C Male Plug to 2Pin Wire DIY Pigtail Cable Extension Power Cord Open End Adapter Connector 5V 5A",
+    "price": "$8.99",
+    "rating": "4.8",
+    "reviews": "33",
+    "sponsored": false
+   },
+   {
+    "asin": "B0CQX216NW",
+    "title": "MEIRIYFA USB Type-C Pigtail Power Cable Cord Type C Male 2 Pin Bare Wire Open End Extension Cable Connector 20AWG 5V/5A for USB C Equipment Installed or Replacement Repair DIY-5PCS 3.2FT",
+    "price": "$9.99",
+    "rating": "3.2",
+    "reviews": "12",
+    "sponsored": false
+   },
+   {
+    "asin": "B0GX67ZG1B",
+    "title": "MECCANIXITY 2Pcs USB Type C Switch Extension Cable 20AWG 5A 0.9FT/0.28m",
+    "price": "$9.49",
+    "rating": "5.0",
+    "reviews": "1",
+    "sponsored": false
+   },
+   {
+    "asin": "B0GX6FNYQW",
+    "title": "MECCANIXITY 2Pcs USB A Switch Extension Cable 20AWG Copper Core 5A USB C",
+    "price": "$14.99",
+    "rating": null,
+    "reviews": null,
+    "sponsored": false
+   },
+   {
+    "asin": "B0BX3ZGHXJ",
+    "title": "USB C Extension Cable (20Gbps/240W/5FT/1.5M)",
+    "price": "$12.23",
+    "rating": "4.6",
+    "reviews": "13,141",
+    "sponsored": false
+   },
+   {
+    "asin": "B0F93T115L",
+    "title": "USB C Pigtail Power Cable，2 Pack 20AWG 5V/5A USB Type C Male Plug 2 Pin Bare Wire Extension Power Cable for DIY Equipment Installed Replace Repair（0.5M）",
+    "price": "$8.99",
+    "rating": "4.0",
+    "reviews": "14",
+    "sponsored": false
+   },
+   {
+    "asin": "B0HHK1SGGX",
+    "title": "USB-C Male Power Recognition 2-Pin Bare Wire Pigtail 20AWG 5V 5A 1M 1 Pack",
+    "price": "$4.99",
+    "rating": "5.0",
+    "reviews": "1",
+    "sponsored": false
+   },
+   {
+    "asin": "B08NTCD6VQ",
+    "title": "UGREEN USB C Extension Cable, (10Gbps/100W) USB C Extender 3.3 ft",
+    "price": "$13.99",
+    "rating": "4.6",
+    "reviews": "11,049",
+    "sponsored": false
+   },
+   {
+    "asin": "B0FJ6VL8TZ",
+    "title": "Long USB c Extension Cable 20FT, 20Gbps/100W USB3.2 Type C Extender Cord, 4K@60Hz Video Output Nylon Braided usbc Male to USB-c Female Charging Cable Compatibility with Thunderbolt 4/3",
+    "price": "$29.99",
+    "rating": "4.3",
+    "reviews": "112",
+    "sponsored": false
+   },
+   {
+    "asin": "B0GXZNY5YN",
+    "title": "USB C Power Pigtail Cable - 5Pcs 20AWG Female Extension Power Cable 1.6Ft 5V/5A USB Type C to 2 Pin Bare Wire Open End for DIY Replacement Repair",
+    "price": "$9.99",
+    "rating": null,
+    "reviews": null,
+    "sponsored": false
+   },
+   {
+    "asin": "B0DRF51WLK",
+    "title": "USB C Extension Cable 240W, 1.5FT, 2 Packs, 40Gbps Data, 8K Video",
+    "price": "$9.99",
+    "rating": "4.5",
+    "reviews": "180",
+    "sponsored": false
+   },
+   {
+    "asin": "B09VKY632R",
+    "title": "USB C Extension Cable 6.6ft, 4K@60Hz Video/10Gbps Data Transfer/100W Charge",
+    "price": "$7.99",
+    "rating": "4.5",
+    "reviews": "1,565",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H8P4DR4W",
+    "title": "aceyoon 5FT Type C Extension Cable 20Gbps, 240W USB Extender Male to Female",
+    "price": "$21.99",
+    "rating": "4.8",
+    "reviews": "13",
+    "sponsored": false
+   },
+   {
+    "asin": "B0H4L5T3GC",
+    "title": "USB-C Extension Cable 5ft(20Gbps, 240W)，Super Fast Charging & Ultra-High Speed Data Sync，Male to Female USB 3.2 Type-C for iPhone 17/16/15, iPad, MacBook, Pixel, PSVR2, Dell XPS, Surface Book",
+    "price": "$5.99",
+    "rating": null,
+    "reviews": null,
+    "sponsored": false
+   },
+   {
+    "asin": "B0HJTRBCW6",
+    "title": "USB C Extension Cable Short 20Gbps USBC3.2 Cable 240W 48V 5A 1.6ft",
+    "price": "$9.98",
+    "rating": null,
+    "reviews": null,
+    "sponsored": false
+   },
+   {
+    "asin": "B0HGQ34K5H",
+    "title": "USB C Extension Cable, USB3.2 Gen2, 100W5A Fast Charging, 1m",
+    "price": "$8.59",
+    "rating": null,
+    "reviews": null,
+    "sponsored": false
+   }
+  ]
+ },
+ "amazon_product_pages": [
+  {
+   "asin": "B09FDWG61C",
+   "url": "https://www.amazon.com/dp/B09FDWG61C",
+   "title": "AINOPE USB C Extension Cable 6.6FT/20Gbps/240W/4K@60Hz USBC Extension Cable",
+   "price": "$8.99",
+   "availability": "In Stock",
+   "specs": {
+    "Connector Gender": "Male-to-Female",
+    "Data Transfer Rate": "20 gigabytes_per_second",
+    "Number of Pins": "24",
+    "Maximum Current": "5 A",
+    "Wattage": "240 watts",
+    "Maximum Voltage": "48 volts_of_direct_current",
+    "Model": "H338-2M",
+    "Item Length": "6.6 feet",
+    "Part Number": "H338-2M-GR"
+   },
+   "power_or_gauge_bullets": [
+    "【240W Fast Charging】This USB-C extension cable supports up to 240W (48V/5A) Power Delivery for fast-charging power-hungry devices like MacBook, iPad, Tablet, hubs, and PSVR2 accessories — with actual performance dependent on your charger, connected devices, and other cables in the chain. For example, comfortably charge your iPad while relaxing on the sofa, or power your phone from your bed without being restricted by a short cable.",
+    "【Durable Braiding, Metal Connectors & 40,000+ Bends】 This USB-C male to female extension cable is built for home and office. The nylon braided jacket resists tangling and wear. Reinforced aluminum alloy connectors dissipate heat, resist corrosion, and outlast plastic. An extended SR strain relief protects the cable-connector joint from bending, pulling, and desk pressure. Triple-layer shielding (foil + copper + braided) with OFC conductor provides 3x EMI protection and flicker-free clear display. Tested to withstand 40,000+ bends."
+   ]
+  },
+  {
+   "asin": "B0BX34WY6W",
+   "url": "https://www.amazon.com/dp/B0BX34WY6W",
+   "title": "USB C Extension Cable 4K@60Hz (20Gbps/240W/5FT/1.5M)",
+   "price": "$12.23",
+   "availability": "In Stock",
+   "specs": {
+    "Connector Gender": "Male-to-Female",
+    "Data Transfer Rate": "20 gigabits_per_second",
+    "Number of Pins": "24",
+    "Maximum Current": "5 A",
+    "Wattage": "240 watts",
+    "Maximum Voltage": "48 volts_of_direct_current",
+    "Model": "C12-Grey",
+    "Part Number": "C12-Grey",
+    "Item Weight": "0.09 kg"
+   },
+   "power_or_gauge_bullets": [
+    "【240W Ultra-Fast Charging】Faracent usb c extender cable supports 240W (48V/5A) fast charging function, bringing you the ultimate charging experience. Backward compatible with various power levels including 140W, 100W, 65W, and 30W. (Note: the charging power depends on the upper limit of your device)"
+   ]
+  },
+  {
+   "asin": "B0CNY9NJ4B",
+   "url": "https://www.amazon.com/dp/B0CNY9NJ4B",
+   "title": "Cable Matters 40Gbps USB4 Extension Cable 3.3ft, Thunderbolt 4/5 Compatible",
+   "price": "$13.99",
+   "availability": "In Stock",
+   "specs": {
+    "Connector Gender": "Male-to-Female",
+    "Data Transfer Rate": "40 gigabits_per_second",
+    "Number of Pins": "24",
+    "Wattage": "240 watts",
+    "Specification Met": "USB-IF",
+    "Model": "201403-1m",
+    "Item Length": "3 feet",
+    "Part Number": "201403-1m",
+    "Item Weight": "0.05 kg"
+   },
+   "power_or_gauge_bullets": [
+    "240W Power Delivery: Power and charge connected devices with up to 240W of Power Delivery charging support using this USB C male to female extension cable"
+   ]
+  },
+  {
+   "asin": "B08NTCD6VQ",
+   "url": "https://www.amazon.com/dp/B08NTCD6VQ",
+   "title": "UGREEN USB C Extension Cable, (10Gbps/100W) USB C Extender 3.3 ft",
+   "price": "$13.99",
+   "availability": "In Stock",
+   "specs": {
+    "Connector Gender": "Male-to-Female",
+    "Data Transfer Rate": "10 gigabits_per_second",
+    "Number of Pins": "24",
+    "Maximum Current": "3 A",
+    "Wattage": "100 watts",
+    "Maximum Voltage": "20 volts_of_direct_current",
+    "Gauge": "21",
+    "Item Weight": "40 g",
+    "Model": "30205",
+    "Item Length": "3.3 feet",
+    "Part Number": "30205",
+    "Specification Met": "UL"
+   },
+   "power_or_gauge_bullets": [
+    "100W/5A Fast Charging: UGREEN USB C extender offers charging speed up to 100W(20V/5A), which can charge your MacBook/iPhone/laptop/iPad at full speed and let you move free. Also it charge type c phones from 0% to 100% in 30 minutes, like iPhone 15, iPhone 15 Pro, Samsung S22 Ultra/S21/S20/Note 20/Note 10, and wireless charger."
+   ]
+  }
+ ],
+ "notes": [
+  "None of the four product pages gives the gauge of the VBUS and GND wires. The '28AWG tinned copper' text on each page belongs to a Silkland cable (B0FPFYZPR9) in a carousel, not to the product.",
+  "UGREEN 30205's spec table says Gauge 21 and Maximum Current 3 A, while its bullets say 100W/5A.",
+  "McMaster-Carr: a search of mcmaster.com found only active USB extenders (transmitter and receiver), no passive USB-C extension; its catalogue pages need JavaScript, so no part numbers were read."
+ ]
+}
