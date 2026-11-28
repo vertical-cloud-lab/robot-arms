@@ -1,0 +1,131 @@
+{
+ "frame_as_built_in": {
+  "pipe_cut": 48.0,
+  "elbow_centre_to_centre": 49.25,
+  "outside": 50.3,
+  "inside": 48.2,
+  "clear_height": 48.5,
+  "overall_height": 50.3
+ },
+ "bar": {
+  "length_mm": 1698.1,
+  "underside_above_table_mm": 1287.3,
+  "underside_above_rail_top_mm": 9.7
+ },
+ "saddle_mm": {
+  "legs_start_from_corner": 36.5,
+  "leg_length": 70.0,
+  "stop_from_corner_along_diagonal": 35.0,
+  "bounds": [
+   [
+    -16.8,
+    -16.8,
+    0.0
+   ],
+   [
+    106.5,
+    106.5,
+    39.0
+   ]
+  ],
+  "volume_cm3": 176.8
+ },
+ "camera": {
+  "lens_above_table_mm": 1265.3,
+  "lens_above_plywood_mm": 1246.2,
+  "footprint": {
+   "height_above_plywood_m": 1.246,
+   "half_width_along_wall_m": 1.462,
+   "half_width_across_m": 0.822,
+   "margin_past_plywood_edge_m": 0.213
+  },
+  "highest_fingertip_above_plywood_mm": 889.0,
+  "clearance_lens_to_highest_fingertip_mm": 357.0
+ },
+ "stiffness": {
+  "diagonal": {
+   "sag_mm": 1.04,
+   "push_10N_x_at_front_left_corner": {
+    "camera_move_mm": 12.73,
+    "camera_tilt_mrad": 4.59,
+    "image_shift_at_plywood_mm": 9.51,
+    "corner_move_mm": 19.12
+   },
+   "push_10N_y_at_front_left_corner": {
+    "camera_move_mm": 12.73,
+    "camera_tilt_mrad": 4.59,
+    "image_shift_at_plywood_mm": 9.51,
+    "corner_move_mm": 19.12
+   },
+   "push_10N_x_at_front_right_corner": {
+    "camera_move_mm": 12.73,
+    "camera_tilt_mrad": 4.59,
+    "image_shift_at_plywood_mm": 9.51,
+    "corner_move_mm": 18.6
+   }
+  },
+  "diagonal+cables": {
+   "sag_mm": 1.03,
+   "push_10N_x_at_front_left_corner": {
+    "camera_move_mm": 0.4,
+    "camera_tilt_mrad": 0.14,
+    "image_shift_at_plywood_mm": 0.31,
+    "corner_move_mm": 0.63
+   },
+   "push_10N_y_at_front_left_corner": {
+    "camera_move_mm": 0.14,
+    "camera_tilt_mrad": 0.07,
+    "image_shift_at_plywood_mm": 0.05,
+    "corner_move_mm": 0.27
+   },
+   "push_10N_x_at_front_right_corner": {
+    "camera_move_mm": 0.4,
+    "camera_tilt_mrad": 0.14,
+    "image_shift_at_plywood_mm": 0.31,
+    "corner_move_mm": 0.64
+   }
+  },
+  "straight": {
+   "sag_mm": 2.78,
+   "push_10N_x_at_front_left_corner": {
+    "camera_move_mm": 12.9,
+    "camera_tilt_mrad": 0.42,
+    "image_shift_at_plywood_mm": 12.38,
+    "corner_move_mm": 19.51
+   },
+   "push_10N_y_at_front_left_corner": {
+    "camera_move_mm": 13.4,
+    "camera_tilt_mrad": 3.23,
+    "image_shift_at_plywood_mm": 17.43,
+    "corner_move_mm": 20.3
+   },
+   "push_10N_x_at_front_right_corner": {
+    "camera_move_mm": 12.9,
+    "camera_tilt_mrad": 0.42,
+    "image_shift_at_plywood_mm": 12.38,
+    "corner_move_mm": 19.51
+   }
+  },
+  "straight+cables": {
+   "sag_mm": 2.78,
+   "push_10N_x_at_front_left_corner": {
+    "camera_move_mm": 3.61,
+    "camera_tilt_mrad": 0.12,
+    "image_shift_at_plywood_mm": 3.46,
+    "corner_move_mm": 7.08
+   },
+   "push_10N_y_at_front_left_corner": {
+    "camera_move_mm": 0.11,
+    "camera_tilt_mrad": 0.01,
+    "image_shift_at_plywood_mm": 0.13,
+    "corner_move_mm": 0.23
+   },
+   "push_10N_x_at_front_right_corner": {
+    "camera_move_mm": 3.61,
+    "camera_tilt_mrad": 0.12,
+    "image_shift_at_plywood_mm": 3.46,
+    "corner_move_mm": 7.08
+   }
+  }
+ }
+}
