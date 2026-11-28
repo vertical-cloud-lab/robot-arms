@@ -1,0 +1,4 @@
+__pycache__/
+# Run outputs on the Pi: the stills are large. Copy results/ off the Pi to keep them.
+results/images/
+results/calibration/

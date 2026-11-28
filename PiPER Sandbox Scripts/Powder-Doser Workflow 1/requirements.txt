@@ -1,0 +1,6 @@
+# On the arm Pi (mpzy), into the venv that has piper_sdk:
+#   ~/piper-venv/bin/pip install -r requirements.txt
+# Anywhere else (for --dry-run, the tests and report.py): pip install -r requirements.txt
+numpy
+opencv-python-headless>=4.7   # cv2.aruco with the AprilTag families, solvePnP
+matplotlib                    # report.py's chart only (optional)
