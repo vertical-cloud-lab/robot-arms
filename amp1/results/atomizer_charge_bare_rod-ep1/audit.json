@@ -1,0 +1,19 @@
+{
+ "tools": {
+  "Bash": 81,
+  "Read": 85,
+  "Write": 1
+ },
+ "bash": 81,
+ "reads": 85,
+ "writes": 1,
+ "outside_or_other": [
+  [
+   "Bash",
+   "wc -l /tmp/amp-episodes/atomizer_charge_bare_rod-ep1/SYSTEM_PROMPT.md; ls -la /tmp/amp-episodes/atomizer_charge_bare_rod-ep1/"
+  ]
+ ],
+ "n_outside": 1,
+ "cells": 79,
+ "flagged_cells": []
+}

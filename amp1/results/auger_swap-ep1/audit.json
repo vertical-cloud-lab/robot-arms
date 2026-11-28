@@ -1,0 +1,19 @@
+{
+ "tools": {
+  "Bash": 78,
+  "Read": 73,
+  "Write": 1
+ },
+ "bash": 78,
+ "reads": 73,
+ "writes": 1,
+ "outside_or_other": [
+  [
+   "Bash",
+   "wc -l /tmp/amp-episodes/auger_swap-ep1/SYSTEM_PROMPT.md; ls -la /tmp/amp-episodes/auger_swap-ep1/"
+  ]
+ ],
+ "n_outside": 1,
+ "cells": 77,
+ "flagged_cells": []
+}

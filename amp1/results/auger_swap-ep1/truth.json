@@ -1,0 +1,86 @@
+{
+ "success": true,
+ "placed": true,
+ "gripper_contacts": 0,
+ "gripper_cmd_closed": 0.0,
+ "detail": {
+  "new_in_clips": [
+   true,
+   true
+  ],
+  "gear_to_pinion_mm": 0.1,
+  "new_cap_toward_arm": true,
+  "old_in_empty_slot": true
+ },
+ "events": [
+  {
+   "t": 11.672,
+   "event": "clip0 opened",
+   "force_N": 10.0
+  },
+  {
+   "t": 11.846,
+   "event": "clip1 opened",
+   "force_N": 10.0
+  },
+  {
+   "t": 15.228,
+   "event": "clip0 closed (empty)"
+  },
+  {
+   "t": 20.29,
+   "event": "clip1 closed (empty)"
+  },
+  {
+   "t": 111.812,
+   "event": "clip0 opened",
+   "force_N": 10.2
+  },
+  {
+   "t": 119.48,
+   "event": "clip0 closed (empty)"
+  },
+  {
+   "t": 119.666,
+   "event": "clip1 opened",
+   "force_N": 10.3
+  },
+  {
+   "t": 119.744,
+   "event": "clip0 opened",
+   "force_N": 14.7
+  },
+  {
+   "t": 121.618,
+   "event": "clip1 closed (snapped on a tube)"
+  },
+  {
+   "t": 121.664,
+   "event": "clip0 closed (snapped on a tube)"
+  }
+ ],
+ "objects": {
+  "auger_old": [
+   0.5008,
+   -0.235,
+   0.045
+  ],
+  "auger_new": [
+   0.5002,
+   0.009,
+   0.0431
+  ]
+ },
+ "meta": {
+  "doser": [
+   0.5001182162470026,
+   0.009009273926518705,
+   0.04325
+  ],
+  "rack_slot": [
+   0.5001182162470026,
+   -0.235,
+   0.045
+  ]
+ }
+}

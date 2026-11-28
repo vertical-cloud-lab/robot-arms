@@ -1,0 +1,65 @@
+{
+ "success": false,
+ "placed": false,
+ "gripper_contacts": 0,
+ "gripper_cmd_closed": 1.0,
+ "detail": {
+  "cups": [
+   {
+    "r_mm": 211.8,
+    "bottom_mm": -0.6,
+    "tilt_deg": 90.1,
+    "in": false
+   },
+   {
+    "r_mm": 17.9,
+    "bottom_mm": -0.1,
+    "tilt_deg": 0.0,
+    "in": true
+   },
+   {
+    "r_mm": 17.0,
+    "bottom_mm": -0.1,
+    "tilt_deg": 0.0,
+    "in": true
+   },
+   {
+    "r_mm": 18.6,
+    "bottom_mm": -0.1,
+    "tilt_deg": 0.0,
+    "in": true
+   }
+  ]
+ },
+ "events": [],
+ "objects": {
+  "cup0": [
+   0.2586,
+   -0.1086,
+   0.0094
+  ],
+  "cup1": [
+   0.3014,
+   0.0811,
+   0.0099
+  ],
+  "cup2": [
+   0.3172,
+   0.0973,
+   0.0099
+  ],
+  "cup3": [
+   0.2817,
+   0.099,
+   0.0099
+  ]
+ },
+ "meta": {
+  "crucible": [
+   0.3002364324940051,
+   0.0990092739265187,
+   0.009999999999999995,
+   0.12
+  ]
+ }
+}

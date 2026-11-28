@@ -746,5 +746,278 @@
   "frames_kept": true,
   "operator_cells": 0,
   "python_calls": 77
+ },
+ {
+  "episode": "atomizer_charge_bare_rod-ep0",
+  "instruction": "Load the four charge cups from the tray into the atomizer's crucible, standing upright around the sealing rod.",
+  "cells": 84,
+  "cell_errors": 2,
+  "images_shown": 40,
+  "policy_wall_min": 48.7,
+  "last_budget": "[step 2626 of 4500, 1874 left; wall 49 min of 70 used]",
+  "outcome_belief": "success",
+  "scored": {
+   "file": "/tmp/amp-run/atomizer_charge_bare_rod.ep0/bench/atomizer_charge_bare_rod/log_0_env0.json",
+   "success": true,
+   "final_step": 2627
+  },
+  "truth": {
+   "success": true,
+   "placed": true,
+   "gripper_contacts": 0,
+   "gripper_cmd_closed": 0.0,
+   "detail": {
+    "cups": [
+     {
+      "r_mm": 17.5,
+      "bottom_mm": -0.1,
+      "tilt_deg": 0.0,
+      "in": true
+     },
+     {
+      "r_mm": 18.0,
+      "bottom_mm": -0.1,
+      "tilt_deg": 0.0,
+      "in": true
+     },
+     {
+      "r_mm": 16.8,
+      "bottom_mm": -0.1,
+      "tilt_deg": 0.0,
+      "in": true
+     },
+     {
+      "r_mm": 16.5,
+      "bottom_mm": -0.1,
+      "tilt_deg": 0.0,
+      "in": true
+     }
+    ]
+   },
+   "events": [],
+   "objects": {
+    "cup0": [
+     0.2853,
+     0.0858,
+     0.0099
+    ],
+    "cup1": [
+     0.3038,
+     0.1034,
+     0.0099
+    ],
+    "cup2": [
+     0.3195,
+     0.0856,
+     0.0099
+    ],
+    "cup3": [
+     0.3019,
+     0.0689,
+     0.0099
+    ]
+   },
+   "meta": {
+    "crucible": [
+     0.3027392337464291,
+     0.0853957342752774,
+     0.009999999999999995,
+     0.12
+    ]
+   }
+  },
+  "video": "atomizer_charge_bare_rod-ep0.mp4",
+  "frames_kept": true,
+  "operator_cells": 0,
+  "python_calls": 83
+ },
+ {
+  "episode": "auger_swap-ep1",
+  "instruction": "Swap the powder doser's auger: put the auger that is in the doser's two clips into the empty slot of the auger rack, then snap the new auger from the rack into the doser's clips.",
+  "cells": 77,
+  "cell_errors": 3,
+  "images_shown": 51,
+  "policy_wall_min": 52.0,
+  "last_budget": "[step 2224 of 4500, 2276 left; wall 53 min of 70 used]",
+  "outcome_belief": "success",
+  "scored": {
+   "file": "/tmp/amp-run/auger_swap.ep1/bench/auger_swap/log_1_env0.json",
+   "success": true,
+   "final_step": 2225
+  },
+  "truth": {
+   "success": true,
+   "placed": true,
+   "gripper_contacts": 0,
+   "gripper_cmd_closed": 0.0,
+   "detail": {
+    "new_in_clips": [
+     true,
+     true
+    ],
+    "gear_to_pinion_mm": 0.1,
+    "new_cap_toward_arm": true,
+    "old_in_empty_slot": true
+   },
+   "events": [
+    {
+     "t": 11.672,
+     "event": "clip0 opened",
+     "force_N": 10.0
+    },
+    {
+     "t": 11.846,
+     "event": "clip1 opened",
+     "force_N": 10.0
+    },
+    {
+     "t": 15.228,
+     "event": "clip0 closed (empty)"
+    },
+    {
+     "t": 20.29,
+     "event": "clip1 closed (empty)"
+    },
+    {
+     "t": 111.812,
+     "event": "clip0 opened",
+     "force_N": 10.2
+    },
+    {
+     "t": 119.48,
+     "event": "clip0 closed (empty)"
+    },
+    {
+     "t": 119.666,
+     "event": "clip1 opened",
+     "force_N": 10.3
+    },
+    {
+     "t": 119.744,
+     "event": "clip0 opened",
+     "force_N": 14.7
+    },
+    {
+     "t": 121.618,
+     "event": "clip1 closed (snapped on a tube)"
+    },
+    {
+     "t": 121.664,
+     "event": "clip0 closed (snapped on a tube)"
+    }
+   ],
+   "objects": {
+    "auger_old": [
+     0.5008,
+     -0.235,
+     0.045
+    ],
+    "auger_new": [
+     0.5002,
+     0.009,
+     0.0431
+    ]
+   },
+   "meta": {
+    "doser": [
+     0.5001182162470026,
+     0.009009273926518705,
+     0.04325
+    ],
+    "rack_slot": [
+     0.5001182162470026,
+     -0.235,
+     0.045
+    ]
+   }
+  },
+  "video": "auger_swap-ep1.mp4",
+  "frames_kept": true,
+  "operator_cells": 0,
+  "python_calls": 76
+ },
+ {
+  "episode": "atomizer_charge_bare_rod-ep1",
+  "instruction": "Load the four charge cups from the tray into the atomizer's crucible, standing upright around the sealing rod.",
+  "cells": 79,
+  "cell_errors": 1,
+  "images_shown": 48,
+  "policy_wall_min": 51.8,
+  "last_budget": "[step 2330 of 4500, 2170 left; wall 52 min of 70 used]",
+  "outcome_belief": "failure",
+  "scored": {
+   "file": "/tmp/amp-run/atomizer_charge_bare_rod.ep1/bench/atomizer_charge_bare_rod/log_1_env0.json",
+   "success": false,
+   "final_step": 2331
+  },
+  "truth": {
+   "success": false,
+   "placed": false,
+   "gripper_contacts": 0,
+   "gripper_cmd_closed": 1.0,
+   "detail": {
+    "cups": [
+     {
+      "r_mm": 211.8,
+      "bottom_mm": -0.6,
+      "tilt_deg": 90.1,
+      "in": false
+     },
+     {
+      "r_mm": 17.9,
+      "bottom_mm": -0.1,
+      "tilt_deg": 0.0,
+      "in": true
+     },
+     {
+      "r_mm": 17.0,
+      "bottom_mm": -0.1,
+      "tilt_deg": 0.0,
+      "in": true
+     },
+     {
+      "r_mm": 18.6,
+      "bottom_mm": -0.1,
+      "tilt_deg": 0.0,
+      "in": true
+     }
+    ]
+   },
+   "events": [],
+   "objects": {
+    "cup0": [
+     0.2586,
+     -0.1086,
+     0.0094
+    ],
+    "cup1": [
+     0.3014,
+     0.0811,
+     0.0099
+    ],
+    "cup2": [
+     0.3172,
+     0.0973,
+     0.0099
+    ],
+    "cup3": [
+     0.2817,
+     0.099,
+     0.0099
+    ]
+   },
+   "meta": {
+    "crucible": [
+     0.3002364324940051,
+     0.0990092739265187,
+     0.009999999999999995,
+     0.12
+    ]
+   }
+  },
+  "video": "atomizer_charge_bare_rod-ep1.mp4",
+  "frames_kept": true,
+  "operator_cells": 0,
+  "python_calls": 78
  }
 ]
