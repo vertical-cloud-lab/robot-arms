@@ -1,0 +1,44 @@
+# ============================================================================================
+# Simulation settings: which physics engine, its numerics, and the task's motion settings.
+# ============================================================================================
+
+engine: mujoco            # mujoco (full physics) | kinematic (no physics engine: numpy only)
+
+mujoco:
+  timestep_s: 0.001       # physics step. Contacts and the adhesion bonds are stable at 1 ms
+  integrator: implicitfast
+  solver: Newton
+  iterations: 60
+  cone: elliptic          # elliptic friction cones + impratio > 1: grasps don't creep
+  impratio: 10
+  # Contact softness: MuJoCo's solref = [time constant s, damping ratio]. Smaller time
+  # constants are stiffer (less interpenetration); keep it >= 2 * timestep.
+  default_solref: [0.004, 1.0]
+  default_solimp: [0.95, 0.99, 0.0005, 0.5, 2]
+  # How stiff an unbroken print-to-plate bond is (weld constraint softness).
+  bond_solref: [0.004, 1.0]
+  gravity: [0, 0, -9.81]
+  # Render settings for videos and the camera.
+  offscreen_width: 1280
+  offscreen_height: 720
+
+kinematic:
+  timestep_s: 0.004       # just how often poses are updated; no dynamics
+  gravity: [0, 0, -9.81]  # dropped prints fall straight down onto what is below them
+
+task:
+  speed_fraction: 0.35    # fraction of each joint's max speed for transfers
+  slow_speed_mm_s: 40     # straight-line approach, grasp and place moves
+  approach_height_mm: 60  # above a print / spot before going straight down
+  lift_height_mm: 60      # straight up after the bond breaks, before transferring
+  transfer_clearance_mm: 120  # minimum height of the fingertips above any obstacle in transit
+  box_release_above_rim_mm: 35
+  shelf_release_gap_mm: 2  # how far above the shelf the print is let go
+  # How the planner frees a stuck print: any of twist, rock, pull, in this order, retried
+  # with more amplitude until the bond breaks or `max_release_attempts` is used up.
+  release_strategy: [twist, rock, pull]
+  twist_deg: 6
+  rock_deg: 4
+  max_release_attempts: 3
+  grasp_settle_s: 0.4     # wait after closing the gripper
+  release_settle_s: 0.5   # wait after opening it
