@@ -197,7 +197,7 @@ Most items below are 2026 preprints; the full list, with what each reports, is i
    Labference. In Labference, VLAs ignore the balance reading, so dosing to a target mass needs an explicit controller
    layer.
 5. **Success and failure detection became an off-the-shelf part.**
-   - Gemini Robotics ER 2 reports 82.4% video success detection.
+   - Gemini Robotics ER is reported at 82.4% video success detection, a vendor figure U7 couldn't trace to a paper.
    - Robometer and TOPReward ship inside LeRobot.
    - LIRA's fine-tuned edge VLM caught 195 of 200 hand-placed errors ([Zhou et al. 2025](https://doi.org/10.1038/s42004-025-01770-1)).
 6. **LeRobot churned.**
@@ -399,7 +399,29 @@ checking the full text are in [section 5](#5-corrections) and [`verification.md`
     decision, rework and idle time;
   - validating the distributions against 2–3 real campaigns before they go into the twin.
 
-<!-- U7 -->
+**U7: cameras that verify outcomes and log interventions** ([`u7-…`](../edison-6dof/u7-cameras-that-verify-and-log/answer.md), `0d3b4d1d`)
+- **Fine-tuning matters more than model size.** LIRA's fine-tuned VLM on a Jetson AGX Orin judged placements 97.5%
+  correctly (195/200), against 86.3% for a YOLOv11 classifier and 42.9% for a zero-shot VLM.
+- **General success detectors are mediocre:**
+  - Guardian-8B recognized 91% of successes but only 76% of failures.
+  - Robometer reached F1 0.81 on 100 trajectories.
+  - Across 2,197 attempts from 14 sources, the best of 13 detectors reached 0.77 balanced accuracy, and **none passed
+    0.60 on contact-rich assembly** (FailBench, 2026).
+  - Changing the camera viewpoint cost a fine-tuned model up to 7.5 points.
+- **So a "seated or not" check on a vial or stub insertion can't be trusted to a general model.** Use fiducials or
+  fixture geometry for that, and keep vision for coarse outcomes such as plate clear, object present or spill.
+- **Hand detection on a Pi 5 with a Hailo accelerator** runs at about 280 ms end to end (3.5 fps). That is fine for
+  logging interventions. No deep-learning camera system is certified under ISO 13849 or IEC 61496, so cameras can log
+  but cannot be the safety function.
+- **Bounding a gate's false-clear rate.** Conformal prediction bounds a check's false-negative rate at ε with about
+  1/ε deliberately bad examples: roughly 20 "not clear" plates for a 5% bound (Luo et al., IJRR). The bound assumes
+  exchangeability, so it breaks under lighting changes or camera drift. Nobody has published a plate-check
+  false-clear rate.
+- **Calibration:** targetless wrist-plus-fixed calibration (AnchorHEC) reaches about 1.2–1.35 cm and 1–1.5° on a real
+  robot, too coarse for millimetre tasks. Nothing is published on how often IMX477-class cameras drift or need
+  recalibrating. Periodic self-checks against fixture tags are the practical route.
+- **Privacy:** face blurring costs person detectors a few points of mAP, and hands aren't blurred.
+
 
 ## 5. Corrections
 
@@ -473,7 +495,11 @@ Checked against full text by separate agents ([`verification.md`](verification.m
 - **U6 says no publication reports a robot idle fraction.** U1's own source does: Burger et al. 2020 report the robot
   "charged but idle" about 32% of the time, waiting for the GC (checked). MAMA BEAR's roughly 60% uptime is a
   utilization figure too. U6 also repeats A-Lab's uncorrected 41 of 58 targets.
-<!-- CORRECTIONS-U7 -->
+- **U7 couldn't find two sources that exist.** Fontenot et al. 2026 is in *Digital Discovery*
+  ([arXiv:2512.06038](https://arxiv.org/abs/2512.06038)), and quARtet is an arXiv preprint
+  ([2610.01072](https://arxiv.org/abs/2610.01072)). It also couldn't recover the 82.4% video success-detection
+  figure for Gemini Robotics ER, so treat that figure as the vendor's claim.
+<!-- CORRECTIONS-U8 -->
 
 ## 6. Ranked projects
 
@@ -715,14 +741,20 @@ a dollar each. Reliability is far below campaign grade, so keep fixtures as the 
 
 AprilTags on fixtures remain the right way to localize; 25 mm tags work, and multi-tag cubes such as quARtet fix pose
 flips. The step beyond is to make the fixed cameras watch outcomes:
-- **Success and failure detection** with an off-the-shelf model: Gemini Robotics ER 2 reports 82.4% on video, and
-  Robometer and TOPReward ship in LeRobot.
+- **Success and failure detection** with an off-the-shelf model: Robometer and TOPReward ship in LeRobot, and Gemini
+  Robotics ER is reported at 82.4% on video, a vendor figure.
 - **The plate-clear check:** BEAR's equivalent has no published false-clear rate.
 - **Automatic intervention events**, where a hand enters the cell or the arm stops, are proposed to the ledger for a
   person to confirm.
 
 Validate each against the human ledger. That makes projects 1 and 2 sustainable, and the agreement rate is itself a
-result.
+result. U7 gives the guardrails:
+- **Fine-tune on the lab's own frames.** LIRA's fine-tuned VLM scored 97.5% where a zero-shot VLM scored 42.9%.
+- **Bound the plate check's false-clear rate** with conformal prediction: about 20 deliberately not-clear plates per
+  5% bound, re-checked whenever the lighting or camera changes.
+- **Don't ask vision to judge contact-rich outcomes.** No detector passed 0.60 balanced accuracy on contact-rich
+  assembly.
+- **Cameras log; they are not the safety function.**
 
 ### Summary
 

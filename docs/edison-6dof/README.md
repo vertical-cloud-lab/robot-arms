@@ -32,8 +32,8 @@ finished up to a few minutes earlier.
 | `u4-printer-tending-and-print-test-loops/` | Robotic print removal and plate swapping; design–print–test loops; plate-clear checks; print farms; forces for a low-cost arm | U1's printer-tending claim and its correction | `2dc50277-5f2f-4670-a077-5116abdb77eb` | 10:47 | ~11:04 |
 | `u5-agent-written-code-and-designed-hardware/` | Agent-written robot code on lab hardware; safeguards; agent-designed fixtures; provenance; evaluation design | byu-vcl's AI for Science proposal, robot-arms #85/#87 | `f666c15c-8baf-44f4-b8c6-8b848fc95fdc` | 11:04 | ~11:31 |
 | `u6-handling-times-and-restocking/` | Measured handling times; validated SDL twins; human decision latency; robots restocking consumables; time-study methods | byu-vcl's twin (#407), the future-work analysis | `6304f40d-d416-4f86-9176-0b108760f45a` | 11:32 | ~12:06 |
-| `u7-cameras-that-verify-and-log/` | Vision and VLM outcome checks, automatic intervention logging, insertion verification, calibration drift, gating false-clear rates, lab-video privacy | U4's missing plate-check rate, project 1's logging burden | `0d3b4d1d-8287-4648-9600-b89152862ee0` | 12:07 | <!-- U7-BACK --> |
-<!-- U8-ROW -->
+| `u7-cameras-that-verify-and-log/` | Vision and VLM outcome checks, automatic intervention logging, insertion verification, calibration drift, gating false-clear rates, lab-video privacy | U4's missing plate-check rate, project 1's logging burden | `0d3b4d1d-8287-4648-9600-b89152862ee0` | 12:07 | ~12:31 |
+| `u8-novelty-check-of-six-claims/` | Tests the six novelty claims behind the ranked projects against prior work of any year or field | U1–U7 and the surveys | `c7a6638a-e902-44f4-80f6-2cd0c8bdc77d` | 12:31 | <!-- U8-BACK --> |
 
 ## Earlier rounds
 
