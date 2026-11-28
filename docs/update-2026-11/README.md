@@ -39,15 +39,17 @@ checks are in [`verification.md`](verification.md).
    clearing consumer printers with logged interventions is new, and the December toy drive is the occasion.
 5. **For DAL, the PiPER is a courier, not a process tool.** It can move sealed jars, weigh, check labels and move SEM
    stubs and coupons between purpose-built stations. It stays out of the atomizer and open powder until an EHS review.
-6. **Robots restocking consumables** is future work in 6 of the 29 papers, and no follow-up exists. The CubXL
-   campaign already preregisters exactly this; frame it that way.
+6. **Robots restocking consumables** is future work in 6 of the 29 papers. The only precedent is rack transfers into a
+   GC station (Burger's thesis, 464/464). Restocking a gantry liquid handler's deck (vials, carriers, tip racks) is
+   unclaimed, and the CubXL campaign already preregisters exactly that, so frame it that way.
 7. **"An agent designs the fixture and writes the workflow, and the arm runs it"** (the AI for Science proposal) has
    no published precedent in lab automation. AI-designed tools and fingers have been printed and tested outside labs
-   (RobotSmith 2025, Xu et al. 2024). The control half is crowded: frozen agent code already reached 221/240 on PiPER X
-   arms (ACE-CaP-0). The hardware half is open. Freeze code once it works, run at least 25 trials per condition, and
+   (RobotSmith 2025, Xu et al. 2024, and RoboBuilder's 135 agent-designed robots). The control half is crowded:
+   frozen agent code already reached 221/240 on PiPER X arms (ACE-CaP-0). The lab-fixture half is open. Freeze code once it works, run at least 25 trials per condition, and
    include a human-expert baseline.
-8. **Interventions as training data** (a person takes over with the SO-101 leader, and the takeover trains a recovery
-   policy) is unpublished on low-cost arms and in labs. LeRobot already ships the pieces.
+8. **Interventions as training data.** Learning from teleoperated takeovers is established (RaC, TRANSIC, HACTS). Doing
+   it in a lab workflow is not: a scripted arm, takeovers with the SO-101 leader, and the intervention rate tracked with
+   its denominator across a campaign. LeRobot already ships the pieces.
 9. **A PiPER metrology paper would be widely cited.** An Annin AR4 study (Oct 2026) took the "first sub-$5k arm" claim,
    but there is still nothing on the PiPER that everyone now uses.
 10. **Edison's "no published evidence" claims need checking.** Two of U1's failed: printer tending (BEAR) and remote
@@ -177,7 +179,8 @@ Most items below are 2026 preprints; the full list, with what each reports, is i
      for π0.5, at 280 s per task and about $1.39 per episode. It is Franka-only, with calibrated depth.
    - CaP-X/CaP-Gym ([arXiv:2603.22435](https://arxiv.org/abs/2603.22435), ICML 2026) is now the shared benchmark.
    - WetRobo ([arXiv:2609.18435](https://arxiv.org/abs/2609.18435)) had a coding agent drive **PiPER** arms across two
-     wet labs, but reports no reliability statistics.
+     wet labs, with small trial counts: cap lifting went 10/10 in each lab on repeat runs, and a VLA scored 0/10 in
+     the second.
 2. **The PiPER became the default low-cost arm in lab-manipulation papers,** and none of them reports its accuracy or
    repeatability:
    - RoboSynChallenge ([arXiv:2608.12416](https://arxiv.org/abs/2608.12416)): π0.5 reached 33–38.5% on pipette and
@@ -197,7 +200,8 @@ Most items below are 2026 preprints; the full list, with what each reports, is i
    Labference. In Labference, VLAs ignore the balance reading, so dosing to a target mass needs an explicit controller
    layer.
 5. **Success and failure detection became an off-the-shelf part.**
-   - Gemini Robotics ER is reported at 82.4% video success detection, a vendor figure U7 couldn't trace to a paper.
+   - DeepMind's Gemini Robotics ER 2 model card (July 30) shows 82.4% video success detection, but in a vendor chart
+     with no sample size.
    - Robometer and TOPReward ship inside LeRobot.
    - LIRA's fine-tuned edge VLM caught 195 of 200 hand-placed errors ([Zhou et al. 2025](https://doi.org/10.1038/s42004-025-01770-1)).
 6. **LeRobot churned.**
@@ -224,8 +228,9 @@ Most items below are 2026 preprints; the full list, with what each reports, is i
    - Liverpool: LIRA; closed-loop rack insertion ([RackInsert](https://doi.org/10.1109/case69030.2026.11704402));
      tool–policy co-design for powder weighing ([arXiv:2609.39797](https://arxiv.org/abs/2609.39797)); FLIP at ICRA
      2026; RobInHood.
-   - LLNL (Gongora, of BU's BEAR): SO-101 vial placement with ACT, and a teleoperation interface for SDL fault recovery
-     on a UR3e ([arXiv:2611.18496](https://arxiv.org/abs/2611.18496), Nov 13).
+   - LLNL (Gongora, of BU's BEAR): a teleoperation interface for SDL fault recovery on a UR3e
+     ([arXiv:2611.18496](https://arxiv.org/abs/2611.18496), Nov 13), and an OSTI report of SO-101 vial placement with
+     ACT (not checked here).
 10. **The safety baseline moved.**
     - ISO 10218:2025 and R15.06-2025 add cybersecurity requirements for networked robots.
     - LabSafety Bench: no model reaches 70% on hazard identification.
@@ -377,13 +382,14 @@ checking the full text are in [section 5](#5-corrections) and [`verification.md`
 
 **U6: measured handling times for byu-vcl's twin, and robots restocking consumables** ([`u6-…`](../edison-6dof/u6-handling-times-and-restocking/answer.md), `6304f40d`)
 - **No SDL paper publishes per-operation handling times with spread.** The best available:
-  - NIMS's structural-metals cell (Xie et al. 2026): about 60 s to load the furnace, 40 s to weigh and move a sample
-    to XRD, and 180 s to recover a fractured sample, with no variance given.
-  - Lunt et al.'s mobile PXRD workflow, from video timestamps: 12–42 s per door, load or delivery, and about 88 s to
-    handle a vial cap.
+  - NIMS's structural-metals cell (Xie et al. 2026), on a DOBOT Magician E6 desktop cobot: about 60 s to load the
+    furnace, 40 s to weigh and move a sample to XRD, and 180 s to recover a fractured sample. No variance is given,
+    and the logged run took 1 h 30 min.
   - A 2018 mobile-robot round trip over 50 runs: 11 min 26 s with fine pose correction, 15 min 32 s without.
-  - LLNL's MARS cell: 86.2 min per experiment, with transport sub-operations varying only 2.2%. Its campaign failure
-    rate fell from 29–43% to 4.4–7.2% after gripper fixes.
+  - LLNL's MARS cell (a UR5e on a rail): 86.2 min per experiment in dry runs, with transport sub-operations varying
+    only 2.2%. Its campaign failure rate fell from 29–43% to 4.4–7.2% after gripper fixes.
+  - U6 also lists per-step times for Lunt et al.'s PXRD workflow, but they are an artifact. Edison subtracted chapter
+    marks in a sped-up demonstration video (see section 5).
 - **Its "gaps" are the twin's inputs:**
   - no validated discrete-event model of an SDL built on measured handling times;
   - no sensitivity analysis splitting throughput into handling, instrument and decision time;
@@ -403,25 +409,39 @@ checking the full text are in [section 5](#5-corrections) and [`verification.md`
 - **Fine-tuning matters more than model size.** LIRA's fine-tuned VLM on a Jetson AGX Orin judged placements 97.5%
   correctly (195/200), against 86.3% for a YOLOv11 classifier and 42.9% for a zero-shot VLM.
 - **General success detectors are mediocre:**
-  - Guardian-8B recognized 91% of successes but only 76% of failures.
+  - Guardian-8B recognized 91% of successes but only 76% of failures, pooled over four test sets, one of them
+    simulated. As a gate, that lets 24% of failures pass as successes.
   - Robometer reached F1 0.81 on 100 trajectories.
   - Across 2,197 attempts from 14 sources, the best of 13 detectors reached 0.77 balanced accuracy, and **none passed
     0.60 on contact-rich assembly** (FailBench, 2026).
-  - Changing the camera viewpoint cost a fine-tuned model up to 7.5 points.
+  - Changing the camera viewpoint cost a fine-tuned model up to 7.8 points.
 - **So a "seated or not" check on a vial or stub insertion can't be trusted to a general model.** Use fiducials or
   fixture geometry for that, and keep vision for coarse outcomes such as plate clear, object present or spill.
 - **Hand detection on a Pi 5 with a Hailo accelerator** runs at about 280 ms end to end (3.5 fps). That is fine for
   logging interventions. No deep-learning camera system is certified under ISO 13849 or IEC 61496, so cameras can log
   but cannot be the safety function.
-- **Bounding a gate's false-clear rate.** Conformal prediction bounds a check's false-negative rate at ε with about
-  1/ε deliberately bad examples: roughly 20 "not clear" plates for a 5% bound (Luo et al., IJRR). The bound assumes
-  exchangeability, so it breaks under lighting changes or camera drift. Nobody has published a plate-check
-  false-clear rate.
-- **Calibration:** targetless wrist-plus-fixed calibration (AnchorHEC) reaches about 1.2–1.35 cm and 1–1.5° on a real
-  robot, too coarse for millimetre tasks. Nothing is published on how often IMX477-class cameras drift or need
+- **Bounding a gate's false-clear rate.** Conformal prediction bounds a check's false-negative rate at ε. U7 says
+  that takes about 1/ε deliberately bad examples, but the paper's practical figure for a 5% target is about 30 "not
+  clear" plates; with 20 the gate flags nearly everything (Luo et al., IJRR). The bound assumes exchangeability, so
+  it breaks under lighting changes or camera drift. Nobody has published a plate-check false-clear rate.
+- **Calibration:** targetless wrist-plus-fixed calibration (AnchorHEC) reaches about 1.2–1.35 cm and 1.1–1.5° on a
+  real robot with 15 poses, too coarse for millimetre tasks. Nothing is published on how often IMX477-class cameras drift or need
   recalibrating. Periodic self-checks against fixture tags are the practical route.
 - **Privacy:** face blurring costs person detectors a few points of mAP, and hands aren't blurred.
 
+
+**U8: a hard novelty check of the six claims behind the ranked projects** ([`u8-…`](../edison-6dof/u8-novelty-check-of-six-claims/answer.md), `c7a6638a`)
+
+| Claim | Verdict | Closest prior work | How to state it |
+|---|---|---|---|
+| Per-operation handling times with spread, intervention rates and a validated SDL twin, across a materials loop (project 1) | **Survives** | MATTERIX (sim-to-real checks, no timing distributions); a pharmaceutical-QC lab twin built on processing times (Lopes 2020) | Keep the conjunction: operation-level times with spread, intervention rates, and a twin validated against them |
+| A sub-$5k arm clearing consumer printer plates, with an interval over many trials and a measured false-clear rate (project 2) | **Survives** | A KUKA arm on an Ender 3 V2 (10/10 removals, 10/10 bed cleans, no vision); a 16-printer farm sorter with an industrial arm (98.7% grasping); Detect-Remove-Replace (20/21) | A combined benchmark: arm under $5k, many trials with a binomial interval, and a false-clear rate measured on deliberately uncleared plates |
+| A robot restocking consumables into a lab instrument over hundreds of operations (project 4) | **Narrow it** | Burger's thesis: 464/464 rack transfers into and out of a GC headspace station over 71 iterations | Restocking replaceable consumables (tip racks, plates, vial carriers) into the deck of a **gantry liquid handler** |
+| ISO 9283-style metrology of the PiPER or SO-100/101 against traceable ground truth (project 5) | **Survives** | A PiPER thesis that only repeats the ±0.1 mm spec; Chajón 2026 (UR3); AR4Calib (Annin AR4) | Name the arms; measure accuracy and repeatability at several poses and approach directions, with uncertainty |
+| An LLM agent designing a lab fixture that is printed and validated on a real lab robot, against human-designed parts (project 7) | **Narrow it** | RoboBuilder ([arXiv:2611.23855](https://arxiv.org/abs/2611.23855)): agents designed 135 robots with printed parts; 0 of 15 simulation-passing designs worked at first, rising to 73% and then 93% after redesign from failure videos | Lab-specific fixtures, holders or instrument adapters, with predefined fit and function criteria and a matched human-designed baseline |
+| Takeovers during scripted lab-arm operation used to train a recovery policy, with the intervention rate tracked (project 6) | **False as written** | RaC, TRANSIC, HACTS and Mandlekar 2020 all learn from teleoperated takeovers | First in a scientific lab workflow: takeovers interrupt a scripted or fiducial-guided arm, train a recovery policy, and the intervention rate (with denominator and interval) is tracked across the campaign |
+
+<!-- U9 -->
 
 ## 5. Corrections
 
@@ -499,6 +519,25 @@ Checked against full text by separate agents ([`verification.md`](verification.m
   ([arXiv:2512.06038](https://arxiv.org/abs/2512.06038)), and quARtet is an arXiv preprint
   ([2610.01072](https://arxiv.org/abs/2610.01072)). It also couldn't recover the 82.4% video success-detection
   figure for Gemini Robotics ER, so treat that figure as the vendor's claim.
+- **U6's per-step times for Lunt et al. (≈12–88 s) are an artifact.** The paper gives no per-operation times. Edison
+  subtracted chapter marks in a supplementary video that runs about 10× fast, and one "door close" also includes the
+  X-ray scan.
+- **U6's claim that no paper reports a robot idle fraction is wrong.** Burger et al. 2020 report the robot "charged but
+  idle" about 32% of the time. They also report about 28 min per batch spent loading and unloading, and a person
+  alerted when vials ran out, which is a restocking data point.
+- **U6's other timing sources, corrected:**
+  - Xie et al. 2026: the NIMS cell's arm is a DOBOT Magician E6 desktop cobot, and its logged run took 1:29:38.
+  - Ahlquist 2024 (MARS): the arm is a UR5e on a rail, and the timings come from dry runs.
+  - Crain 2025: 84 XRD samples in 24 h is the tray's capacity, not a measured campaign.
+- **U7's vision numbers, corrected:**
+  - The SuccessVQA viewpoint drop is up to 7.8 points, and its "in-domain" test set includes the training episodes.
+  - Guardian's 91/76% pools four test sets, one simulated.
+  - The conformal-prediction gate needs about 30 bad examples for a 5% false-clear bound, not 20.
+  - AnchorHEC's 1.00° figure uses 25 poses; at 15 it is 1.11–1.48°.
+  - The Pi 5 + Hailo hand-tracking latency (~280 ms) could only be checked against the abstract, and its fps figures
+    are Edison's arithmetic.
+- **Gemini Robotics ER 2's 82.4%** is from DeepMind's model card (2026-07-30), a vendor chart with no sample size or
+  method.
 <!-- CORRECTIONS-U8 -->
 
 ## 6. Ranked projects
@@ -591,6 +630,10 @@ The A1-mini placement must also respect J1's −20° to +60° window.
 **First two weeks.** Measure the peel force with a hand force gauge, cold and at 35 °C. Script peel → flex → return
 with a printed fixture, and run 20 empty cycles before real prints. Log every attempt to the ledger.
 
+**Novelty after U8.** This survives as a combined benchmark. Prior work used a KUKA on an Ender 3 V2 (10/10, no
+vision), an industrial farm sorter (98.7% grasping) and Detect-Remove-Replace (20/21). Nobody has paired an arm
+under $5k with many trials, a binomial interval and a false-clear rate measured on deliberately uncleared plates.
+
 **Publishable unit.** A short paper on a $2.5k arm tending consumer printers: N clears, the success rate with an
 exact interval, the intervention log, and the camera check's false-clear rate. Add the first PLA-on-textured-PEI
 adhesion-versus-temperature data, which U4 found missing. It also de-risks DAL's NSF EAGER print-farm concept
@@ -600,7 +643,8 @@ template).
 **Risk.**
 - The wrist camera Pi is offline, so use the working fixed camera.
 - An A1 mini has one plate, so the cycle must return it.
-- PETG adheres far more than PLA (53 ± 8 N to tear off PEI), so start with PLA.
+- PETG took 53 ± 8 N to tear off PEI in one study, far beyond the arm, and PLA has never been measured. Start with
+  PLA and measure it first.
 
 ### 3. The arm as DAL's courier: SEM stubs, sealed jars and weighing
 
@@ -644,6 +688,10 @@ inserts. Register the preregistration by its 2027-01-29 target, with the introdu
 intervention rate. The first counted block is 2027-03-05. The CubXL talk at TMS (submissions due Feb 26) can report
 the pilot.
 
+**Novelty after U8.** Burger's thesis already has 464/464 rack transfers into a GC headspace station. Claim restocking
+replaceable consumables into the deck of a gantry liquid handler (vial carriers, tip racks, plates), measured item by
+item over hundreds of operations.
+
 **Risk.** There is no CubXL near the cell, and its Pi is already overloaded, so don't add load to it.
 
 ### 5. PiPER metrology with traceable ground truth
@@ -674,6 +722,10 @@ can run in January while DAL's runs are on.
 whenever the arm fails. Each takeover goes in the ledger and also becomes training data for a recovery policy, in
 the RaC / HIL-SERL style. The intervention rate is reported over time, with a preregistered block design that freezes
 the controller inside each block.
+
+**Novelty after U8.** Learning from teleoperated takeovers is prior art (RaC, TRANSIC, HACTS, Mandlekar 2020). The
+claim is the lab version: a scripted or fiducial-guided arm, takeovers training a recovery policy, and the
+intervention rate tracked with its denominator and interval across the campaign.
 
 **Why. U3 found no published human-in-the-loop learning on any of these:**
 - an SO-101, a Koch or a PiPER;
@@ -714,6 +766,11 @@ lab already runs hundreds of agent sessions a month.
 **Risk.** It is crowded and moving fast (Apple, NVIDIA, Berkeley, Tsuda's lab). Agent runs take minutes and cost about
 a dollar each. Reliability is far below campaign grade, so keep fixtures as the backstop.
 
+**Novelty after U8.** RoboBuilder already had agents design and build 135 robots with printed parts. Only 0 of its
+first 15 simulation-passing designs worked on hardware, before redesign from failure videos raised that to 93%, so
+expect early fixtures to fail too. Claim lab-specific fixtures with predefined fit and function criteria, against a
+human-designed baseline.
+
 **What U5 adds to project 7.**
 - **Novelty:** the fixture half is unprecedented, so pair every agent-designed fixture with a human-designed one under
   matched trials.
@@ -742,7 +799,7 @@ a dollar each. Reliability is far below campaign grade, so keep fixtures as the 
 AprilTags on fixtures remain the right way to localize; 25 mm tags work, and multi-tag cubes such as quARtet fix pose
 flips. The step beyond is to make the fixed cameras watch outcomes:
 - **Success and failure detection** with an off-the-shelf model: Robometer and TOPReward ship in LeRobot, and Gemini
-  Robotics ER is reported at 82.4% on video, a vendor figure.
+  Robotics ER 2's model card shows 82.4% on video, a vendor figure with no sample size.
 - **The plate-clear check:** BEAR's equivalent has no published false-clear rate.
 - **Automatic intervention events**, where a hand enters the cell or the arm stops, are proposed to the ledger for a
   person to confirm.
@@ -750,7 +807,7 @@ flips. The step beyond is to make the fixed cameras watch outcomes:
 Validate each against the human ledger. That makes projects 1 and 2 sustainable, and the agreement rate is itself a
 result. U7 gives the guardrails:
 - **Fine-tune on the lab's own frames.** LIRA's fine-tuned VLM scored 97.5% where a zero-shot VLM scored 42.9%.
-- **Bound the plate check's false-clear rate** with conformal prediction: about 20 deliberately not-clear plates per
+- **Bound the plate check's false-clear rate** with conformal prediction: about 30 deliberately not-clear plates for a
   5% bound, re-checked whenever the lighting or camera changes.
 - **Don't ask vision to judge contact-rich outcomes.** No detector passed 0.60 balanced accuracy on contact-rich
   assembly.
