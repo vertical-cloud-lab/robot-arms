@@ -1,0 +1,122 @@
+{
+ "success": false,
+ "placed": false,
+ "gripper_contacts": 0,
+ "gripper_cmd_closed": 0.0,
+ "detail": {
+  "new_in_clips": [
+   true,
+   true
+  ],
+  "gear_to_pinion_mm": 10.5,
+  "new_cap_toward_arm": true,
+  "old_in_empty_slot": false
+ },
+ "events": [
+  {
+   "t": 7.638,
+   "event": "clip0 opened",
+   "force_N": 11.2
+  },
+  {
+   "t": 10.05,
+   "event": "clip0 closed (snapped on a tube)"
+  },
+  {
+   "t": 10.338,
+   "event": "clip1 opened",
+   "force_N": 10.0
+  },
+  {
+   "t": 14.196,
+   "event": "clip1 closed (snapped on a tube)"
+  },
+  {
+   "t": 35.764,
+   "event": "clip0 opened",
+   "force_N": 11.9
+  },
+  {
+   "t": 37.93,
+   "event": "clip0 closed (snapped on a tube)"
+  },
+  {
+   "t": 38.288,
+   "event": "clip1 opened",
+   "force_N": 10.2
+  },
+  {
+   "t": 40.678,
+   "event": "clip1 closed (snapped on a tube)"
+  },
+  {
+   "t": 64.31,
+   "event": "clip0 opened",
+   "force_N": 10.0
+  },
+  {
+   "t": 64.922,
+   "event": "clip1 opened",
+   "force_N": 10.0
+  },
+  {
+   "t": 67.058,
+   "event": "clip0 closed (empty)"
+  },
+  {
+   "t": 72.328,
+   "event": "clip1 closed (empty)"
+  },
+  {
+   "t": 124.278,
+   "event": "clip0 opened",
+   "force_N": 10.0
+  },
+  {
+   "t": 131.564,
+   "event": "clip0 closed (empty)"
+  },
+  {
+   "t": 131.62,
+   "event": "clip1 opened",
+   "force_N": 10.0
+  },
+  {
+   "t": 139.616,
+   "event": "clip0 opened",
+   "force_N": 10.0
+  },
+  {
+   "t": 159.958,
+   "event": "clip1 closed (snapped on a tube)"
+  },
+  {
+   "t": 160.686,
+   "event": "clip0 closed (snapped on a tube)"
+  }
+ ],
+ "objects": {
+  "auger_old": [
+   -1.3306,
+   0.0698,
+   -0.7228
+  ],
+  "auger_new": [
+   0.5119,
+   -0.0044,
+   0.0431
+  ]
+ },
+ "meta": {
+  "doser": [
+   0.5013696168732146,
+   -0.004604265724722594,
+   0.04325
+  ],
+  "rack_slot": [
+   0.5013696168732146,
+   -0.235,
+   0.045
+  ]
+ }
+}

@@ -1,0 +1,22 @@
+{
+ "success": true,
+ "placed": true,
+ "gripper_contacts": 0,
+ "gripper_cmd_closed": 0.0,
+ "objects": {
+  "tape": [
+   0.4287,
+   -0.0148,
+   0.08
+  ]
+ },
+ "meta": {
+  "shelf": [
+   0.43,
+   -0.01423361549121465,
+   0.08,
+   0.07,
+   0.13
+  ]
+ }
+}
