@@ -172,16 +172,9 @@ Society, ISO 9283 (the standard for measuring robot accuracy and repeatability).
 Two sources, the ones you predict will matter most. Each gets one or two short paragraphs in
 the proposal, with its author and title.
 
-**2.3.1 Source A.** Author and title, or a link. What does it argue or find? How does it fit
+**2.3.1 Source A and B.** Author and title, or a link. What does it argue or find? How does it fit
 your strategy (support, counter-argument, method to copy)?
-> 
-
-**2.3.2 Source B.** Same questions.
->
-
-(If you're unsure, I can suggest the two strongest from the nine picks in
-[`selection.md`](https://github.com/vertical-cloud-lab/robot-arms/blob/875cd80/docs/wrtg-316/edison/selection.md)
-from WRTG-Proposal-1. You check each one before it goes in.)
+> Use the two strongest from the nine picks in docs\wrtg-316\edison\Final_Selection.md
 
 
 
@@ -193,13 +186,7 @@ gets one or two sentences on why it's among the best.
 **2.4.1 Your seven (or more).** List them, or say "use the selection.md picks plus the database
 search results" and I'll draft the list for you to check.
 >
-> 1.
-> 2.
-> 3.
-> 4.
-> 5.
-> 6.
-> 7.
+> 1. Populate using docs\wrtg-316\edison\Final_Selection.md
 
 **2.4.2 Gaps.** Any kind of source missing (e.g., a counter-argument source, an industry report,
 a standards document)?

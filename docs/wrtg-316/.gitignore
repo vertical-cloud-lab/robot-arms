@@ -5,3 +5,7 @@
 !README.md
 !Proposal/
 !Proposal/**
+# The final source list is published too. Git can't see a file inside an ignored folder,
+# so edison/ is let through first; everything else new in it stays ignored.
+!edison/
+!edison/Final_Selection.md
