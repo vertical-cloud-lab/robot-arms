@@ -1,0 +1,170 @@
+# Agent-Written Robot Code, Safeguards, AI-Designed Hardware, Provenance, and Evaluation for Laboratory Automation: A Literature Synthesis (2023–2026)
+
+## 1. Agent-Written Robot Code on Physical Laboratory Hardware
+
+The period 2023–2026 has seen a rapid expansion of systems executing language-model-generated code or plans on real laboratory robots, though quantitative reporting of success rates, failure modes, latency, cost, and human intervention remains inconsistent across the literature. The following table summarizes the key systems identified.
+
+| System | Year / status | Hardware | Task domain | Measured success rate | Trial count | Key failure modes | Latency / cost | Human intervention | Reference |
+|---|---|---|---|---|---:|---|---|---|---|
+| Coscientist | 2023, peer reviewed | Opentrons OT-2 liquid handler and heater–shaker; GC–MS used for outcome verification | Chemical synthesis and reaction planning | Qualitative physical success: target products verified for both Suzuki–Miyaura and Sonogashira couplings; no defensible aggregate success rate reported | Not reported | Initially hallucinated an incorrect heater–shaker API method; corrected after documentation retrieval; plates were moved manually | Not reported | No human decision-making reported, but humans manually transferred plates | DOI: 10.1038/s41586-023-06792-0 (pqac-00000040, pqac-00000045) |
+| CLAIRify | 2023, peer reviewed | Franka arm with laboratory tools | Chemistry plans, pouring, solubility and recrystallization | Constrained TAMP: 97% with an 8-DoF configuration and 84% with 7 DoF; pouring relative error 8.1% for water and 8.8% for salt; solubility-estimation error 7.2% | Trial denominator not reported in retrieved evidence | Invalid plan syntax or constraints, motion-planning failure, perception error, spillage and manipulation/state-assessment errors | Not reported | Intervention frequency not reported | DOI: 10.1007/s10514-023-10136-2 (pqac-00000003) |
+| AILA / AFMBench | 2024 preprint; 2025 peer reviewed | Atomic-force microscope | Autonomous microscopy: calibration, imaging and property measurement | Reported above 80% on multi-step workflows; exact physical trial denominator and task-level rates not available in retrieved evidence | Not reported | Prompt brittleness, wrong agent/tool selection, misunderstood context, deviation from instructions (“sleepwalking”) and actions outside requirements | Not reported | Not reported | DOI: 10.1038/s41467-025-64105-7; arXiv:2501.10385 (pqac-00000001) |
+| MATTERIX | 2025, peer reviewed | Franka FR3 plus Opentrons OT-2 and digital twin | Chemistry-lab manipulation and liquid handling | Physical pick-and-place: 75% (9/12); physical pouring: 90% (9/10) | 22 reported physical trials across those two tests | Pose-estimation and calibration errors, wrong object frames, action failures, mismatched digital/physical assets, vessel/workspace discrepancies | Not reported | Not reported; policies were developed in simulation and transferred to hardware | DOI: 10.1038/s43588-025-00924-4 (pqac-00000032) |
+| LabscriptAI | 2026, **bioRxiv preprint** | Opentrons OT-2/Flex, Hamilton platforms, Tecan Fluent and associated modules | Synthetic-biology liquid handling and protocol translation | 96.7% simulator-pass rate on a 90-task benchmark; physical cross-platform calibration produced CV below 5% and R² above 0.999, but no aggregate physical success rate | 90 simulated benchmark tasks; large physical campaigns included 318 GFP variants and 399 enzyme variants | Simulator/API validation errors; inadequate protein purification in one workflow; broader instrument integration remained incomplete | Per-task latency and monetary cost not reported | Human-in-the-loop dialogue validates protocols; intervention frequency not reported | DOI: 10.1101/2025.09.30.679666 (pqac-00000052, pqac-00000053, pqac-00000054, pqac-00000068) |
+| WetRobo | 2026, **arXiv preprint** | AgileX PiPER arms with cameras and laboratory end effectors | Wet-lab manipulation: dish lids, caps and incubator doors | Qualitative success on real robots; cap-removal code adapted successfully in two laboratories with different grippers and camera placement; no aggregate rate | Individual adaptation trials; denominator not reported | Slipping after lid lifting, limited equipment/site generality and untested dish transport | Door opening: 2 h 40 min initial agent adaptation versus 3 min 27 s repeat execution; token/energy cost noted but not quantified | Reduced need for local teleoperation; exact intervention rate not reported | arXiv:2609.18435 (pqac-00000002, pqac-00000022, pqac-00000024) |
+| CaP-Agent0 / CaP-X | 2026, **arXiv preprint** | Robot-manipulation stack including Franka-compatible real-robot interface; principal quoted metric is simulated LIBERO-PRO | General manipulation via agent-written policies | LIBERO-PRO averages: 11.8–25.6% under position perturbations and 14.0–18.2% under instruction perturbations; these are not physical-lab success rates | 50 trials per task in LIBERO-PRO | Mis-segmentation, occlusion, angled or failed grasps, control-API failures and collisions from absent collision-aware planning | Not reported | Not reported | arXiv:2603.22435 (pqac-00000018, pqac-00000019) |
+| SPINE | 2026, **arXiv preprint** | Four AgileX PiPER 6-DoF arms, ROS/CAN and RealSense cameras | Cyber-physical diagnosis and restoration of robot teleoperation | 100% fault resolution across five PiPER scenarios versus 99% for human operators | 5 fault scenarios | Software/configuration faults, disconnected cameras or CAN links, cable/controller faults and hybrid hardware–software failures | Mean recovery 7 min 48 s versus 12 min 30 s for humans: 38% faster; cost not reported | Novice operator remained necessary for physical actions and observations | arXiv:2607.13049 (pqac-00000046, pqac-00000049, pqac-00000051) |
+| AMP1 | 2026, **arXiv preprint** | Real robot arm plus CaP-Gym simulated embodiments | General manipulation using agent-written, self-revising policies | Simulation: 82.8–85.6% on RoboLab-120, 95.2% on LIBERO-PRO, 100% on robosuite and 96.0% on two BEHAVIOR-1K tasks; selected real tasks achieved 9/9 each | Selected physical tasks: 9 trials each; complete total not reported in retrieved evidence | Grasp failures from geometry/mass, flaky verifiers rejecting valid states and controller interruptions; AMP1 included error recovery | Selected physical tasks averaged 94–208 s; 34.8 model calls per simulated episode with full sensing; monetary cost not reported | Human-intervention rate not reported | arXiv:2611.09892 (pqac-00000017, pqac-00000020) |
+| ACE-CaP-0 | 2026, **arXiv preprint** | Real robot-arm manipulation platform | Eight real-world manipulation tasks using frozen agent-developed programs | 92.1% overall (221/240); task rates 83.3–100% | 30 trials per task; 240 total | Paper excerpt reports unsuccessful trials but no qualitative failure taxonomy | Mean physical execution 0.97–2.27 min per task; monetary cost not reported | No human or coding agent during evaluation; development allowed at most 10 human-assisted scene resets per task | arXiv:2611.16872 (pqac-00000016) |
+
+
+*Table: Systems that executed language-model-generated plans or code on laboratory or manipulation hardware, with simulation-only metrics clearly distinguished from physical trials. Missing latency, cost, and intervention values are marked rather than inferred.*
+
+**Coscientist** (Boiko et al., 2023) demonstrated autonomous design and execution of Suzuki–Miyaura and Sonogashira cross-coupling reactions on an Opentrons OT-2 liquid handler. The system "autonomously designed, plans and performs complex experiments" and successfully verified target products by GC–MS analysis (pqac-00000040, pqac-00000042). It initially hallucinated an incorrect heater–shaker API method but self-corrected after consulting documentation (pqac-00000040). Safety checking blocked hazardous suggestions including sodium azide as an additive and 220°C in ethanol (pqac-00000044). No aggregate success rate or trial count was reported; plates were moved manually (pqac-00000040).
+
+**CLAIRify** (Yoshikawa et al., 2023) translated natural-language chemistry instructions into structured plans executed via constrained task-and-motion planning on a Franka robot. Constrained TAMP achieved 97% success with an 8-DoF robot versus 84% for 7-DoF; pouring relative errors were 8.1% for water and 8.8% for salt (pqac-00000003). Failure modes included motion-planning failures, spillage, incorrect plan syntax, and perception errors (pqac-00000003).
+
+**MATTERIX** (Darvish et al., 2025) provided a GPU-accelerated digital-twin framework for chemistry laboratories. Physical pick-and-place achieved 75% success (9/12 trials) with failures from pose estimation and calibration errors; liquid pouring achieved 90% (9/10) (pqac-00000032). The system validates workflows in a full simulated laboratory before physical execution (pqac-00000034, pqac-00000036).
+
+**LabscriptAI** (Gao et al., 2026; *bioRxiv preprint*) achieved a 96.7% simulation-pass rate on a 90-task liquid-handling benchmark—"the highest among the evaluated LLM-based and commercial baselines" (pqac-00000068). It supported four liquid-handling platforms (Opentrons OT-2, OT-Flex, Hamilton, Tecan Fluent) and demonstrated cross-platform reproducibility with CV below 5% and R² above 0.999 (pqac-00000052).
+
+**WetRobo** (Oikawa et al., 2026; *arXiv preprint*) provided a reproducible robot kit for coding agents using PiPER arms. Cap removal was successfully adapted across two laboratories despite different grippers and camera placements; the initial adaptation took 2 h 40 min but repeat execution took only 3 min 27 s, illustrating the efficiency of code reuse (pqac-00000002, pqac-00000024). An alternative VLA approach failed to transfer between sites (pqac-00000024).
+
+**ACE-CaP-0** (2026; *arXiv preprint*) achieved 92.1% overall success (221/240 trials) across eight real-world manipulation tasks using frozen agent-developed programs, with no human or coding agent during evaluation. Mean physical execution time ranged from 0.97 to 2.27 minutes per task (pqac-00000016).
+
+**AMP1** (Bagherieh et al., 2026; *arXiv preprint*) achieved 82.8–85.6% on RoboLab-120 and 95.2% on LIBERO-PRO in simulation. Selected real-world tasks achieved 9/9 success with total times of 94–208 seconds (pqac-00000017, pqac-00000020). Failure modes included grasp failures from object geometry/mass and "flaky verifiers rejecting valid end states" (pqac-00000020).
+
+**SPINE** (Ham et al., 2026; *arXiv preprint*) achieved 100% fault resolution across five PiPER scenarios (versus 99% for human operators using Claude Code) and reduced mean time-to-teleoperation by 38% (12 min 30 s to 7 min 48 s) (pqac-00000046, pqac-00000049). The strongest result was an 80% reduction in recovery time for disconnected camera and CAN links (pqac-00000049).
+
+**Common failure modes** across systems include: hallucinated or deprecated API calls (pqac-00000000, pqac-00000040); perception and pose-estimation errors (pqac-00000003, pqac-00000032); grasp failures from object geometry (pqac-00000018, pqac-00000020); wrong coordinate frames or units (pqac-00000032); prompt brittleness causing substantial performance variation (pqac-00000001); LLM "sleepwalking"—deviating from instructions without notification (pqac-00000001); and silent failures where VLM verifiers accepted failed states (pqac-00000004).
+
+**Notable gap.** Per-task latency and monetary cost are almost universally unreported, as are human-intervention rates. Only ACE-CaP-0 and AMP1 report execution times systematically.
+
+## 2. Safeguards and Verification Layers
+
+The following table summarizes the verification layers demonstrated in the literature.
+
+| Safeguard layer | System / method | Mechanism | Measured effectiveness | Reference |
+|---|---|---|---|---|
+| Static / formal checks | NeSyRo | Validates generated code with an SMT solver, checks skill preconditions with a PDDL planner, and generates probes for missing observations. | Real-robot average success was **57.5% versus 10.6%** for Code as Policies; **7 versus 53 irreversible actions**. | (pqac-00000006) |
+| Static / formal checks | Lang2LTL | Translates natural-language commands into temporal logic and aborts plans whose constraints are unsatisfiable. | Evaluated **52 commands**, including **12 unsatisfiable commands**, all of which were aborted. False-rejection rate was not reported. | (pqac-00000004) |
+| Static / formal checks | VASO | Model-checks induced plans against temporal-logic safety specifications using an automatically generated state-to-proposition mapping. | **96.8% specification compliance** with automatic mapping and **97.2%** with handcrafted mapping; guarantees depend on mapping correctness. | (pqac-00000009) |
+| Simulation / digital-twin dry run | MATTERIX | Executes hierarchical workflows in a GPU-based chemistry-laboratory digital twin, checking motion, semantic preconditions, liquids, heat transfer, and approximate reaction state before sim-to-real deployment. | Subsequent physical tests achieved **9/12 pick-and-place** and **9/10 pouring** successes; no controlled catch-rate or false-alarm comparison was reported. | (pqac-00000032, pqac-00000034, pqac-00000036) |
+| Simulation / digital-twin dry run | ReSkill | Develops and screens programs in simulation before deploying the selected program without regeneration on hardware. | **72/80 simulated successes versus 62/80 real successes**, showing both screening value and a residual sim-to-real gap. | (pqac-00000004) |
+| Simulation / API validation | LabscriptAI | Runs generated scripts in platform-specific simulators; a reviewer returns errors to a coder that applies targeted patches rather than regenerating the entire script. | Maximum of nine repair iterations; the paper reports **96.7% simulation-pass rate on 90 tasks**, but no physical-error catch rate or false-alarm rate. | (pqac-00000068) |
+| Runtime monitor | Code-as-Monitor | Generates a VLM-based checker for spatiotemporal constraints and replans only after detecting a violation. | **88.33% success versus 76.67%** for a continuously queried baseline in simulated block stacking; explicit monitor sensitivity and false-alarm rates were not reported. | (pqac-00000006) |
+| Runtime safety filter | RoboGuard | Applies an external safety layer that rejects unsafe actions even when the underlying model is jailbroken. | Reduced unsafe execution under worst-case jailbreaks from **over 92% to below 3%**. | (pqac-00000004) |
+| Runtime multi-stage gates | LEASH | Separates task-level, action-level, and gripper/pouring safety gates before releasing actions. | On 92 RoboRisk tasks, reduced harm for one model from **11.23% to 0.00%** and for another from **61.23% to 12.68%**; false-alarm rate was not reported. | (pqac-00000007) |
+| VLM safety monitor | Chemist Eye | Uses vision-language models to detect PPE violations, accidents, and possible fires and to recommend robot or human responses. | Aggregate **97% hazard spotting** and **95% decision performance**; PPE accuracy ranged from **67.5% to 97.5%**, with format-hallucination rates of **0–1%**. Conventional false-positive rates were not reported. | (pqac-00000065, pqac-00000066, pqac-00000067) |
+| Safety benchmark—not an execution safeguard | LabSafety Bench | Tests whether LLMs and VLMs identify hazards and consequences in structured questions and realistic laboratory scenarios. | Across 19 models, **none exceeded 70% accuracy** on realistic hazard identification, arguing against using an unaided LLM as a safety gate. | (pqac-00000029, pqac-00000030, pqac-00000031) |
+| Human approval and audit gate | La Agente Óptima | Authenticates individual users, distinguishes technician and autonomous-system identities, and records state transitions in an append-only SHA-256 hash-chained ledger; operator approval can authorize hardware release. | Tamper-evident attribution and reconstruction are demonstrated architecturally; no measured error-catch, approval, or false-alarm rate was reported. | (pqac-00000026, pqac-00000028) |
+| Human-guided physical intervention | SPINE | Separates software repair from operator-executed physical actions, then requires fresh end-to-end teleoperation and hidden-readiness checks before closure. | Resolved **all five PiPER fault scenarios** and reduced mean recovery time by **38%**; a human remained necessary for cables, devices, observations, and other physical actions. | (pqac-00000046, pqac-00000049, pqac-00000051) |
+| Human-in-the-loop protocol gate | LabscriptAI | Requires dialogue to validate and refine the natural-language protocol before code generation, followed by simulator review and iterative patching. | Physical cross-platform calibration achieved **CV below 5%** and **R² above 0.999**; the frequency and error-catch rate of human interventions were not reported. | (pqac-00000052, pqac-00000068) |
+| Workspace / geofence limit | DroneServer | Declines or blocks commands that would violate a configured geographic safety envelope. | The model declined **48 of 110** violating commands and the server blocked the remaining **62**, producing **zero zone escapes**. This measures geofencing, not force limiting. | (pqac-00000007) |
+| Frozen-code reuse | WetRobo | Preserves the adapted robot program and reuses it for later runs instead of repeating agent exploration and code generation. | Incubator-door opening took **2 h 40 min** during initial adaptation but **3 min 27 s** on repeat execution; reliability trial counts were not reported. | (pqac-00000002) |
+| Frozen-code evaluation | ACE-CaP-0 | Freezes agent-developed programs before evaluation; neither a coding agent nor a human modifies them during test trials. | **92.1% success (221/240)** over eight real-world tasks, with no human intervention during evaluation. This supports reliable reuse but is not a randomized comparison against per-run regeneration. | (pqac-00000016) |
+
+
+*Table: Safeguards for agent-generated robot code, including formal checks, simulation, runtime monitoring, human gates, safety envelopes, and frozen-code reuse. Quantitative results are shown where published; missing catch and false-alarm rates are identified explicitly.*
+
+### Key Findings
+
+**Static and formal checks** represent the most rigorous pre-execution layer. NeSyRo improved real-robot success from 10.6% (Code as Policies) to 57.5% and reduced irreversible actions from 53 to 7 by validating generated code with an SMT solver and checking skill preconditions with a PDDL planner (pqac-00000006). VASO achieved 96.8% specification compliance by model-checking plans against temporal-logic safety specifications (pqac-00000009).
+
+**Simulation dry runs** are the most widely used safeguard. MATTERIX validates entire chemistry workflows—including robotic manipulation, chemical kinetics, and heat transfer—in a digital twin before physical execution (pqac-00000034). LabscriptAI uses platform-specific simulators with iterative targeted patching rather than full regeneration (pqac-00000068). ReSkill demonstrated that simulation screening catches many errors but leaves a residual gap: 72/80 simulated successes versus 62/80 real successes (pqac-00000004).
+
+**Runtime safety filters** can dramatically reduce unsafe behavior. RoboGuard reduced unsafe execution under worst-case jailbreaks from over 92% to below 3% (pqac-00000004). LEASH used separate task, action, and gripper/pouring gates to reduce harm from 11.23% to 0.00% for one model on 92 RoboRisk tasks (pqac-00000007). However, VLM-based runtime verifiers can be unreliable: one fixed VLM "accepted 50.0% of remaining hover failures" and a learned verifier "was wrong on 91% of 699 later rollouts" (pqac-00000004).
+
+**Vision-language safety monitors** show promise but are not yet reliable for autonomous decisions. Chemist Eye achieved 97% aggregate hazard spotting and 95% decision-making performance in a self-driving chemistry laboratory (pqac-00000067), with PPE detection accuracy ranging from 67.5% to 97.5% depending on query format (pqac-00000066). LabSafety Bench found that no evaluated model—across 19 LLMs and VLMs—exceeded 70% accuracy on realistic hazard identification, "highlighting significant safety challenges" (pqac-00000029, pqac-00000031).
+
+**Human approval gates** remain essential. La Agente Óptima implements authenticated API keys, operator certification, and an append-only SHA-256 hash-chained audit ledger (pqac-00000026). SPINE requires human operators for physical actions and validates recovery through end-to-end teleoperation checks (pqac-00000046). The emerging consensus is that "human judgment remains necessary" for safety-critical decisions (pqac-00000065).
+
+**Frozen versus regenerated code.** No controlled randomized comparison exists, but indirect evidence favors freezing. ACE-CaP-0 achieved 92.1% with frozen programs and no agent during evaluation (pqac-00000016). WetRobo showed that reusing generated code reduced execution from 2 h 40 min to 3 min 27 s (pqac-00000002). RHO deploys single-turn frozen programs at test time (pqac-00000006). However, online revision can be "much more successful than one-shot execution in some settings, so freezing is not universally more reliable" (pqac-00000006). The practical recommendation is to freeze code once validated and implement regression testing when the library changes (pqac-00000009, pqac-00000010).
+
+**Missing evidence.** Catch rates and false-alarm rates for most individual safeguard layers are unreported. No study systematically measures the precision and recall of human approval gates (pqac-00000008, pqac-00000010).
+
+## 3. Agent- or AI-Designed Physical Hardware for Laboratory Robots
+
+**This is the area with the largest evidence gap.** No published study was found in which a language model or generative-AI system designed a laboratory fixture, holder, gripper, adapter, or docking feature that was then 3D-printed and tested on real laboratory robot hardware, with reported first-pass fit rates, iterations to success, or human edits needed.
+
+The closest evidence comes from **text-to-CAD generation** systems evaluated computationally:
+
+- **CADSmith** (Barkley et al., 2026; *arXiv preprint*) used five agents and two nested correction loops (inner for code errors, outer for geometric validation using OpenCASCADE measurements and VLM judgment). It achieved 100% execution rate on a 100-prompt benchmark and improved median IoU from 0.8085 to 0.9629 and reduced mean Chamfer Distance from 28.37 to 0.74 (pqac-00000012, pqac-00000013). Failure modes included "structurally incorrect yet geometrically valid solids" and subtle gaps missed by fixed viewing angles (pqac-00000015). No physical fabrication or testing was reported (pqac-00000012).
+
+- **IterCAD** (Hu et al., 2026; *arXiv preprint*) achieved 0.64% invalid ratio (~99.36% code validity) and low median Chamfer distance of 0.10 on Text2CAD benchmarks (pqac-00000014). Its iterative multimodal correction averaged 2.34 turns per design. No physical validation was reported.
+
+- **AgentsCAD** (George et al., 2026; *arXiv preprint*) specifically targeted design-for-manufacturing of FDM parts using multi-agent LLM reasoning, but was evaluated computationally.
+
+**3D-printed laboratory components** are widely documented in the self-driving-lab literature. Doloi et al. (2025) reviewed advances in low-cost 3D printing for laboratory automation, including "automatic liquid handlers, robotic arms, automated" components. However, these designs were human-engineered rather than AI-generated.
+
+**Implication for the BYU proposal.** The proposal to have an agent design connecting hardware (sample holders, docking plates, camera mounts, grippers) would represent genuinely novel work. The closest precedent is CADSmith's computational CAD generation pipeline, which could be extended to lab-fixture design with physical validation. The expected workflow would involve: LLM generates CadQuery/OpenSCAD code → geometric validation loop → 3D printing → physical fit testing → iteration. Based on CADSmith's computational results, one might expect high code-execution rates but significant iteration for dimensional accuracy and functional fit, requiring human measurement feedback.
+
+## 4. Provenance and Auditability for Agent-Operated Laboratories
+
+### Demonstrated Approaches
+
+**Git-based provenance.** WetRobo packages the robot's base stack, skill instructions (AGENTS.md), and agent-generated programs in a Git repository, with trial snapshots retained as branches. This creates a "record linking the starting software, agent-generated modifications, and individual attempts" (pqac-00000024). However, it does not include signed commits, immutable logs, or formal linkage from commits to measured physical outcomes (pqac-00000024).
+
+**Hash-chained audit ledger.** La Agente Óptima implements the most rigorous provenance: "all robot state transitions pass through one funnel that atomically persists state and appends a line-delimited JSON entry to an append-only, hash-chained audit ledger. Each entry records the actor, action, structured payload, UTC timestamp, predecessor hash, and SHA-256 hashes of the complete state before and after the transition" (pqac-00000026). This enables reconstruction of "the requesting person, technician certification of the physical deck, autonomous actions between request and measurement, and whether the record was altered" (pqac-00000026).
+
+**Community database deposition.** LabscriptAI deposits experimental data with metadata to FPBase (excitation/emission spectra, quantum yields) and EnzymeML (raw kinetics data), providing "traceability and reproducibility at the protocol/data level" (pqac-00000023).
+
+**Digital-twin synchronization.** MATTERIX synchronizes the simulated and real robots via FoundationPose-based pose estimation, enabling comparison of predicted and actual outcomes (pqac-00000036). This provides a form of "what was planned versus what happened" comparison, though quantitative discrepancy metrics were not systematically reported.
+
+### Cross-Site Reproducibility
+
+WetRobo demonstrated cross-site reproducibility for cap removal across two laboratories with different grippers and camera placements; the coding-agent approach succeeded while a VLA baseline failed to transfer (pqac-00000024). LabscriptAI demonstrated cross-platform protocol translation with calibration CV below 5% across four liquid-handling platforms (pqac-00000052). These represent the strongest published demonstrations, though both involve limited task sets.
+
+### Standards
+
+**No retrieved publication specifically discusses ISO 10218:2025 or its cybersecurity clauses for networked robots in the context of agent-operated laboratories.** The 2025 revision of ISO 10218 (Parts 1 and 2) added requirements for cybersecurity of networked industrial robot systems, but the agent-lab literature has not yet engaged with these requirements. Cheng et al. (2026) call generally for "cybersecurity and AI-security practices" but name no specific standard (pqac-00000027). The proposed design principles—authenticated identity, state provenance, human certification, and tamper-evident audit trails (pqac-00000026)—align with the spirit of ISO 10218:2025 but have not been evaluated against its specific clauses.
+
+## 5. Defensible Evaluation Design
+
+Based on the surveyed literature, a defensible evaluation of "an agent designs the fixture and writes the workflow, and the arm runs it" should include the following elements:
+
+### Outcome Metrics
+
+Evaluations should report binary task success, quantitative partial progress through task-defined subgoals, safety violations, execution cost (model calls, tokens, GPU time, robot time), wall-clock time, and uncertainty intervals over repeated trials (pqac-00000056). Subgoals should be "implementation-independent, count repeated achievements only once, and specify whether an achieved state must remain satisfied" (pqac-00000056). For the fixture-design component, relevant metrics include code-execution success, geometric accuracy (IoU, Chamfer distance), first-pass physical fit rate, iterations to successful function, and human edits required (pqac-00000012, pqac-00000013).
+
+### Baselines
+
+Comparisons should include at minimum three conditions: (1) a human expert designing the fixture and writing the workflow from scratch; (2) a scripted or deterministic workflow baseline using pre-existing fixtures; and (3) the agent system (pqac-00000056, pqac-00000058, pqac-00000063). CaP-X explicitly compared CaP-Agent0 against human-written programs and found the agent matched or exceeded humans on 4 of 7 tasks (pqac-00000019). VABAR uses "human-specified workflow or graph baselines" alongside agent results (pqac-00000058).
+
+### Sample Sizes
+
+Current practice varies widely: ACE-CaP-0 used 30 trials per task (240 total) (pqac-00000016); CaP-Bench used 25 hardware trials per task (pqac-00000056); VoxPoser used 5 real tasks with 10 trials each; BUMBLE used 70 trials across three buildings (pqac-00000057). The literature recommends that "sample sizes should be large enough to support uncertainty estimates rather than relying on single runs" and should use Wilson intervals or Bayesian methods (pqac-00000056, pqac-00000061). For the proposed evaluation, **≥25 trials per task per condition** would align with current best practice, with reporting of confidence intervals.
+
+### Expected Failure Rates
+
+The literature suggests the following baseline expectations:
+- **Best manipulation systems (frozen code):** 83–100% per-task success, 92% aggregate (ACE-CaP-0) (pqac-00000016)
+- **Code-as-policy with perturbations:** 12–26% under position/instruction perturbations (CaP-Agent0 on LIBERO-PRO) (pqac-00000018)
+- **Chemistry laboratory manipulation:** 75–90% for pick-and-place and pouring (MATTERIX) (pqac-00000032)
+- **Sim-to-real gap:** simulation screening catches many failures but typically 10–15% of simulated successes fail on real hardware (pqac-00000004)
+- **Safety violations:** policies exceeding 90% task success were unsafe in 18–28% of episodes; 38–56% of successful rollouts in one benchmark violated a safety clause (pqac-00000005)
+
+### Evaluation Architecture
+
+A defensible benchmark should: (1) use sealed or independently verifiable judges, separating diagnostic feedback from final evaluation (pqac-00000056); (2) deliberately inject execution-layer and sample-identity faults, scoring detection, localization, safe abort, recovery, and provenance preservation (pqac-00000059); (3) audit evaluator errors against references and report false acceptances and rejections separately (pqac-00000060); (4) freeze or explicitly measure any learning during testing (pqac-00000061); (5) test both simulation and physical embodiments with paired trials (pqac-00000058); and (6) disclose all human involvement including setup, resets, and reward code (pqac-00000057).
+
+### For the Specific BYU Proposal
+
+An evaluation of "agent designs fixture + writes workflow + arm runs it" is unprecedented in the literature. The closest analogs combine CADSmith-style computational CAD validation with ACE-CaP-0-style physical execution testing. A defensible protocol would:
+
+1. **Fixture design:** Agent generates CadQuery code for each connecting part → geometric validation (IoU, Chamfer) → 3D print → measure dimensional accuracy → test fit on robot → score first-pass success, iterations, and human edits.
+2. **Workflow writing:** Agent generates motion/manipulation code → simulation dry run → physical execution with ≥25 trials → score task success, safety violations, and latency.
+3. **End-to-end:** Score the fraction of parts that fit, workflows that execute, and complete alloy-development loops that run without human handling, compared against human-designed fixtures and human-written workflows under matched conditions.
+4. **Provenance:** Log every agent session, generated artifact, commit, and physical outcome in a hash-chained audit trail, then verify that the full chain can be reconstructed.
+
+The literature suggests one should expect 75–92% physical success rates for well-developed manipulation tasks, significant iteration (2–5 cycles) for first-pass fixture fit, and that human intervention will be necessary for physical setup, safety checks, and debugging hardware faults that agents cannot diagnose remotely (pqac-00000046, pqac-00000032).
+
+## Summary of Evidence Gaps
+
+- **Per-task monetary cost** is essentially unreported across all systems.
+- **Human-intervention frequency** is rarely quantified.
+- **False-alarm rates** for individual safeguard layers are almost never measured.
+- **AI-designed physical lab hardware** fabricated and tested on real robots: **no published evidence exists.**
+- **ISO 10218:2025 cybersecurity clauses** have not been analyzed in the agent-lab literature.
+- **Controlled comparison of frozen versus regenerated code** has not been published.
+- **End-to-end agent-designed-fixture-plus-workflow evaluation** has no published precedent.
