@@ -10,7 +10,8 @@ python make_video.py OUT.mp4 PLAYLIST.json
 
 PLAYLIST.json is a list of {"episode", "label", "instruction", "verdict", "ok" (true/false/null),
 "detail", and "video" (an mp4) or "stills" ([[image path, caption], ...])}, plus optional
-{"section": "title", "subtitle": "..."} entries for section cards.
+{"section": "title", "subtitle": "..."} entries for section cards and an optional
+{"intro": [[text, size, bold, colour], ...]} that replaces the opening card.
 """
 
 from __future__ import annotations
@@ -87,17 +88,20 @@ def from_png(png: Path, seconds: float, name: str) -> Path:
 
 
 intro = tmp / "intro.png"
-card(intro, [("AMP1 (Apple, \"On Agentic Manipulation Policies\", 2026)", 34, True, "#ffffff"),
-             ("Apple's harness, unchanged, on a CPU-only GitHub runner (MuJoCo)", 26, False,
-              "#d0d4da"),
-             ("Policy: Claude Opus 5.5 through Claude Code, given only AMP1's own prompt and SDK",
-              26, False, "#d0d4da"),
-             ("CaP-Gym robosuite and LIBERO-PRO tasks from the paper, then a simulated AgileX "
-              "PiPER on the lab's tasks", 26, False, "#d0d4da"),
-             ("Motion clips show executed motion in real time: the simulator pauses while the "
-              "model thinks. Slideshows show the images the policy looked at.", 21, False,
-              "#9aa3ad"),
-             ("vertical-cloud-lab/robot-arms #85", 22, False, "#9aa3ad")])
+INTRO = [("AMP1 (Apple, \"On Agentic Manipulation Policies\", 2026)", 34, True, "#ffffff"),
+         ("Apple's harness, unchanged, on a CPU-only GitHub runner (MuJoCo)", 26, False,
+          "#d0d4da"),
+         ("Policy: Claude Opus 5.5 through Claude Code, given only AMP1's own prompt and SDK",
+          26, False, "#d0d4da"),
+         ("CaP-Gym robosuite and LIBERO-PRO tasks from the paper, then a simulated AgileX "
+          "PiPER on the lab's tasks", 26, False, "#d0d4da"),
+         ("Motion clips show executed motion in real time: the simulator pauses while the "
+          "model thinks. Slideshows show the images the policy looked at.", 21, False,
+          "#9aa3ad"),
+         ("vertical-cloud-lab/robot-arms #85", 22, False, "#9aa3ad")]
+custom = next((it["intro"] for it in playlist if "intro" in it), None)
+playlist = [it for it in playlist if "intro" not in it]
+card(intro, [tuple(x) for x in custom] if custom else INTRO)
 parts.append(from_png(intro, 6, "p000"))
 
 for i, it in enumerate(playlist, 1):

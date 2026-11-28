@@ -389,5 +389,362 @@
   "frames_kept": true,
   "operator_cells": 1,
   "python_calls": 21
+ },
+ {
+  "episode": "print_off_a1_mini-ep0",
+  "instruction": "Take the finished print off the 3D printer's build plate and put it on the black shelf. Leave the build plate on the printer.",
+  "cells": 57,
+  "cell_errors": 0,
+  "images_shown": 59,
+  "policy_wall_min": 31.7,
+  "last_budget": "[step 692 of 2700, 2008 left; wall 32 min of 45 used]",
+  "outcome_belief": "success",
+  "scored": {
+   "file": "/tmp/amp-run/print_off_a1_mini/bench/print_off_a1_mini/log_0_env0.json",
+   "success": true,
+   "final_step": 693
+  },
+  "truth": {
+   "success": true,
+   "placed": true,
+   "gripper_contacts": 0,
+   "gripper_cmd_closed": 0.0,
+   "detail": {
+    "print_on_shelf": true,
+    "plate_seated": true,
+    "bond_broken": true,
+    "plate_offset_mm": 0.1
+   },
+   "events": [
+    {
+     "t": 10.572,
+     "event": "print bond broke",
+     "tension_N": 0.0,
+     "shear_N": 5.04,
+     "twist_Nm": 0.0033
+    }
+   ],
+   "objects": {
+    "build_plate": [
+     0.0715,
+     -0.3823,
+     0.084
+    ],
+    "print": [
+     0.21,
+     -0.4236,
+     0.0813
+    ]
+   },
+   "meta": {
+    "plate": [
+     0.07136961687321454,
+     -0.3823021328623613,
+     0.0845
+    ],
+    "shelf": [
+     0.23636961687321453,
+     -0.3823021328623613,
+     0.065,
+     0.065,
+     0.12
+    ]
+   }
+  },
+  "video": "print_off_a1_mini-ep0.mp4",
+  "frames_kept": true,
+  "operator_cells": 0,
+  "python_calls": 56
+ },
+ {
+  "episode": "print_off_a1_mini-ep1",
+  "instruction": "Take the finished print off the 3D printer's build plate and put it on the black shelf. Leave the build plate on the printer.",
+  "cells": 58,
+  "cell_errors": 2,
+  "images_shown": 57,
+  "policy_wall_min": 32.4,
+  "last_budget": "[step 693 of 2700, 2007 left; wall 33 min of 45 used]",
+  "outcome_belief": "unsure",
+  "scored": {
+   "file": "/tmp/amp-run/print_off_a1_mini/bench/print_off_a1_mini/log_1_env0.json",
+   "success": true,
+   "final_step": 694
+  },
+  "truth": {
+   "success": true,
+   "placed": true,
+   "gripper_contacts": 0,
+   "gripper_cmd_closed": 0.0,
+   "detail": {
+    "print_on_shelf": true,
+    "plate_seated": true,
+    "bond_broken": true,
+    "plate_offset_mm": 0.0
+   },
+   "events": [
+    {
+     "t": 38.596,
+     "event": "print bond broke",
+     "tension_N": 0.0,
+     "shear_N": 5.0,
+     "twist_Nm": 0.0004
+    }
+   ],
+   "objects": {
+    "build_plate": [
+     0.0701,
+     -0.3755,
+     0.084
+    ],
+    "print": [
+     0.1891,
+     -0.4232,
+     0.0869
+    ]
+   },
+   "meta": {
+    "plate": [
+     0.07011821624700257,
+     -0.37549536303674064,
+     0.0845
+    ],
+    "shelf": [
+     0.23511821624700258,
+     -0.37549536303674064,
+     0.065,
+     0.065,
+     0.12
+    ]
+   }
+  },
+  "video": "print_off_a1_mini-ep1.mp4",
+  "frames_kept": true,
+  "operator_cells": 0,
+  "python_calls": 57
+ },
+ {
+  "episode": "auger_swap-ep0",
+  "instruction": "Swap the powder doser's auger: put the auger that is in the doser's two clips into the empty slot of the auger rack, then snap the new auger from the rack into the doser's clips.",
+  "cells": 47,
+  "cell_errors": 2,
+  "images_shown": 51,
+  "policy_wall_min": 58.5,
+  "last_budget": "[step 2488 of 4500, 2012 left; wall 59 min of 70 used]",
+  "outcome_belief": "failure",
+  "scored": {
+   "file": "/tmp/amp-run/auger_swap.ep0-done/bench/auger_swap/log_0_env0.json",
+   "success": false,
+   "final_step": 2489
+  },
+  "truth": {
+   "success": false,
+   "placed": false,
+   "gripper_contacts": 0,
+   "gripper_cmd_closed": 0.0,
+   "detail": {
+    "new_in_clips": [
+     true,
+     true
+    ],
+    "gear_to_pinion_mm": 10.5,
+    "new_cap_toward_arm": true,
+    "old_in_empty_slot": false
+   },
+   "events": [
+    {
+     "t": 7.638,
+     "event": "clip0 opened",
+     "force_N": 11.2
+    },
+    {
+     "t": 10.05,
+     "event": "clip0 closed (snapped on a tube)"
+    },
+    {
+     "t": 10.338,
+     "event": "clip1 opened",
+     "force_N": 10.0
+    },
+    {
+     "t": 14.196,
+     "event": "clip1 closed (snapped on a tube)"
+    },
+    {
+     "t": 35.764,
+     "event": "clip0 opened",
+     "force_N": 11.9
+    },
+    {
+     "t": 37.93,
+     "event": "clip0 closed (snapped on a tube)"
+    },
+    {
+     "t": 38.288,
+     "event": "clip1 opened",
+     "force_N": 10.2
+    },
+    {
+     "t": 40.678,
+     "event": "clip1 closed (snapped on a tube)"
+    },
+    {
+     "t": 64.31,
+     "event": "clip0 opened",
+     "force_N": 10.0
+    },
+    {
+     "t": 64.922,
+     "event": "clip1 opened",
+     "force_N": 10.0
+    },
+    {
+     "t": 67.058,
+     "event": "clip0 closed (empty)"
+    },
+    {
+     "t": 72.328,
+     "event": "clip1 closed (empty)"
+    },
+    {
+     "t": 124.278,
+     "event": "clip0 opened",
+     "force_N": 10.0
+    },
+    {
+     "t": 131.564,
+     "event": "clip0 closed (empty)"
+    },
+    {
+     "t": 131.62,
+     "event": "clip1 opened",
+     "force_N": 10.0
+    },
+    {
+     "t": 139.616,
+     "event": "clip0 opened",
+     "force_N": 10.0
+    },
+    {
+     "t": 159.958,
+     "event": "clip1 closed (snapped on a tube)"
+    },
+    {
+     "t": 160.686,
+     "event": "clip0 closed (snapped on a tube)"
+    }
+   ],
+   "objects": {
+    "auger_old": [
+     -1.3306,
+     0.0698,
+     -0.7228
+    ],
+    "auger_new": [
+     0.5119,
+     -0.0044,
+     0.0431
+    ]
+   },
+   "meta": {
+    "doser": [
+     0.5013696168732146,
+     -0.004604265724722594,
+     0.04325
+    ],
+    "rack_slot": [
+     0.5013696168732146,
+     -0.235,
+     0.045
+    ]
+   }
+  },
+  "video": "auger_swap-ep0.mp4",
+  "frames_kept": true,
+  "operator_cells": 0,
+  "python_calls": 46
+ },
+ {
+  "episode": "atomizer_charge-ep0",
+  "instruction": "Load the four charge cups from the tray into the atomizer's crucible, standing upright around the sealing rod.",
+  "cells": 78,
+  "cell_errors": 4,
+  "images_shown": 45,
+  "policy_wall_min": 55.0,
+  "last_budget": "[step 1574 of 4500, 2926 left; wall 55 min of 70 used]",
+  "outcome_belief": "failure",
+  "scored": {
+   "file": "/tmp/amp-run/atomizer_charge.ep0-done/bench/atomizer_charge/log_0_env0.json",
+   "success": false,
+   "final_step": 1575
+  },
+  "truth": {
+   "success": false,
+   "placed": false,
+   "gripper_contacts": 0,
+   "gripper_cmd_closed": 0.0,
+   "detail": {
+    "cups": [
+     {
+      "r_mm": 367.8,
+      "bottom_mm": -4.1,
+      "tilt_deg": 0.0,
+      "in": false
+     },
+     {
+      "r_mm": 350.8,
+      "bottom_mm": -4.1,
+      "tilt_deg": 0.0,
+      "in": false
+     },
+     {
+      "r_mm": 18.6,
+      "bottom_mm": -0.1,
+      "tilt_deg": 0.0,
+      "in": true
+     },
+     {
+      "r_mm": 18.5,
+      "bottom_mm": -0.1,
+      "tilt_deg": 0.0,
+      "in": true
+     }
+    ]
+   },
+   "events": [],
+   "objects": {
+    "cup0": [
+     0.1308,
+     -0.2397,
+     0.0059
+    ],
+    "cup1": [
+     0.1708,
+     -0.2397,
+     0.0059
+    ],
+    "cup2": [
+     0.3015,
+     0.0668,
+     0.0099
+    ],
+    "cup3": [
+     0.2842,
+     0.0839,
+     0.0099
+    ]
+   },
+   "meta": {
+    "crucible": [
+     0.3027392337464291,
+     0.0853957342752774,
+     0.009999999999999995,
+     0.12
+    ]
+   }
+  },
+  "video": "atomizer_charge-ep0.mp4",
+  "frames_kept": true,
+  "operator_cells": 0,
+  "python_calls": 77
  }
 ]
