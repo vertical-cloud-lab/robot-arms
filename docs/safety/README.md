@@ -10,6 +10,8 @@ reviewed, approved or signed it yet.
 | [`hazard-analysis.md`](hazard-analysis.md) | Job Hazard Analysis following §6 of the College [Laboratory & Shop Safety Plan](https://github.com/vertical-cloud-lab/byu-vcl/blob/b00e137/byu-engineering-lab-safety-plan-chemical-hygiene-plan-2024.pdf): tasks, 15 hazards, proposed ratings on the College matrix, controls in hierarchy order, What-If table |
 | [`sop.md`](sop.md) | SOP in the plan's Appendix B layout. Includes the one-time pre-block steps (with measurement M1 at the transformer), the "workspace clear" rule, restart after an E-stop, emergencies, and training and sign-off |
 | [`checklist.md`](checklist.md) | One page for the person at the arm, to print and post by the E-stop |
+| [`motion-monitoring.md`](motion-monitoring.md) | Added 2026-11-28 ([PR #23](https://github.com/vertical-cloud-lab/robot-arms/pull/23)). Slowdowns, collision checks, and the current each joint should draw at each pose and load. Ends with the conditions a remote, unattended run would need (U1–U12) and the measurements to take first (M2–M7) |
+| [`analysis/`](analysis/) | `joint_currents.py`, the model behind it (pure computation, nothing talks to the arm), with its results in `joint_currents.json` and three figures |
 
 The format follows the College plan, but its text isn't copied in. The PDFs stay in byu-vcl.
 
@@ -33,7 +35,7 @@ Pi, it says so and leaves it to the operator who owns the run.
 | **190 mm (7.5 in) transformer clearance**, "nothing within … or above it" | H10, SOP §A M1, sign | Secondhand: jss265 quoting @gage-erickson in [#2](https://github.com/vertical-cloud-lab/robot-arms/issues/2#issuecomment-6089392188). I found no written source in byu-vcl | Ask the transformer's owner. Read its nameplate without opening anything. NEC 450.9 may be the origin `[unverified]` |
 | Distances from the transformer to the shelf, table, dome, canvas, cords, E-stop box, and the arm's reach | H10, SOP §A M1 | Never measured `[to measure]` | Measurement M1 |
 | The transformer's voltage and rating | H10 | Not recorded | Nameplate |
-| Whether the 626 mm reach includes the gripper | M1, reach marking | The listing doesn't say | AgileX datasheet, or measure with the power off |
+| Whether the 626 mm reach includes the gripper | M1, reach marking | The listing doesn't say. The URDF's link lengths add up to 627 mm from J2's axis to the flange, which suggests it doesn't, and the fingertips reach about 0.78 m ([`motion-monitoring.md` §2.1](motion-monitoring.md#21-method)) | AgileX datasheet, or measure with the power off |
 | About 150 mm from flange to fingertips | M1 | Photo estimate in #19 (the tape script's `--tcp-mm` default) | Calipers, power off |
 | Gripper force: 40 N clamping, 50 N max, over a 0–5 N·m effort range. How effort maps to fingertip force | H1 | The spec sheet as quoted in #19 and the tape script; I didn't see the sheet. The mapping isn't known | AgileX gripper spec |
 | About 167°/s at 100% speed | H3 | Extrapolated from 1.67°/s per percent, measured only at 10–20% | AgileX joint-speed spec |
@@ -48,6 +50,12 @@ Pi, it says so and leaves it to the operator who owns the run.
 | AgileX manual §6.1 (power off after use) and §8 (arm drops on power-off; unplugging isn't a safety mechanism) | H6, SOP §F | Quoted in #18. The device.report copy returned 403 and the Scribd copy is paywalled | Read the manual |
 | Firmware S-V1.8-5 as the fix for the drop on exiting teach mode | H6 | From #5's summary of the ROS driver docs | `agx_arm_ros` release notes |
 | College phone numbers | SOP, checklist, sign | Copied from the March 2024 plan; may have changed | Confirm before posting |
+| Link masses and centres of mass: 3.65 kg moving, plus a 1.02 kg base | `motion-monitoring.md` §2 | CAD figures from AgileX's URDF, not weighed | Baseline currents (M3) |
+| Current to torque: 1.18125 N·m/A (J1–J3), 0.95844 N·m/A (J4–J6) | `motion-monitoring.md` §2 | AgileX's fixed coefficients in piper_sdk. With them, the model asks for 2.6 times the current #54 recorded on J3 | M3 |
+| 0.40 kg of tooling, 60 mm past the flange, about 35 mm off J6's axis | `motion-monitoring.md` §2 | The mass is fitted to one reading (J5 holding about 1.5 A); the positions are assumed | Weigh and measure it (M4) |
+| Which end of collision levels 1–8 is the most sensitive, and whether the end-load setting changes them | `motion-monitoring.md` §1, §4.2 | Not in piper_sdk's docstrings | AgileX, or test M5 |
+| ±18 N·m as the motors' torque limit | `motion-monitoring.md` §2.3 | It's piper_sdk's MIT-mode command range, not a motor spec | AgileX spec |
+| 250 mm/s "reduced speed" (ISO 10218-1); 140 N for hands and 65 N for the face (ISO/TS 15066) | `motion-monitoring.md` §2.5, §3 | From memory; I didn't open the standards | The standards |
 
 ### Numbers I did check
 
@@ -61,6 +69,10 @@ Pi, it says so and leaves it to the operator who owns the run.
 | Script caps: 45° lift and 50% speed (`piper_up_down.py`), 30% (`piper_pick_tape.py`). Both refuse to run without joint feedback | The scripts on the PR #16 and PR #20 branches |
 | `MotionCtrl_1(0x01, 0, 0)` lowers the arm with damping, and `MotionCtrl_1(0x02, 0, 0)` is the reset needed afterwards (AgileX's answer). The reset made the arm "drop immediately" (the reporter) | [piper_sdk#20](https://github.com/agilexrobotics/piper_sdk/issues/20) |
 | Review every other year. The 50 V electrical threshold | College plan §6, §7 and §10 |
+| piper_sdk 0.6.2: the current-to-torque coefficients; collision protection set with `0x47A`, queried with `0x477` → `0x47B`, levels 0–8 with 0 off; arm status `0x07` is a collision; `demo/V2/piper_read_crash_protectation.py` sets every level to 0 before reading | The package from PyPI, read 2026-11-28 |
+| The URDF's joints reproduce piper_sdk's DH kinematics to 0.14 mm | `check_against_dh()` in [`analysis/joint_currents.py`](analysis/joint_currents.py) |
+| The scripts' current limits, lag limits, speeds and accelerations; the relay cut only once the arm is parked, and a reboot of the Pi dropping the relay | `Up_and_Down.py`, `follower.py` and `arm_power.py` on main at `41a21f8` |
+| #54: peaks of 0.04, 1.1, 2.0, 0.2, 2.7 and 0.45 A (J1–J6) moving freely; J5 at about 1.5 A holding the gripper level; J6 going from 0.1 A to 1.3 A in 40 ms of a jam, peaking at 16 A, with the lag check alone taking 0.35 s | As recorded in `Up_and_Down.py` on main at `41a21f8` |
 
 ## Open before the next campaign block
 
@@ -85,15 +97,21 @@ Each item needs an owner and a date.
 | 13 | A lip on the shelf's transformer side, so items can't roll toward it | | |
 | 14 | Safety glasses at the cell. A brush and pan and a glass-disposal box | | |
 | 15 | Review team meets, sets the ratings, and signs the JHA. The College Health & Safety Officer reviews the SOP | | |
+| 16 | **Decide:** are remote, unattended runs a goal? If they are, plan U1–U12 in [`motion-monitoring.md` §5](motion-monitoring.md#5-remote-unattended-runs-proposed-conditions). Until then SOP §J stands | | |
 
 **Later:**
-- A software keep-in box at the dome walls and the shelf.
+- A software keep-in box at the dome walls and the shelf (part of the cell model in
+  [`motion-monitoring.md` §4.1](motion-monitoring.md#41-before-a-move-check-the-whole-path-against-a-model-of-the-cell)).
 - The camera check before enabling, enforced in the scripts.
 - The damped stop for mid-run aborts, after a test at rest.
 - Questions for AgileX: does a teach recording survive a power cycle, and how is one cleared?
   What is the gripper's force?
-- A read-only query of the drivers' collision protection level. That needs its own explicit
-  request.
+- Measurement M2: a read-only query of the drivers' collision protection level. That needs its
+  own explicit request. Then M3 (baseline currents) and M4 (weigh the tooling), before any
+  current threshold moves from a fixed limit to one set by pose and load
+  ([`motion-monitoring.md` §6](motion-monitoring.md#6-measurements-to-take-first)).
+- Speed caps at the fingertips and a path check against a model of the cell, for attended
+  runs too ([`motion-monitoring.md` §3–4](motion-monitoring.md#3-slowdowns)).
 - Whether a UPS suits the arm.
 
 ## What this draft didn't do
@@ -104,3 +122,6 @@ Each item needs an owner and a date.
 - I couldn't open the AgileX manual: the device.report copy linked in #7 returned 403, and #7
   says the Scribd copy is paywalled. Its sections are quoted through #18 and marked.
 - The risk ratings are proposals. The College plan has the review team set them.
+- The 2026-11-28 additions didn't touch the arm or any Pi either. The currents are a model,
+  checked against the one recorded run it could be checked against (#54), and it disagrees with
+  that run for J2 and J3.

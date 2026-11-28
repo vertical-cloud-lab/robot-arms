@@ -36,6 +36,7 @@ the hazards there. `[unverified]` and `[to measure]` mark numbers nobody has che
   - [G. Restart after an E-stop](#g-restart-after-an-e-stop)
   - [H. After a power outage](#h-after-a-power-outage)
   - [I. After a failed or frozen run](#i-after-a-failed-or-frozen-run)
+  - [J. Remote, unattended runs](#j-remote-unattended-runs)
 - [Emergency procedures](#emergency-procedures)
 - [Unwanted lab material](#unwanted-lab-material-collection-procedures)
 - [Training and sign-off](#summary-of-what-training-is-required)
@@ -74,7 +75,7 @@ includes the person at the arm, remote operators running scripts on the arm Pi, 
 It covers:
 - powering the arm;
 - reaching into the cell;
-- powered runs, including agent-driven ones;
+- powered runs, including agent-driven ones, with a person at the E-stop (§J: no unattended runs);
 - the wrist teach button;
 - stops, outages and failed runs;
 - work near the atomizer's transformer;
@@ -157,6 +158,8 @@ None in scope. The atomizer's metal powders belong to its own procedures.
 | Transformer keep-out zone, taped | **Not marked.** Comes after measurement M1 |
 | Base bolted to the plywood | **Not recorded.** Confirm in §A |
 | Software keep-in box at the dome walls | Not implemented |
+| Fixed per-joint current limits and lag checks | In `Up_and_Down.py` and `follower.py` on main (added since this draft). The limits are the same at every pose and load ([`motion-monitoring.md` §2](motion-monitoring.md#2-joint-currents-against-pose-and-load)) |
+| Path checked against a model of the cell; current thresholds set by pose and load; speed caps at the fingertips | Not implemented. Required before any unattended run ([`motion-monitoring.md`](motion-monitoring.md)) |
 
 ## Personal Protective Equipment (PPE)
 
@@ -381,6 +384,21 @@ Use all of it after an unplanned stop. After a planned lockout (§C), do steps 5
    supported damped stop is one option, an authorized move home is another. Neither is written
    here, because this SOP doesn't move the arm.
 3. Once it's at rest, press the E-stop, then do §G steps 2–9 and log it.
+
+### J. Remote, unattended runs
+
+1. **They aren't allowed.** Every powered run follows §D, with a trained person at the E-stop
+   for the whole run. A run starts only when someone at the cell has said "workspace clear"
+   for it.
+2. [`motion-monitoring.md` §5](motion-monitoring.md#5-remote-unattended-runs-proposed-conditions)
+   lists what would have to be true first (U1–U12). That includes guarding that keeps people
+   out of the reach, a path check against a measured model of the cell, current thresholds set
+   by pose and load, speed caps, and alerts to a person. The review team decides whether
+   unattended runs are a goal. If they are, this section and §D get rewritten and reviewed
+   before the first one.
+3. **Don't run AgileX's `piper_read_crash_protectation.py`.** It sets every joint's collision
+   protection to 0 before reading it. Reading the level is measurement M2, for an authorized
+   operator under its own request.
 
 ## Emergency procedures
 

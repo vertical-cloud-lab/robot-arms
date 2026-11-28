@@ -3,6 +3,7 @@
 Print this one page and post it by the E-stop. The details are in the [SOP](sop.md).
 **The arm can move at any time. Remote users and AI agents can start it.**
 **Until the E-stop is installed, "press the E-stop" means unplug the arm's cord.**
+**No unattended runs.** If nobody can stay at the E-stop for the whole run, it doesn't start ([SOP §J](sop.md#j-remote-unattended-runs)).
 `[unverified]` numbers are still to be confirmed (see the [README](README.md#how-numbers-are-marked)).
 
 **Start of session**

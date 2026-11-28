@@ -34,8 +34,8 @@ This file uses those scripts as of main at `41a21f8`.
 2. **Use an expected current instead.** Trip when a joint's current is more than a margin away
    from what that pose, load and acceleration should draw. Set the margin from a measured
    baseline.
-3. **The model can't supply the baseline.** For J3 it predicts 2.6 times the current the arm
-   drew in #54, and up to 1.7 times for J2 (§2.2). Its shapes are useful: how current grows
+3. **The model can't supply the baseline.** For J3 it asks for at least 2.6 times the current
+   the arm drew in #54, and for J2 at least 1.7 times at home (§2.2). Its shapes are useful: how current grows
    with reach and payload. Its absolute amps aren't, until measurement M3 calibrates them.
 4. **Payload uses up J4's and J5's margins first.** With 0.5 kg in the gripper, J5 needs up to
    2.7 A and J4 2.6 A. J4's limits are 1.5 and 2 A. With 1.5 kg, J5 needs 5.2 A, over both

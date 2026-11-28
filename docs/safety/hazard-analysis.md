@@ -68,7 +68,8 @@ in to reset the scene hundreds of times while the arm is powered and can be star
 | Interlock on the dome flap | None |
 | Software keep-in box at the dome walls | None in the arm scripts. [#2](https://github.com/vertical-cloud-lab/robot-arms/issues/2#issuecomment-6089393090) calls one required for the raised-deck layout |
 | Script guards | `piper_up_down.py` (PR #16) and `piper_pick_tape.py` (PR #20) send nothing without `--go`, and refuse to start without live joint feedback or away from the rest pose. They cap speed (50% and 30%) and only turn the motors off at rest. Neither is merged yet |
-| Collision detection level on the joint drivers | Not read. Another user's PiPER reported level 0 (no protection) ([piper_sdk#20](https://github.com/agilexrobotics/piper_sdk/issues/20)) |
+| Collision detection level on the joint drivers | Not read. Another user's PiPER reported level 0 (no protection) ([piper_sdk#20](https://github.com/agilexrobotics/piper_sdk/issues/20)). AgileX's demo that reads it sets it to 0 first ([`motion-monitoring.md` §1](motion-monitoring.md#1-what-the-arm-and-the-scripts-check-today)) |
+| Current and lag checks (added 2026-11-28) | Since this draft, `Up_and_Down.py` and the teleop `follower.py` on main stop on fixed per-joint current limits and on lag. The limits are the same at every pose and load, so the push they detect ranges from about 40 N to over 200 N (model, [`motion-monitoring.md` §2](motion-monitoring.md#2-joint-currents-against-pose-and-load)) `[unverified]` |
 | Sign at the cell | Posted, according to the request for this draft. Its text isn't in either repo, so attach a photo. [`sop.md`](sop.md#sign-text-proposed) proposes wording |
 | Transformer clearance (190 mm `[unverified]`) | **Not measured** `[to measure]` |
 
@@ -87,6 +88,7 @@ and network security beyond who can start motion.
 | T5 | Abnormal events: E-stop pressed, power outage, a run that fails or freezes partway |
 | T6 | Work near the atomizer transformer: shelf loading, cable routing, the dome's edge |
 | T7 | Maintenance with the power off: gripper or flange changes, camera mounts, base bolts |
+| T8 | Remote, unattended runs with nobody at the cell. The SOP doesn't allow them ([§J](sop.md#j-remote-unattended-runs)); this row is here to rate them (added 2026-11-28) |
 
 ## Step 3. Hazards
 
@@ -109,6 +111,7 @@ Appendix A categories are in brackets. "Abnormal" means the hazard needs somethi
 | H13 | T3, T7 | **The arm tips or the base shifts** [impact, crushing]. Fast moves or full reach with payload on an unbolted base (see Mounting above) | Abnormal |
 | H14 | T2 | **Excessive reaching** [excessive reaching, repetitive motion]. Loading the shelf over or around the arm, hundreds of times per block. On the raised-deck design the shelf top is about 1.35 m up and 0.96 m in from the front edge (model, [#2](https://github.com/vertical-cloud-lab/robot-arms/issues/2#issuecomment-6089393358)) `[unverified]` | Normal |
 | H15 | T3, T5 | **A failed run leaves the arm enabled and raised** [crushing]. The arm holds its last pose indefinitely, then drops on the next power cut. A run in progress can keep sending moves after power drops, for up to about 40 s by #18's estimate `[unverified]` | Abnormal |
+| H16 | T8 | **Unattended runs** [impact, crushing, equipment damage, laceration]. Nobody is at the E-stop. A collision with a fixture, the printer, glassware or a person who walked in goes on until a script's own check stops it, and none of those checks is safety-rated. With fixed current limits, the push needed to trip one ranges from about 40 N to over 200 N, depending on the pose (model, [`motion-monitoring.md` §2.5](motion-monitoring.md#25-how-hard-a-push-trips-a-fixed-limit)) `[unverified]`. If the Pi that switches the arm's relay (mpzy) crashes or reboots, the arm loses power wherever it is, and a raised arm drops (H6). After a stop, the arm holds itself up until someone notices (H15) | Abnormal |
 
 ## Step 4. Evaluate: proposed ratings
 
@@ -135,6 +138,7 @@ control in Step 5 is in place. The review team should set the final ratings.
 | H13 Tip or shift | Moderate injury | C | I | A | I |
 | H14 Reaching | Slight injury | D | I | C | I |
 | H15 Failed run | Moderate injury | C | I | B | I |
+| H16 Unattended runs | Serious injury | C, if run today (the SOP doesn't allow it) | **II** | A, with U1–U12 | I |
 
 Two hazards stay at II after controls:
 - **H9 (dome).** The flap is only a visual barrier. Getting to I needs an engineering control: an
@@ -155,6 +159,9 @@ Two hazards stay at II after controls:
 | Someone lifts the flap to watch a run? | Their hand or head is inside the reach of a moving arm (H9) | The sign | No interlock. Proposed: a "flap down = may move" label, plus a flap interlock later |
 | A vial rolls off the shelf toward the transformer? | Someone reaches into the 190 mm `[unverified]` zone to fetch it (H10) | None yet | Proposed: never reach into the zone; mark it on the floor and wall; a lip on the shelf |
 | A run crashes with the arm raised and everyone leaves? | It holds, then drops at the next outage (H15) | Script logs | Proposed: an end-of-session status check by the run's operator |
+| An unattended run hits the printer or a fixture? | The arm pushes until a current or lag check trips (40 N to over 200 N with `follower.py`'s limits, in the model `[unverified]`), then holds raised (H16, H15) | The scripts' snag checks, which aren't safety-rated | No model of the cell and no alert to a person. Proposed: [`motion-monitoring.md` §4](motion-monitoring.md#4-collision-checks) |
+| mpzy reboots or crashes during a run? | GPIO17 drops, the relay cuts the arm's power, and a raised arm falls (H6, H16) | None | Proposed: no updates or reboots during runs, a UPS for that Pi, and the arm raised only while it has to be (U5) |
+| Someone raises a current limit so that a heavier payload stops tripping it? | Near home, the check stops seeing collisions, because the limit is now far above what the arm draws there | None | Proposed: thresholds from a measured baseline, set by pose and load ([`motion-monitoring.md` §4.2](motion-monitoring.md#42-during-a-move-expected-current-not-fixed-limits)) |
 
 ### 2 Guide Word check of the restart procedure (SOP §G)
 
@@ -242,6 +249,20 @@ then PPE. Status is **Have**, **Need** (before the block) or **Later**.
 - Administrative, **Need:** plug only the arm's brick into the E-stop, not the Pi. Inspect the cord
   before each session. Route cords off the floor.
 
+**H16 (unattended runs), and slowdowns and collision checks for H1–H4.** Proposed in
+[`motion-monitoring.md`](motion-monitoring.md) (added 2026-11-28).
+- Eliminate, **Have:** no unattended runs. Every run has a person at the E-stop (SOP §D, §J).
+- Engineering, **Need before any unattended run:** guarding with an interlock that keeps people
+  out of the reach (U1). The canvas dome doesn't do that (H9).
+- Engineering, **Need before any unattended run:** the path checked against a measured model of
+  the cell, current thresholds set by pose and load from a measured baseline, speed caps at the
+  fingertips, and the firmware collision level read back each run (U2–U4).
+- Administrative, **Need before any unattended run:** the rest of U5–U12, and this JHA re-rated.
+- Engineering, **Later, for attended runs too:** the same speed tiers and path check. They
+  shorten how far the arm travels before a stop, whoever is watching.
+- Administrative, **Need:** never run AgileX's `piper_read_crash_protectation.py`. It sets the
+  collision protection to 0 before reading it.
+
 **H12–H14 (vials, tipping, reaching)**
 - Engineering: bolt the base and record that it's done (**Need**). Keep the shelf low and reachable
   without reaching over the arm (**Later**).
@@ -261,4 +282,6 @@ example when:
 - there's a new end effector, or a new control path such as ROS 2 or LeRobot;
 - the arm moves next to the CubXL or OT-2;
 - the firmware is updated;
+- before the first unattended run, or when the current thresholds, speed tiers or cell model
+  change;
 - there's a near miss or an injury.
