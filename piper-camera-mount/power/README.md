@@ -56,7 +56,7 @@ Friday sale; [`shopping_2026-11-28_pololu.json`](shopping_2026-11-28_pololu.json
 
 Plus, from campus or the lab:
 
-- **The lead:** about 2.5 m of two-core wire, 22 AWG or heavier. High-flex silicone wire suits the
+- **The lead:** 2 to 2.5 m of two-core wire, 22 AWG or heavier. High-flex silicone wire suits the
   service loops best. The ELC sells 16 to 18 AWG hookup wire at $0.13 a foot.
 - **A USB-C plug pigtail** of about 15 cm, from the regulator's VOUT and GND to the Pi. No Pololu
   part does this. The ELC's 24-pin USB-C male breakout ($2.20) is another way to make one.
