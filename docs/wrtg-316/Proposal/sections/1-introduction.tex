@@ -1,8 +1,8 @@
 % !TEX root = ../main.tex
 \section{Introduction}
 
-In 2020 a robot arm on a wheeled base worked alone in a University of Liverpool chemistry lab
-for eight days. It carried samples between instruments and ran 688 experiments, choosing each
+In a study published in 2020, a robot arm on a wheeled base worked alone in a University of
+Liverpool chemistry lab for eight days. It carried samples between instruments and ran 688 experiments, choosing each
 batch from the results of the last \cite{burger2020}. Labs that work this way are called
 self-driving laboratories (SDLs). They are now common enough in chemistry and materials science
 to fill a 100-page review \cite{tom2024}, and biology labs are testing arms on routine bench
@@ -16,8 +16,8 @@ arm \cite{burger2020}. Tom \etal\ price special-purpose commercial SDL hardware 
 (about \$2{,}000) and the open-source SO-101 (about \$200), the arms in the lab where I work.
 % CHECK: the PiPER and SO-101 prices our lab paid.
 Low-cost arms are not new \cite{quigley2011}, and labs can now 3D-print much of the equipment
-around them \cite{doloi2025}, but only recently have labs begun putting arms this cheap to real
-work \cite{harazono2024}, \cite{rupp2022}.
+around them \cite{doloi2025}, but only recently have labs begun testing low-cost and desktop arms
+on real lab work \cite{harazono2024}, \cite{rupp2022}.
 
 \subsection{The Research Issue and Its Background}
 
@@ -36,8 +36,8 @@ should learn that before it builds a workflow around the arm.
 
 The literature approaches the issue from several sides without settling it. SDL reviews argue
 that open, low-cost hardware lowers the barrier to building an SDL \cite{tom2024},
-\cite{doloi2025}. Lab-automation studies test one affordable arm on one job
-\cite{harazono2024}, \cite{rupp2022}. Metrology studies measure repeatability by ISO~9283, the
+\cite{doloi2025}. Lab-automation studies test a single affordable arm on particular
+jobs \cite{harazono2024}, \cite{rupp2022}. Metrology studies measure repeatability by ISO~9283, the
 standard method for measuring a robot's accuracy and repeatability \cite{chajon2026}, and SDL
 builders measure how well an arm finds a station again \cite{burger2020}, \cite{zhou2025}.
 Comparisons of arms for purchase weigh datasheets, experiments that check them, safety and ease
@@ -64,7 +64,7 @@ by those tests, low-cost arms are good enough for much of the routine transfer w
 now buy industrial arms to do.}
 
 \textbf{Who would disagree.} SDL builders who see industrial precision as the price of
-trustworthy data \cite{wattoo2024}; lab managers who count throughput, since low-cost arms can
+trustworthy data, pointing to failures like those in \cite{wattoo2024}; lab managers who count throughput, since low-cost arms can
 be slower than a person \cite{rupp2022}; researchers who favor special-purpose automation as
 more efficient \cite{tom2024}; and anyone who treats the datasheet value as the accepted basis
 for comparing arms.

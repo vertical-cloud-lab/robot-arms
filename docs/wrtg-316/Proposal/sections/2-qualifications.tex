@@ -59,13 +59,13 @@ dial indicator to it.
 positioning accuracy and repeatability.''} Chaj\'{o}n \etal\ measure an industrial
 collaborative arm, a UR3, by selected elements of ISO~9283: 30 repetitions at each of five
 poses, using a Raspberry Pi camera, ArUco markers on a 3D-printed tool held in the gripper, and
-dial indicators as a reference. The camera measured a repeatability of 0.147 to 0.229~mm, while
-the dial indicators measured a mean deviation of 0.0109~mm, against 0.03~mm on the UR3's
+dial indicators as a reference. The camera measured a repeatability of 0.147 to 0.229~mm for
+straight-line moves, while the dial indicators measured a mean deviation of 0.0109~mm, against 0.03~mm on the UR3's
 datasheet.
 
 This paper gives my list its arm-level test, with equipment my lab already owns, and a lesson
-about measurement. The camera's numbers were about ten times the dial indicators', so for a UR3
-the camera mostly measured its own error. A measuring tool must be finer than the arm it
+about measurement. The camera's numbers were more than ten times the dial indicators', so for a
+UR3 the camera mostly measured its own error. A measuring tool must be finer than the arm it
 measures: a camera may do for a low-cost arm with errors near a millimeter, but comparing that
 arm with an industrial one takes a dial indicator, and measured and datasheet values must be
 reported separately.
@@ -110,14 +110,15 @@ reported separately.
     lab can print its own test fixtures.}
   % CHECK: the 90-99% figure is from the article's summary; find it in the full text.
 
-  \annotated{ferraguti2019}{\RefFerraguti}{A method for comparing arms before buying one:
-    three collaborative arms judged on technical data and ``experimental verification of
-    declared features,'' on collision forces under the limits of ISO/TS~15066, and on the effort
+  \annotated{ferraguti2019}{\RefFerraguti}{A method for comparing arms before buying one. It
+    argues that a fair comparison covers technical data with ``experimental verification of
+    declared features,'' safety limits and the user's effort, and applies this to three
+    collaborative arms, with collision tests under ISO/TS~15066 and measures of the effort
     needed to program them. It is my best source on the metrics that guide a purchase.}
 
-  \annotated{wattoo2024}{\RefWattoo}{The strongest counter-argument, from inside an SDL: two
-    lower-precision educational arms standing in for a UR3e could not share a coordinate frame
-    to better than about 3~cm, and one silently ignored an infeasible command. It shows the
+  \annotated{wattoo2024}{\RefWattoo}{The strongest counter-argument, from inside an SDL. Putting
+    two lower-precision educational arms, used in place of a UR3e, into one coordinate frame
+    left an average error of 3~cm, and one arm silently ignored an infeasible command. It shows the
     failures my tests must catch.}
 
   \annotated{vincent2024}{\RefVincent}{It shows how to turn a few robot trials into a
