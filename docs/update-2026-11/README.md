@@ -738,6 +738,11 @@ result.
 
 ## 7. Calendar, December 2026 – March 2027
 
+![The seven ranked projects against the lab's deadlines, December 2026 to March 2027](timeline.png)
+
+The chart is drawn by [`make_timeline.py`](make_timeline.py) from the table below; the bar spans are proposals, not
+commitments.
+
 | Date | Event | What the arm work can feed |
 |---|---|---|
 | now | safety gates: E-stop test, power-loss behaviour, PR #23 review | everything |
