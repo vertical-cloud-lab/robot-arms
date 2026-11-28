@@ -109,8 +109,192 @@ The PiPER cell's fixed cameras get their own Pis: `CAM_PI_HOSTNAME`, tagged `tag
 `tag:rpi-5-mpzy` (`CAM2_PI_USERNAME`, `CAM2_PI_PASSWORD`). They do not drive the arm, but the
 same rules apply: read-only first, and record every change made on them here.
 
+**The PiPER cell livestream** (2026-11-03,
+[#61](https://github.com/vertical-cloud-lab/robot-arms/issues/61); details in
+[`livestream/README.md`](livestream/README.md)). **Both mpzy and eufi stream, publicly**
+(since 22:48 UTC that day), each with its own `WORKFLOW_NAME` and playlist: `PiPER arm front cam`
+(mpzy) and `PiPER arm back cam` (eufi). **Never give a device plain `PiPER arm`**: the Lambda's
+`end` matches by substring, so it would end both. mpzy's camera (front-left post) looks into the
+cell and sees no lab; eufi's (back-right post) sees the lab in its top-left third, under two
+fixed masks. Faces are pixelated on the Pi before encoding, by deface's CenterFace and OpenCV's
+YuNet on every frame. Each view also has one `STRICT_RECTS` box around the A1 mini's AMS lite
+feeders, which both detectors take for a face; **redo it if that camera or the AMS lite
+moves**. The stream holds each Pi's camera. **For a still, never stop it**: copy
+`/tmp/picam-stream-latest.jpg`, the last frame sent (faces already pixelated), which is refreshed
+every 30 s. **For work that needs the camera itself, borrow it** (since 2026-11-20, mpzy only so
+far): write the PID of the process that will use it to `/tmp/picam-pause-<camera index>` and wait
+for the stream's `rpicam-vid` on that camera to exit. The stream sends a "camera in use" card
+meanwhile and takes the camera back 5 s after that process exits, on the same broadcast.
+`teleop.py` does this for its video, and `livestream/README.md` ("Lending the camera") has a
+shell one-liner. On a Pi whose `device.py` predates that, stop `picam-stream.service`, and start
+it again **within 10 minutes**: the restart then goes back to the same YouTube broadcast, so
+people's links keep working. After a longer stop it makes a new broadcast. It never touches CAN,
+the relay or the arm. No
+watchdog timer and no reboot cron on either Pi: those reboot the Pi, which would kill an arm run.
+
+**Status on 2026-11-20 (the eighth #61 run):** only mpzy streams. eufi has been off the tailnet
+since 2026-11-06 02:47 UTC and 76zj since 2026-11-11 20:47 UTC, so their streams (and broadcasts)
+are down until someone in the lab brings them back. Then check that their services came up, and
+copy the current `device.py` to each so they lend their cameras too. Changes made on mpzy by that
+run (15:21 to 15:45 UTC):
+
+- Read-only first: `picam-stream.service` was enabled but had been stopped by hand
+  (`sudo systemctl stop picam-stream`, 2026-11-13 02:03:47 UTC) for teleop, which needed the
+  camera. Nothing held the camera and the Pi was idle. The arm (`arm_power.py status`, which only
+  listens on `can0`) was on its rest with all six motors disabled, but with the relay still on:
+  the last teleop session (2026-11-14 05:53 to 05:58 UTC) stopped on `J4 drew -2.4 A (limit 2)`
+  and left it on with the arm up. It has since been put back on its rest with the motors off
+  (not by an `arm_power.py run`, so presumably by hand), and `arm_power.py off` refuses while J6
+  reads −22° (outside home's −95 to −45). That was left as found.
+- `sudo systemctl start picam-stream.service` at 15:28 UTC: it ended the old broadcast and made
+  `h5TJ0nLUljU` (public, in the front cam playlist).
+- `~/picam-stream/device.py` and `~/picam-stream-src/device.py` replaced by this repo's (camera
+  hand-off, plus the 2026-11-05 instance and rotation code, which does the same as before for
+  mpzy). The previous ones are `device.py.bak-2026-11-20-issue61` in each directory. The service
+  was restarted at 15:34 and 15:38 UTC, and both times went back to `h5TJ0nLUljU`.
+- Two 50-s test loans from CI using `teleop.py`'s camera code (15:35 and 15:38 UTC). They left
+  `/tmp/picam-pause-0` behind, naming a process that has exited, which is harmless (`/tmp` is
+  cleared at boot). `my_secrets.py`, the unit and everything else are unchanged.
+
+**76zj streams both gripper cameras, publicly** (since 2026-11-05 02:05 UTC; unlisted from
+00:42 UTC), as `picam-stream@wide.service` (`PiPER arm gripper wide cam`, the `imx708_wide`) and
+`picam-stream@hq.service` (`PiPER arm gripper HQ cam`, the `imx477`). They move with the arm,
+so they have no masks or strict rects, only face blurring. They started unlisted because the wide
+one looks into the lab. sgbaird then approved public "as long as face blurring is active", so
+**keep both detectors on for every public stream**. Their two playlists are still unlisted (the
+Lambda can't change a playlist's privacy). The HQ camera is mounted on its side, so its stream turns the
+picture upright (`CAMERA_ROTATION = 270`) and uses the full-sensor 2028×1520 mode, with black
+bars at the sides. Stop and start each one separately; its still is
+`/tmp/picam-stream-<wide|hq>-latest.jpg`. Changes made on 76zj by the fifth #61 run
+(2026-11-05, 00:36 to 00:44 UTC), after sgbaird reflashed its SD card on 2026-11-04:
+
+- `~/picam-stream/` (mode 700): `device.py`, the YuNet model, `requirements*.txt`, and a `venv`
+  (`--system-site-packages`; opencv-python-headless 5.0.0.93 from PyPI and deface 1.5.0
+  `--no-deps --require-hashes`, with the system's numpy 2.2.4 and requests 2.32.3). ffmpeg
+  7.1.5 was already installed; nothing came from apt.
+- `~/picam-stream/my_secrets_wide.py` and `my_secrets_hq.py` (mode 600, hold the Lambda URL),
+  written straight there. The staging copy `~/picam-stream-src/` has no settings files, so
+  `install.sh` from it never overwrites them.
+- `/etc/systemd/system/picam-stream@.service` (template; `CPUQuota=200%`, `Nice=10`,
+  `OOMScoreAdjust=500` per instance) and `picam-stream.service` (installed, disabled).
+  `picam-stream@wide` and `picam-stream@hq` are enabled. They write
+  `~/picam-stream/broadcast-<name>.json` (mode 600, holds the stream key).
+- `config.txt` is unchanged: `camera_auto_detect=1` found both cameras at boot.
+- `/tmp/preview.py` (copy of no repo file; it ran each camera for 20 frames through `FaceBlur`
+  before going live and saved only blurred frames) was deleted afterwards.
+
+Changes made on 76zj by the sixth #61 run (2026-11-05, 01:28 to 01:29 UTC), so that the HQ stream
+shows the whole sensor, upright (the HQ camera is mounted on its side):
+
+- `~/picam-stream/device.py` and the staging copy `~/picam-stream-src/device.py`: the version
+  with `CAMERA_ROTATION`, sensor-mode-shaped pictures and `--preview`. The previous ones are
+  `device.py.bak-2026-11-05-hq-upright` in each directory. The wide stream wasn't restarted and
+  still runs the previous code. The new code does the same for it (16:9 mode, no rotation), and
+  it will load the new file on its next restart.
+- `~/picam-stream/my_secrets_hq.py`: `SENSOR_MODE = "2028:1520"` (was `'2028:1080'`) and a new
+  `CAMERA_ROTATION = 270`, each with a comment. The previous file is
+  `my_secrets_hq.py.bak-2026-11-05-hq-upright` (mode 600).
+- `picam-stream@hq` was stopped from 01:28:27 to 01:28:57 UTC. While it was down, a test wrote
+  three raw 720×540 frames to `/tmp` (measured their size only, then deleted them at once), and
+  `device.py --preview` saved one blurred frame, which was copied off and then deleted. On restart
+  it went back to its broadcast, `bK-Dzzfh9gs`, so the link didn't change.
+- mpzy and eufi weren't touched. They still run the PR #40 `device.py`, which behaves the same
+  as this one for them.
+
+Changes made on 76zj by the seventh #61 run (2026-11-05, 02:02 to 02:07 UTC), to make both
+gripper streams public:
+
+- Before anything changed, a known-face test: `/tmp/facetest.py` (a copy of no repo file) ran the
+  installed `device.py`'s `FaceBlur`, with each stream's settings, on a public-domain group photo
+  (`/tmp/solvay.jpg`). It wrote only blurred frames, to `/tmp/facetest/`. They were copied off,
+  and then the frames, script and photo were deleted.
+- `~/picam-stream/my_secrets_wide.py` and `my_secrets_hq.py`: `PRIVACY_STATUS = "unlisted"` →
+  `"public"`, with a comment. The previous files are `my_secrets_<wide|hq>.py.bak-2026-11-05-public`
+  (mode 600).
+- `picam-stream@wide` was restarted at 02:04:36 UTC and `picam-stream@hq` at 02:05:05 UTC. Since the
+  privacy had changed, each one ended its unlisted broadcast and started a public one:
+  `ruxhMLJqZh0` (wide, replacing `Z7DO_7wrgVo`) and `f2l5Qgu7Dik` (HQ, replacing `bK-Dzzfh9gs`).
+  Both went into their existing playlists. The wide stream now runs the current `device.py`.
+- mpzy and eufi weren't touched; they were already public.
+
+Changes made on both Pis from [PR #40](https://github.com/vertical-cloud-lab/robot-arms/pull/40)
+(2026-11-04, 23:08 to 23:13 UTC), so a restart no longer ends the broadcast:
+
+- `~/picam-stream/device.py` and the staging copy `~/picam-stream-src/device.py` save the live
+  broadcast and go back to it on a restart. The previous ones are
+  `device.py.bak-2026-11-04-pr40` in each directory.
+- `~/picam-stream/broadcast.json` (mode 600; it holds the stream key): the broadcast's ingest URL,
+  video ID, `WORKFLOW_NAME`, `PRIVACY_STATUS` and the time of the last frame sent. It was seeded
+  from the running ffmpeg's command line, so the deploy itself kept the links.
+- Each service restarted once, for about 10 s (mpzy 23:09:14, eufi 23:11:59). Both went back to
+  their broadcasts, which YouTube still showed live with unchanged start times: `HtO2Uf6cmp8`
+  (front cam, mpzy) and `j3-MVzhi3H4` (back cam, eufi).
+
+Changes made on both Pis by the fourth #61 run (2026-11-04, 22:20 to 22:30 UTC), to stop the
+AMS lite feeders being pixelated as a face:
+
+- The stream was stopped for under 2 minutes on each Pi, while `/tmp/fpscan.py` (a copy of no
+  repo file; deleted afterwards) scored 50 live frames with both detectors and printed boxes and
+  scores only. No frame was saved.
+- `~/picam-stream/device.py` with `STRICT_RECTS`. The previous one is
+  `device.py.bak-2026-11-04-issue61`.
+- `~/picam-stream/my_secrets.py`: a `STRICT_RECTS` line appended (mpzy
+  `[(0.355, 0.208, 0.461, 0.347)]`, eufi `[(0.512, 0.25, 0.617, 0.368)]`). The previous file is
+  `my_secrets.py.bak-2026-11-04-issue61` (mode 600).
+- The staging copy `~/picam-stream-src/` now has the same `device.py` and `my_secrets.py` as
+  `~/picam-stream/`. Its `my_secrets.py` had still been the first run's (`WORKFLOW_NAME = "PiPER
+  arm"`, unlisted, and on eufi a single smaller mask), which `install.sh` would have copied over
+  the live one. That old copy is `~/picam-stream-src/my_secrets.py.bak-2026-11-04-issue61`.
+- Both services restarted, so both broadcasts are new (mpzy twice, once for an intermediate
+  version that ran for two minutes).
+
+Changes made on both Pis by the third #61 run (2026-11-03, 22:40 to 22:55 UTC):
+
+- `~/picam-stream/venv`: `deface` 1.5.0, `pip install --no-deps --require-hashes -r
+  requirements-deface.txt` (one pure-Python wheel; nothing else installed or upgraded).
+- `~/picam-stream/device.py` with both detectors, and `requirements-deface.txt` next to it. The
+  staging copy `~/picam-stream-src/` was refreshed.
+- `~/picam-stream/my_secrets.py`: `CAM_NAME = "picam"`, `WORKFLOW_NAME` as above,
+  `PRIVACY_STATUS = "public"`, `FRAME_RATE = 5`. The previous file is
+  `my_secrets.py.bak-2026-11-03-public` (mode 600 too).
+- eufi only: `/etc/systemd/system/picam-stream.service` replaced with the current unit
+  (`CPUQuota=200%`, `Nice=10`, `OOMScoreAdjust=500`), then **enabled and started** again.
+- The last broadcast with the old name was ended through the Lambda (`end` for `PiPER arm`) before
+  the new names went live.
+
+Changes made on mpzy (which also drives the arm now, through the CAN adapter and the GPIO17
+relay):
+
+- `/boot/firmware/config.txt`: `camera_auto_detect=1` → `0`, plus `dtoverlay=imx708,cam0` under
+  `[all]`. Auto-detect had missed the Camera Module 3 Wide on CAM/DISP 0 at the 2026-11-03
+  01:04 UTC boot (after the relay wiring), so `rpicam-hello --list-cameras` said `No cameras
+  available!` although the camera was fine. The old file is
+  `/boot/firmware/config.txt.bak-2026-11-03-issue61`. Until the next reboot the same overlay is
+  loaded at runtime (`sudo dtoverlay imx708 cam0`, 20:01 UTC). **A camera moved to CAM/DISP 1,
+  swapped or added needs its own `dtoverlay=` line there.**
+- `~/picam-stream/`: `device.py`, the YuNet model, `my_secrets.py` (mode 600, holds the Lambda
+  URL, so read single lines rather than `cat` it; no `MASK_RECTS`) and a `venv`
+  (`--system-site-packages`; opencv-python-headless 5.0.0 from PyPI, with the system's numpy
+  2.2.4 and requests 2.32.3). The staging copy is `~/picam-stream-src/`. ffmpeg was already
+  installed; nothing came from apt.
+- `/etc/systemd/system/picam-stream.service`, enabled, `Restart=always`, `CPUQuota=200%`,
+  `Nice=10`, `OOMScoreAdjust=500`.
+
+Changes made on eufi (the first #61 run, same day):
+
+- `apt-get install --no-install-recommends ffmpeg fonts-dejavu-core` (ffmpeg 7.1.5, 155 packages).
+- `~/picam-stream/` as on mpzy, but its `my_secrets.py` has two `MASK_RECTS` over the lab, and
+  the venv's numpy and opencv-python-headless 5.0.0 came offline from `~/vision-wheels`. Staging
+  copy `~/picam-stream-src/`.
+- `/etc/systemd/system/picam-stream.service` (the older unit: `Nice=5`, no CPU cap). Streamed
+  from 18:00 to 20:06 UTC, then stopped and disabled until the third run re-enabled it (above).
+
 **The first camera Pi (`rpi-5-76zj`) as found** (read-only check on 2026-10-21,
-[#33](https://github.com/vertical-cloud-lab/robot-arms/issues/33); nothing on it was changed):
+[#33](https://github.com/vertical-cloud-lab/robot-arms/issues/33); nothing on it was changed).
+sgbaird flashed a fresh SD card for it on 2026-11-04 (same image and credentials), after it had
+been offline since 2026-10-30. On 2026-11-05 it had the same OS, kernel, Tailscale SSH access
+and Wi-Fi, a 5 A supply, an active cooler, and **two cameras on the gripper**: `imx708_wide` and
+`imx477` (HQ Camera), both found by `camera_auto_detect=1`. The rest of this list is from 2026-10-21:
 
 - **Hardware and OS.** Raspberry Pi 5 Model B Rev 1.1, 8 GB RAM, 32 GB microSD (21 GB free),
   2 GB zram swap. Raspberry Pi OS with desktop, 64-bit (image 2026-10-06, Debian 13.7 trixie),
