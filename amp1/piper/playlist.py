@@ -3,7 +3,8 @@
 python playlist.py RESULTS_DIR VIDEOS_DIR OUT.json [MAX_STILLS] [SECTION...]
 
 An episode whose motion video exists in VIDEOS_DIR (EPISODE.mp4, from summarize.py) plays it; one
-without (its frames were not kept) gets a slideshow of its report's key images. SECTION keeps only
+without (its frames were not kept) gets a slideshow of its report's key images. A row's "note"
+follows its verdict on the card. SECTION keeps only
 the sections whose title starts with it; a section with an intro of its own (INTROS) replaces the
 video's opening card when it is the only one kept.
 """
@@ -81,6 +82,8 @@ for title, sub, eps in ORDER:
         verdict = {True: "SUCCESS", False: "FAILURE"}.get(ok, "NOT SCORED")
         verdict += " (scored by the simulator's own check" + (
             ", re-scored: the gripper never let go)" if r.get("rescored") else ")")
+        if r.get("note"):
+            verdict += ": " + r["note"]
         task, k = ep.rsplit("-ep", 1)
         task = task.removeprefix("capgym_")
         label = f"{task}  ({'initial state' if task.startswith('libero') else 'episode'} {k})"

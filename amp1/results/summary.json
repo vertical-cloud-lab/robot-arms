@@ -454,7 +454,8 @@
   "video": "print_off_a1_mini-ep0.mp4",
   "frames_kept": true,
   "operator_cells": 0,
-  "python_calls": 56
+  "python_calls": 56,
+  "note": "pushed onto the shelf, not picked"
  },
  {
   "episode": "print_off_a1_mini-ep1",
@@ -520,7 +521,8 @@
   "video": "print_off_a1_mini-ep1.mp4",
   "frames_kept": true,
   "operator_cells": 0,
-  "python_calls": 57
+  "python_calls": 57,
+  "note": "borderline, pushed onto the shelf's back edge, standing against the bed"
  },
  {
   "episode": "auger_swap-ep0",
@@ -661,7 +663,8 @@
   "video": "auger_swap-ep0.mp4",
   "frames_kept": true,
   "operator_cells": 0,
-  "python_calls": 46
+  "python_calls": 46,
+  "note": "new auger 10.5 mm out along its axis; the old one rolled off the table"
  },
  {
   "episode": "atomizer_charge-ep0",
@@ -745,7 +748,8 @@
   "video": "atomizer_charge-ep0.mp4",
   "frames_kept": true,
   "operator_cells": 0,
-  "python_calls": 77
+  "python_calls": 77,
+  "note": "2 of 4 cups; the rod's knob, an invented detail, blocked the far side"
  },
  {
   "episode": "atomizer_charge_bare_rod-ep0",
@@ -1018,6 +1022,7 @@
   "video": "atomizer_charge_bare_rod-ep1.mp4",
   "frames_kept": true,
   "operator_cells": 0,
-  "python_calls": 78
+  "python_calls": 78,
+  "note": "3 of 4 cups; one slipped from a shallow grip"
  }
 ]

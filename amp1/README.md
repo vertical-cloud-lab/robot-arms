@@ -2,7 +2,9 @@
 
 For [#85](https://github.com/vertical-cloud-lab/robot-arms/issues/85): explore
 [apple-aiml-research.github.io/ml-amp](https://apple-aiml-research.github.io/ml-amp/), reproduce what
-can be reproduced, then try it on this repo's tasks. Nothing here talks to the real arm.
+can be reproduced, then try it on this repo's tasks. [PR #87](https://github.com/vertical-cloud-lab/robot-arms/pull/87#issuecomment-7236408042)
+adds three of the lab's workflows: clearing the A1 mini's plate, swapping the powder doser's auger and
+charging the atomizer's crucible. Nothing here talks to the real arm.
 
 **At a glance.** Apple's code runs unchanged on a CPU-only GitHub runner. Each episode's policy was
 a fresh Claude Opus 5.5 agent, given only AMP1's own prompt and SDK reference, and each episode was
@@ -13,8 +15,9 @@ scored by the simulator's own check:
 | CaP-Gym robosuite: all 7 tasks, 1 episode each | 7 | **7** | 98.4% (Opus 5.5), 100% (Gemini 4 Argon) |
 | CaP-Gym LIBERO-PRO: units drawn at random from the 3,000 | 4 | **4** | 95.2% |
 | A simulated AgileX PiPER on this repo's tasks (#21 vials, #30 tape) and the paper's banana | 4 | **3** | (new tasks) |
+| The simulated PiPER on three lab workflows (#87): [A1 mini print removal, auger swap, atomizer charge](#lab-workflows-on-the-simulated-piper-a1-mini-print-removal-auger-swap-atomizer-charge) | 7 | **4** | (new tasks) |
 
-These are single episodes, so they are anecdotes, not success rates. Every miss and caveat is
+These are one or two episodes per task, so they are anecdotes, not success rates. Every miss and caveat is
 written up below. [Video](https://www.youtube.com/watch?v=_PlBarOj3K4): every episode, with real-time motion where the frames were
 kept.
 
@@ -124,8 +127,9 @@ Emergent behaviours with no prompt or skill for them:
 
 ### Differences from the paper's setup (read before comparing numbers)
 
-- **One episode per task (two for `tape_to_shelf`), and 4 of LIBERO-PRO's 3,000 units, where the
-  paper ran 10 to 100 per task.** These are anecdotes, not success rates.
+- **One episode per task (two for `tape_to_shelf` and for each lab workflow), and 4 of
+  LIBERO-PRO's 3,000 units, where the paper ran 10 to 100 per task.** These are anecdotes, not
+  success rates.
 - **The model is called through Claude Code, not the API,** at Claude Code's default settings. The
   paper used `--reasoning high`. Images are viewed with a tool call, not attached to the tool result.
 - **No bubblewrap sandbox and no gateway.** The kernel talks to the robot server directly
@@ -133,7 +137,7 @@ Emergent behaviours with no prompt or skill for them:
   the prompt, and the transcripts were audited afterwards.
 - **PiPER tasks are new scenes,** not RoboLab's. Depth is exact and the cameras are calibrated, as
   in the paper's simulation runs.
-- **Two runs, one runner each.** The first run (2026-11-25) ran nine episodes before it ran out of
+- **Three runs, one runner each.** The first run (2026-11-25) ran nine episodes before it ran out of
   model credits. Its runner was then discarded, so its recorded frames and the simulator's result
   files were lost. Each of its episodes keeps the policy's report, every code cell with its output,
   the key images and the final frame, plus the score recorded at the time. The second run
@@ -142,6 +146,11 @@ Emergent behaviours with no prompt or skill for them:
   (`scored_log_*.json`, or `truth.json` for the PiPER) and an
   [`audit.json`](piper/audit.py). The audit checks that each of the agent's tool calls stayed in
   its episode folder and that no kernel cell touched files or simulator internals.
+- **The third run (2026-11-28, PR #87)** built the lab-workflow scenes and ran their episodes, on
+  one runner across two sessions. The first session ran out of usage credits while two of its
+  episodes (`auger_swap` 1 and `atomizer_charge_bare_rod` 0) were about 22 minutes in. A new
+  agent can't take over an episode halfway, so the second session discarded both unscored and
+  ran them again from the start, with fresh agents and the same seeds.
 - **LIBERO-PRO ran from a copy of the pinned CaP-X checkout.** It was built while a robosuite
   episode was running from the original. The two venvs editable-install into the same checkout, and
   the docs warn never to build them side by side. The copy is at the same commits as the original,
@@ -149,7 +158,7 @@ Emergent behaviours with no prompt or skill for them:
 
 ## Results
 
-One episode per task (two for `tape_to_shelf`). Every policy was a fresh Opus 5.5 agent given only AMP1's prompt and SDK
+One episode per task (two for `tape_to_shelf` and for each lab workflow). Every policy was a fresh Opus 5.5 agent given only AMP1's prompt and SDK
 reference; it got the instruction from `ep.observe()`. **Scored** is the simulator's own check: CaP-X's
 for the CaP-Gym tasks, and [`piper_sim.py`](piper/piper_sim.py)'s `success()` for the PiPER tasks.
 [`results/summary.json`](results/summary.json) has every row.
@@ -298,6 +307,240 @@ drawn; no unit was skipped or re-run.
   - 21 code cells, 303 of 2,250 steps (20 s of motion), 11 minutes. Its
     [report](results/tape_to_shelf-ep1/report.json) has the IK scans and five lessons.
 
+### Lab workflows on the simulated PiPER: A1 mini print removal, auger swap, atomizer charge
+
+Requested in [PR #87](https://github.com/vertical-cloud-lab/robot-arms/pull/87#issuecomment-7236408042)
+on 2026-11-28: "auto removal of prints from the A1 mini, the auger swapping workflow, interaction
+with the atomizer for autonomous atomization runs". The three scenes come from the lab's own
+threads in this repo, byu-vcl and digital-alloy-lab. Where the lab has a number, the scene uses
+it; where it doesn't, the number is an estimate and is marked as one. The harness and the policy
+setup are the same as above: a fresh Opus 5.5 agent per episode, given only AMP1's prompt and SDK
+reference, and scored by `piper_sim.py`'s `success()`, which the policy never sees.
+
+| `print_off_a1_mini` | `auger_swap` |
+|---|---|
+| ![print_off_a1_mini](images/scene_print_off_a1_mini.png) | ![auger_swap](images/scene_auger_swap.png) |
+| **`atomizer_charge`** | **`atomizer_charge_bare_rod`** |
+| ![atomizer_charge](images/scene_atomizer_charge.png) | ![atomizer_charge_bare_rod](images/scene_atomizer_charge_bare_rod.png) |
+
+#### The scenes
+
+**`print_off_a1_mini`**: *Take the finished print off the 3D printer's build plate and put it on
+the black shelf. Leave the build plate on the printer.*
+
+- **Layout: Thumbelina, the A1 mini on the robot table.** It sits about 380 mm to the arm's
+  right and 20 mm behind its base, both facing the room
+  ([twin's `cell_layout.yaml`](https://github.com/vertical-cloud-lab/robot-arms/blob/2600668/PiPER%20Sandbox%20Scripts/Digital%20Twin/config/cell_layout.yaml)).
+  The Z column is on the arm's side, as in the
+  [cell photo](https://github.com/vertical-cloud-lab/robot-arms/blob/e7fdcd6/PiPER%20Sandbox%20Scripts/AprilTags/printer_apriltags.jpg).
+  jss265 placed it there so the gripper can be
+  ["in plane with the print bed while reaching for print"](https://github.com/vertical-cloud-lab/robot-arms/pull/9#issuecomment-6452296809).
+- **Printer:** footprint 347 × 315 mm. The bed is parked fully forward, the way the end G-code
+  leaves it (X-13 Y180: toolhead far left, nozzle high). The 184 mm PEI sheet's top is 85 mm
+  above the table; Bambu's drawing gives 80.5 mm and the twin 88 mm.
+- **Shelf:** the black shelf in front of the printer, top 65 mm. jss265's twin task put prints
+  ["into a bin or onto the black shelf"](https://github.com/vertical-cloud-lab/robot-arms/pull/77#issuecomment-6872959510).
+- **Print:** a hexagonal part 44 mm across flats and 14 mm tall (toy-drive size). It is bonded to
+  the sheet, and the bond breaks at about 5 N of pull or shear (the two add) or 0.06 N·m of
+  twist. That is a little under the twin's guessed 4 kPa "stick" over the part's footprint
+  (6.7 N), and it fits jss265's sequence: grasp, squeeze, then twist, rock or pull until the bond
+  breaks.
+- **Sheet:** held by a 25 N magnet force (an estimate) that fades over 3 mm of lift.
+- **Success:** the print on the shelf (any face down) and released, and the sheet still seated
+  (within 5 mm, 2 mm of lift and 3° of tilt). This is the scene's version of the "plate clear"
+  frame in
+  [byu-vcl PR #402](https://github.com/vertical-cloud-lab/byu-vcl/pull/402#issuecomment-7201185885).
+- **Left out:** the AMS lite (unmeasured), the bed's Y motion (the printer is idle,
+  `gcode_state FINISH`) and the bed temperature.
+
+**`auger_swap`**: *Swap the powder doser's auger: put the auger that is in the doser's two clips
+into the empty slot of the auger rack, then snap the new auger from the rack into the doser's
+clips.*
+
+- **Geometry:** [PR #44](https://github.com/vertical-cloud-lab/robot-arms/blob/2678913/end-effectors/auger-swap/README.md)
+  and the twin's
+  [`geometry.yaml`](https://github.com/vertical-cloud-lab/robot-arms/blob/72fcfcd/PiPER%20Sandbox%20Scripts/Digital%20Twin/assets/powder_doser/geometry.yaml).
+  - The auger lies horizontal in two C-clips that open upward, and snaps in from above
+    ([#42](https://github.com/vertical-cloud-lab/robot-arms/issues/42#issuecomment-6408942863)).
+  - Tube 25.0 mm across and 250 mm long, cap 29 × 27 mm, gear 46 × 10 mm. Positions from the
+    outlet: front clip 47–59 mm, gear 78–88 mm, back clip 129–141 mm.
+  - Clip: 25.48 mm seat, about 18 mm mouth, 2 mm wall, 12 mm wide.
+  - The gear sits beside the NEMA 11's pinion at 32 mm centre distance. The tapper is on the
+    mounting plate, as in
+    [powder-doser #203](https://github.com/vertical-cloud-lab/powder-doser/issues/203#issuecomment-6713576689).
+- **Layout:** the doser lies on the board as in PR #44 (axis 43.25 mm up), its auger pointing at
+  the arm with the cap end nearest, as in the twin. The open V-cradle rack comes from the
+  [twin's swap](https://github.com/vertical-cloud-lab/robot-arms/pull/77#issuecomment-6873360279).
+- **Clips:** each clip's two upper arcs are the snap arms. They hold a seated tube until it pushes
+  on them with more than **10 N**, then let it through until it is seated again or clear. Pressing
+  a tube in works the same way.
+  - The twin uses about 18 N per clip.
+  - PR #44 says the stock gripper only works if each clip lets go under about 5 N.
+  - 10 N lies between the two. A 15 N straight pull leaves both clips shut (the real arm manages
+    about 15 N at the flange), while peeling one clip at a time opens them at about 11 N.
+- **Success:**
+  - New auger: snapped into both clips (within 0.8 mm of each seat, the twin's 0.6 mm plus
+    tracking error), gear within 3 mm of the pinion along the axis (the twin's check), cap end
+    toward the arm.
+  - Old auger: lying in the empty slot's two cradles.
+  - Both released.
+
+**`atomizer_charge`**: *Load the four charge cups from the tray into the atomizer's crucible,
+standing upright around the sealing rod.*
+
+- **Which step:** step 5 of the
+  [rePowder SOP checklist](https://github.com/vertical-cloud-lab/digital-alloy-lab/blob/claude/issue-251-20261110-2340/SOP/atomizer-sop.md)
+  (DAL PR #253), the one
+  [byu-vcl PR #353](https://github.com/vertical-cloud-lab/byu-vcl/blob/5b40f3d/vertical-lab/notes/atomizer_automation.md)
+  calls the easiest for an arm. The charge goes into the graphite crucible beside the sealing
+  rod, through the open lid.
+- **Cups:** 6063 aluminium, 19.05 mm across and 69.85 mm tall, plug up
+  ([process sheet](https://github.com/vertical-cloud-lab/digital-alloy-lab/blob/claude/issue-248-20261005-1038/atomizer-charge/process-sheet/process_sheet.md)).
+  Four fit around the rod
+  ([DAL #152](https://github.com/vertical-cloud-lab/digital-alloy-lab/issues/152#issuecomment-6353386571)).
+  Each has a 1.5 mm chamfer, which is an assumption.
+- **Crucible:** 57.1 mm bore around a 12.6 mm rod (model values, never measured with calipers),
+  110 mm deep (the manufacturer says 10–12 cm,
+  [sop.md](https://github.com/vertical-cloud-lab/digital-alloy-lab/blob/claude/issue-126-20261013-2022/atomizer-training/sop.md)).
+  That leaves each cup 1.6 mm of radial clearance on either side.
+- **Rod:** in `atomizer_charge` it stands 80 mm above the rim with a 22 mm knob on top, standing
+  in for the lever's attachment. I invented the knob: the lab hasn't measured the rod or its
+  lever above the rim. **`atomizer_charge_bare_rod`** is the same task with a bare rod stub
+  30 mm above the rim, added after the knob blocked episode 0.
+- **Lid:** hinged on the far side and open 105°.
+- **Mount (an assumption):** the real rim is about 1.3 m up. Here the arm's base is 120 mm below
+  the rim, as if on a raised mount beside the furnace, which a real cell would need too.
+- **Success:** all four cups inside the bore, on the floor (within 4 mm), tilted less than 6°,
+  and released.
+- **Not attempted:** the rest of the run is beyond a PiPER.
+  - Closing the lid: PR #353 puts the over-centre latch's pull at about 100 N, and up to 200 N
+    for a stiff latch.
+  - The collection cup is about 6 kg; the arm is rated for 1.5 kg.
+  - The ultrasonic stack needs 50–65 N·m of torque and trained people.
+  - The HMI sequence would be touchscreen presses, where the lab would rather get an AMAZEMET
+    interface ([DAL #151](https://github.com/vertical-cloud-lab/digital-alloy-lab/issues/151)).
+
+[`piper/scene_checks.py`](piper/scene_checks.py) checks each scene's physics without the robot:
+- the bond holds 4 N and breaks at 6 N or 0.06 N·m of twist;
+- the sheet holds 12 N at its edge;
+- a 15 N straight pull leaves both clips shut, and peeling opens the back clip at 11 N, then the
+  front one;
+- a pressed-in auger snaps into both clips and scores a success;
+- cups released up to 2.5 mm off the annulus centreline land upright on the floor.
+
+#### Results
+
+Two episodes per workflow on its final scene, plus `atomizer_charge` episode 0 with the knob.
+Four of the seven scored a success, and four of the six on the final scenes: both print removals,
+and one of the two episodes of each of the others.
+
+| Task | Episode | Scored | Belief | Steps used | Cells | Wall |
+|---|---|---|---|---|---|---|
+| [`print_off_a1_mini`](results/print_off_a1_mini-ep0/) | 0 | ✅ pushed onto the shelf, upside down; plate seated (0.1 mm) | success | 692 / 2700 | 56 | 32 min |
+| [`print_off_a1_mini`](results/print_off_a1_mini-ep1/) | 1 | ✅ borderline: pushed onto the shelf, standing on edge against the bed's front edge; plate seated | unsure | 693 / 2700 | 57 | 32 min |
+| [`auger_swap`](results/auger_swap-ep0/) | 0 | ❌ new auger snapped into both clips, but its gear is 10.5 mm from the pinion; the old auger rolled off the table | failure | 2488 / 4500 | 46 | 59 min |
+| [`auger_swap`](results/auger_swap-ep1/) | 1 | ✅ old auger in the empty slot; new one snapped into both clips, gear 0.1 mm from the pinion | success | 2224 / 4500 | 76 | 53 min |
+| [`atomizer_charge`](results/atomizer_charge-ep0/) | 0 | ❌ 2 of 4 cups in, upright; the rod's knob blocked the far side | failure | 1574 / 4500 | 77 | 55 min |
+| [`atomizer_charge_bare_rod`](results/atomizer_charge_bare_rod-ep0/) | 0 | ✅ all four cups upright on the crucible floor | success | 2626 / 4500 | 83 | 49 min |
+| [`atomizer_charge_bare_rod`](results/atomizer_charge_bare_rod-ep1/) | 1 | ❌ 3 of 4 cups in; the fourth slipped from a shallow grip and lies on the table | failure | 2330 / 4500 | 78 | 52 min |
+
+**`print_off_a1_mini`: two scored successes, neither of them a pick-and-place.** Both policies
+found what the twin had found: J5 stops at ±70°, so the gripper must lean, and the printer's Z
+column and X arm block high-elbow approaches to the plate.
+- **Grasps.** Every grasp came in tilted 15–30° from vertical, and every one failed (two per
+  episode). The fingertips reached only the top few millimetres of the 14 mm print, rode up over
+  its edge as the jaws closed (the TCP rose 3–6 mm), and pinched the 2 mm disc on top.
+- **Finger reach.** Both policies measured the fingertips with the cameras: they taper, and
+  episode 1 put their reach at 2.45 cm past the TCP, not the declared 2 cm.
+- **Push.** Both then caged the print with the open gripper and pushed it off the plate's front
+  edge, a 2 cm drop onto the shelf.
+  - Episode 0 left it upside down, well on the shelf.
+  - Episode 1 left it standing on one side face at the shelf's back edge, leaning on the bed's
+    front edge. The check doesn't test contact with the printer. That episode's policy said
+    "unsure", and a person would want the print moved further onto the shelf.
+- **Bond and plate.** Both bonds broke in shear (5.0 N) when an off-centre close shoved the print.
+  The plate never moved.
+- **For the real cell:** a 14 mm part with this gripper and this reach calls for longer or flatter
+  fingertips, a spatula, or the plate-flex approach from
+  [byu-vcl PR #402](https://github.com/vertical-cloud-lab/byu-vcl/pull/402#issuecomment-7201185885).
+  Of those, only flexing the plate also keeps the toy-drive prints' print-in-place joints from
+  being pulled.
+
+**`auger_swap`**
+- **Episode 0** got the hard part right and lost the task on the easy part.
+  - **The clips.** Lifting the old auger's far end levered it out of both clips (each opened at
+    10–12 N). For the new auger, about 800 steps of see-saw presses with the closed gripper (on
+    the collar, both ends and the far clip) snapped it into both, with its cap toward the arm.
+  - **The grip.** A grip closing across the tube is a free hinge about the closing axis, which
+    the policy showed with lift-and-tilt tests. So only a grip at the balance point (0.13 m from
+    the cap end) carries an auger level. In the doser, the motor block 3 mm beside the tube kept
+    one finger from going lower there.
+  - **How it was lost.** The policy set the old auger down to regrip it, above bare table. It
+    rolled across the table and out of both scene cameras' views. The regrip, planned on a point
+    cloud taken while it was still rolling, closed on air.
+  - **The miss on the new auger.** It went in 1.7 cm too far toward the outlet, was pressed back,
+    and ended with its gear 10.5 mm from the pinion. The twin's check allows 3 mm.
+- **Episode 1 succeeded** by avoiding both of episode 0's mistakes. 76 code cells, 2,224 of 4,500
+  steps, 53 minutes.
+  - **Out of the clips.** It gripped the tip end, the only spot clear of both clips and the motor
+    block, tilted 25° because straight down was out of reach. It commanded a 6.5 cm lift, a
+    deliberately large error so the controller would pull hard, and both clips opened at 10 N.
+    Held 12 cm from its balance point, the auger then pivoted 16–48° in the fingers.
+  - **No set-down on bare table.** It laid the auger back across the clips' lips, unsnapped, and
+    regripped it near the cap end, about 4 cm from its balance point.
+  - **Into the rack.** It levelled the drooping auger by pitching the gripper from 15° to 37°, set
+    it into the slot 3 cm short so the fingers cleared the near cradle, then pushed it along its
+    axis to where the slot's first auger had sat.
+  - **Snapping in.** Pushing down at the grip only levered the auger's far end up. Pressing on the
+    collar between the clips, then beside the clip nearest the arm, snapped both. The auger sat
+    18 mm too far along its axis, so the policy gripped its tip and pulled it back, leaving the gear
+    0.1 mm from the pinion.
+
+**`atomizer_charge`**
+- **Episode 0 (with the knob)** loaded two cups, upright on the floor on the arm's side of the
+  rod, then gave up on the far side.
+  - **Leaning.** At about 18 cm above the crucible the PiPER can't point the gripper straight
+    down (J5), so it must lean. Leaning away from the rod is reachable only for slots on the
+    arm's side.
+  - **The far side.** There the gripper has to lean over the rod, and its finger carriages hit the
+    22 mm knob, about 8 mm short of the slot. The wrist camera can't see those faces, so the
+    policy's finger-geometry estimate missed them.
+  - **The vertical window.** The policy worked out that a 70 mm cup had only about a 6 mm window
+    under the knob, so it had to slide each cup in sideways.
+  - **What it would do differently:** check early whether the rod or knob lifts out ("a knob on a
+    rod looks like a handle"). In this scene the rod is fixed.
+- **`atomizer_charge_bare_rod`, episode 0: all four cups in.** 83 code cells, 2,626 of 4,500
+  steps, 49 minutes.
+  - **Drop, don't push.** Lowering the first cup into the 1.5 mm clearance jammed: joint lag and
+    the cup swinging in the grip moved it 2–5 mm. After that the policy measured the held cup's
+    bottom in the point cloud (leaving out the rod's points), held it over a slot just above the
+    rod's top, and opened the gripper. Each cup fell in, guided by the rod and the wall.
+  - **Grip height.** A cup pinched near its top swings about the closing axis, up to 11° here, and
+    rotating the wrist to straighten it overshot every time. Standing the cup on the atomizer's top
+    and regripping it at mid-height fixed that. The last cup was gripped at mid-height straight
+    from the tray.
+  - **Tracking error.** Like `vial_in_rack`'s policy, it measured the joints' deadbands (J5 and J6
+    stop about 0.03 rad short, 4–5 mm at the TCP) and pre-compensated every waypoint, to about
+    1 mm.
+  - **Checking.** The scene cameras can't see the crucible's floor, so it looked down with the
+    wrist camera, from two positions because the rod hid one cup. All four tops sat at the floor
+    plus a cup's height.
+- **`atomizer_charge_bare_rod`, episode 1: three of four.** 78 code cells, 2,330 steps, 52 minutes.
+  - **The lost cup.** It gripped cup C by only its top 1.7 cm and turned it through 105° of yaw in
+    5 s. The cup slipped out and landed on its side on the table. Gripped over about 4 cm, the
+    next two cups held.
+  - **A near miss.** The last cup's bottom edge caught the rod's top on a single 3.6 cm descent and
+    pivoted 30° in the grip. The policy straightened it by rotating the gripper about its closing
+    axis until the cup hung vertical, then descended in short steps with a stall check and placed
+    it.
+  - **The recovery it didn't finish.** Picking up the lying cup meant turning it end over end. The
+    first move drove the open jaws onto the atomizer's edge, which the policy's own collision check
+    missed because it had filtered out the gripper's contacts. It stopped there, with 18 minutes
+    left, rather than risk the three cups already in.
+- **Both bare-rod episodes** released every cup above the rim and let it fall into the annulus,
+  instead of pushing it down the 1.5 mm gap. Their difference was the grip: a cup held near its top
+  swings, or slips out.
+
 ### Video
 
 [youtube.com/watch?v=_PlBarOj3K4](https://www.youtube.com/watch?v=_PlBarOj3K4) (public, 8 min 14 s,
@@ -316,9 +559,10 @@ from `results/`.
 ### Cost and speed
 
 - **Agent work:** each agent took 6–32 minutes of wall clock. The second run's six agents used
-  125k–212k tokens each, and the first run's roughly 100k–300k.
-- **Simulated motion:** 13–79 s per episode; LIBERO-PRO's were the longest. The paper's real-world
-  average was 69 s of motion and 211 s of reasoning.
+  125k–212k tokens each, and the first run's roughly 100k–300k. The lab workflows took longer:
+  32–59 minutes, 46–83 code cells and 271k–410k tokens per agent.
+- **Simulated motion:** 13–79 s per episode; LIBERO-PRO's were the longest. The lab workflows
+  used 46–175 s. The paper's real-world average was 69 s of motion and 211 s of reasoning.
 - **What the time went to:** for robosuite and the PiPER, almost all of the wall clock was the model
   reading images and writing code. One PiPER control step with three 640×480 RGB-D renders takes
   about 0.2 s. LIBERO-PRO is the exception: on CPU its motion ran several times slower than real
@@ -361,6 +605,20 @@ What has to change first:
   ([`follower.py`](../PiPER%20Sandbox%20Scripts/Teleoperation/follower.py)). A tilted approach
   worked. Check the real cell's shelf height and distance against that before planning top-down
   placements.
+- **The lab workflows** ([above](#lab-workflows-on-the-simulated-piper-a1-mini-print-removal-auger-swap-atomizer-charge))
+  point at fixtures and fingers as much as software:
+  - **A1 mini.** Past the Z column and X arm, the leaning gripper reached only the top few
+    millimetres of a 14 mm print, so both successes pushed it off the plate. Push-off leaves the
+    part wherever it lands. Longer or flatter fingertips, a spatula, or flexing the plate
+    (byu-vcl PR #402) are worth trying first.
+  - **Auger swap.** Only a grip near the auger's balance point carries it level, and the motor
+    block crowds that spot. Episode 1 succeeded by regripping on the clips' tops, where the auger
+    couldn't roll. A grip feature at the balance point, or PR #44's tool, would remove the
+    improvising.
+  - **Atomizer.** Measure the sealing rod and its lever above the rim first: the invented knob
+    alone blocked half the annulus. With a bare rod, dropping each cup in from just above the rim
+    worked, but only with a deep grip. The rest of the run is beyond a 1.5 kg arm: the lid's latch,
+    the 6 kg collection cup and the stack's torques.
 - **A model API key** (`ANTHROPIC_API_KEY`) for AMP's own loop, or this repo's bridge.
 - **Speed.** Expect minutes per task.
 
@@ -383,6 +641,7 @@ None of this was tried on the arm. This request didn't say the workspace is clea
 | `piper/collect.py` | Copies an episode's report, transcript, key images and final frame into `results/` |
 | `piper/audit.py` | Checks a policy agent's tool calls and kernel cells against the information policy |
 | `piper/playlist.py`, `piper/make_video.py` | The compilation video: motion clips, or the policy's own images where frames weren't kept |
+| `piper/scene_checks.py` | Robot-free physics checks for the lab-workflow scenes: the print's bond, the magnetic sheet, the auger clips, the cups in the crucible |
 | `piper/sdk_smoke.py` | A scripted SDK check (not a policy) |
 | `capgym/env.sh`, `capgym/install_env.sh`, `capgym/smoke.py` | The CaP-X robosuite environment and smoke test for this runner |
 | `capgym/libero_setup.sh`, `capgym/env_libero.sh` | The CaP-X LIBERO-PRO venv, dataset and config, and its client environment |
@@ -402,6 +661,11 @@ mkdir -p /tmp/amp-piper && cp amp1/piper/*.py amp1/piper/*.sh /tmp/amp-piper/   
 /tmp/amp-piper/episode_up.sh tape_to_shelf 8766 0       # server + link client + kernel; prints the episode dir
 python /tmp/amp-piper/compose_prompt.py /tmp/amp-episodes/tape_to_shelf-ep0 45
 # then give an agent the system prompt in that directory; it acts with ./py and ./finish_episode
+# the lab workflows (70-minute wall limit); PIPER_RUN_NAME gives a stack its own directory, so two
+# episodes of one task can run side by side
+python /tmp/amp-piper/scene_checks.py                    # their physics, without the robot
+AMP_WALL_LIMIT_MIN=70 PIPER_RUN_NAME=auger_swap.ep1 /tmp/amp-piper/episode_up.sh auger_swap 8791 1
+python /tmp/amp-piper/compose_prompt.py /tmp/amp-episodes/auger_swap-ep1 70
 
 # CaP-Gym: CaP-X at its pin, then the robosuite venv (docs/capgym.md step 3)
 (cd /tmp/ext/ml-amp && make capx-sim)
