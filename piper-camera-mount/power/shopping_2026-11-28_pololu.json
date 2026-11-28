@@ -17,7 +17,25 @@
       "size": "0.7 x 0.8 x 0.345 in (17.8 x 20.3 x 8.8 mm)",
       "holes": "two 0.086 in, for #2 or M2 screws",
       "pins": "VIN, VOUT, 2 x GND, EN, PG on a 0.1 in grid",
-      "protection": "reverse voltage to -40 V, output under/over-voltage, over-current, short-circuit, thermal shutdown, soft start"
+      "protection": "reverse voltage to -40 V, output under/over-voltage, over-current, short-circuit, thermal shutdown, soft start",
+      "graphs": {
+        "source": "Pololu's graph images for the D36V28Fx family (0J10051, 0J10056, 0J10058 on a.pololu-files.com), fetched from the runner rather than the Pi after Chromium was closed",
+        "max_continuous_output_a_5v": {
+          "12 V in": 4.05,
+          "24 V in": 3.6,
+          "36 V in": 3.2
+        },
+        "dropout_v_5v": {
+          "0.5 A": 0.9,
+          "1 A": 0.95,
+          "2 A": 1.1,
+          "3 A": 1.3
+        },
+        "efficiency_5v_12v_in": {
+          "2 A": "about 94 %",
+          "2.5 A": "about 93 %"
+        }
+      }
     },
     {
       "item": 5571,

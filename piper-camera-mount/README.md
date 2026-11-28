@@ -415,11 +415,15 @@ its own lead up the arm, with a service loop at each joint. It does not share th
   5 flags under-voltage below 4.63 V. The extension should leave about 4.78 V while the Pi streams
   both cameras (about 1.5 A, measured on the 8 GB board), but under 4.63 V at 2.5 A with a busy CPU.
   So check it on the arm, and change to one of the routes below if it sags.
-- **If it sags, send 24 V (or 12 V) instead, and convert next to the Pi.** Use a small 24 V supply at the base,
-  a two-core high-flex lead up the arm, and a 5 V / 5 A buck converter with a USB-C output on the
-  carrier, plus a 10 to 15 cm lead to the Pi. The loss in the lead is under 1 %. Most of these
-  converters don't speak USB-PD; set `PSU_MAX_CURRENT=5000` in the Pi's EEPROM to tell it the supply
-  can do 5 A. Power over Ethernet is the alternative if the streams should be on a wire too.
+- **For a busy Pi, send 12 V and convert next to it (28 November).** At the 2 to 2.5 A that a model
+  beside the cameras takes, the extension leaves 4.57 to 4.67 V. Pololu's 12 V 3 A adapter, a
+  two-core lead up the arm, and a Pololu D36V28F5 step-down in a printed housing on the carrier hold
+  the Pi at about 4.93 V, for $48.85 in parts
+  ([`power/README.md`](power/README.md#is-the-extension-enough-not-for-a-busy-pi-12-v-and-a-pololu-step-down-28-november-2026)).
+  A 6 V supply leaves the regulator too little headroom, and a 24 V one works with the same
+  regulator. Most converters like these don't speak USB-PD, so the Pi assumes 3 A, which the CSI
+  cameras don't notice. Set `PSU_MAX_CURRENT=5000` in the Pi's EEPROM only if the converter really
+  gives 5 A. Power over Ethernet is the alternative if the streams should be on a wire too.
 - **Or send 12 V over USB-C.** A PD step-down board on the carrier asks the supply for 12 V and makes
   5 V next to the Pi, so the official supply and a USB-C extension, or any charger that offers 12 V
   and a 10 ft cable, will reach. No 5 V supply, from any maker, was found that both reaches and

@@ -190,6 +190,20 @@ print the hostname or any credential in comments, commits, or logs.
 ranges; the Pi's residential IP is not blocked. The Pi is on constrained Wi-Fi and may be
 running the arm, so rate-cap transfers (`curl --limit-rate`) and never run speed tests.
 
+**A headed browser on a camera Pi**, for sites that block `curl` (sgbaird's suggestion on
+[#41](https://github.com/vertical-cloud-lab/robot-arms/pull/41)). The camera Pis boot to a labwc
+desktop with a headless 1920 × 1080 output, and Chromium is installed. As the login user, start it
+with `XDG_RUNTIME_DIR=/run/user/$(id -u) WAYLAND_DISPLAY=wayland-0 nice -n 19 chromium
+--ozone-platform=wayland --disable-gpu --user-data-dir=/tmp/<dir> --remote-debugging-port=9222`
+(DevTools listens on 127.0.0.1 only). Forward the port with `ssh -N -L 19222:127.0.0.1:9222`, and
+drive it from the runner with Playwright's `connect_over_cdp`, `page.mouse` and `page.keyboard`.
+Cap downloads with the DevTools `Network.emulateNetworkConditions` command.
+
+- **Mind the memory.** Camera Pi 2 is a 1 GB board running a livestream. Pololu was fine there,
+  but DigiKey's Cloudflare check filled its swap within a minute (28 November 2026). Keep to light
+  sites on it, watch `free -m`, and use the 8 GB board for heavy ones.
+- **Clean up.** Kill Chromium and delete its profile when done.
+
 ## Secret inventory
 
 Names and purposes only — **never** echo, grep, or print the values. Every secret below is

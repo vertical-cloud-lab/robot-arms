@@ -105,12 +105,20 @@ def main() -> None:
     # (power/shopping_2026-11-28_pololu.json). Pololu's 12 V 3 A adapter (#1774) has a 1.5 m cord;
     # a 2 m two-wire lead through its barrel-jack-to-terminal adapter (#2449) takes it to 3.5 m. No
     # gauge is given for the cord, so both legs are taken as 22 AWG, and the barrel pair as 30 mOhm.
-    # The regulator is taken as 85 % efficient. Its minimum input is Pololu's: 5.3 V for the
-    # D36V28F5, plus a dropout that grows with load (D42V55F3's graph: 1.1 V at 1 A, 1.4 V at 2 A).
-    # After it, a 0.15 m USB-C pigtail (20 AWG) and the Pi's socket.
+    # The regulator is taken as 85 % efficient (Pololu's graph for the D36V28F5 at 12 V in gives
+    # 93 % at 2.5 A, so this overstates the lead's current). Its minimum input is 5 V plus its
+    # dropout, which Pololu's D36V28F5 graph puts at about 0.95 V at 1 A, 1.1 V at 2 A and 1.3 V at
+    # 3 A. After it, a 0.15 m USB-C pigtail (20 AWG) and the Pi's socket.
     out["step_down_at_the_wrist"] = []
     r_lead = 2 * (1.5 * OHM_PER_M[22] + 2.0 * OHM_PER_M[22]) + 0.030
     r_pigtail = 2 * 0.15 * OHM_PER_M[20] + R_MATED
+
+    def dropout(a: float) -> float:  # D36V28F5, volts, read from Pololu's graph
+        pts = [(0.5, 0.9), (1.0, 0.95), (2.0, 1.1), (3.0, 1.3)]
+        for (a0, d0), (a1, d1) in zip(pts, pts[1:]):
+            if a <= a1:
+                return d0 + (d1 - d0) * (a - a0) / (a1 - a0)
+        return pts[-1][1]
     print(f"\n| Supply up 3.5 m (22 AWG) to a Pololu 5 V step-down | " + " | ".join(f"at {a} A" for a in amps) + " |")
     print("|---|" + "---|" * len(amps))
     for v0 in (12.0, 6.0):
@@ -125,7 +133,7 @@ def main() -> None:
         out["step_down_at_the_wrist"].append({"supply (V)": v0, "amps at the Pi": list(amps),
                                               "volts at the regulator": [round(x, 2) for x in vin]})
         print(f"| {v0:.0f} V supply: volts at the regulator's input | " + " | ".join(
-            f"{x:.2f} V{'' if x >= 5.3 + 1.0 else ' (under its minimum)'}" for x in vin) + " |")
+            f"{x:.2f} V{'' if x >= 5.0 + dropout(a) else ' (under its minimum)'}" for x, a in zip(vin, amps)) + " |")
     for name, vout, tol in (("D36V28F5, 5 V ±4 %", 5.0, 0.04), ("D42V55F5, 5 V ±3 %", 5.0, 0.03),
                             ("D42V55F5.3, 5.3 V ±3 %", 5.3, 0.03)):
         v = [vout - a * r_pigtail for a in amps]

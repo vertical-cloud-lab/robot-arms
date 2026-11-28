@@ -28,12 +28,12 @@ lab.
   1.2 A for the Pi's 2.5 A, the regulator sees 11.5 V or more, and the Pi gets the regulator's own
   output, whatever the lead does.
 - **Not 6 V.** At 6 V the lead carries about as much current as at 5 V, so it drops almost as
-  much. The regulator would see 4.8 to 5.3 V. A 5 V Pololu needs 5 V plus its dropout, which is
-  over 1 V at these loads on Pololu's graph for the D42V55F3.
+  much. The regulator would see 4.8 to 5.3 V. The D36V28F5 needs 5 V plus its dropout, which
+  Pololu's graph puts at 1.0 to 1.2 V at these loads, so 6.0 to 6.2 V.
 
 From [`voltage_drop.py`](voltage_drop.py), with a 3.5 m lead of 22 AWG (the 12 V adapter's 1.5 m
-cord plus 2 m), a 30 mΩ barrel joint, an 85 % efficient regulator, and a 15 cm USB-C pigtail of
-20 AWG to the Pi:
+cord plus 2 m), a 30 mΩ barrel joint, an 85 % efficient regulator (Pololu's graph gives 93 %, so
+this is cautious), and a 15 cm USB-C pigtail of 20 AWG to the Pi:
 
 | Supply up 3.5 m (22 AWG) to a Pololu 5 V step-down | at 1.5 A | at 2.0 A | at 2.5 A |
 |---|---|---|---|
@@ -49,7 +49,7 @@ Friday sale; [`shopping_2026-11-28_pololu.json`](shopping_2026-11-28_pololu.json
 
 | Qty | Part | Price | In stock |
 |---|---|---|---|
-| 1 | [D36V28F5, 5 V 3.2 A step-down regulator (#3782)](https://www.pololu.com/product/3782). 5.3 to 50 V in, 5 V ±4 %, 2.5 to 4 A continuous depending on the input, 17.8 × 20.3 × 8.8 mm, two M2 holes. Reverse-voltage, over-current and thermal protection | $23.95 | 189 |
+| 1 | [D36V28F5, 5 V 3.2 A step-down regulator (#3782)](https://www.pololu.com/product/3782). 5.3 to 50 V in, 5 V ±4 %. At 12 V in, Pololu's graphs give about 4 A continuous and 93 % efficiency at 2.5 A. 17.8 × 20.3 × 8.8 mm, two M2 holes. Reverse-voltage, over-current and thermal protection | $23.95 | 189 |
 | 1 | [Wall power adapter, 12 V 3 A, 36 W (#1774)](https://www.pololu.com/product/1774). UL-listed, 100 to 240 V AC, 1.5 m cord, 5.5 × 2.1 mm centre-positive plug | $21.95 | 1,165 |
 | 1 | [DC barrel jack to 2-pin terminal block (#2449)](https://www.pololu.com/product/2449). Takes the adapter's plug at the base of the arm; the lead up the arm goes into its screw terminals | $2.95 | 851 |
 | | **Pololu subtotal** (shipping is free in the US over $75) | **$48.85** | |
@@ -78,7 +78,7 @@ Choices and cautions:
 
 - **The board:** the D36V28F5 is 17.8 × 20.3 × 8.8 mm with two Ø2.2 mm holes for M2, the D42V55F5
   25.4 mm square with three. Take the hole positions from Pololu's dimension diagram.
-- **Heat:** about 1.5 to 2 W at 2.5 A. Pololu warns the board can get hot enough to burn, so print
+- **Heat:** about 1 W at 2.5 A from 12 V. Pololu warns the board can get hot enough to burn, so print
   the housing in PAHT-CF like the other arm parts, not PLA, give it vent slots, and hold the board
   on standoffs.
 - **Strain relief:** clamp the 12 V lead where it enters, so a pull loads the housing and the
