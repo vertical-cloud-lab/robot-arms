@@ -191,6 +191,11 @@ These are results from the model anchored to #54, with only the tooling and the 
 - **The hardest direction is along a stretched arm.** Near full stretch, a push along the arm's
   length barely loads any motor. The easiest direction is sideways, which J1 resists with no
   gravity load to hide it.
+- **The other case.** With AgileX's coefficient, `follower.py`'s limits would trip holding still
+  at 36% of these poses, and elsewhere at roughly half these forces (median 43 N in the hardest
+  direction; `joint_currents.json`).
+- **Only pushes at the fingertips are modelled.** A push on the elbow or the forearm loads fewer
+  joints, through shorter levers.
 - **For scale only:** ISO/TS 15066 lists quasi-static contact limits of 140 N for hands and
   fingers and 65 N for the face `[unverified]`. This arm isn't a collaborative robot, and its
   checks aren't safety-rated, so these limits are a yardstick, not a claim.
