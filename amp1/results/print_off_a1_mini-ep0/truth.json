@@ -1,0 +1,47 @@
+{
+ "success": true,
+ "placed": true,
+ "gripper_contacts": 0,
+ "gripper_cmd_closed": 0.0,
+ "detail": {
+  "print_on_shelf": true,
+  "plate_seated": true,
+  "bond_broken": true,
+  "plate_offset_mm": 0.1
+ },
+ "events": [
+  {
+   "t": 10.572,
+   "event": "print bond broke",
+   "tension_N": 0.0,
+   "shear_N": 5.04,
+   "twist_Nm": 0.0033
+  }
+ ],
+ "objects": {
+  "build_plate": [
+   0.0715,
+   -0.3823,
+   0.084
+  ],
+  "print": [
+   0.21,
+   -0.4236,
+   0.0813
+  ]
+ },
+ "meta": {
+  "plate": [
+   0.07136961687321454,
+   -0.3823021328623613,
+   0.0845
+  ],
+  "shelf": [
+   0.23636961687321453,
+   -0.3823021328623613,
+   0.065,
+   0.065,
+   0.12
+  ]
+ }
+}
