@@ -5,6 +5,7 @@ python collect.py EPISODES_DIR RESULTS_DIR EPISODE...
 
 The final frame is EPISODES_DIR/finals/TASK_final.jpg if it exists, else the last frame recorded
 in /tmp/amp-run/TASK/frames/TASK_epK/. The truth file is /tmp/amp-run/TASK/frames/TASK_truth.json.
+An episode's .run.json ({"frames", "truth"}, as summarize.py reads it) overrides both paths.
 """
 import json
 import shutil
@@ -22,8 +23,11 @@ for ep in sys.argv[3:]:
             shutil.copy(s / f, d / f)
     task, k = ep.rsplit("-ep", 1)
     run = Path("/tmp/amp-run") / task / "frames"
-    if (run / f"{task}_truth.json").exists():
-        shutil.copy(run / f"{task}_truth.json", d / "truth.json")
+    meta = json.loads((s / ".run.json").read_text()) if (s / ".run.json").exists() else {}
+    truth = Path(meta.get("truth", run / f"{task}_truth.json"))
+    frames_dir = Path(meta.get("frames", run / f"{task}_ep{k}"))
+    if truth.exists():
+        shutil.copy(truth, d / "truth.json")
     keys = []
     try:
         keys = [Path(x["path"] if isinstance(x, dict) else x).name.split(".")[0]
@@ -40,7 +44,7 @@ for ep in sys.argv[3:]:
             im = im.resize((round(im.size[0] * r), round(im.size[1] * r)))
         im.save(d / "images" / f"{stem}.jpg", quality=82, optimize=True)
     fin = src / "finals" / f"{task}_final.jpg"
-    frames = sorted((run / f"{task}_ep{k}").glob("*.jpg")) if (run / f"{task}_ep{k}").exists() else []
+    frames = sorted(frames_dir.glob("*.jpg")) if frames_dir.exists() else []
     if fin.exists():
         shutil.copy(fin, d / "final_frame.jpg")
     elif frames:

@@ -387,7 +387,10 @@ ROD_R = 0.0063
 CUP_R, CUP_H, CUP_CHAMFER = 0.009525, 0.06985, 0.0015
 
 
-def _furnace(xc, yc):
+def _furnace(xc, yc, knob=True):
+    """knob=True: the sealing rod stands 80 mm above the rim with a 22 mm knob on top (its lever's
+    attachment, invented: the lab has not measured the rod or lever above the rim). knob=False:
+    a bare rod stub 30 mm above the rim, the variant atomizer_charge_bare_rod."""
     steel, graphite = "0.70 0.72 0.74 1", "0.17 0.17 0.18 1"
     floor = CRU_RIM - CRU_DEPTH
     h = CRU_RIM / 2
@@ -396,12 +399,13 @@ def _furnace(xc, yc):
         _box((0.040, 0.030, h), (0, -0.070, h), steel), _box((0.040, 0.030, h), (0, 0.070, h), steel),
         # the crucible's floor: a thick box (a thin cylinder let dropped cups sink into it)
         _box((CRU_R_OUT, CRU_R_OUT, 0.015), (0, 0, floor - 0.015), graphite),
-        # the sealing rod standing in the crucible, and its knob
-        f'<geom type="cylinder" size="{ROD_R} 0.0950" pos="0 0 {floor + 0.095:.4f}" '
-        'rgba="0.55 0.56 0.58 1" friction="0.3 0.01 0.001"/>',
-        f'<geom type="cylinder" size="0.011 0.006" pos="0 0 {floor + 0.196:.4f}" '
-        'rgba="0.20 0.20 0.22 1"/>',
     ]
+    top = CRU_RIM + (0.080 if knob else 0.030)       # the sealing rod standing in the crucible
+    g.append(f'<geom type="cylinder" size="{ROD_R} {(top - floor) / 2:.4f}" '
+             f'pos="0 0 {(top + floor) / 2:.4f}" rgba="0.55 0.56 0.58 1" friction="0.3 0.01 0.001"/>')
+    if knob:
+        g.append(f'<geom type="cylinder" size="0.011 0.006" pos="0 0 {top + 0.006:.4f}" '
+                 'rgba="0.20 0.20 0.22 1"/>')
     # the lid, hinged on the far side (+x), open 105 degrees and leaning away from the arm
     a = math.radians(105)
     hx, hz = 0.100, CRU_RIM + 0.015           # hinge line along y at the opening's far edge
@@ -465,6 +469,14 @@ TASKS = {
         "source": "digital-alloy-lab #251/PR #253 (SOP step 5), #152, PR #179: charging the "
                   "rePowder's crucible",
     },
+    # the same with a bare rod stub 30 mm above the rim, no knob: atomizer_charge's episode 0
+    # found the (invented) knob blocked the far side of the annulus for this gripper
+    "atomizer_charge_bare_rod": {
+        "instruction": ("Load the four charge cups from the tray into the atomizer's crucible, "
+                        "standing upright around the sealing rod."),
+        "episode_length_s": 300.0,
+        "source": "atomizer_charge with a bare sealing rod 30 mm above the rim (geometry unmeasured)",
+    },
 }
 
 
@@ -515,7 +527,7 @@ def _objects(task: str, rng: np.random.Generator) -> tuple[str, dict]:
                + _auger_rack(x_out, slots)
                + _auger("auger_new", x_out, slots[new_slot], RACK_H + 0.0003, "0.55 0.75 0.95 1"))
         return xml, {"doser": (x_out, yd, AXIS_H), "rack_slot": (x_out, slots[1 - new_slot], RACK_H)}
-    if task == "atomizer_charge":
+    if task in ("atomizer_charge", "atomizer_charge_bare_rod"):
         xc, yc = 0.30 + j(0.01), 0.09 + j(0.01)       # clear of the arm's home pose
         tx, ty = 0.16 + j(0.01), -0.21 + j(0.01)
         pitch, rgba = 0.040, "0.30 0.30 0.33 1"
@@ -526,7 +538,8 @@ def _objects(task: str, rng: np.random.Generator) -> tuple[str, dict]:
             for sx_, sy_, hx_, hy_ in ((w, 0, 0.0015, w + 0.0015), (-w, 0, 0.0015, w + 0.0015),
                                        (0, w, w + 0.0015, 0.0015), (0, -w, w + 0.0015, 0.0015)):
                 tray.append(_box((hx_, hy_, 0.0075), (ox + sx_, oy + sy_, 0.0135), rgba))
-        xml = _furnace(xc, yc) + (f'<body name="cup_tray" pos="{tx:.4f} {ty:.4f} 0">'
+        xml = _furnace(xc, yc, knob=task == "atomizer_charge") + (
+            f'<body name="cup_tray" pos="{tx:.4f} {ty:.4f} 0">'
                                   + "".join(tray) + '</body>')
         for k in range(4):
             ox, oy = (k % 2 - 0.5) * pitch, (k // 2 - 0.5) * pitch
@@ -998,7 +1011,8 @@ class PiperAdapter:
         held = {"banana_in_bowl": "banana", "tape_to_shelf": "tape", "vial_in_rack": "vial",
                 "print_off_a1_mini": ["print", "build_plate"],
                 "auger_swap": ["auger_old", "auger_new"],
-                "atomizer_charge": [f"cup{k}" for k in range(4)]}.get(self.task)
+                "atomizer_charge": [f"cup{k}" for k in range(4)],
+                "atomizer_charge_bare_rod": [f"cup{k}" for k in range(4)]}.get(self.task)
         detail = {}
         if self.task == "banana_in_bowl":
             p, _ = self._body("banana")
@@ -1052,7 +1066,7 @@ class PiperAdapter:
             placed = new_ok and old_ok
             detail = {"new_in_clips": seated, "gear_to_pinion_mm": round(gear_mm, 1),
                       "new_cap_toward_arm": bool(ax[0] < -0.99), "old_in_empty_slot": old_ok}
-        elif self.task == "atomizer_charge":
+        elif self.task in ("atomizer_charge", "atomizer_charge_bare_rod"):
             xc, yc, floor, rim = self.meta["crucible"]
             cups = []
             for k in range(4):

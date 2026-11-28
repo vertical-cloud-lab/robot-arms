@@ -1,0 +1,14 @@
+{
+ "tools": {
+  "Read": 61,
+  "Bash": 78,
+  "Write": 1
+ },
+ "bash": 78,
+ "reads": 61,
+ "writes": 1,
+ "outside_or_other": [],
+ "n_outside": 0,
+ "cells": 78,
+ "flagged_cells": []
+}
