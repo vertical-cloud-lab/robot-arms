@@ -4,6 +4,9 @@ set -euo pipefail
 TASK=$1; PORT=$2; K=${3:-0}
 PY=/tmp/ext/ml-amp/.venv/bin/python
 export PIPER_RUN_DIR=/tmp/amp-run/$TASK PIPER_SERVER_PORT=$PORT PIPER_FRAMES_DIR=/tmp/amp-run/$TASK/frames
+# the task (a task may widen the perception box) and a model directory of its own, so stacks for
+# different tasks can run side by side
+export PIPER_TASK=$TASK PIPER_SIM_DIR=/tmp/amp-run/$TASK/model
 export PYTHONPATH=/tmp/ext/ml-amp/src:/tmp/amp-piper MUJOCO_GL=egl PYOPENGL_PLATFORM=egl
 EPDIR=/tmp/amp-episodes/${TASK}-ep${K}
 mkdir -p "$EPDIR"
