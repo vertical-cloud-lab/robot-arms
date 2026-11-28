@@ -1,26 +1,76 @@
-% WRTG 316 research proposal.
-% DEMO CONTENT: placeholder text to test the setup. Overwrite when drafting begins.
-\documentclass[11pt]{article}
+% WRTG 316 research proposal: main file.
+% Build with `latexmk -pdf main.tex` (or run pdflatex twice). No BibTeX step: the
+% references are typed out in IEEE style in sources.tex, so the Works Cited and the
+% Annotated Bibliography print exactly what is written there.
+% Lines starting with "% CHECK:" mark claims to confirm against the original source.
+\documentclass[11pt,letterpaper]{article}
 
+\usepackage[T1]{fontenc}
+\usepackage{mathptmx}                 % Times, as in IEEE publications
 \usepackage[margin=1in]{geometry}
-\usepackage{cite}        % IEEE-style numeric citations, e.g. [1], [2]--[4]
-\usepackage{graphicx}
-\usepackage{amsmath}
+\usepackage{microtype}
+\usepackage[nocompress]{cite}         % sorted numeric citations, never compressed to ranges
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage[shortlabels]{enumitem}
+\usepackage{pdfpages}                 % appends IEEE's guide pages, if present (appendix)
+\usepackage{titlesec}
 \usepackage[hidelinks]{hyperref}
+\urlstyle{same}
 
-\graphicspath{{figures/}}
+% IEEE Reference Guide (2025): several references in one place are each bracketed and
+% separated by commas, "[1], [2], [3]", never "[1]--[3]".
+\renewcommand{\citepunct}{], [}
 
-\title{When Is a Low-Cost Arm Good Enough?}
-\author{Joshua Spiesman}
-\date{\today}
+% A DOI printed IEEE-style ("doi: 10.xxxx/yyyy") that also links to the article.
+\newcommand{\doi}[1]{doi:~\href{https://doi.org/#1}{\nolinkurl{#1}}}
+\newcommand{\etal}{\emph{et~al.}}
+
+% Every reference, written once and used both in the Annotated Bibliography and in the
+% Works Cited.
+\input{sources}
+
+% Annotated Bibliography: "[n]  Reference." with the number flush left, as in the Works
+% Cited, then the annotation on its own line.
+\newenvironment{annotatedbib}
+  {\begin{list}{}{\setlength{\leftmargin}{2.5em}\setlength{\labelwidth}{2.1em}%
+     \setlength{\labelsep}{0.4em}\setlength{\itemsep}{0.45\baselineskip}%
+     \setlength{\parsep}{0.15\baselineskip}\renewcommand{\makelabel}[1]{##1\hfil}}}
+  {\end{list}}
+\newcommand{\annotated}[3]{\item[{\cite{#1}}] #2\par #3}
+
+\renewcommand{\refname}{Works Cited}
+\titlespacing*{\section}{0pt}{1.6ex plus 0.6ex minus 0.3ex}{0.8ex plus 0.2ex}
+\titlespacing*{\subsection}{0pt}{1.3ex plus 0.5ex minus 0.3ex}{0.5ex plus 0.2ex}
+\setlength{\parskip}{0.3\baselineskip}
+\setlist{itemsep=0.15\baselineskip, topsep=0.25\baselineskip}
+
+% Title block, kept compact so the proposal body stays near the assignment's length.
+\newcommand{\proposaltitle}{When Is a Low-Cost Robot Arm Good Enough\\[0.1em]
+  for a Self-Driving Lab?}
+\hypersetup{pdftitle={When Is a Low-Cost Robot Arm Good Enough for a Self-Driving Lab?
+  Research Paper Proposal}, pdfauthor={Joshua Spiesman}}
 
 \begin{document}
-\maketitle
 
-\input{sections/01-intro}
-\input{sections/02-background}
+\begin{center}
+  {\LARGE\bfseries \proposaltitle\par}
+  \vspace{0.5em}
+  {\large Research Paper Proposal\par}
+  \vspace{0.6em}
+  Joshua Spiesman\\
+  WRTG 316: Technical Writing, Brigham Young University\\
+  Prepared for Prof.\ Laurence \quad\textbullet\quad \today
+  % CHECK: the instructor's name and title as they should appear.
+\end{center}
+\vspace{0.5em}
 
-\bibliographystyle{IEEEtran}
-\bibliography{refs}
+\input{sections/1-introduction}
+\input{sections/2-qualifications}
+\input{sections/3-research-plan}
+\input{sections/4-conclusion}
+\input{sections/5-works-cited}
+\input{sections/appendix-ieee-style}
 
 \end{document}

@@ -1,0 +1,69 @@
+% !TEX root = ../main.tex
+% The IEEE citation rules, as the last pages of the document.
+%
+% To attach IEEE's own pages: open the IEEE Reference Guide (the URL in sources.tex now
+% opens a Google Doc), choose File > Download > PDF, and save it next to main.tex as
+% IEEE_Reference_Guide.pdf. The *.pdf rule in .gitignore keeps it out of the repository.
+% The pages below are those of version V 3.28.2025: 4 (citing references in the text, and
+% the general rules), 7-8 (conference papers) and 15-16 (journal articles, with article
+% numbers and DOIs). If IEEE updates the guide, check the page numbers again.
+\newcommand{\IEEEGuidePages}{4,7,8,15,16}
+
+\clearpage
+\section*{Appendix: IEEE Citation Style}
+
+This proposal follows the IEEE Reference Guide \cite{ieeeguide}. The table summarizes the
+rules it uses, with an example of each from this proposal.
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.45\linewidth}
+    >{\raggedright\arraybackslash}X@{}}
+  \toprule
+  Rule & Example from this proposal \\
+  \midrule
+  Cite a source by its number in square brackets, inside the sentence's punctuation.
+    & ``\ldots\ ran 688 experiments \cite{burger2020}.'' \\
+  Number sources in the order they are first cited, and reuse the number every time the
+    source is cited again.
+    & Burger \etal\ is cited first, so it is \cite{burger2020} throughout. \\
+  Bracket each number of a group separately; never write a range.
+    & Write \cite{harazono2024}, \cite{rupp2022}; never ``[1]--[4]'' \\
+  In the text, use ``\etal'' for a source with three or more authors.
+    & Zhou \etal\ \cite{zhou2025} \\
+  In the reference list, give initials before surnames and list up to six authors; for
+    more than six, give the first author and ``\etal''
+    & Reference \cite{zhou2025} lists all five authors; \cite{burger2020} has fourteen,
+    so it gives ``B.~Burger \etal'' \\
+  Journal article: author, ``title,'' \emph{abbreviated journal}, vol., no., pp., month
+    year, doi.
+    & Tom \etal\ \cite{tom2024} \\
+  Journal article with an article number instead of pages: \ldots, vol., no., month year,
+    Art.~no., doi.
+    & Harazono \etal\ \cite{harazono2024}; Zhou \etal\ \cite{zhou2025} \\
+  Conference paper: author, ``title,'' in \emph{abbreviated proceedings}, city, country,
+    month year, pp., doi.
+    & Quigley \etal\ \cite{quigley2011}; Ferraguti \etal\ \cite{ferraguti2019} \\
+  Online manual: organization, city, country. \emph{Title}. (year). Accessed: date.
+    [Online]. Available: URL
+    & The IEEE Reference Guide \cite{ieeeguide} \\
+  Put article titles in quotation marks in sentence case; set journal and conference names
+    in italics and abbreviate them, except one-word titles.
+    & \emph{Chem. Rev.}\ \cite{tom2024}; \emph{Nature} \cite{burger2020} \\
+  End each reference with a period, unless it ends with a URL.
+    & Reference \cite{vincent2024} ends ``\ldots 3445635.''; \cite{ieeeguide} ends with its
+    URL \\
+  \bottomrule
+\end{tabularx}
+\end{center}
+
+\IfFileExists{IEEE_Reference_Guide.pdf}{%
+  \noindent IEEE's own pages on citing references, conference papers and journal articles
+  follow.
+  \includepdf[pages={\IEEEGuidePages}]{IEEE_Reference_Guide.pdf}%
+}{%
+  \noindent\emph{IEEE's own pages on citing references, conference papers and journal
+  articles will follow here once the guide is saved next to \texttt{main.tex} as
+  \texttt{IEEE\_Reference\_Guide.pdf}.}%
+}

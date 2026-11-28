@@ -1,0 +1,248 @@
+TY  - JOUR
+AU  - Burger, Benjamin
+AU  - Maffettone, Phillip M.
+AU  - Gusev, Vladimir V.
+AU  - Aitchison, Catherine M.
+AU  - Bai, Yang
+AU  - Wang, Xiaoyan
+AU  - Li, Xiaobo
+AU  - Alston, Ben M.
+AU  - Li, Buyi
+AU  - Clowes, Rob
+AU  - Rankin, Nicola
+AU  - Harris, Brandon
+AU  - Sprick, Reiner Sebastian
+AU  - Cooper, Andrew I.
+TI  - A mobile robotic chemist
+T2  - Nature
+J2  - Nature
+PY  - 2020
+DA  - 2020/07
+VL  - 583
+IS  - 7815
+SP  - 237
+EP  - 241
+DO  - 10.1038/s41586-020-2442-2
+UR  - https://doi.org/10.1038/s41586-020-2442-2
+N1  - Cite key in the LaTeX draft: burger2020
+ER  - 
+
+TY  - JOUR
+AU  - Tom, Gary
+AU  - Schmid, Stefan P.
+AU  - Baird, Sterling G.
+AU  - Cao, Yang
+AU  - Darvish, Kourosh
+AU  - Hao, Han
+AU  - Lo, Stanley
+AU  - Pablo-García, Sergio
+AU  - Rajaonson, Ella M.
+AU  - Skreta, Marta
+AU  - Yoshikawa, Naruki
+AU  - Corapi, Samantha
+AU  - Akkoc, Gun Deniz
+AU  - Strieth-Kalthoff, Felix
+AU  - Seifrid, Martin
+AU  - Aspuru-Guzik, Alán
+TI  - Self-driving laboratories for chemistry and materials science
+T2  - Chemical Reviews
+J2  - Chem. Rev.
+PY  - 2024
+DA  - 2024/08
+VL  - 124
+IS  - 16
+SP  - 9633
+EP  - 9732
+DO  - 10.1021/acs.chemrev.4c00055
+UR  - https://doi.org/10.1021/acs.chemrev.4c00055
+N1  - Cite key in the LaTeX draft: tom2024
+ER  - 
+
+TY  - JOUR
+AU  - Harazono, Yoritaka
+AU  - Shimono, Haruko
+AU  - Hata, Kikumi
+AU  - Mitsuyama, Toutai
+AU  - Horinouchi, Takaaki
+TI  - Evaluation of microplate handling accuracy for applying robotic arms in laboratory automation
+T2  - SLAS Technology
+J2  - SLAS Technol.
+PY  - 2024
+DA  - 2024/12
+VL  - 29
+IS  - 6
+C7  - 100200
+DO  - 10.1016/j.slast.2024.100200
+UR  - https://doi.org/10.1016/j.slast.2024.100200
+N1  - Cite key in the LaTeX draft: harazono2024
+ER  - 
+
+TY  - JOUR
+AU  - Rupp, Nicole
+AU  - Peschke, Katrin
+AU  - Köppl, Michael
+AU  - Drissner, David
+AU  - Zuchner, Thole
+TI  - Establishment of low-cost laboratory automation processes using AutoIt and 4-axis robots
+T2  - SLAS Technology
+J2  - SLAS Technol.
+PY  - 2022
+DA  - 2022/10
+VL  - 27
+IS  - 5
+SP  - 312
+EP  - 318
+DO  - 10.1016/j.slast.2022.07.001
+UR  - https://doi.org/10.1016/j.slast.2022.07.001
+N1  - Cite key in the LaTeX draft: rupp2022
+ER  - 
+
+TY  - CONF
+AU  - Quigley, Morgan
+AU  - Asbeck, Alan
+AU  - Ng, Andrew
+TI  - A low-cost compliant 7-DOF robotic manipulator
+T2  - 2011 IEEE International Conference on Robotics and Automation
+J2  - Proc. IEEE Int. Conf. Robot. Autom. (ICRA)
+PY  - 2011
+DA  - 2011/05
+SP  - 6051
+EP  - 6058
+CY  - Shanghai, China
+DO  - 10.1109/ICRA.2011.5980332
+UR  - https://doi.org/10.1109/ICRA.2011.5980332
+N1  - Cite key in the LaTeX draft: quigley2011
+ER  - 
+
+TY  - JOUR
+AU  - Doloi, Sayan
+AU  - Das, Maloy
+AU  - Li, Yujia
+AU  - Cho, Zen Han
+AU  - Xiao, Xingchi
+AU  - Hanna, John V.
+AU  - Osvaldo, Matthew
+AU  - Ng Wei Tat, Leonard
+TI  - Democratizing self-driving labs: Advances in low-cost 3D printing for laboratory automation
+T2  - Digital Discovery
+J2  - Digit. Discov.
+PY  - 2025
+DA  - 2025/07
+VL  - 4
+IS  - 7
+SP  - 1685
+EP  - 1721
+DO  - 10.1039/D4DD00411F
+UR  - https://doi.org/10.1039/D4DD00411F
+N1  - Cite key in the LaTeX draft: doloi2025
+ER  - 
+
+TY  - JOUR
+AU  - Chajón, Sebastián
+AU  - Reiff-Stephan, Jörg
+AU  - Günther, Norman
+TI  - Photogrammetric characterization of robot positioning accuracy and repeatability
+T2  - Robotics
+J2  - Robotics
+PY  - 2026
+DA  - 2026/04
+VL  - 15
+IS  - 5
+C7  - 86
+DO  - 10.3390/robotics15050086
+UR  - https://doi.org/10.3390/robotics15050086
+N1  - Cite key in the LaTeX draft: chajon2026
+ER  - 
+
+TY  - JOUR
+AU  - Zhou, Zhengxue
+AU  - Veeramani, Satheeshkumar
+AU  - Munguia-Galeano, Francisco
+AU  - Fakhruldeen, Hatem
+AU  - Cooper, Andrew I.
+TI  - Localization, inspection, and reasoning (LIRA) module for autonomous workflows in self-driving laboratories
+T2  - Communications Chemistry
+J2  - Commun. Chem.
+PY  - 2025
+DA  - 2025/11
+VL  - 8
+IS  - 1
+C7  - 384
+DO  - 10.1038/s42004-025-01770-1
+UR  - https://doi.org/10.1038/s42004-025-01770-1
+N1  - Cite key in the LaTeX draft: zhou2025
+ER  - 
+
+TY  - CONF
+AU  - Ferraguti, Federica
+AU  - Pertosa, Andrea
+AU  - Secchi, Cristian
+AU  - Fantuzzi, Cesare
+AU  - Bonfè, Marcello
+TI  - A methodology for comparative analysis of collaborative robots for Industry 4.0
+T2  - 2019 Design, Automation & Test in Europe Conference & Exhibition (DATE)
+J2  - Proc. Design, Automation & Test in Europe Conf. (DATE)
+PY  - 2019
+DA  - 2019/03
+SP  - 1070
+EP  - 1075
+CY  - Florence, Italy
+DO  - 10.23919/DATE.2019.8714830
+UR  - https://doi.org/10.23919/DATE.2019.8714830
+N1  - Cite key in the LaTeX draft: ferraguti2019
+ER  - 
+
+TY  - CONF
+AU  - Wattoo, Zainab Saeed
+AU  - Vitis, Petal
+AU  - Zhu, Ruizhe
+AU  - Depner, Noah
+AU  - Zhang, Ivory
+AU  - Hein, Jason
+AU  - Gujarati, Arpan
+AU  - Seltzer, Margo
+TI  - RABIT, a robot arm bug intervention tool for self-driving labs
+T2  - 2024 54th Annual IEEE/IFIP International Conference on Dependable Systems and Networks (DSN)
+J2  - Proc. IEEE/IFIP Int. Conf. Dependable Syst. Netw. (DSN)
+PY  - 2024
+DA  - 2024/06
+SP  - 353
+EP  - 361
+CY  - Brisbane, Australia
+DO  - 10.1109/DSN58291.2024.00043
+UR  - https://doi.org/10.1109/DSN58291.2024.00043
+N1  - Cite key in the LaTeX draft: wattoo2024
+ER  - 
+
+TY  - JOUR
+AU  - Vincent, Joseph A.
+AU  - Nishimura, Haruki
+AU  - Itkina, Masha
+AU  - Shah, Paarth
+AU  - Schwager, Mac
+AU  - Kollar, Thomas
+TI  - How generalizable is my behavior cloning policy? A statistical approach to trustworthy performance evaluation
+T2  - IEEE Robotics and Automation Letters
+J2  - IEEE Robot. Autom. Lett.
+PY  - 2024
+DA  - 2024/10
+VL  - 9
+IS  - 10
+SP  - 8619
+EP  - 8626
+DO  - 10.1109/LRA.2024.3445635
+UR  - https://doi.org/10.1109/LRA.2024.3445635
+N1  - Cite key in the LaTeX draft: vincent2024
+ER  - 
+
+TY  - ELEC
+AU  - IEEE Publication Operations
+TI  - IEEE Reference Guide
+ET  - V 3.28.2025
+PB  - IEEE
+CY  - Piscataway, NJ, USA
+PY  - 2025
+Y2  - 2026/11/28
+UR  - https://journals.ieeeauthorcenter.ieee.org/wp-content/uploads/sites/7/IEEE_Reference_Guide.pdf
+N1  - Cite key in the LaTeX draft: ieeeguide
+ER  - 

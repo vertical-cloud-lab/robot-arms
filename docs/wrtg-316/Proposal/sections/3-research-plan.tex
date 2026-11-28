@@ -1,0 +1,105 @@
+% !TEX root = ../main.tex
+\section{Research Plan and Methodology}
+
+\subsection{Methods}\label{sec:methods}
+
+\textbf{What and how.} My research is a systematic literature review that finds, compares and
+selects tests for judging an arm as an automated manual manipulator. I will:
+\begin{enumerate}[1.]
+  \item finish searching: two rounds of Edison questions are done, so I will run my drafted
+    search strings in Scopus, Engineering Village and IEEE Xplore (2015 to 2026) and follow
+    citations from my eleven sources in Google Scholar;
+  \item read every source in full and check each number and quote against the original;
+  \item record, for each test, what it measures, the number of trials, the success criterion,
+    the equipment, the arm tested and the results;
+  \item group the tests by level (arm, station, task and cost) and judge each by whether it
+    measures what this role needs, whether a small lab can afford it, and whether industrial
+    results exist to compare with;
+  \item recommend a list of tests, each with a protocol and a pass criterion tied to the task's
+    tolerance; and
+  \item write, review and edit the paper, and repeat.
+\end{enumerate}
+
+\textbf{Authorities, places and texts.} The authorities are standards bodies, chiefly ISO
+(ISO~9283 for accuracy and repeatability \cite{harazono2024}, \cite{chajon2026}; ISO~10218 and
+ISO/TS~15066 for the safety of collaborative arms \cite{ferraguti2019}); Andrew Cooper's group
+at the University of Liverpool, which built the best-known mobile lab arms \cite{burger2020},
+\cite{zhou2025}; the authors of the SDL reviews \cite{tom2024}, \cite{doloi2025}; and the arm
+makers whose datasheets set the industrial baseline, such as Universal Robots, KUKA and Franka.
+The essential places are the databases in Section~\ref{sec:library} and journals such as
+\emph{SLAS Technology}, \emph{Communications Chemistry}, \emph{Digital Discovery},
+\emph{Robotics} and \emph{IEEE Robotics and Automation Letters}.
+
+\textbf{Non-text research.} None. The paper includes no fieldwork, interviews, surveys or
+experiments; testing our arms is next semester's work.
+
+\textbf{Source biases.} Datasheets are written to sell and report one unloaded measurement, so
+I will keep measured and datasheet values apart, as \cite{rupp2022} and \cite{chajon2026} do.
+Published studies tend to report successes, so I will look for negative results
+\cite{wattoo2024} and for the limits inside positive ones \cite{rupp2022}. Some measurements
+rely on the robot's own sensors or on instruments coarser than the arm \cite{chajon2026},
+\cite{zhou2025}, so I will name the instrument behind each number. AI tools misattribute
+claims, so I check every source myself. The largest bias is my own: as an undergraduate
+researcher with limited resources who has worked only with affordable arms, I lean toward
+believing they are good enough. I will counter it by reporting every measurable fact about what
+makes an arm useful, whichever side it favors, and by resting my arguments on quantitative
+data.
+
+\textbf{AI use and citation style.} My instructor approved by email, on October~28, 2026, my
+use of Edison Scientific to find sources and of Claude Code in drafting sessions that I direct.
+Claude Code drafted this proposal from my answers to a list of proposal questions and my final
+source list. Every session is posted publicly as a GitHub issue at
+\url{https://github.com/vertical-cloud-lab/robot-arms/issues?q=is:issue+in:title+WRTG}.
+% CHECK: add how you revised this draft before you submit it.
+Sources are cited in IEEE style \cite{ieeeguide}, whose rules are attached after the Works
+Cited.
+
+\subsection{Proposed Outline of Research Report}
+
+\begin{enumerate}[1.]
+  \item \textbf{Introduction:} SDLs and their growth; the automated manual manipulator; the
+    price gap; research question and thesis.
+  \item \textbf{Methods:} databases, AI-assisted search, and how tests were selected and
+    compared.
+  \item \textbf{Results, the tests the literature offers:}
+    (a)~arm level: repeatability and accuracy \cite{harazono2024}, \cite{quigley2011},
+    \cite{chajon2026};
+    (b)~station level: recalibration accuracy and time \cite{burger2020}, \cite{zhou2025};
+    (c)~task level: tolerance for error, and performance against a person
+    \cite{harazono2024}, \cite{rupp2022};
+    (d)~reliability: long runs, silent failures and confidence bounds \cite{zhou2025},
+    \cite{wattoo2024}, \cite{vincent2024};
+    (e)~beyond performance: safety, programming effort and cost \cite{tom2024},
+    \cite{doloi2025}, \cite{ferraguti2019}.
+  \item \textbf{Discussion:} the recommended tests and pass criteria; what they would take on
+    the PiPER and SO-101; the counter-arguments; gaps such as cost per task.
+  \item \textbf{Conclusion:} what a lab should test before it trusts or buys an arm.
+  \item \textbf{Works Cited,} followed by the IEEE citation rules.
+\end{enumerate}
+
+\subsection{Research Timeline}
+
+The paper is due Tuesday, December~1, 2026. I work best in long, uninterrupted blocks, so the
+plan groups the paper's work into such blocks and keeps the last day for editing, not drafting.
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}X l l@{}}
+  \toprule
+  Milestone & Date (2026) & Status \\
+  \midrule
+  Library mini-course & Tue., Oct.~27 & Done \\
+  Find sources: two rounds of Edison questions; final list of eleven & Nov.~4 and Nov.~27
+    & Done \\
+  Draft proposal & Sat., Nov.~28 & Done \\
+  Review draft and edit; submit final proposal & Sat., Nov.~28 & \\
+  Overhaul paper draft: turn the outline and proposal into a full draft & Sat., Nov.~28,
+    evening & \\
+  Paper scope modification edit & Mon., Nov.~30, morning & \\
+  Paper argument and supporting sources edit & Mon., Nov.~30, afternoon & \\
+  Paper data and presentation edit: tables of tests, any figures & Mon., Nov.~30, evening
+    & \\
+  Paper final edit and submission & Tue., Dec.~1 & Due \\
+  \bottomrule
+\end{tabularx}
+\end{center}

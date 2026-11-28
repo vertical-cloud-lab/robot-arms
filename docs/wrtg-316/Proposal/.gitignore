@@ -6,3 +6,10 @@
 *.bbl
 *.blg
 *.out
+*.fls
+*.fdb_latexmk
+*.toc
+*.xdv
+# IEEE's reference guide, saved here so the appendix can attach its pages. It is IEEE's
+# document, so it stays local (the *.pdf rule above already covers it).
+IEEE_Reference_Guide.pdf
