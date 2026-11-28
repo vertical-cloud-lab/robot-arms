@@ -1,0 +1,29 @@
+{
+ "rvec": [
+  1.3316965805790755,
+  0.0043513956404331155,
+  -0.012540423242093085
+ ],
+ "tvec": [
+  -204.21890210086477,
+  349.88769884963347,
+  612.6822935352287
+ ],
+ "f": 860.9843989941529,
+ "k1": -0.1617373284010801,
+ "cx": 1152.0,
+ "cy": 648.0,
+ "held_offset_px": [
+  3.628432930552325,
+  1.8624807515751385
+ ],
+ "time_offset_s": 0.6500000000000001,
+ "median_resid_px": 1.9621720137169523,
+ "feature": "bottom-centre of the green blob's bbox (piper_vision.py), i.e. the roll's lowest point",
+ "size": [
+  2304,
+  1296
+ ],
+ "frame": "arm base frame, mm (piper_pick_tape.fk_all)",
+ "fit": "2026-10-16 test 1 video (2304x1296 at 15 fps, detected at 1152x648) + 100 Hz trace"
+}

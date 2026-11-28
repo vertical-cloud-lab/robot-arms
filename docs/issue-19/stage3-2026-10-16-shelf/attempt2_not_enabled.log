@@ -1,0 +1,24 @@
+start joints [  -3.91,   -1.91,   -1.45,    1.22,   38.13,   66.39]  gripper 63.7 mm, 0.08 N*m; arm status NORMAL(0x0)
+arm plane J1 = 4.05 deg; tape centre at r = 247 mm, top at z = 49 mm
+fingertip = flange + 150 mm along the tool axis
+home       [  -3.91,   -1.91,   -1.45,    1.22,   38.13,   66.39]   (parks at [  -3.91,    0.00,   -1.45,    1.22,   38.13,   66.39])
+pregrasp   [   4.06,   74.23,  -50.68,   -0.01,   61.44,   65.57]   fingertips at z = 109 mm
+grasp      [   4.05,   82.78,  -36.29,   -0.00,   38.52,   65.56]   fingertips at z = 21 mm
+vertical line: 88 IK points; streamed over 4.4 s at 10 %, fastest joint peaks at 10.5 deg/s (cap 16.7)
+return home: streamed over 8.0 s at 21 %, fastest joint peaks at 23.0 deg/s (cap 35.1)
+place: shelf top z = 60 mm from r = 300 mm; carry at fingertip z = 131 mm, out to r = 370 mm, release at fingertip z = 101 mm (roll 20 mm above the shelf)
+place path: 175 IK points; streamed over 8.8 s at 10 %, fastest joint peaks at 9.9 deg/s
+place      [   4.05,   99.17,  -76.01,   -0.00,   61.85,   65.56]
+home -> pregrasp (MOVE J): lowest point z = 91 mm (fingertip), closest above the roll 60 mm
+place path (streamed): lowest point z = 101 mm (fingertip), closest above the roll 60 mm
+return home (streamed): lowest point z = 85 mm (fingertip), closest above the roll 110 mm
+over the shelf (outside the final descent): lowest point 71 mm above its top
+descent drifts 0.02 mm sideways from the vertical
+recording /tmp/stage3e.mjpeg
+enabled
+opening gripper to 65 mm
+  gripper at 63.7 mm
+to pregrasp
+  NOT reached [   4.06,   74.23,  -50.68,   -0.01,   61.44,   65.57] after 20.0 s, at [  -3.91,   -1.38,   -1.48,    1.21,   37.65,   66.39]
+returning home over 8.0 s
+WARNING: not back home, leaving motors enabled so the arm does not drop: [  -3.91,   -1.38,   -1.48,    1.21,   37.65,   66.39]

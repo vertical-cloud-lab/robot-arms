@@ -1,0 +1,34 @@
+start joints [  -1.26,   -1.86,    2.20,   -1.57,   23.40,   68.08]  gripper 2.9 mm, 0.05 N*m; arm status NORMAL(0x0)
+arm plane J1 = 4.05 deg; tape centre at r = 247 mm, top at z = 49 mm
+fingertip = flange + 150 mm along the tool axis
+home       [  -1.26,   -1.86,    2.20,   -1.57,   23.40,   68.08]   (parks at [  -1.26,    0.00,    0.00,   -1.57,   23.40,   68.08])
+pregrasp   [   4.06,   74.24,  -50.69,   -0.01,   61.45,   65.57]   fingertips at z = 109 mm
+grasp      [   4.05,   82.78,  -36.29,   -0.00,   38.52,   65.56]   fingertips at z = 21 mm
+vertical line: 88 IK points; streamed over 4.4 s at 10 %, fastest joint peaks at 10.5 deg/s (cap 16.7)
+return home: streamed over 6.0 s at 21 %, fastest joint peaks at 23.2 deg/s (cap 35.1)
+home -> pregrasp (MOVE J): lowest point z = 109 mm (fingertip), closest above the roll 60 mm
+pregrasp -> home (streamed): lowest point z = 109 mm (fingertip), closest above the roll 60 mm
+descent drifts 0.01 mm sideways from the vertical
+recording /tmp/stage3c.mjpeg
+enabled
+opening gripper to 65 mm
+  gripper at 2.9 mm
+to pregrasp
+  mark pregrasp at t = 6.7 s of the video
+descending over 4.4 s
+  settled at [   4.04,   82.72,  -36.33,    0.00,   38.57,   65.53]: fingertips at r = 247 mm, z = 21 mm
+  mark descended at t = 12.1 s of the video
+closing with 1.00 N*m
+  fingers stopped at 27.4 mm, holding 1.04 N*m
+  mark closed at t = 14.1 s of the video
+lifting to pregrasp height
+  holding at 27.4 mm, 1.05 N*m
+  mark lifted at t = 19.5 s of the video
+putting it back
+  settled at [   4.04,   82.70,  -36.38,    0.00,   38.48,   65.53]: fingertips at r = 248 mm, z = 22 mm
+  gripper at 64.2 mm
+  mark released at t = 27.5 s of the video
+rising to pregrasp
+returning home over 6.0 s
+  quick stop: J2 0.00 -> -1.70, J3 0.00 -> 0.98 deg in 1.5 s; resetting
+disabled at home: [   1.31,    2.22,   -2.34,    2.74,   -6.91,   -6.68]; arm status NORMAL(0x0), motors enabled [False, False, False, False, False, False]
