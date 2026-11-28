@@ -1,0 +1,5 @@
+We have a low-cost AgileX PiPER 6-DOF arm (about $2k) and SO-101 leader/follower arms (about $200), with parallel grippers, Raspberry Pi wrist cameras and fixed cameras in an enclosure, AprilTags, and LeRobot-style imitation learning or scripted motion. We want to place these arms in the published literature and compare them with industrial and research arms (e.g. UR5e, Franka, ABB YuMi, Kinova) using tests we can repeat ourselves.
+
+(Lower priority) Visualizing repeatability: What methods and software show a robot's positioning accuracy and repeatability in 3D (error ellipsoids, repeatability maps, error along a path), computed from measurements or robot parameters?
+
+Prioritize peer-reviewed journal articles and major conference papers from 2015 to 2026, and flag any preprints. For each benchmark or result, describe the protocol in enough detail to repeat it (what is measured, number of trials, success criterion, measuring tool) and give the arm model. For each claim, give the DOI and quote the sentence that supports it. Say explicitly where no published evidence exists.

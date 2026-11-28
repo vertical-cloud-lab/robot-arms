@@ -1,0 +1,63 @@
+1. (burger2023amobilerobotic pages 52-56): Benjamin Burger. A mobile robotic researcher. ArXiv, Jan 2023. URL: https://doi.org/10.17638/03087073, doi:10.17638/03087073. This article has 4 citations.
+
+2. (burger2023amobilerobotic pages 62-69): Benjamin Burger. A mobile robotic researcher. ArXiv, Jan 2023. URL: https://doi.org/10.17638/03087073, doi:10.17638/03087073. This article has 4 citations.
+
+3. (burger2020amobilerobotic pages 1-3): Benjamin Burger, Phillip M. Maffettone, Vladimir V. Gusev, Catherine M. Aitchison, Yang Bai, Xiaoyan Wang, Xiaobo Li, Ben M. Alston, Buyi Li, Rob Clowes, Nicola Rankin, Brandon Harris, Reiner Sebastian Sprick, and Andrew I. Cooper. A mobile robotic chemist. Nature, 583:237-241, Jul 2020. URL: https://doi.org/10.1038/s41586-020-2442-2, doi:10.1038/s41586-020-2442-2. This article has 2300 citations and is from a highest quality peer-reviewed journal.
+
+4. (zhou2025localizationinspectionand pages 2-3): Zhengxue Zhou, Satheeshkumar Veeramani, Francisco Munguia-Galeano, Hatem Fakhruldeen, and Andrew I. Cooper. Localization, inspection, and reasoning (lira) module for autonomous workflows in self-driving laboratories. Communications Chemistry, Nov 2025. URL: https://doi.org/10.1038/s42004-025-01770-1, doi:10.1038/s42004-025-01770-1. This article has 18 citations and is from a peer-reviewed journal.
+
+5. (zhou2025localizationinspectionand pages 3-5): Zhengxue Zhou, Satheeshkumar Veeramani, Francisco Munguia-Galeano, Hatem Fakhruldeen, and Andrew I. Cooper. Localization, inspection, and reasoning (lira) module for autonomous workflows in self-driving laboratories. Communications Chemistry, Nov 2025. URL: https://doi.org/10.1038/s42004-025-01770-1, doi:10.1038/s42004-025-01770-1. This article has 18 citations and is from a peer-reviewed journal.
+
+6. (zhou2025localizationinspectionand pages 7-8): Zhengxue Zhou, Satheeshkumar Veeramani, Francisco Munguia-Galeano, Hatem Fakhruldeen, and Andrew I. Cooper. Localization, inspection, and reasoning (lira) module for autonomous workflows in self-driving laboratories. Communications Chemistry, Nov 2025. URL: https://doi.org/10.1038/s42004-025-01770-1, doi:10.1038/s42004-025-01770-1. This article has 18 citations and is from a peer-reviewed journal.
+
+7. (brass2026amobilerobotic pages 7-10): Emma Brass, Satheeshkumar Veeramani, Zhengxue Zhou, Hatem Fakhruldeen, J. S. Manzano, R. Clowes, Isil Akpinar, Miriam R. Ward, John W. Ward, and Andrew I. Cooper. A mobile robotic process chemist. ChemRxiv, Oct 2026. URL: https://doi.org/10.26434/chemrxiv-2025-bsfvz, doi:10.26434/chemrxiv-2025-bsfvz. This article has 8 citations.
+
+8. (bavelos2021enablingflexibilityin pages 7-9): Angelos Christos Bavelos, Niki Kousi, Christos Gkournelos, Konstantinos Lotsaris, Sotiris Aivaliotis, George Michalos, and Sotiris Makris. Enabling flexibility in manufacturing by integrating shopfloor and process perception for mobile robot workers. Applied Sciences, 11:3985, Apr 2021. URL: https://doi.org/10.3390/app11093985, doi:10.3390/app11093985. This article has 60 citations.
+
+9. (bavelos2021enablingflexibilityin pages 9-11): Angelos Christos Bavelos, Niki Kousi, Christos Gkournelos, Konstantinos Lotsaris, Sotiris Aivaliotis, George Michalos, and Sotiris Makris. Enabling flexibility in manufacturing by integrating shopfloor and process perception for mobile robot workers. Applied Sciences, 11:3985, Apr 2021. URL: https://doi.org/10.3390/app11093985, doi:10.3390/app11093985. This article has 60 citations.
+
+10. (bavelos2021enablingflexibilityin pages 6-7): Angelos Christos Bavelos, Niki Kousi, Christos Gkournelos, Konstantinos Lotsaris, Sotiris Aivaliotis, George Michalos, and Sotiris Makris. Enabling flexibility in manufacturing by integrating shopfloor and process perception for mobile robot workers. Applied Sciences, 11:3985, Apr 2021. URL: https://doi.org/10.3390/app11093985, doi:10.3390/app11093985. This article has 60 citations.
+
+11. (harazono2024evaluationofmicroplate pages 11-15): Yoritaka Harazono, Haruko Shimono, Kikumi Hata, Toutai Mitsuyama, and Takaaki Horinouchi. Evaluation of microplate handling accuracy for applying robotic arms in laboratory automation. bioRxiv, Jan 2024. URL: https://doi.org/10.1101/2023.12.29.573685, doi:10.1101/2023.12.29.573685. This article has 11 citations.
+
+12. (harazono2024evaluationofmicroplate pages 6-11): Yoritaka Harazono, Haruko Shimono, Kikumi Hata, Toutai Mitsuyama, and Takaaki Horinouchi. Evaluation of microplate handling accuracy for applying robotic arms in laboratory automation. bioRxiv, Jan 2024. URL: https://doi.org/10.1101/2023.12.29.573685, doi:10.1101/2023.12.29.573685. This article has 11 citations.
+
+13. (harazono2024evaluationofmicroplate pages 15-20): Yoritaka Harazono, Haruko Shimono, Kikumi Hata, Toutai Mitsuyama, and Takaaki Horinouchi. Evaluation of microplate handling accuracy for applying robotic arms in laboratory automation. bioRxiv, Jan 2024. URL: https://doi.org/10.1101/2023.12.29.573685, doi:10.1101/2023.12.29.573685. This article has 11 citations.
+
+14. (yang2019replabareproducible pages 2-3): Brian Yang, Jesse Zhang, Vitchyr Pong, Sergey Levine, and Dinesh Jayaraman. Replab: a reproducible low-cost arm benchmark platform for robotic learning. Preprint, Jan 2019. URL: https://doi.org/10.48550/arxiv.1905.07447, doi:10.48550/arxiv.1905.07447. This article has 42 citations.
+
+15. (yang2019replabareproduciblea pages 2-3): Brian Yang, Dinesh Jayaraman, Jesse Zhang, and Sergey Levine. Replab: a reproducible low-cost arm benchmark for robotic learning. 2019 International Conference on Robotics and Automation (ICRA), pages 8691-8697, May 2019. URL: https://doi.org/10.1109/icra.2019.8794390, doi:10.1109/icra.2019.8794390. This article has 24 citations.
+
+16. (yang2019replabareproduciblea pages 1-2): Brian Yang, Dinesh Jayaraman, Jesse Zhang, and Sergey Levine. Replab: a reproducible low-cost arm benchmark for robotic learning. 2019 International Conference on Robotics and Automation (ICRA), pages 8691-8697, May 2019. URL: https://doi.org/10.1109/icra.2019.8794390, doi:10.1109/icra.2019.8794390. This article has 24 citations.
+
+17. (johns2026towardautonomousrobots pages 5-8): Nicholas Johns and Aldair Gongora. Toward autonomous robots for the physical lab environment: learning closed-loop policies for 6-dof robotic arms. Unknown journal, Sep 2026. URL: https://doi.org/10.2172/3684119, doi:10.2172/3684119.
+
+18. (johns2026towardautonomousrobots pages 1-5): Nicholas Johns and Aldair Gongora. Toward autonomous robots for the physical lab environment: learning closed-loop policies for 6-dof robotic arms. Unknown journal, Sep 2026. URL: https://doi.org/10.2172/3684119, doi:10.2172/3684119.
+
+19. (johns2026towardautonomousrobots pages 8-9): Nicholas Johns and Aldair Gongora. Toward autonomous robots for the physical lab environment: learning closed-loop policies for 6-dof robotic arms. Unknown journal, Sep 2026. URL: https://doi.org/10.2172/3684119, doi:10.2172/3684119.
+
+20. (sulaiman2026kinematicanalysisand pages 6-9): Shifa Sulaiman, Tobias Busk Jensen, Stefan Hein Bengtson, and Simon Bøgh. Kinematic analysis and integration of vision algorithms for a mobile manipulator employed inside a self-driving laboratory. International Journal of Intelligent Robotics and Applications, 10:584-600, Jan 2026. URL: https://doi.org/10.1007/s41315-025-00518-3, doi:10.1007/s41315-025-00518-3. This article has 5 citations and is from a peer-reviewed journal.
+
+21. (sulaiman2026kinematicanalysisand pages 3-6): Shifa Sulaiman, Tobias Busk Jensen, Stefan Hein Bengtson, and Simon Bøgh. Kinematic analysis and integration of vision algorithms for a mobile manipulator employed inside a self-driving laboratory. International Journal of Intelligent Robotics and Applications, 10:584-600, Jan 2026. URL: https://doi.org/10.1007/s41315-025-00518-3, doi:10.1007/s41315-025-00518-3. This article has 5 citations and is from a peer-reviewed journal.
+
+22. (bai2026selfbuildinglabs pages 4-7): Jia-Ru Bai, Yu-Chi Zhao, Yang Cao, Han Hao, Elia Savino, Miroslav Bogdanovic, Ge-Yuan Xie, Xiao-Man Guo, Derk H. W. ten Klooster, S. Pilon, T. Noël, Varinia Bernales, and Alán Aspuru-Guzik. Self-building labs. ArXiv, Oct 2026. URL: https://doi.org/10.48550/arxiv.2610.23826, doi:10.48550/arxiv.2610.23826. This article has 1 citations.
+
+23. (yu2021applicationofa pages 16-18): Jing Yu, Wensong Jiang, Zai Luo, and Li Yang. Application of a vision-based single target on robot positioning system. Sensors, 21:1829, Mar 2021. URL: https://doi.org/10.3390/s21051829, doi:10.3390/s21051829. This article has 37 citations and is from a peer-reviewed journal.
+
+24. (yu2021applicationofa pages 13-16): Jing Yu, Wensong Jiang, Zai Luo, and Li Yang. Application of a vision-based single target on robot positioning system. Sensors, 21:1829, Mar 2021. URL: https://doi.org/10.3390/s21051829, doi:10.3390/s21051829. This article has 37 citations and is from a peer-reviewed journal.
+
+25. (franchini2023mechatronicdesignand pages 6-7): Giacomo Franchini, Sebastiano Chiodini, Marco Ghetti, and Marco Pertile. Mechatronic design and positioning accuracy characterisation of a robotic arm for exploration rovers. 2023 IEEE 10th International Workshop on Metrology for AeroSpace (MetroAeroSpace), pages 452-457, Jun 2023. URL: https://doi.org/10.1109/metroaerospace57412.2023.10190044, doi:10.1109/metroaerospace57412.2023.10190044. This article has 6 citations.
+
+26. (wilcock2026fusionoffiducial pages 8-9): Sam Wilcock and Ornella Iuorio. Fusion of fiducial marker and point cloud data for reliable multi-camera tracking in robotic assembly of construction elements. Construction Robotics, May 2026. URL: https://doi.org/10.1007/s41693-026-00183-3, doi:10.1007/s41693-026-00183-3. This article has 0 citations and is from a peer-reviewed journal.
+
+27. (lvov2023mobilemocapretroreflector pages 4-5): Gary Lvov, Mark Zolotas, Nathaniel Hanson, Austin Allison, Xavier Hubbard, Michael Carvajal, and Taşkin Padir. Mobile mocap: retroreflector localization on-the-go. 2023 IEEE 19th International Conference on Automation Science and Engineering (CASE), pages 1-7, Aug 2023. URL: https://doi.org/10.1109/case56687.2023.10260562, doi:10.1109/case56687.2023.10260562. This article has 10 citations.
+
+28. (lvov2023mobilemocapretroreflector pages 5-6): Gary Lvov, Mark Zolotas, Nathaniel Hanson, Austin Allison, Xavier Hubbard, Michael Carvajal, and Taşkin Padir. Mobile mocap: retroreflector localization on-the-go. 2023 IEEE 19th International Conference on Automation Science and Engineering (CASE), pages 1-7, Aug 2023. URL: https://doi.org/10.1109/case56687.2023.10260562, doi:10.1109/case56687.2023.10260562. This article has 10 citations.
+
+29. (harazono2024evaluationofmicroplate pages 1-6): Yoritaka Harazono, Haruko Shimono, Kikumi Hata, Toutai Mitsuyama, and Takaaki Horinouchi. Evaluation of microplate handling accuracy for applying robotic arms in laboratory automation. bioRxiv, Jan 2024. URL: https://doi.org/10.1101/2023.12.29.573685, doi:10.1101/2023.12.29.573685. This article has 11 citations.
+
+30. (dembski2023establishingandtesting pages 6-7): Sofia Dembski, Thomas Schwarz, Maximilian Oppmann, Shahbaz Tareq Bandesha, Jörn Schmid, Sarah Wenderoth, Karl Mandel, and Jan Hansmann. Establishing and testing a robot-based platform to enable the automated production of nanoparticles in a flexible and modular way. Scientific Reports, Jul 2023. URL: https://doi.org/10.1038/s41598-023-38535-6, doi:10.1038/s41598-023-38535-6. This article has 33 citations and is from a peer-reviewed journal.
+
+31. (dembski2023establishingandtesting pages 3-6): Sofia Dembski, Thomas Schwarz, Maximilian Oppmann, Shahbaz Tareq Bandesha, Jörn Schmid, Sarah Wenderoth, Karl Mandel, and Jan Hansmann. Establishing and testing a robot-based platform to enable the automated production of nanoparticles in a flexible and modular way. Scientific Reports, Jul 2023. URL: https://doi.org/10.1038/s41598-023-38535-6, doi:10.1038/s41598-023-38535-6. This article has 33 citations and is from a peer-reviewed journal.
+
+32. (pivin2026oscaramodular pages 9-10): David Pivin, Antoine Champie, Mirco Plante, François Ferland, François Michaud, and Sébastien Rodrigue. Oscar: a modular open-source robotic platform for biological laboratories. ACS Synthetic Biology, 15:1062-1072, Mar 2026. URL: https://doi.org/10.1021/acssynbio.5c00733, doi:10.1021/acssynbio.5c00733. This article has 2 citations and is from a domain leading peer-reviewed journal.

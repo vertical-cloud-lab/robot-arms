@@ -1,0 +1,143 @@
+# Robot Arms in Self-Driving Laboratories and the Low-Cost Manipulation Frontier: A Literature Review with Repeatable Benchmarks
+
+## 1. Field Overview: Robot Arms in Automated and Self-Driving Laboratories
+
+### 1.1 Defining the Field
+
+Self-driving laboratories (SDLs) integrate robotic automation with artificial intelligence to accelerate scientific discovery. The most comprehensive review is Tom et al. (2024), which provides "an in-depth analysis of the state-of-the-art in SDL technology, its applications across various scientific disciplines, and the potential implications for research and industry" (pqac-00000001). That review distinguishes three hardware tiers for SDL automation: special-purpose systems costing approximately $1 million, general-purpose robotic-arm systems at roughly $10,000, and open hardware at $100–$2,000 (pqac-00000001). The two principal arm architectures used in SDLs are six-axis articulated arms (6-DOF) and SCARA arms; six-DOF arms provide "largely unconstrained positioning and greater spatial flexibility, analogous to a human arm" and are used to "connect instruments into a coordinated automated workflow" (pqac-00000000).
+
+Moran et al. (2026, peer-reviewed in *npj Robotics*) provide a more recent survey focused specifically on robotics in SDLs, identifying six-DOF arms and SCARAs as the two dominant architectures, and noting that robotic subsystems may be commercial, bespoke, or open-source (pqac-00000000). The ADePT framework (Salazar-Villacis & Benyahia, 2026, peer-reviewed in *Communications Chemistry*) introduced four core dimensions—Adaptability and Learning, Dexterity, Perception, and Task Complexity—for systematically evaluating autonomous laboratory robotics, moving the field beyond simple task-completion metrics toward a holistic assessment of capability proficiency (pqac-00000057, pqac-00000058, pqac-00000061).
+
+### 1.2 Landmark Systems
+
+**Burger et al. (2020, *Nature*; DOI: 10.1038/s41586-020-2442-2)** defined the field with the first mobile robotic chemist, using a KUKA LBR iiwa 7-DOF arm (14 kg payload, 0.1 mm repeatability) mounted on a KMR mobile base. The system achieved positioning accuracy of "±0.12 mm" translation and "±0.005°" orientation after a touch-sensitive six-point calibration method, and "ran 43 batches of 16 samples, totaling 688 experiments" autonomously over eight days (pqac-00000020, pqac-00000021, pqac-00000023).
+
+**Dai et al. (2024, *Nature*; DOI: 10.1038/s41586-024-08173-7)** demonstrated autonomous mobile robots for exploratory synthetic chemistry, integrating mobile robots with LC-MS and benchtop NMR, showing that "a synthesis laboratory can be integrated into an autonomous laboratory by using mobile robots that operate equipment and make decisions in a human-like way" (pqac-00000001).
+
+**UR5e-based systems** have been widely adopted: a six-DOF UR5e (0.03 mm repeatability, 850 mm reach) was used for modular flow-reactor assembly for retrosynthetic planning (pqac-00000005), for chemical experiment automation with demonstration-based programming (pqac-00000024), and as the manipulation platform in mobile SDL configurations (pqac-00000026). The AutoBio simulation benchmark also uses UR5e with Robotiq 2F-85 parallel gripper for biology laboratory tasks (pqac-00000009).
+
+**Franka Emika Panda** (7-DOF, ~0.1 mm repeatability, 3 kg payload) serves as the standard manipulation research platform in FurnitureBench and RAMP (pqac-00000040, pqac-00000053).
+
+The "frugal twin" concept proposed by Lo et al. (2024, peer-reviewed in *Digital Discovery*; DOI: 10.1039/d3dd00223c) explicitly advocates low-cost surrogates of high-cost experimental platforms, establishing the philosophical foundation for democratizing SDL hardware (pqac-00000001).
+
+### 1.3 The Low-Cost and Open-Source Movement
+
+The movement toward low-cost manipulation hardware accelerated from 2019 onward with several key contributions:
+
+- **REPLAB (Yang et al., 2019, ICRA; DOI: 10.1109/ICRA.2019.8794390)**: A ~$2,000 standardized work cell (70×40×60 cm) built around a Trossen WidowX arm, RGB-D camera, and defined workspace, providing a "task definition, evaluation protocol, performance measures, and a dataset of over 50,000 grasp attempts" (pqac-00000010, pqac-00000011). **Peer-reviewed.**
+
+- **Blue (Gealy et al., 2019, ICRA; DOI: 10.1109/ICRA.2019.8794236)**: A 7-DOF quasi-direct-drive arm with "prototype bill-of-materials cost of $3,328" and an estimated consumer price near $5,000, providing ~4 mm repeatability and 2 kg burst payload at full extension (pqac-00000012). **Peer-reviewed.**
+
+- **ALOHA (Zhao et al., 2023; DOI: 10.48550/arXiv.2304.13705)**: A bimanual leader-follower teleoperation system costing ~$20,000 (later described as "roughly $4,900 for an ALOHA arm"), paired with Action Chunking with Transformers (ACT) for end-to-end imitation learning (pqac-00000015, pqac-00000034). **Preprint (not yet peer-reviewed as a journal article).**
+
+- **LeRobot (Cadène et al., 2026; DOI: 10.48550/arXiv.2602.22818)**: An open-source library for end-to-end robot learning, explicitly supporting "low-cost, open-source robots like SO-10X and ALOHA" that "cost a fraction of proprietary industrial arms." The SO-100 and SO-101 are among the most adopted platforms, with 319,586 downloads and 58,299 episodes for SO-101 on the Hugging Face hub (pqac-00000034, pqac-00000036). **Preprint.**
+
+- **Open Robot Hardware (Patel et al., 2023, *IEEE RA Magazine*; DOI: 10.1109/MRA.2022.3225725)**: A comprehensive review of 80+ open-hardware projects noting that open hardware "lowers the barrier of entry to new technologies and can further accelerate innovation in robotics." **Peer-reviewed.**
+
+## 2. Comparison of Arms Across Cost Tiers
+
+The following table summarizes robot arms from industrial SDL platforms through to ultra-low-cost open-source arms, identifying which specifications are peer-reviewed versus nominal or unvalidated.
+
+| Cost tier | Arm model | DOF | Approx. cost (USD) | Repeatability | Payload | Key published system or paper | Publication status |
+|---|---|---:|---:|---:|---:|---|---|
+| Industrial | **KUKA LBR iiwa 14 on KMR mobile base** | 7 | **$100k+** for an integrated mobile system; indicative, not reported in the cited paper | **0.1 mm** arm specification; system calibration achieved ±0.12 mm translation and ±0.005° orientation | **14 kg** | Burger *et al.*, “A mobile robotic chemist,” *Nature* (2020): 688 experiments over eight days (pqac-00000020, pqac-00000021, pqac-00000023) | **Peer-reviewed journal**; DOI: `10.1038/s41586-020-2442-2` |
+| Industrial | **Universal Robots UR5e** | 6 | **≈$35k** with typical gripper/integration; indicative market estimate, not established by the cited papers | **0.03 mm** reported by Sasaki *et al.* | **5 kg** nominal arm specification | Sasaki *et al.* chemical-experiment system; Sulaiman *et al.* mobile SDL manipulator; UR5e modular-flow-reactor assembly (pqac-00000005, pqac-00000024, pqac-00000026) | **Peer-reviewed journals**; DOIs: `10.1007/s41315-025-00492-w`, `10.1007/s41315-025-00518-3` |
+| Research / industrial | **Franka Emika Panda** | 7 | **≈$20k when available**; indicative historical system price, not reported by the cited papers | **≈0.1 mm** nominal manufacturer specification; not independently established in the cited benchmark evidence | **3 kg** nominal specification | FurnitureBench uses a Panda, parallel gripper, wrist/front cameras; RAMP uses a Panda, wrist camera, overhead camera, and AprilTags (pqac-00000040, pqac-00000053) | **Peer-reviewed journal and conference literature**; DOIs: `10.1177/02783649241304789`, `10.1109/LRA.2023.3330611` |
+| Low-cost research system | **ALOHA / Trossen ViperX arms** | 6 per follower arm | **≈$20k** for the original bimanual leader–follower system | **Not formally reported** as a metrological repeatability result | **Not formally benchmarked** in the ACT paper | Zhao *et al.*, ACT/ALOHA: six real tasks, generally 50 demonstrations and 25 evaluations per task; final success ranged from 20% to 96% (pqac-00000015, pqac-00000017, pqac-00000018) | **Preprint**; DOI: `10.48550/arXiv.2304.13705` |
+| Low-cost research arm | **Blue** | 7 | **<$5k target price**; prototype bill of materials $3,328 | **Within 4 mm** | **2 kg** burst payload at full extension; approximately 0.5 kg continuous at full extension | Gealy *et al.*, “Quasi-Direct Drive for Low-Cost Compliant Robotic Manipulation,” ICRA 2019 (pqac-00000012) | **Peer-reviewed conference paper**; DOI: `10.1109/ICRA.2019.8794236` |
+| Low-cost commercial | **AgileX PiPER** | 6 | **≈$2k** | **No peer-reviewed evidence found** for repeatability | **No peer-reviewed evidence found** for payload | No peer-reviewed journal or major-conference paper was found that validates PiPER specifications or reports a repeatable manipulation benchmark; it should therefore be treated as an **unvalidated target platform** in the proposed comparison | **No qualifying peer-reviewed publication found** |
+| Low-cost benchmark cell | **REPLAB / Trossen WidowX** | 6-joint control | **≈$2k** for arm, RGB-D camera, enclosure, and workspace | **Not reported as a standardized metrology result** | **Not reported in the benchmark paper** | Yang *et al.*, REPLAB, ICRA 2019: 70 × 40 × 60 cm cell; 20-object grasp test; cumulative success rate; stop after success or ten failures; more than 50,000 published grasp attempts, with the expanded version reporting 92,000 (pqac-00000008, pqac-00000010, pqac-00000011) | **Peer-reviewed conference paper**; DOI: `10.1109/ICRA.2019.8794390` |
+| Ultra-low-cost open hardware | **SO-100 / SO-101** | 6 servo-controlled axes including gripper channel | **≈$120–150** to build | **No peer-reviewed metrological repeatability value found** | **No peer-reviewed payload benchmark found** | LeRobot documents broad adoption but not arm-performance benchmarks; Cowling tests SO-101 pick-and-place over 40 trials per ACT data budget, reaching 37/40 at 100 demonstrations; SO-101 Bench evaluates 916 simulated episodes with real-robot validation (pqac-00000034, pqac-00000036, pqac-00000042, pqac-00000043) | LeRobot, Cowling, and SO-101 Bench are **preprints**; DOIs: `10.48550/arXiv.2602.22818`, `10.48550/arXiv.2610.37170`, `10.48550/arXiv.2610.36420` |
+
+
+*Table: Comparison of industrial, research, and low-cost arms relevant to automated laboratories and manipulation research. Values not established by the cited peer-reviewed literature are explicitly identified as nominal, indicative, or unsupported.*
+
+**Critical gap for the user's setup:** No peer-reviewed journal article or major conference paper was found that independently validates the AgileX PiPER's repeatability, payload, or manipulation performance. Its specifications should therefore be treated as manufacturer claims until independently verified. The SO-100 and SO-101 similarly lack peer-reviewed metrological characterization, though their manipulation performance has been benchmarked in preprints via task success rates.
+
+## 3. Published Benchmarks Reproducible on Low-Cost Arms
+
+The following table details published benchmarks with sufficient protocol specificity that they can be adapted or directly reproduced on PiPER and SO-101 platforms.
+
+| Benchmark | Arm(s) used | Task(s) | Trials / episodes | Success criterion | Measuring tool | Published result | Status | DOI |
+|---|---|---|---|---|---|---|---|---|
+| ALOHA ACT | Two Trossen ViperX follower arms with leader-arm teleoperation | Slide Ziploc; Slot Battery; Open Cup; Thread Velcro; Prep Tape; Put On Shoe | 50 demonstrations per task, except 100 for Thread Velcro; 25 physical evaluations per task with one training seed | Binary final-task completion, with intermediate milestones also reported | Fixed RGB cameras, robot joint states, and manual/video outcome scoring | Final success: 88%, 96%, 84%, 20%, 64%, and 92%, respectively (pqac-00000015, pqac-00000017, pqac-00000018) | **Preprint** (2023) | `10.48550/arXiv.2304.13705` |
+| Mobile ALOHA | Bimanual ALOHA mounted on a mobile base | Wipe Wine; Cook Shrimp; Rinse Pan; Use Cabinet; Call Elevator; Push Chairs; High Five | 20 demonstrations for Cook Shrimp and High Five; 50 for each other task; exact evaluation-trial count not stated in the retrieved evidence | Completion of the whole task; subtask completion also reported | Onboard/fixed RGB cameras, joint and base states, and manual/video outcome scoring | With co-training: 95%, 40%, 80%, 85%, 95%, 80%, and 85%, respectively (pqac-00000013) | **Preprint** (2024) | `10.48550/arXiv.2401.02117` |
+| REPLAB grasping benchmark | Trossen WidowX-based low-cost cell | Grasp 20 test toys spanning hard/soft materials and varied shapes and sizes | For each test object/configuration, continue until one success or 10 failed attempts; dataset contains more than 50,000 attempts in the ICRA paper and 92,000 in the expanded preprint | Cumulative success rate: successfully grasped objects divided by grasp attempts | Fixed RGB-D camera and segmented point cloud; gripper/object state used to label grasp outcome | Random training grasps succeeded approximately 23%; baseline-specific test results should be reproduced from released code/data (pqac-00000008, pqac-00000010, pqac-00000011) | **Peer-reviewed ICRA paper** (2019); expanded preprint also available | `10.1109/ICRA.2019.8794390` |
+| SO-101 Bench | Single SO-101; Isaac Lab digital twin plus physical-arm validation | Bin, Next-to, Between, and Move, with one- and four-object bin variants | 916 primary simulated episodes across 15 task-family/object-split cells; 30 s timeout, or 75 s for four-object binning; trained with 3,629 simulated demonstrations | State-based conditions must persist for 5 s; target must move at least 1 in and be untouched at completion; non-target displacement ≤1 in; relational tasks add geometric constraints, and Move requires a path within 2 in of straight | Isaac Lab ground-truth object state; physical SO-101 used for sim-to-real ranking validation | Best learned policies approximately 61% mean success; code-writing LLM agent 83.2%; simulation overestimated physical success by 9–31 percentage points (pqac-00000028, pqac-00000029, pqac-00000031) | **Preprint** (2026) | `10.48550/arXiv.2610.36420` |
+| SO-101 demonstration-scaling study | Single SO-101 follower arm | Pick up a green ball, ignore two red distractors, and deposit the green ball in a basket | Nested budgets of 12, 25, 50, 100, and 200 demonstrations; ten fixed placements; typically 40 ACT episodes per budget; 30 s timeout | Green ball must be in the basket before timeout; ball still held at timeout is failure | Two RGB camera streams, six joint positions, fixed placement template, and manual/video scoring | ACT: 1/40, 11/40, 18/40, 37/40, and 35/40 successes—3%, 28%, 45%, 93%, and 88%—as data increased (pqac-00000043, pqac-00000044, pqac-00000045) | **Preprint** (2026) | `10.48550/arXiv.2610.37170` |
+| FurnitureBench | Franka Emika Panda with parallel gripper | Eight principal furniture assemblies using grasping, pushing, reorientation, insertion, and screwing; separate one-leg reproducibility task | More than 5,000 demonstrations and 200 h of data; reproducibility test used ten independently rebuilt environments; complete per-task evaluation count is not specified in the retrieved evidence | Number or proportion of assembly phases completed; full completion requires all prescribed phases | Three Intel RealSense D435 cameras, including wrist/front views; proprioception; standardized initialization GUI | Rebuilt environments retained an average of 84% of original one-leg-policy performance; evaluated learning methods completed at most about 2 of 12 phases on a cited long task (pqac-00000038, pqac-00000039, pqac-00000040, pqac-00000041) | **Peer-reviewed IJRR article** (2025) | `10.1177/02783649241304789` |
+| RAMP | Franka Emika Panda with optimized fingertips | Assemble reconfigurable beams and peg fasteners; easy, medium, and hard classes test insertion, sliding, regrasping, planning, and recovery | Five consecutive attempts per assembly with unchanged code; only the goal changes | Completion percentage over time; a peg counts only if inserted into the correct hole, flush with no stem visible, and fastening the required two joints | AprilTags on beams/pegs, wrist camera, bird’s-eye camera, XML goal model, and execution timer including planning time | Baseline averaged 84% completion in 580 s across three easy assemblies; planning consumed roughly 180–200 s (pqac-00000050, pqac-00000051, pqac-00000053) | **Peer-reviewed IEEE RA-L article** (2024) | `10.1109/LRA.2023.3330611` |
+| Robot Box and Blocks Test | Barrett WAM and Franka Emika Panda | Modified-BBT, Targeted-BBT, and Standard-BBT pick-and-place protocols, increasing from gross transfer to targeted placement and cluttered manipulation | Use the paper’s timed repeated protocols; the retrieved evidence does not expose a single universal trial count | Number of correctly transferred or targeted blocks within the prescribed interval; compare throughput and errors with published able-bodied human norms | Standard physical Box and Blocks apparatus, timer, target/location labels, and direct outcome counting | Robot baselines and clinical human timing norms are reported in the paper; exact numerical baseline values were not available in the retrieved evidence | **Peer-reviewed IEEE RA-L article** (2020) | `10.1109/LRA.2019.2961053` |
+
+
+*Table: Published protocols that can be adapted to PiPER and SO-101 cells, including trial counts, objective success rules, sensing or measurement tools, and reported baselines. Preprints are explicitly distinguished from peer-reviewed benchmarks.*
+
+### 3.1 Protocols Most Directly Relevant to the User's Setup
+
+**ALOHA ACT (preprint).** The original ALOHA study used 50 teleoperated demonstrations per task (except 100 for Thread Velcro) and evaluated each task over 25 physical trials with one training seed. The six real-world tasks—Slide Ziploc, Slot Battery, Open Cup, Thread Velcro, Prep Tape, and Put On Shoe—yielded final-task success rates of 88%, 96%, 84%, 20%, 64%, and 92%, respectively (pqac-00000015, pqac-00000017). Success was judged by binary task completion with intermediate milestones scored as well. This protocol can be adapted to a single PiPER arm (substituting single-arm tasks) or to SO-101 leader-follower pairs.
+
+**Mobile ALOHA (preprint).** Fu et al. extended ALOHA with a mobile base and co-training on static ALOHA data, reporting that "co-training can increase success rates by up to 90%" on mobile manipulation tasks. Whole-task co-trained success rates ranged from 40% (Cook Shrimp, 20 demonstrations) to 95% (Wipe Wine, 50 demonstrations) (pqac-00000013).
+
+**SO-101 demonstration-scaling study (Cowling, 2026; preprint).** This study is the most directly comparable benchmark for SO-101 arms. A single pick-and-place task (pick green ball, ignore two red distractors, place in basket) was evaluated with nested demonstration budgets of 12, 25, 50, 100, and 200. ACT was evaluated over 40 episodes per budget on ten fixed placements with a 30-second limit. ACT success scaled from "1/40 (3%) at 12 demonstrations to 37/40 (93%) at 100 demonstrations" (pqac-00000043, pqac-00000044). SmolVLA peaked at "21/40 (53%) at 50 demonstrations" then declined; Diffusion Policy performed poorly without trimming idle demonstration lead-in frames (pqac-00000043). **This protocol is immediately repeatable on SO-101 hardware with the LeRobot stack.**
+
+**SO-101 Bench (Hickok, 2026; preprint).** A simulated, language-conditioned spatial-manipulation benchmark using an Isaac Lab digital twin of a real SO-101, with 916 evaluation episodes across four task families (Bin, Next-to, Between, Move). Success must "persist for 5 seconds" and tasks impose geometric constraints (e.g., "the target must move at least 1 inch, remain untouched at the end, and non-target objects must not move more than 1 inch") (pqac-00000031). The best learned policies achieved approximately 61% mean success, while "five policies trained without real data preserve their exact ranking on the physical SO-101" (Spearman ρ = 1.00), though "simulation overestimated absolute success by 9–31 percentage points" (pqac-00000028, pqac-00000029).
+
+**REPLAB grasping (peer-reviewed, ICRA 2019).** A test set of 20 toys is grasped with a cumulative-success-rate metric; "the protocol terminates after success or after 10 unsuccessful attempts, followed by sweeping the arm over the workspace floor to perturb objects" (pqac-00000008). The dataset of labeled grasps (23% baseline success) provides ground truth for training grasping policies. This benchmark's $2,000 cell design is comparable to the PiPER system cost.
+
+**RAMP (peer-reviewed, IEEE RA-L 2024).** Uses "AprilTags attached to beams and pegs" with "wrist-mounted and bird's-eye cameras" for state estimation (pqac-00000051). Each assembly is attempted five consecutive times, and "a successful insertion requires the peg to enter the correct hole with no stem visible, sit flush with the joint surface, and pin the required two joints" (pqac-00000050). This benchmark is directly relevant to setups using AprilTags and wrist cameras.
+
+**FurnitureBench (peer-reviewed, IJRR 2025).** Uses a Franka Panda with "three Intel RealSense D435 RGB-D cameras, including wrist/front views" and measures assembly-phase completion across eight 3D-printable furniture pieces. A reproducibility study showed that "10 participants independently built new environments" and a trained policy "achieved an average of 84% of the original performance" (pqac-00000040). While designed for Franka, the 3D-printable furniture pieces and phase-completion metrics could be adapted to any 6-DOF arm with parallel gripper.
+
+### 3.2 Protocols Using Industrial Arms (for Comparison Baselines)
+
+**Burger et al. mobile robotic chemist (peer-reviewed, *Nature* 2020).** The KUKA LBR iiwa completed 688 chemistry experiments with calibrated positioning accuracy of ±0.12 mm, tested with 100 calibration trials (pqac-00000020, pqac-00000021). This establishes an upper bound for laboratory manipulation precision.
+
+**AutoBio biology laboratory benchmark (preprint, 2025).** Nine biology-laboratory tasks using UR5e and ALOHA arms, including pipetting, centrifuge-tube manipulation, and thermal-cycler operation. Scoring is generally binary: "success requires satisfying pose and contact requirements at checkpoints and terminal states; exceeding the time limit is failure" (pqac-00000009).
+
+## 4. The Imitation Learning Pipeline: From ALOHA to LeRobot
+
+The imitation learning approach used in the user's setup has a clear lineage:
+
+1. **ACT (Zhao et al., 2023; preprint)** introduced "Action Chunking with Transformers," a generative model over action sequences that "allows the robot to learn 6 difficult tasks in the real world, such as opening a translucent condiment cup and slotting a battery with 80-90% success, with only 10 minutes worth of demonstrations" (pqac-00000015).
+
+2. **Mobile ALOHA (Fu et al., 2024; preprint)** demonstrated that "co-training with existing static ALOHA datasets boosts performance on mobile manipulation tasks" with "50 demonstrations for each task" (pqac-00000013).
+
+3. **LeRobot (Cadène et al., 2026; preprint)** unified the software stack, providing teleoperation-to-deployment pipelines for SO-100/101 arms. The SO-100/101 became the most popular community platform with over 78,000 episodes contributed to the hub (pqac-00000036).
+
+4. **Cowling (2026; preprint)** provided the first controlled scaling study on SO-101, showing that ACT trained from scratch overtook pretrained VLA policies at approximately 100 demonstrations, achieving 93% success on a pick-and-place task (pqac-00000043).
+
+5. **SmolVLA (Shukor et al., 2025; preprint)** demonstrated a small, efficient VLA model that "achieves performance comparable to VLAs that are 10x larger," evaluated on SO-100 (pqac-00000034).
+
+## 5. Where No Published Evidence Exists
+
+The following gaps were identified in the peer-reviewed literature:
+
+- **AgileX PiPER**: No peer-reviewed paper was found reporting independent verification of PiPER's repeatability, payload, workspace, or manipulation benchmarks. The arm's specifications remain manufacturer claims.
+
+- **SO-101 metrological characterization**: No published work provides a calibrated repeatability value (e.g., ISO 9283 pose repeatability) for the SO-100 or SO-101. Task success rates from preprints exist, but no positional accuracy assessment using a measurement instrument (e.g., laser tracker, CMM) has been published.
+
+- **Low-cost arms in chemistry/biology SDL workflows**: No published system was found that uses SO-100/101 or PiPER-class arms for actual chemistry or biology experimentation in a self-driving laboratory. All published SDLs use industrial arms (KUKA, UR, ABB) or specialized liquid handlers. The "frugal twin" concept exists in review form (Lo et al., 2024) but has not been demonstrated with sub-$2,000 general-purpose arms for scientific experimentation.
+
+- **Head-to-head comparisons**: No published paper directly compares PiPER, SO-101, or similar low-cost arms against UR5e or Franka on identical laboratory tasks with a controlled protocol.
+
+- **AprilTag-based calibration for laboratory precision**: While RAMP uses AprilTags for assembly localization (pqac-00000051) and Cooper's LIRA module uses "fiducial markers attached to each station" (pqac-00000025), no published study quantifies how AprilTag-based calibration affects manipulation accuracy on low-cost servo-based arms specifically.
+
+## 6. Recommended Tests for Your Setup
+
+Based on the literature review, the following tests can be repeated on PiPER (6-DOF, ~$2k) and SO-101 leader/follower (~$200) arms:
+
+**Tier 1 — Immediately repeatable with existing protocols:**
+1. **Cowling pick-and-place scaling test** on SO-101: collect 12–200 demonstrations of a ball-to-basket task, train ACT via LeRobot, evaluate 40 episodes per budget on 10 fixed placements with 30 s timeout. Compare against published ACT curve (3%→93%) (pqac-00000043).
+2. **REPLAB-style grasping**: construct a work cell, define 20 test objects, measure cumulative success rate over grasp attempts with stop-after-10-failures protocol (pqac-00000008).
+
+**Tier 2 — Adaptable with minor modifications:**
+3. **ALOHA ACT tasks** (single-arm variants): adapt Slide Ziploc, Slot Battery, or Open Cup tasks to PiPER; collect 50 demonstrations and evaluate 25 trials per task (pqac-00000015).
+4. **RAMP assembly** with AprilTags: 3D-print beam and peg components, attach AprilTags, use wrist and fixed cameras for localization, run 5 consecutive assembly attempts (pqac-00000050, pqac-00000051).
+
+**Tier 3 — Novel contributions (filling literature gaps):**
+5. **ISO 9283-style positional repeatability test**: command the arm to a set of predefined poses across the workspace, measure achieved position with a calibrated measurement tool, report RP (pose repeatability). No such test has been published for PiPER or SO-101.
+6. **Laboratory vial-transfer benchmark**: measure grasp-and-place success rate for standard laboratory vials (e.g., 10 mL GC vials), comparing against Burger et al.'s ±0.12 mm calibrated positioning (pqac-00000020).
+
+## 7. Summary
+
+The field of robot arms in self-driving laboratories has evolved from expensive, proprietary industrial systems (KUKA, UR5e, ~$35k–$100k+) toward increasingly affordable platforms. The "low-cost, open-source" movement, catalyzed by ALOHA (2023) and LeRobot (2026), has produced platforms costing $120–$200 (SO-101) to ~$2,000 (PiPER, REPLAB). However, the literature reveals a critical maturity gap: industrial arms used in SDLs have peer-reviewed metrological characterization and demonstrated scientific workflows, whereas ultra-low-cost arms have only preprint-level task-success benchmarks and no demonstrated SDL applications. Filling this gap—by running repeatable benchmarks on low-cost arms and comparing directly against published industrial-arm baselines—represents a clear opportunity for new contributions to the field.

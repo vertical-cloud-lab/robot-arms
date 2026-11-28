@@ -1,0 +1,87 @@
+1. (nasertorabi2024repeatabilityassessmentof pages 24-26): ALI NASERTORABI. Repeatability assessment of industrial robots according to iso 9283 using a vision-based measurement system. Unknown journal, 2024.
+
+2. (nasertorabi2024repeatabilityassessmentof pages 1-4): ALI NASERTORABI. Repeatability assessment of industrial robots according to iso 9283 using a vision-based measurement system. Unknown journal, 2024.
+
+3. (nasertorabi2024repeatabilityassessmentof pages 7-10): ALI NASERTORABI. Repeatability assessment of industrial robots according to iso 9283 using a vision-based measurement system. Unknown journal, 2024.
+
+4. (morgan2020benchmarkingclutteredrobot pages 5-6): Andrew S. Morgan, Kaiyu Hang, Walter G. Bircher, Fadi M. Alladkani, Abhinav Gandhi, Berk Calli, and Aaron M. Dollar. Benchmarking cluttered robot pick-and-place manipulation with the box and blocks test. IEEE Robotics and Automation Letters, 5:454-461, Apr 2020. URL: https://doi.org/10.1109/lra.2019.2961053, doi:10.1109/lra.2019.2961053. This article has 58 citations and is from a domain leading peer-reviewed journal.
+
+5. (morgan2020benchmarkingclutteredrobot pages 2-3): Andrew S. Morgan, Kaiyu Hang, Walter G. Bircher, Fadi M. Alladkani, Abhinav Gandhi, Berk Calli, and Aaron M. Dollar. Benchmarking cluttered robot pick-and-place manipulation with the box and blocks test. IEEE Robotics and Automation Letters, 5:454-461, Apr 2020. URL: https://doi.org/10.1109/lra.2019.2961053, doi:10.1109/lra.2019.2961053. This article has 58 citations and is from a domain leading peer-reviewed journal.
+
+6. (morgan2020benchmarkingclutteredrobot pages 4-5): Andrew S. Morgan, Kaiyu Hang, Walter G. Bircher, Fadi M. Alladkani, Abhinav Gandhi, Berk Calli, and Aaron M. Dollar. Benchmarking cluttered robot pick-and-place manipulation with the box and blocks test. IEEE Robotics and Automation Letters, 5:454-461, Apr 2020. URL: https://doi.org/10.1109/lra.2019.2961053, doi:10.1109/lra.2019.2961053. This article has 58 citations and is from a domain leading peer-reviewed journal.
+
+7. (lian2021benchmarkingofftheshelfsolutions pages 4-5): Wenzhao Lian, Tim Kelch, Dirk Holz, Adam Norton, and Stefan Schaal. Benchmarking off-the-shelf solutions to robotic assembly tasks. 2021 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS), pages 1046-1053, Sep 2021. URL: https://doi.org/10.1109/iros51168.2021.9636586, doi:10.1109/iros51168.2021.9636586. This article has 53 citations.
+
+8. (lian2021benchmarkingofftheshelfsolutions pages 2-3): Wenzhao Lian, Tim Kelch, Dirk Holz, Adam Norton, and Stefan Schaal. Benchmarking off-the-shelf solutions to robotic assembly tasks. 2021 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS), pages 1046-1053, Sep 2021. URL: https://doi.org/10.1109/iros51168.2021.9636586, doi:10.1109/iros51168.2021.9636586. This article has 53 citations.
+
+9. (kimble2020benchmarkingprotocolsfor pages 3-5): Kenneth Kimble, Karl Van Wyk, Joe Falco, Elena Messina, Yu Sun, Mizuho Shibata, Wataru Uemura, and Yasuyoshi Yokokohji. Benchmarking protocols for evaluating small parts robotic assembly systems. IEEE Robotics and Automation Letters, 5:883-889, Apr 2020. URL: https://doi.org/10.1109/lra.2020.2965869, doi:10.1109/lra.2020.2965869. This article has 157 citations and is from a domain leading peer-reviewed journal.
+
+10. (lian2021benchmarkingofftheshelfsolutions pages 7-7): Wenzhao Lian, Tim Kelch, Dirk Holz, Adam Norton, and Stefan Schaal. Benchmarking off-the-shelf solutions to robotic assembly tasks. 2021 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS), pages 1046-1053, Sep 2021. URL: https://doi.org/10.1109/iros51168.2021.9636586, doi:10.1109/iros51168.2021.9636586. This article has 53 citations.
+
+11. (lian2021benchmarkingofftheshelfsolutions media c9397f47): Wenzhao Lian, Tim Kelch, Dirk Holz, Adam Norton, and Stefan Schaal. Benchmarking off-the-shelf solutions to robotic assembly tasks. 2021 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS), pages 1046-1053, Sep 2021. URL: https://doi.org/10.1109/iros51168.2021.9636586, doi:10.1109/iros51168.2021.9636586. This article has 53 citations.
+
+12. (khargonkar2024scenereplicabenchmarkingrealworld pages 9-11): Ninad Khargonkar, Sai Haneesh Allu, Yangxiao Lu, Jishnu Jaykumar P, Balakrishnan Prabhakaran, and Yu Xiang. Scenereplica: benchmarking real-world robot manipulation by creating replicable scenes. 2024 IEEE International Conference on Robotics and Automation (ICRA), pages 8258-8264, May 2024. URL: https://doi.org/10.1109/icra57147.2024.10610180, doi:10.1109/icra57147.2024.10610180. This article has 17 citations.
+
+13. (khargonkar2024scenereplicabenchmarkingrealworld pages 6-7): Ninad Khargonkar, Sai Haneesh Allu, Yangxiao Lu, Jishnu Jaykumar P, Balakrishnan Prabhakaran, and Yu Xiang. Scenereplica: benchmarking real-world robot manipulation by creating replicable scenes. 2024 IEEE International Conference on Robotics and Automation (ICRA), pages 8258-8264, May 2024. URL: https://doi.org/10.1109/icra57147.2024.10610180, doi:10.1109/icra57147.2024.10610180. This article has 17 citations.
+
+14. (khargonkar2024scenereplicabenchmarkingrealworld pages 5-6): Ninad Khargonkar, Sai Haneesh Allu, Yangxiao Lu, Jishnu Jaykumar P, Balakrishnan Prabhakaran, and Yu Xiang. Scenereplica: benchmarking real-world robot manipulation by creating replicable scenes. 2024 IEEE International Conference on Robotics and Automation (ICRA), pages 8258-8264, May 2024. URL: https://doi.org/10.1109/icra57147.2024.10610180, doi:10.1109/icra57147.2024.10610180. This article has 17 citations.
+
+15. (khargonkar2024scenereplicabenchmarkingrealworld pages 3-5): Ninad Khargonkar, Sai Haneesh Allu, Yangxiao Lu, Jishnu Jaykumar P, Balakrishnan Prabhakaran, and Yu Xiang. Scenereplica: benchmarking real-world robot manipulation by creating replicable scenes. 2024 IEEE International Conference on Robotics and Automation (ICRA), pages 8258-8264, May 2024. URL: https://doi.org/10.1109/icra57147.2024.10610180, doi:10.1109/icra57147.2024.10610180. This article has 17 citations.
+
+16. (leitner2017theacrvpicking pages 7-7): Jurgen Leitner, Adam W. Tow, Niko Sunderhauf, Jake E. Dean, Joseph W. Durham, Matthew Cooper, Markus Eich, Christopher Lehnert, Ruben Mangels, Christopher McCool, Peter T. Kujala, Lachlan Nicholson, Trung Pham, James Sergeant, Liao Wu, Fangyi Zhang, Ben Upcroft, and Peter Corke. The acrv picking benchmark: a robotic shelf picking benchmark to foster reproducible research. 2017 IEEE International Conference on Robotics and Automation (ICRA), pages 4705-4712, May 2017. URL: https://doi.org/10.1109/icra.2017.7989545, doi:10.1109/icra.2017.7989545. This article has 110 citations.
+
+17. (luo2025fmbafunctional pages 14-15): Jianlan Luo, Charles Xu, Fangchen Liu, Liam Tan, Zipeng Lin, Jeffrey Wu, Pieter Abbeel, and Sergey Levine. Fmb: a functional manipulation benchmark for generalizable robotic learning. The International Journal of Robotics Research, Sep 2024. URL: https://doi.org/10.1177/02783649241276017, doi:10.1177/02783649241276017. This article has 161 citations.
+
+18. (luo2025fmbafunctional pages 5-7): Jianlan Luo, Charles Xu, Fangchen Liu, Liam Tan, Zipeng Lin, Jeffrey Wu, Pieter Abbeel, and Sergey Levine. Fmb: a functional manipulation benchmark for generalizable robotic learning. The International Journal of Robotics Research, Sep 2024. URL: https://doi.org/10.1177/02783649241276017, doi:10.1177/02783649241276017. This article has 161 citations.
+
+19. (luo2025fmbafunctional pages 9-11): Jianlan Luo, Charles Xu, Fangchen Liu, Liam Tan, Zipeng Lin, Jeffrey Wu, Pieter Abbeel, and Sergey Levine. Fmb: a functional manipulation benchmark for generalizable robotic learning. The International Journal of Robotics Research, Sep 2024. URL: https://doi.org/10.1177/02783649241276017, doi:10.1177/02783649241276017. This article has 161 citations.
+
+20. (heo2025furniturebenchreproduciblerealworld pages 3-4): Minho Heo, Youngwoon Lee, Doohyun Lee, and Joseph J Lim. Furniturebench: reproducible real-world benchmark for long-horizon complex manipulation. The International Journal of Robotics Research, Feb 2025. URL: https://doi.org/10.1177/02783649241304789, doi:10.1177/02783649241304789. This article has 241 citations.
+
+21. (heo2025furniturebenchreproduciblerealworld pages 6-7): Minho Heo, Youngwoon Lee, Doohyun Lee, and Joseph J Lim. Furniturebench: reproducible real-world benchmark for long-horizon complex manipulation. The International Journal of Robotics Research, Feb 2025. URL: https://doi.org/10.1177/02783649241304789, doi:10.1177/02783649241304789. This article has 241 citations.
+
+22. (heo2025furniturebenchreproduciblerealworld pages 1-2): Minho Heo, Youngwoon Lee, Doohyun Lee, and Joseph J Lim. Furniturebench: reproducible real-world benchmark for long-horizon complex manipulation. The International Journal of Robotics Research, Feb 2025. URL: https://doi.org/10.1177/02783649241304789, doi:10.1177/02783649241304789. This article has 241 citations.
+
+23. (schempp2025qbitqualityawarecloudbased pages 4-5): Constantin Schempp, Yongzhou Zhang, Christian Friedrich, and Bjorn Hein. Qbit: quality-aware cloud-based benchmarking for robotic insertion tasks. ArXiv, Mar 2025. URL: https://doi.org/10.48550/arxiv.2503.07479, doi:10.48550/arxiv.2503.07479. This article has 2 citations.
+
+24. (wyk2018comparativepeginholetesting pages 3-5): Karl Van Wyk, Mark Culleton, Joe Falco, and Kevin Kelly. Comparative peg-in-hole testing of a force-based manipulation controlled robotic hand. IEEE Transactions on Robotics, 34:542-549, Apr 2018. URL: https://doi.org/10.1109/tro.2018.2791591, doi:10.1109/tro.2018.2791591. This article has 138 citations and is from a highest quality peer-reviewed journal.
+
+25. (wyk2018comparativepeginholetesting pages 1-3): Karl Van Wyk, Mark Culleton, Joe Falco, and Kevin Kelly. Comparative peg-in-hole testing of a force-based manipulation controlled robotic hand. IEEE Transactions on Robotics, 34:542-549, Apr 2018. URL: https://doi.org/10.1109/tro.2018.2791591, doi:10.1109/tro.2018.2791591. This article has 138 citations and is from a highest quality peer-reviewed journal.
+
+26. (wyk2018comparativepeginholetesting media eff4b610): Karl Van Wyk, Mark Culleton, Joe Falco, and Kevin Kelly. Comparative peg-in-hole testing of a force-based manipulation controlled robotic hand. IEEE Transactions on Robotics, 34:542-549, Apr 2018. URL: https://doi.org/10.1109/tro.2018.2791591, doi:10.1109/tro.2018.2791591. This article has 138 citations and is from a highest quality peer-reviewed journal.
+
+27. (hickok2026so101benchaccessible pages 13-16): Truman Hickok. So-101 bench: accessible spatial manipulation. ArXiv, Oct 2026. URL: https://doi.org/10.48550/arxiv.2610.36420, doi:10.48550/arxiv.2610.36420. This article has 0 citations.
+
+28. (hickok2026so101benchaccessible pages 2-4): Truman Hickok. So-101 bench: accessible spatial manipulation. ArXiv, Oct 2026. URL: https://doi.org/10.48550/arxiv.2610.36420, doi:10.48550/arxiv.2610.36420. This article has 0 citations.
+
+29. (hickok2026so101benchaccessible pages 1-2): Truman Hickok. So-101 bench: accessible spatial manipulation. ArXiv, Oct 2026. URL: https://doi.org/10.48550/arxiv.2610.36420, doi:10.48550/arxiv.2610.36420. This article has 0 citations.
+
+30. (shukor2025smolvlaavisionlanguageaction pages 10-12): Mustafa Shukor, Dana Aubakirova, Francesco Capuano, Pepijn Kooijmans, Steven Palma, Adil Zouitine, Michel Aractingi, Caroline Pascal, Martino Russi, Andrés Marafioti, Simon Alibert, Matthieu Cord, Thomas Wolf, and Rémi Cadène. Smolvla: a vision-language-action model for affordable and efficient robotics. ArXiv, Jun 2025. URL: https://doi.org/10.48550/arxiv.2506.01844, doi:10.48550/arxiv.2506.01844. This article has 655 citations.
+
+31. (shukor2025smolvlaavisionlanguageaction pages 12-14): Mustafa Shukor, Dana Aubakirova, Francesco Capuano, Pepijn Kooijmans, Steven Palma, Adil Zouitine, Michel Aractingi, Caroline Pascal, Martino Russi, Andrés Marafioti, Simon Alibert, Matthieu Cord, Thomas Wolf, and Rémi Cadène. Smolvla: a vision-language-action model for affordable and efficient robotics. ArXiv, Jun 2025. URL: https://doi.org/10.48550/arxiv.2506.01844, doi:10.48550/arxiv.2506.01844. This article has 655 citations.
+
+32. (shukor2025smolvlaavisionlanguageaction pages 8-10): Mustafa Shukor, Dana Aubakirova, Francesco Capuano, Pepijn Kooijmans, Steven Palma, Adil Zouitine, Michel Aractingi, Caroline Pascal, Martino Russi, Andrés Marafioti, Simon Alibert, Matthieu Cord, Thomas Wolf, and Rémi Cadène. Smolvla: a vision-language-action model for affordable and efficient robotics. ArXiv, Jun 2025. URL: https://doi.org/10.48550/arxiv.2506.01844, doi:10.48550/arxiv.2506.01844. This article has 655 citations.
+
+33. (darvish2025matterixtowarda pages 11-14): Kourosh Darvish, Arjun Sohal, Abhijoy Mandal, Hatem Fakhruldeen, Nikola Radulov, Zhengxue Zhou, Satheeshkumar Veeramani, Joshua Choi, Sijie Han, Brayden Zhang, Jeeyeoun Chae, Alex Wright, Yijie Wang, Hossein Darvish, Yuchi Zhao, Gary Tom, Han Hao, Miroslav Bogdanovic, Gabriella Pizzuto, Andrew I. Cooper, Alán Aspuru Guzik, Florian Shkurti, and Animesh Garg. Matterix: toward a digital twin for robotics-assisted chemistry laboratory automation. Nature Computational Science, 6:67-82, Dec 2025. URL: https://doi.org/10.1038/s43588-025-00924-4, doi:10.1038/s43588-025-00924-4. This article has 17 citations and is from a peer-reviewed journal.
+
+34. (cowling2026from12to pages 1-3): Simon L. Cowling. From 12 to 200 demonstrations: how act, diffusion policy, smolvla and $\pi _0.5$ scale on a low-cost arm. ArXiv, Oct 2026. URL: https://doi.org/10.48550/arxiv.2610.37170, doi:10.48550/arxiv.2610.37170. This article has 0 citations.
+
+35. (cowling2026from12to pages 7-9): Simon L. Cowling. From 12 to 200 demonstrations: how act, diffusion policy, smolvla and $\pi _0.5$ scale on a low-cost arm. ArXiv, Oct 2026. URL: https://doi.org/10.48550/arxiv.2610.37170, doi:10.48550/arxiv.2610.37170. This article has 0 citations.
+
+36. (cowling2026from12to pages 3-5): Simon L. Cowling. From 12 to 200 demonstrations: how act, diffusion policy, smolvla and $\pi _0.5$ scale on a low-cost arm. ArXiv, Oct 2026. URL: https://doi.org/10.48550/arxiv.2610.37170, doi:10.48550/arxiv.2610.37170. This article has 0 citations.
+
+37. (kirschner2021towardsareference pages 2-3): Robin Jeanne Kirschner, Alexander Kurdas, Kubra Karacan, Philipp Junge, Seyed Ali Baradaran Birjandi, Nico Mansfeld, Saeed Abdolshah, and Sami Haddadin. Towards a reference framework for tactile robot performance and safety benchmarking. 2021 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS), pages 4290-4297, Sep 2021. URL: https://doi.org/10.1109/iros51168.2021.9636329, doi:10.1109/iros51168.2021.9636329. This article has 35 citations.
+
+38. (nasertorabi2024repeatabilityassessmentof pages 44-45): ALI NASERTORABI. Repeatability assessment of industrial robots according to iso 9283 using a vision-based measurement system. Unknown journal, 2024.
+
+39. (morgan2020benchmarkingclutteredrobot pages 7-8): Andrew S. Morgan, Kaiyu Hang, Walter G. Bircher, Fadi M. Alladkani, Abhinav Gandhi, Berk Calli, and Aaron M. Dollar. Benchmarking cluttered robot pick-and-place manipulation with the box and blocks test. IEEE Robotics and Automation Letters, 5:454-461, Apr 2020. URL: https://doi.org/10.1109/lra.2019.2961053, doi:10.1109/lra.2019.2961053. This article has 58 citations and is from a domain leading peer-reviewed journal.
+
+40. (kimble2020benchmarkingprotocolsfor pages 6-9): Kenneth Kimble, Karl Van Wyk, Joe Falco, Elena Messina, Yu Sun, Mizuho Shibata, Wataru Uemura, and Yasuyoshi Yokokohji. Benchmarking protocols for evaluating small parts robotic assembly systems. IEEE Robotics and Automation Letters, 5:883-889, Apr 2020. URL: https://doi.org/10.1109/lra.2020.2965869, doi:10.1109/lra.2020.2965869. This article has 157 citations and is from a domain leading peer-reviewed journal.
+
+41. (wyk2018comparativepeginholetesting media 139c342d): Karl Van Wyk, Mark Culleton, Joe Falco, and Kevin Kelly. Comparative peg-in-hole testing of a force-based manipulation controlled robotic hand. IEEE Transactions on Robotics, 34:542-549, Apr 2018. URL: https://doi.org/10.1109/tro.2018.2791591, doi:10.1109/tro.2018.2791591. This article has 138 citations and is from a highest quality peer-reviewed journal.
+
+42. (burger2023amobilerobotic pages 62-69): Benjamin Burger. A mobile robotic researcher. ArXiv, Jan 2023. URL: https://doi.org/10.17638/03087073, doi:10.17638/03087073. This article has 4 citations.
+
+43. (manna2026endtoendautomationof pages 1-3): Riddha Manna, Tomislav Štampar, Ivan Tomić, and Ana Marija Jakšić. End-to-end automation of behavioural experiments with a collaborative robot. bioRxiv, Oct 2026. URL: https://doi.org/10.64898/2026.10.20.758951, doi:10.64898/2026.10.20.758951. This article has 0 citations.
+
+44. (manna2026endtoendautomationof pages 3-5): Riddha Manna, Tomislav Štampar, Ivan Tomić, and Ana Marija Jakšić. End-to-end automation of behavioural experiments with a collaborative robot. bioRxiv, Oct 2026. URL: https://doi.org/10.64898/2026.10.20.758951, doi:10.64898/2026.10.20.758951. This article has 0 citations.
