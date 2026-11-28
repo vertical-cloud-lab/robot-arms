@@ -1,0 +1,895 @@
+{
+ "generated_by": "docs/safety/analysis/joint_currents.py",
+ "inputs": {
+  "urdf": "https://github.com/agilexrobotics/piper_ros/blob/ac41fcbcdda598f01b51cf6175ed9a24d0dacadc/src/piper_description/urdf/piper_description.urdf",
+  "k_nm_per_a": [
+   1.18125,
+   1.18125,
+   1.18125,
+   0.95844,
+   0.95844,
+   0.95844
+  ],
+  "limits_a": {
+   "Up_and_Down.py": [
+    1.5,
+    3,
+    4,
+    1.5,
+    4.5,
+    1.5
+   ],
+   "follower.py": [
+    3,
+    7,
+    6,
+    2,
+    4.5,
+    1.5
+   ]
+  },
+  "measured_54": {
+   "free_motion_peaks_a": [
+    0.04,
+    1.1,
+    2.0,
+    0.2,
+    2.7,
+    0.45
+   ],
+   "j5_holding_level_gripper_a": 1.5
+  },
+  "tcp_m": 0.15,
+  "tool_m": 0.06,
+  "payloads_kg": [
+   0.0,
+   0.25,
+   0.5,
+   1.0,
+   1.5
+  ],
+  "floor_m": 0.02,
+  "envelope_deg": {
+   "J1": [
+    -150,
+    150
+   ],
+   "J2": [
+    0,
+    180
+   ],
+   "J3": [
+    -170,
+    0
+   ],
+   "J4": [
+    -90,
+    90
+   ],
+   "J5": [
+    -70,
+    70
+   ],
+   "J6": [
+    -180,
+    180
+   ]
+  }
+ },
+ "urdf_vs_sdk_dh_max_mm": 0.138,
+ "home_level_j5_deg": 5.0,
+ "j5_level_model_bare_a": 0.887,
+ "tool_kg_fitted": 0.397,
+ "j6_offaxis_tool_a": 0.142,
+ "model_at_poses_a": {
+  "home (level)": [
+   0.0,
+   1.829,
+   5.18,
+   0.01,
+   1.5,
+   0.001
+  ],
+  "READY (J2 +20, J3 -20, level)": [
+   0.0,
+   1.116,
+   5.18,
+   0.01,
+   1.5,
+   0.001
+  ]
+ },
+ "scale_to_54": [
+  1.0,
+  0.601,
+  0.386,
+  1.0,
+  1.0,
+  1.0
+ ],
+ "cases_k_nm_per_a": {
+  "AgileX coefficient": [
+   1.181,
+   1.181,
+   1.181,
+   0.958,
+   0.958,
+   0.958
+  ],
+  "anchored to #54": [
+   1.181,
+   1.965,
+   3.059,
+   0.958,
+   0.958,
+   0.958
+  ]
+ },
+ "envelope_max_torque": {
+  "0": {
+   "max_nm": [
+    0.0,
+    14.53,
+    6.19,
+    1.35,
+    1.44,
+    0.0
+   ],
+   "pose_of_max_deg": [
+    [
+     0.0,
+     0.0,
+     -170.0,
+     -90.0,
+     -70.0,
+     0.0
+    ],
+    [
+     0.0,
+     175.0,
+     -165.0,
+     -90.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     105.0,
+     -95.0,
+     -90.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     20.0,
+     -15.0,
+     90.0,
+     -70.0,
+     0.0
+    ],
+    [
+     0.0,
+     15.0,
+     -130.0,
+     0.0,
+     -60.0,
+     0.0
+    ],
+    [
+     0.0,
+     15.0,
+     -170.0,
+     -90.0,
+     -70.0,
+     0.0
+    ]
+   ]
+  },
+  "0.25": {
+   "max_nm": [
+    0.0,
+    16.43,
+    7.4,
+    1.91,
+    2.03,
+    0.0
+   ],
+   "pose_of_max_deg": [
+    [
+     0.0,
+     0.0,
+     -170.0,
+     -90.0,
+     -70.0,
+     0.0
+    ],
+    [
+     0.0,
+     175.0,
+     -165.0,
+     -90.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     165.0,
+     -155.0,
+     -90.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     20.0,
+     -15.0,
+     90.0,
+     -70.0,
+     0.0
+    ],
+    [
+     0.0,
+     85.0,
+     -30.0,
+     0.0,
+     -50.0,
+     0.0
+    ],
+    [
+     0.0,
+     15.0,
+     -170.0,
+     -90.0,
+     -70.0,
+     0.0
+    ]
+   ]
+  },
+  "0.5": {
+   "max_nm": [
+    0.0,
+    18.34,
+    8.61,
+    2.46,
+    2.62,
+    0.0
+   ],
+   "pose_of_max_deg": [
+    [
+     0.0,
+     0.0,
+     -170.0,
+     -90.0,
+     -70.0,
+     0.0
+    ],
+    [
+     0.0,
+     175.0,
+     -165.0,
+     -90.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     105.0,
+     -95.0,
+     -90.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     10.0,
+     -5.0,
+     90.0,
+     -70.0,
+     0.0
+    ],
+    [
+     0.0,
+     15.0,
+     -130.0,
+     0.0,
+     -60.0,
+     0.0
+    ],
+    [
+     0.0,
+     15.0,
+     -170.0,
+     -90.0,
+     -70.0,
+     0.0
+    ]
+   ]
+  },
+  "1": {
+   "max_nm": [
+    0.0,
+    22.15,
+    11.02,
+    3.57,
+    3.8,
+    0.0
+   ],
+   "pose_of_max_deg": [
+    [
+     0.0,
+     0.0,
+     -170.0,
+     -90.0,
+     -70.0,
+     0.0
+    ],
+    [
+     0.0,
+     175.0,
+     -165.0,
+     -90.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     105.0,
+     -95.0,
+     -90.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     110.0,
+     -105.0,
+     -90.0,
+     -70.0,
+     0.0
+    ],
+    [
+     0.0,
+     85.0,
+     -30.0,
+     0.0,
+     -50.0,
+     0.0
+    ],
+    [
+     0.0,
+     15.0,
+     -170.0,
+     -90.0,
+     -70.0,
+     0.0
+    ]
+   ]
+  },
+  "1.5": {
+   "max_nm": [
+    0.0,
+    25.96,
+    13.43,
+    4.68,
+    4.98,
+    0.0
+   ],
+   "pose_of_max_deg": [
+    [
+     0.0,
+     0.0,
+     -170.0,
+     -90.0,
+     -70.0,
+     0.0
+    ],
+    [
+     0.0,
+     175.0,
+     -165.0,
+     -90.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     165.0,
+     -155.0,
+     -90.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     15.0,
+     -10.0,
+     -90.0,
+     70.0,
+     0.0
+    ],
+    [
+     0.0,
+     85.0,
+     -30.0,
+     0.0,
+     -50.0,
+     0.0
+    ],
+    [
+     0.0,
+     15.0,
+     -170.0,
+     -90.0,
+     -70.0,
+     0.0
+    ]
+   ]
+  }
+ },
+ "envelope_sweep": {
+  "AgileX coefficient": {
+   "0": {
+    "max_a": [
+     0.0,
+     12.3,
+     5.24,
+     1.41,
+     1.5,
+     0.0
+    ],
+    "share_of_poses_over_limit": {
+     "Up_and_Down.py": [
+      0.0,
+      0.653,
+      0.493,
+      0.0,
+      0.0,
+      0.0
+     ],
+     "follower.py": [
+      0.0,
+      0.334,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "0.25": {
+    "max_a": [
+     0.0,
+     13.91,
+     6.26,
+     1.99,
+     2.12,
+     0.0
+    ],
+    "share_of_poses_over_limit": {
+     "Up_and_Down.py": [
+      0.0,
+      0.683,
+      0.614,
+      0.077,
+      0.0,
+      0.0
+     ],
+     "follower.py": [
+      0.0,
+      0.39,
+      0.094,
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "0.5": {
+    "max_a": [
+     0.0,
+     15.52,
+     7.29,
+     2.57,
+     2.73,
+     0.0
+    ],
+    "share_of_poses_over_limit": {
+     "Up_and_Down.py": [
+      0.0,
+      0.71,
+      0.686,
+      0.176,
+      0.0,
+      0.0
+     ],
+     "follower.py": [
+      0.0,
+      0.437,
+      0.361,
+      0.067,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "1": {
+    "max_a": [
+     0.0,
+     18.75,
+     9.33,
+     3.73,
+     3.97,
+     0.0
+    ],
+    "share_of_poses_over_limit": {
+     "Up_and_Down.py": [
+      0.0,
+      0.754,
+      0.764,
+      0.335,
+      0.0,
+      0.0
+     ],
+     "follower.py": [
+      0.0,
+      0.513,
+      0.601,
+      0.212,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "1.5": {
+    "max_a": [
+     0.0,
+     21.97,
+     11.37,
+     4.89,
+     5.2,
+     0.0
+    ],
+    "share_of_poses_over_limit": {
+     "Up_and_Down.py": [
+      0.0,
+      0.791,
+      0.812,
+      0.432,
+      0.133,
+      0.0
+     ],
+     "follower.py": [
+      0.0,
+      0.573,
+      0.695,
+      0.323,
+      0.133,
+      0.0
+     ]
+    }
+   }
+  },
+  "anchored to #54": {
+   "0": {
+    "max_a": [
+     0.0,
+     7.4,
+     2.02,
+     1.41,
+     1.5,
+     0.0
+    ],
+    "share_of_poses_over_limit": {
+     "Up_and_Down.py": [
+      0.0,
+      0.482,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     "follower.py": [
+      0.0,
+      0.033,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "0.25": {
+    "max_a": [
+     0.0,
+     8.37,
+     2.42,
+     1.99,
+     2.12,
+     0.0
+    ],
+    "share_of_poses_over_limit": {
+     "Up_and_Down.py": [
+      0.0,
+      0.526,
+      0.0,
+      0.077,
+      0.0,
+      0.0
+     ],
+     "follower.py": [
+      0.0,
+      0.117,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "0.5": {
+    "max_a": [
+     0.0,
+     9.33,
+     2.81,
+     2.57,
+     2.73,
+     0.0
+    ],
+    "share_of_poses_over_limit": {
+     "Up_and_Down.py": [
+      0.0,
+      0.564,
+      0.0,
+      0.176,
+      0.0,
+      0.0
+     ],
+     "follower.py": [
+      0.0,
+      0.182,
+      0.0,
+      0.067,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "1": {
+    "max_a": [
+     0.0,
+     11.27,
+     3.6,
+     3.73,
+     3.97,
+     0.0
+    ],
+    "share_of_poses_over_limit": {
+     "Up_and_Down.py": [
+      0.0,
+      0.626,
+      0.0,
+      0.335,
+      0.0,
+      0.0
+     ],
+     "follower.py": [
+      0.0,
+      0.286,
+      0.0,
+      0.212,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "1.5": {
+    "max_a": [
+     0.0,
+     13.21,
+     4.39,
+     4.89,
+     5.2,
+     0.0
+    ],
+    "share_of_poses_over_limit": {
+     "Up_and_Down.py": [
+      0.0,
+      0.676,
+      0.17,
+      0.432,
+      0.133,
+      0.0
+     ],
+     "follower.py": [
+      0.0,
+      0.366,
+      0.0,
+      0.323,
+      0.133,
+      0.0
+     ]
+    }
+   }
+  }
+ },
+ "envelope_sweep_poses": 70635,
+ "per_kg_payload_max_a": {
+  "AgileX coefficient": [
+   0.0,
+   6.45,
+   4.08,
+   2.32,
+   2.47,
+   0.0
+  ],
+  "anchored to #54": [
+   0.0,
+   3.88,
+   1.58,
+   2.32,
+   2.47,
+   0.0
+  ]
+ },
+ "acceleration_extra_a": {
+  "0": {
+   "max_inertia_kgm2": [
+    0.7874,
+    0.7884,
+    0.2062,
+    0.0166,
+    0.0187,
+    0.0
+   ],
+   "follower.py (--max-deg-s2)": {
+    "AgileX coefficient": [
+     4.19,
+     4.19,
+     1.1,
+     0.11,
+     0.12,
+     0.0
+    ],
+    "anchored to #54": [
+     4.19,
+     2.52,
+     0.42,
+     0.11,
+     0.12,
+     0.0
+    ]
+   },
+   "Up_and_Down.py (20 deg lift at 12 deg/s)": {
+    "AgileX coefficient": [
+     0.17,
+     0.17,
+     0.04,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "anchored to #54": [
+     0.17,
+     0.1,
+     0.02,
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "1.5": {
+   "max_inertia_kgm2": [
+    1.692,
+    1.6947,
+    0.5696,
+    0.0935,
+    0.1059,
+    0.0
+   ],
+   "follower.py (--max-deg-s2)": {
+    "AgileX coefficient": [
+     9.0,
+     9.01,
+     3.03,
+     0.61,
+     0.69,
+     0.0
+    ],
+    "anchored to #54": [
+     9.0,
+     5.42,
+     1.17,
+     0.61,
+     0.69,
+     0.0
+    ]
+   },
+   "Up_and_Down.py (20 deg lift at 12 deg/s)": {
+    "AgileX coefficient": [
+     0.36,
+     0.36,
+     0.12,
+     0.02,
+     0.03,
+     0.0
+    ],
+    "anchored to #54": [
+     0.36,
+     0.22,
+     0.05,
+     0.02,
+     0.03,
+     0.0
+    ]
+   }
+  }
+ },
+ "accel_deg_s2": {
+  "follower.py (--max-deg-s2)": 360.0,
+  "Up_and_Down.py (20 deg lift at 12 deg/s)": 14.4
+ },
+ "vertical_plane": {
+  "poses": 4804,
+  "trip_force_N AgileX coefficient Up_and_Down.py": {
+   "hardest_direction_median": 0.0,
+   "hardest_p10": 0.0,
+   "hardest_p90": 29.8,
+   "share_tripped_holding_still": 0.885,
+   "share_hardest_over_140N": 0.0,
+   "easiest_direction_median": 0.0
+  },
+  "trip_force_N AgileX coefficient follower.py": {
+   "hardest_direction_median": 42.5,
+   "hardest_p10": 0.0,
+   "hardest_p90": 68.4,
+   "share_tripped_holding_still": 0.359,
+   "share_hardest_over_140N": 0.005,
+   "easiest_direction_median": 1.9
+  },
+  "trip_force_N anchored to #54 Up_and_Down.py": {
+   "hardest_direction_median": 31.5,
+   "hardest_p10": 0.0,
+   "hardest_p90": 67.5,
+   "share_tripped_holding_still": 0.479,
+   "share_hardest_over_140N": 0.003,
+   "easiest_direction_median": 0.7
+  },
+  "trip_force_N anchored to #54 follower.py": {
+   "hardest_direction_median": 87.6,
+   "hardest_p10": 44.9,
+   "hardest_p90": 144.3,
+   "share_tripped_holding_still": 0.063,
+   "share_hardest_over_140N": 0.128,
+   "easiest_direction_median": 7.9
+  },
+  "share_over_limit_any_joint AgileX coefficient Up_and_Down.py payload 0": 0.885,
+  "share_over_limit_any_joint AgileX coefficient follower.py payload 0": 0.359,
+  "share_over_limit_any_joint AgileX coefficient Up_and_Down.py payload 1.5": 1.0,
+  "share_over_limit_any_joint AgileX coefficient follower.py payload 1.5": 1.0,
+  "share_over_limit_any_joint anchored to #54 Up_and_Down.py payload 0": 0.479,
+  "share_over_limit_any_joint anchored to #54 follower.py payload 0": 0.063,
+  "share_over_limit_any_joint anchored to #54 Up_and_Down.py payload 1.5": 1.0,
+  "share_over_limit_any_joint anchored to #54 follower.py payload 1.5": 1.0,
+  "READY_trip_force_N_hardest_easiest": {
+   "AgileX coefficient Up_and_Down.py": [
+    0.0,
+    0.0
+   ],
+   "AgileX coefficient follower.py": [
+    85.6,
+    2.0
+   ],
+   "anchored to #54 Up_and_Down.py": [
+    70.1,
+    7.5
+   ],
+   "anchored to #54 follower.py": [
+    111.6,
+    12.0
+   ]
+  },
+  "max_reach_level_m": 0.778
+ }
+}
