@@ -666,7 +666,7 @@ python /tmp/amp-piper/compose_prompt.py /tmp/amp-episodes/tape_to_shelf-ep0 45
 # then give an agent the system prompt in that directory; it acts with ./py and ./finish_episode
 # the lab workflows (70-minute wall limit); PIPER_RUN_NAME gives a stack its own directory, so two
 # episodes of one task can run side by side
-python /tmp/amp-piper/scene_checks.py                    # their physics, without the robot
+PYTHONPATH=/tmp/ext/ml-amp/src MUJOCO_GL=egl /tmp/ext/ml-amp/.venv/bin/python /tmp/amp-piper/scene_checks.py  # their physics, no robot
 AMP_WALL_LIMIT_MIN=70 PIPER_RUN_NAME=auger_swap.ep1 /tmp/amp-piper/episode_up.sh auger_swap 8791 1
 python /tmp/amp-piper/compose_prompt.py /tmp/amp-episodes/auger_swap-ep1 70
 
@@ -685,6 +685,7 @@ python amp1/piper/summarize.py /tmp/amp-results /tmp/amp-episodes/EPISODE
 python amp1/piper/audit.py AGENT_TRANSCRIPT.jsonl /tmp/amp-episodes/EPISODE
 python amp1/piper/playlist.py amp1/results /tmp/amp-results /tmp/playlist.json 5
 python amp1/piper/make_video.py amp1_episodes.mp4 /tmp/playlist.json
+python amp1/piper/playlist.py amp1/results /tmp/amp-results /tmp/lab.json 5 "Lab workflows"  # that section only
 ```
 
 With an `ANTHROPIC_API_KEY`, AMP's own loop can drive the same robot server instead of the bridge.
